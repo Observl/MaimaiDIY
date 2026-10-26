@@ -9,15 +9,18 @@ const slots = {
   titleText: { asset: 'assets/titleText.png', x: 247, y: 115, width: 51, height: 12, z: 24 },
   rank: { asset: 'assets/rank.png', x: 326, y: 69, width: 80, height: 35, z: 25 },
   friendBattle: { asset: 'assets/friendBattle.png', x: 312, y: 7, width: 108, height: 67, z: 26 },
+  nameBase: { asset: 'assets/nameBase.png', x: 142, y: 67, width: 267, height: 40, z: 27 },
+  playerName: { asset: 'assets/playerName.png', x: 152, y: 78, width: 102, height: 18, z: 28 },
   avatar: { asset: 'assets/avatar.png', x: 37, y: 33, width: 100, height: 99, z: 30 }
 };
 
 const controls = [
   { id: 'background', label: '背景板', short: '景', slotIds: ['background'], canHide: false },
-  { id: 'nameplate', label: '名牌', short: '牌', slotIds: ['nameplate'], canHide: true },
-  { id: 'avatar', label: '头像', short: '像', slotIds: ['avatar'], canHide: true },
+  { id: 'nameplate', label: '名牌', short: '牌', slotIds: ['nameplate'], canHide: false },
+  { id: 'avatar', label: '头像', short: '像', slotIds: ['avatar'], canHide: false },
   { id: 'rating', label: 'Rating', short: 'R', slotIds: ['ratingFrame', 'ratingDigits'], canHide: true },
-  { id: 'title', label: '称号', short: '称', slotIds: ['titleBase', 'titleText'], canHide: true },
+  { id: 'title', label: '称号', short: '称', slotIds: ['titleBase', 'titleText'], canHide: false },
+  { id: 'playerName', label: '名称', short: '名', slotIds: ['nameBase', 'playerName'], canHide: false },
   { id: 'rank', label: '段位', short: '段', slotIds: ['rank'], canHide: true },
   { id: 'friendBattle', label: '友人对战', short: '战', slotIds: ['friendBattle'], canHide: true }
 ];
