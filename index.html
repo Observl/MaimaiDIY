@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171821">
+  <title>MaimaiDIY · 舞萌上屏装饰模拟器</title>
+  <link rel="icon" href="assets/avatar.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">MAIMAI DX</p>
+        <h1>上屏装饰模拟器</h1>
+        <p class="subtitle">组合素材、控制显示，并导出 1080 × 452 高清图片。</p>
+      </div>
+      <span class="status"><i></i> 本地运行</span>
+    </header>
+
+    <section class="preview-card card">
+      <div class="section-head">
+        <h2>实时预览</h2>
+        <span>1080 × 452</span>
+      </div>
+      <div class="canvas-shell">
+        <canvas id="preview" width="1080" height="452" aria-label="舞萌上屏合成预览"></canvas>
+        <div id="loading" class="loading" hidden>正在合成…</div>
+      </div>
+      <div class="toolbar">
+        <button id="reset" class="button secondary" type="button">恢复默认</button>
+        <button id="export" class="button primary" type="button">导出 PNG</button>
+      </div>
+    </section>
+
+    <section class="card controls-card">
+      <div class="section-head">
+        <div>
+          <h2>组件</h2>
+          <p>上传只在浏览器本地处理，不会发送到服务器。</p>
+        </div>
+      </div>
+      <div id="controls" class="controls"></div>
+    </section>
+  </main>
+
+  <template id="control-template">
+    <article class="control-row">
+      <div class="control-main">
+        <span class="control-icon"></span>
+        <div>
+          <h3 class="control-label"></h3>
+          <p class="control-file">默认素材</p>
+        </div>
+      </div>
+      <div class="control-actions">
+        <label class="switch-wrap">
+          <span>展示</span>
+          <input class="visibility" type="checkbox" checked>
+          <i class="switch"></i>
+        </label>
+        <label class="upload-button">
+          替换
+          <input class="file-input" type="file" accept="image/png,image/jpeg,image/webp">
+        </label>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
