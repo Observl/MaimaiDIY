@@ -199,10 +199,10 @@ function drawTitleText() {
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
   const normal = state.titleColor === 'Normal';
-  ctx.lineWidth = normal ? 0 : 1.4;
-  ctx.strokeStyle = 'rgba(42, 31, 5, .9)';
-  ctx.fillStyle = normal ? '#222633' : '#ffffff';
-  drawSpacedText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2 + .15, .55, slot.width - 20, 'center', !normal);
+  ctx.lineWidth = normal ? 1.15 : 1.4;
+  ctx.strokeStyle = normal ? 'rgba(35, 39, 52, .92)' : 'rgba(42, 31, 5, .9)';
+  ctx.fillStyle = '#ffffff';
+  drawSpacedText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2 + .15, .55, slot.width - 20, 'center', true);
   ctx.restore();
 }
 
@@ -322,10 +322,11 @@ function normalizeManifestGroups(data) {
   return data;
 }
 
-function assetUrl(item) {
-  if (item.local) return item.file;
+function assetUrl(item, refresh = false) {
+  const suffix = refresh ? `${item.file.includes('?') ? '&' : '?'}selected=${Date.now()}` : '';
+  if (item.local) return `${item.file}${suffix}`;
   const path = item.source || item.file.split('/').map(encodeURIComponent).join('/');
-  return `${COS.baseUrl}/materials/${path}`;
+  return `${COS.baseUrl}/materials/${path}${suffix}`;
 }
 
 async function loadTitleManifest() {
@@ -378,7 +379,7 @@ function appendPickerItems() {
         state.titleColor = item.color || 'Normal';
         state.files.titleBase = titleAsset(state.titleColor);
       } else {
-        state.files[control.target] = assetUrl(item);
+        state.files[control.target] = assetUrl(item, true);
       }
       state.labels[control.id] = item.name;
       state.visible[control.target] = true;
