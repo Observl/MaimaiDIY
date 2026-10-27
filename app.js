@@ -70,13 +70,19 @@ const pickerMeta = document.querySelector('#picker-meta');
 const pickerGrid = document.querySelector('#picker-grid');
 const pickerMessage = document.querySelector('#picker-message');
 const pickerMore = document.querySelector('#picker-more');
+const pickerSearch = document.querySelector('#picker-search');
+const pickerFilter = document.querySelector('#picker-filter');
 const state = { files: {}, visible: {}, ratingValue: 15000, playerName: 'maimai', titleName: null, titleColor: 'Normal' };
 let manifest;
 let titleManifest;
 let badgeManifest;
 let renderVersion = 0;
 const imageCache = new Map();
-let pickerState = { control: null, category: null, shown: 0 };
+let pickerState = { control: null, category: null, items: [], shown: 0 };
+
+const TITLE_COLOR_NAMES = {
+  Normal: '普通', Bronze: '铜', Silver: '银', Gold: '金', Rainbow: '彩虹'
+};
 
 function resetState() {
   if (state.files.avatar?.startsWith('blob:')) URL.revokeObjectURL(state.files.avatar);
@@ -271,8 +277,8 @@ function showPickerMessage(text) {
 }
 
 function appendPickerItems() {
-  const { category, control } = pickerState;
-  const next = category.items.slice(pickerState.shown, pickerState.shown + COS.pageSize);
+  const { control, items } = pickerState;
+  const next = items.slice(pickerState.shown, pickerState.shown + COS.pageSize);
   next.forEach((item) => {
     const button = document.createElement('button');
     button.className = 'asset-item';
@@ -288,7 +294,10 @@ function appendPickerItems() {
     }
     const name = document.createElement('span');
     name.textContent = item.name;
-    button.append(image, name);
+    const group = document.createElement('small');
+    group.textContent = item.group || TITLE_COLOR_NAMES[item.color] || '未分类';
+    button.title = [item.name, item.description, item.id].filter(Boolean).join('\n');
+    button.append(image, name, group);
     button.addEventListener('click', async () => {
       if (control.id === 'title') {
         state.titleName = item.name;
@@ -305,13 +314,48 @@ function appendPickerItems() {
     pickerGrid.appendChild(button);
   });
   pickerState.shown += next.length;
-  pickerMore.hidden = pickerState.shown >= category.items.length;
+  pickerMore.hidden = pickerState.shown >= items.length;
+}
+
+function itemGroup(item) {
+  return item.group || TITLE_COLOR_NAMES[item.color] || '未分类';
+}
+
+function applyPickerFilters() {
+  if (!pickerState.category) return;
+  const query = pickerSearch.value.trim().toLocaleLowerCase('zh-CN');
+  const group = pickerFilter.value;
+  pickerState.items = pickerState.category.items.filter((item) => {
+    if (group && itemGroup(item) !== group) return false;
+    if (!query) return true;
+    const searchable = [item.name, item.id, item.description, item.genre, itemGroup(item), item.gameId]
+      .filter((value) => value !== undefined && value !== null)
+      .join(' ')
+      .toLocaleLowerCase('zh-CN');
+    return searchable.includes(query);
+  });
+  pickerState.shown = 0;
+  pickerGrid.replaceChildren();
+  pickerMessage.hidden = pickerState.items.length > 0;
+  if (!pickerState.items.length) showPickerMessage('没有符合当前搜索和分类条件的素材。');
+  pickerMeta.textContent = `找到 ${pickerState.items.length} / ${pickerState.category.items.length} 个素材`;
+  appendPickerItems();
+}
+
+function preparePickerFilters(category) {
+  pickerSearch.value = '';
+  pickerFilter.replaceChildren(new Option('全部分类', ''));
+  const groups = [...new Set(category.items.map(itemGroup))]
+    .sort((a, b) => a.localeCompare(b, 'zh-CN', { numeric: true }));
+  groups.forEach((group) => pickerFilter.add(new Option(`${group}（${category.items.filter((item) => itemGroup(item) === group).length}）`, group)));
 }
 
 async function openPicker(control) {
   pickerTitle.textContent = `选择${control.label}`;
   pickerMeta.textContent = '正在读取云端素材…';
   pickerGrid.replaceChildren();
+  pickerSearch.value = '';
+  pickerFilter.replaceChildren(new Option('全部分类', ''));
   pickerMore.hidden = true;
   pickerMessage.hidden = true;
   picker.showModal();
@@ -330,9 +374,9 @@ async function openPicker(control) {
       showPickerMessage('可继续使用默认素材，或通过“本地上传”替换。');
       return;
     }
-    pickerState = { control, category, shown: 0 };
-    pickerMeta.textContent = `共 ${category.items.length} 个素材`;
-    appendPickerItems();
+    pickerState = { control, category, items: category.items, shown: 0 };
+    preparePickerFilters(category);
+    applyPickerFilters();
   } catch (error) {
     pickerMeta.textContent = '连接失败';
     showPickerMessage('素材库暂时不可用，请稍后重试；默认素材和本地上传不受影响。');
@@ -488,6 +532,8 @@ document.querySelector('#export').addEventListener('click', () => {
 
 document.querySelector('#picker-close').addEventListener('click', () => picker.close());
 pickerMore.addEventListener('click', appendPickerItems);
+pickerSearch.addEventListener('input', applyPickerFilters);
+pickerFilter.addEventListener('change', applyPickerFilters);
 picker.addEventListener('click', (event) => {
   if (event.target === picker) picker.close();
 });

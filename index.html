@@ -7,7 +7,7 @@
   <title>MaimaiDIY · 舞萌上屏装饰模拟器</title>
   <link rel="icon" href="assets/avatar.png">
   <link rel="preload" href="assets/fonts/MorisawaUDShinGoGb4B-site.otf" as="font" type="font/otf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261027-8">
+  <link rel="stylesheet" href="styles.css?v=20261027-9">
 </head>
 <body>
   <main class="app-shell">
@@ -87,12 +87,24 @@
       </div>
       <button id="picker-close" class="icon-button" type="button" aria-label="关闭">×</button>
     </div>
+    <div class="picker-tools">
+      <label class="picker-search-wrap">
+        <span>搜索</span>
+        <input id="picker-search" class="picker-search" type="search" placeholder="搜索名称、编号或获得条件" autocomplete="off">
+      </label>
+      <label class="picker-filter-wrap">
+        <span>分类</span>
+        <select id="picker-filter" class="picker-filter">
+          <option value="">全部分类</option>
+        </select>
+      </label>
+    </div>
     <div id="picker-message" class="picker-message" hidden></div>
     <div id="picker-grid" class="picker-grid"></div>
     <button id="picker-more" class="button secondary picker-more" type="button" hidden>加载更多</button>
   </dialog>
 
-  <script src="app.js?v=20261027-8"></script>
+  <script src="app.js?v=20261027-9"></script>
 </body>
 </html>
 
