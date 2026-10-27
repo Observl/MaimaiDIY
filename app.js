@@ -32,7 +32,7 @@ const slots = {
   nameplate: { asset: 'assets/nameplate.png', x: 32, y: 26, width: 717, height: 116, z: 20 },
   ratingFrame: { asset: 'assets/ratingFrame.png', x: 138, y: 30, width: 173, height: 36, z: 21 },
   ratingDigits: { asset: 'assets/ratingDigits.png', x: 227, y: 42, width: 69, height: 14, z: 22 },
-  titleBase: { asset: 'assets/titleBase.png', x: 141, y: 111, width: 268, height: 25, z: 23 },
+  titleBase: { asset: 'assets/titles/UI_CMN_Shougou_Normal.png', x: 141, y: 111, width: 268, height: 25, z: 23 },
   titleText: { asset: 'assets/titleText.png', x: 247, y: 115, width: 51, height: 12, z: 24 },
   rank: { asset: 'assets/rank.png', x: 326, y: 69, width: 80, height: 35, z: 90 },
   friendBattle: { asset: 'assets/friendBattle.png', x: 312, y: 7, width: 108, height: 67, z: 100 },
@@ -72,7 +72,8 @@ const pickerMessage = document.querySelector('#picker-message');
 const pickerMore = document.querySelector('#picker-more');
 const pickerSearch = document.querySelector('#picker-search');
 const pickerFilter = document.querySelector('#picker-filter');
-const state = { files: {}, visible: {}, ratingValue: 15000, playerName: 'maimai', titleName: null, titleColor: 'Normal' };
+const TEMPLATE_STORAGE_KEY = 'maimai-diy-templates-v1';
+const state = { files: {}, visible: {}, labels: {}, ratingValue: 15000, playerName: 'maimai', titleName: null, titleColor: 'Normal' };
 let manifest;
 let titleManifest;
 let badgeManifest;
@@ -94,6 +95,7 @@ function resetState() {
   state.playerName = 'maimai';
   state.titleName = null;
   state.titleColor = 'Normal';
+  state.labels = {};
 }
 
 function ratingBand(value) {
@@ -131,16 +133,23 @@ function drawSpacedText(text, x, y, spacing, maxWidth, align = 'left', stroke = 
 }
 
 function drawRatingValue() {
-  const slot = slots.ratingDigits;
+  const digits = String(state.ratingValue).slice(-5);
+  const firstCellCenter = slots.ratingFrame.x + 90.5;
+  const cellWidth = 16.45;
+  const startCell = 5 - digits.length;
   ctx.save();
-  ctx.font = `700 18px ${DISPLAY_FONT}, sans-serif`;
-  ctx.textAlign = 'left';
+  ctx.font = `700 17px ${DISPLAY_FONT}, sans-serif`;
+  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
-  ctx.lineWidth = 2.5;
+  ctx.lineWidth = 2;
   ctx.strokeStyle = '#5f4700';
   ctx.fillStyle = '#ffe234';
-  drawSpacedText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1, .45, slot.width, 'right', true);
+  [...digits].forEach((digit, index) => {
+    const x = firstCellCenter + (startCell + index) * cellWidth;
+    ctx.strokeText(digit, x, slots.ratingDigits.y + slots.ratingDigits.height / 2 + 1);
+    ctx.fillText(digit, x, slots.ratingDigits.y + slots.ratingDigits.height / 2 + 1);
+  });
   ctx.restore();
 }
 
@@ -204,6 +213,15 @@ function inspectLocalImage(file) {
   });
 }
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('无法读取图片'));
+    reader.readAsDataURL(file);
+  });
+}
+
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -263,6 +281,8 @@ async function loadTitleManifest() {
 
 async function loadBadgeManifest() {
   badgeManifest ||= validateManifest(await fetchJson(COS.badgeManifestUrl));
+  const ranks = badgeManifest.categories.find((category) => category.id === 'ranks');
+  if (ranks) ranks.items = ranks.items.filter((item) => item.id !== 'ranks/11' && item.name !== '真段位');
   return badgeManifest;
 }
 
@@ -306,6 +326,7 @@ function appendPickerItems() {
       } else {
         state.files[control.target] = assetUrl(item);
       }
+      state.labels[control.id] = item.name;
       state.visible[control.target] = true;
       document.querySelector(`[data-control="${control.id}"] .control-file`).textContent = item.name;
       picker.close();
@@ -496,8 +517,10 @@ function buildControls() {
           return;
         }
         if (state.files.avatar?.startsWith('blob:')) URL.revokeObjectURL(state.files.avatar);
-        state.files.avatar = objectUrl;
+        state.files.avatar = await fileToDataUrl(file);
+        URL.revokeObjectURL(objectUrl);
         state.visible.avatar = true;
+        state.labels.avatar = `${file.name} · ${width} × ${height}`;
         fileLabel.textContent = `${file.name} · ${width} × ${height}`;
         await render();
       } catch (error) {
@@ -509,15 +532,96 @@ function buildControls() {
   });
 }
 
+function readTemplates() {
+  try {
+    const value = JSON.parse(localStorage.getItem(TEMPLATE_STORAGE_KEY) || '[]');
+    return Array.isArray(value) ? value : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function refreshTemplateList(selectedId = '') {
+  const list = document.querySelector('#template-list');
+  const templates = readTemplates();
+  list.replaceChildren();
+  if (!templates.length) list.add(new Option('暂无模板', ''));
+  templates.forEach((template) => list.add(new Option(template.name, template.id)));
+  if (selectedId) list.value = selectedId;
+}
+
+function syncControlsFromState() {
+  document.querySelector('.rating-input').value = String(state.ratingValue);
+  document.querySelector('.name-input').value = state.playerName;
+  controls.forEach((control) => {
+    const row = document.querySelector(`[data-control="${control.id}"]`);
+    const visible = control.slotIds.every((slotId) => state.visible[slotId] !== false);
+    row.querySelector('.visibility').checked = visible;
+    const fallback = control.id === 'avatar' ? '默认素材 · 上传限 1:1，最大 720 × 720' : '默认素材';
+    row.querySelector('.control-file').textContent = state.labels[control.id] || fallback;
+  });
+  const band = ratingBand(state.ratingValue);
+  document.querySelector('[data-control="rating"] .control-file').textContent = `${band.label}框 · ${state.ratingValue}`;
+  document.querySelector('[data-control="playerName"] .control-file').textContent = state.playerName || '未输入名称';
+}
+
+function saveTemplate() {
+  const nameInput = document.querySelector('#template-name');
+  const status = document.querySelector('#template-status');
+  const name = nameInput.value.trim();
+  if (!name) {
+    status.textContent = '请先输入模板名称。';
+    nameInput.focus();
+    return;
+  }
+  const templates = readTemplates();
+  const existing = templates.find((item) => item.name === name);
+  const template = {
+    id: existing?.id || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    name,
+    savedAt: new Date().toISOString(),
+    state: JSON.parse(JSON.stringify(state))
+  };
+  const next = existing ? templates.map((item) => item.id === existing.id ? template : item) : [...templates, template];
+  try {
+    localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(next));
+    refreshTemplateList(template.id);
+    status.textContent = existing ? `已更新“${name}”。` : `已保存“${name}”。`;
+  } catch (error) {
+    status.textContent = '保存失败：浏览器本地空间不足，请换用体积更小的头像。';
+  }
+}
+
+async function loadTemplate() {
+  const id = document.querySelector('#template-list').value;
+  const template = readTemplates().find((item) => item.id === id);
+  if (!template) return;
+  Object.assign(state, JSON.parse(JSON.stringify(template.state)));
+  applyRatingBand();
+  syncControlsFromState();
+  document.querySelector('#template-name').value = template.name;
+  document.querySelector('#template-status').textContent = `已载入“${template.name}”。`;
+  await render();
+}
+
+function deleteTemplate() {
+  const list = document.querySelector('#template-list');
+  const template = readTemplates().find((item) => item.id === list.value);
+  if (!template) return;
+  localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(readTemplates().filter((item) => item.id !== template.id)));
+  refreshTemplateList();
+  document.querySelector('#template-status').textContent = `已删除“${template.name}”。`;
+}
+
 document.querySelector('#reset').addEventListener('click', () => {
   resetState();
-  document.querySelectorAll('.visibility').forEach((input) => { input.checked = true; });
-  document.querySelectorAll('.control-file').forEach((item) => { item.textContent = '默认素材'; });
-  document.querySelector('[data-control="avatar"] .control-file').textContent = '默认素材 · 上传限 1:1，最大 720 × 720';
-  document.querySelector('.rating-input').value = '15000';
-  document.querySelector('.name-input').value = 'maimai';
+  syncControlsFromState();
   render();
 });
+
+document.querySelector('#template-save').addEventListener('click', saveTemplate);
+document.querySelector('#template-load').addEventListener('click', loadTemplate);
+document.querySelector('#template-delete').addEventListener('click', deleteTemplate);
 
 document.querySelector('#export').addEventListener('click', () => {
   try {
@@ -541,6 +645,7 @@ picker.addEventListener('click', (event) => {
 async function initialize() {
   resetState();
   buildControls();
+  refreshTemplateList();
   loading.hidden = false;
   try {
     const [data] = await Promise.all([
@@ -557,4 +662,3 @@ async function initialize() {
 }
 
 initialize();
-

@@ -274,13 +274,6 @@
           "group": "普通段位"
         },
         {
-          "id": "ranks/11",
-          "name": "真段位",
-          "file": "assets/ranks/11.png",
-          "local": true,
-          "group": "真段位"
-        },
-        {
           "id": "ranks/12",
           "name": "真初段",
           "file": "assets/ranks/12.png",
@@ -368,4 +361,3 @@
     }
   ]
 }
-
