@@ -1,4 +1,5 @@
 const CANVAS = { width: 1080, height: 452 };
+const DISPLAY_FONT = '"Morisawa UD Shin Go"';
 const COS = {
   baseUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com',
   manifestUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/manifest.json',
@@ -62,6 +63,8 @@ const pickerMore = document.querySelector('#picker-more');
 const state = { files: {}, visible: {}, ratingValue: 15000, playerName: 'maimai', titleName: null, titleColor: 'Normal' };
 let manifest;
 let titleManifest;
+let renderVersion = 0;
+const imageCache = new Map();
 let pickerState = { control: null, category: null, shown: 0 };
 
 function resetState() {
@@ -73,7 +76,6 @@ function resetState() {
   state.playerName = 'maimai';
   state.titleName = null;
   state.titleColor = 'Normal';
-  applyRatingBand();
 }
 
 function ratingBand(value) {
@@ -86,44 +88,66 @@ function applyRatingBand() {
   return band;
 }
 
+function textWidth(text, spacing) {
+  return [...text].reduce((width, char, index) => (
+    width + ctx.measureText(char).width + (index ? spacing : 0)
+  ), 0);
+}
+
+function drawSpacedText(text, x, y, spacing, maxWidth, align = 'left', stroke = false) {
+  const chars = [...text];
+  const naturalWidth = textWidth(text, spacing);
+  const scale = maxWidth && naturalWidth > maxWidth ? maxWidth / naturalWidth : 1;
+  const visualWidth = naturalWidth * scale;
+  let cursor = align === 'right' ? x - visualWidth : align === 'center' ? x - visualWidth / 2 : x;
+  ctx.save();
+  ctx.translate(cursor, y);
+  ctx.scale(scale, 1);
+  chars.forEach((char, index) => {
+    if (stroke) ctx.strokeText(char, 0, 0);
+    ctx.fillText(char, 0, 0);
+    cursor = ctx.measureText(char).width + (index < chars.length - 1 ? spacing : 0);
+    ctx.translate(cursor, 0);
+  });
+  ctx.restore();
+}
+
 function drawRatingValue() {
   const slot = slots.ratingDigits;
   ctx.save();
-  ctx.font = '900 18px Arial Narrow, Arial, sans-serif';
-  ctx.textAlign = 'right';
+  ctx.font = `700 18px ${DISPLAY_FONT}, sans-serif`;
+  ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
   ctx.lineWidth = 2.5;
   ctx.strokeStyle = '#5f4700';
   ctx.fillStyle = '#ffe234';
-  ctx.strokeText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1);
-  ctx.fillText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1);
+  drawSpacedText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1, .45, slot.width, 'right', true);
   ctx.restore();
 }
 
 function drawPlayerName() {
   const slot = slots.playerName;
   ctx.save();
-  ctx.font = '600 19px "Segoe UI", sans-serif';
+  ctx.font = `600 19px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#111318';
-  ctx.fillText(state.playerName || '', slot.x, slot.y + slot.height / 2, slots.nameBase.width - 18);
+  drawSpacedText(state.playerName || '', slot.x, slot.y + slot.height / 2, 1.15, slots.nameBase.width - 20);
   ctx.restore();
 }
 
 function drawTitleText() {
   const slot = slots.titleBase;
   ctx.save();
-  ctx.font = '700 14px "Segoe UI", sans-serif';
-  ctx.textAlign = 'center';
+  ctx.font = `700 14px ${DISPLAY_FONT}, sans-serif`;
+  ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
   ctx.lineWidth = 3;
   ctx.strokeStyle = '#302400';
   ctx.fillStyle = '#ffffff';
-  ctx.strokeText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2, slot.width - 18);
-  ctx.fillText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2, slot.width - 18);
+  drawSpacedText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2, .8, slot.width - 18, 'center', true);
   ctx.restore();
 }
 
@@ -134,13 +158,17 @@ function titleAsset(color) {
 }
 
 function loadImage(src) {
-  return new Promise((resolve, reject) => {
+  if (imageCache.has(src)) return imageCache.get(src);
+  const request = new Promise((resolve, reject) => {
     const image = new Image();
     if (/^https?:\/\//.test(src)) image.crossOrigin = 'anonymous';
     image.onload = () => resolve(image);
     image.onerror = reject;
     image.src = src;
   });
+  imageCache.set(src, request);
+  request.catch(() => imageCache.delete(src));
+  return request;
 }
 
 function wait(ms) {
@@ -275,29 +303,33 @@ async function openPicker(control) {
 }
 
 async function render() {
+  const version = ++renderVersion;
   loading.hidden = false;
-  ctx.clearRect(0, 0, CANVAS.width, CANVAS.height);
   const ordered = Object.entries(slots)
     .filter(([id]) => !['rank', 'friendBattle'].includes(id))
     .sort((a, b) => a[1].z - b[1].z);
   ordered.push(['rank', slots.rank]);
   ordered.push(['friendBattle', slots.friendBattle]);
+  const drawable = [];
   try {
     for (const [id, slot] of ordered) {
       if (!state.visible[id]) continue;
-      if (id === 'ratingDigits') {
-        drawRatingValue();
+      if (['ratingDigits', 'playerName'].includes(id) || (id === 'titleText' && state.titleName)) {
+        drawable.push({ id, slot });
         continue;
       }
-      if (id === 'playerName') {
-        drawPlayerName();
-        continue;
+      try {
+        drawable.push({ id, slot, image: await loadImage(state.files[id]) });
+      } catch (error) {
+        console.warn(`素材加载失败：${state.files[id]}`, error);
       }
-      if (id === 'titleText' && state.titleName) {
-        drawTitleText();
-        continue;
-      }
-      const image = await loadImage(state.files[id]);
+    }
+    if (version !== renderVersion) return;
+    ctx.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    for (const { id, slot, image } of drawable) {
+      if (id === 'ratingDigits') { drawRatingValue(); continue; }
+      if (id === 'playerName') { drawPlayerName(); continue; }
+      if (id === 'titleText' && state.titleName) { drawTitleText(); continue; }
       if (id === 'titleBase' && state.titleColor === 'Bronze') {
         ctx.save();
         ctx.filter = 'sepia(1) saturate(1.25) brightness(.78)';
@@ -308,7 +340,7 @@ async function render() {
       }
     }
   } finally {
-    loading.hidden = true;
+    if (version === renderVersion) loading.hidden = true;
   }
 }
 
@@ -402,13 +434,23 @@ picker.addEventListener('click', (event) => {
   if (event.target === picker) picker.close();
 });
 
-resetState();
-buildControls();
-render();
-loadManifest()
-  .then((data) => {
+async function initialize() {
+  resetState();
+  buildControls();
+  loading.hidden = false;
+  try {
+    const [data] = await Promise.all([
+      loadManifest(),
+      document.fonts.load(`18px ${DISPLAY_FONT}`)
+    ]);
     manifest = data;
     setAssetStatus('is-online', `云端素材已连接 · ${data.summary?.items ?? 0} 项`);
-  })
-  .catch(() => setAssetStatus('is-offline', '本地素材模式'));
+  } catch (error) {
+    setAssetStatus('is-offline', '本地素材模式');
+  }
+  await Promise.allSettled(Object.values(state.files).map(loadImage));
+  await render();
+}
+
+initialize();
 
