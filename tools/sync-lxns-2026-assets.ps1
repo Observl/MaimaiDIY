@@ -42,7 +42,7 @@ foreach ($config in $collections) {
     $newItem = [ordered]@{
       id = "$($config.Category)/$($config.Prefix)$($item.id)"
       name = $item.name
-      file = $relative
+      file = "assets/$relative"
       source = $relative
       width = $config.Width
       height = $config.Height
@@ -52,6 +52,7 @@ foreach ($config in $collections) {
       group = "2026 · $($item.genre)"
       description = $item.description
       releaseDate = $item.release_date
+      local = $true
     }
     $category.items += [pscustomobject]$newItem
     $existing[[string]$item.id] = $true

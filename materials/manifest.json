@@ -15585,7 +15585,7 @@
         {
           "id": "avatars/UI_Icon_550101",
           "name": "ソルト（ぷりずむ）",
-          "file": "avatars/UI_Icon_550101.png",
+          "file": "assets/avatars/UI_Icon_550101.png",
           "source": "avatars/UI_Icon_550101.png",
           "width": 128,
           "height": 128,
@@ -15594,12 +15594,13 @@
           "genre": "なないろちほー",
           "group": "2026 · なないろちほー",
           "description": "ソルト（ぷりずむ）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550102",
           "name": "みるく（ぷりずむ）",
-          "file": "avatars/UI_Icon_550102.png",
+          "file": "assets/avatars/UI_Icon_550102.png",
           "source": "avatars/UI_Icon_550102.png",
           "width": 128,
           "height": 128,
@@ -15608,12 +15609,13 @@
           "genre": "なないろちほー",
           "group": "2026 · なないろちほー",
           "description": "みるく（ぷりずむ）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550103",
           "name": "しゃま（ウタヒメナイトストーム）",
-          "file": "avatars/UI_Icon_550103.png",
+          "file": "assets/avatars/UI_Icon_550103.png",
           "source": "avatars/UI_Icon_550103.png",
           "width": 128,
           "height": 128,
@@ -15622,12 +15624,13 @@
           "genre": "なないろちほー",
           "group": "2026 · なないろちほー",
           "description": "しゃま（ウタヒメナイトストーム）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550104",
           "name": "みるく（ウタヒメナイトストーム）",
-          "file": "avatars/UI_Icon_550104.png",
+          "file": "assets/avatars/UI_Icon_550104.png",
           "source": "avatars/UI_Icon_550104.png",
           "width": 128,
           "height": 128,
@@ -15636,12 +15639,13 @@
           "genre": "なないろちほー",
           "group": "2026 · なないろちほー",
           "description": "みるく（ウタヒメナイトストーム）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550105",
           "name": "ソルト（ぷりずむぷらす）",
-          "file": "avatars/UI_Icon_550105.png",
+          "file": "assets/avatars/UI_Icon_550105.png",
           "source": "avatars/UI_Icon_550105.png",
           "width": 128,
           "height": 128,
@@ -15650,12 +15654,13 @@
           "genre": "なないろちほー",
           "group": "2026 · なないろちほー",
           "description": "ソルト（ぷりずむぷらす）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550106",
           "name": "みるく（ぷりずむぷらす）",
-          "file": "avatars/UI_Icon_550106.png",
+          "file": "assets/avatars/UI_Icon_550106.png",
           "source": "avatars/UI_Icon_550106.png",
           "width": 128,
           "height": 128,
@@ -15664,12 +15669,13 @@
           "genre": "なないろちほー",
           "group": "2026 · なないろちほー",
           "description": "みるく（ぷりずむぷらす）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550201",
           "name": "シグルズ",
-          "file": "avatars/UI_Icon_550201.png",
+          "file": "assets/avatars/UI_Icon_550201.png",
           "source": "avatars/UI_Icon_550201.png",
           "width": 128,
           "height": 128,
@@ -15678,12 +15684,13 @@
           "genre": "ドラゴンちほー4",
           "group": "2026 · ドラゴンちほー4",
           "description": "シグルズを1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550202",
           "name": "ブリュレ",
-          "file": "avatars/UI_Icon_550202.png",
+          "file": "assets/avatars/UI_Icon_550202.png",
           "source": "avatars/UI_Icon_550202.png",
           "width": 128,
           "height": 128,
@@ -15692,12 +15699,13 @@
           "genre": "ドラゴンちほー4",
           "group": "2026 · ドラゴンちほー4",
           "description": "ブリュレを1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550203",
           "name": "カラメル",
-          "file": "avatars/UI_Icon_550203.png",
+          "file": "assets/avatars/UI_Icon_550203.png",
           "source": "avatars/UI_Icon_550203.png",
           "width": 128,
           "height": 128,
@@ -15706,12 +15714,13 @@
           "genre": "ドラゴンちほー4",
           "group": "2026 · ドラゴンちほー4",
           "description": "カラメルを1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550204",
           "name": "ドラゴンの王",
-          "file": "avatars/UI_Icon_550204.png",
+          "file": "assets/avatars/UI_Icon_550204.png",
           "source": "avatars/UI_Icon_550204.png",
           "width": 128,
           "height": 128,
@@ -15720,12 +15729,13 @@
           "genre": "ドラゴンちほー4",
           "group": "2026 · ドラゴンちほー4",
           "description": "ドラゴンの王を1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550301",
           "name": "W?K?Y?",
-          "file": "avatars/UI_Icon_550301.png",
+          "file": "assets/avatars/UI_Icon_550301.png",
           "source": "avatars/UI_Icon_550301.png",
           "width": 128,
           "height": 128,
@@ -15734,12 +15744,13 @@
           "genre": "7sRefちほー4",
           "group": "2026 · 7sRefちほー4",
           "description": "W?K?Y?を1回覚醒",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550302",
           "name": "ロートスカラ",
-          "file": "avatars/UI_Icon_550302.png",
+          "file": "assets/avatars/UI_Icon_550302.png",
           "source": "avatars/UI_Icon_550302.png",
           "width": 128,
           "height": 128,
@@ -15748,12 +15759,13 @@
           "genre": "7sRefちほー4",
           "group": "2026 · 7sRefちほー4",
           "description": "ロートスカラを1回覚醒",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_550303",
           "name": "アシッド",
-          "file": "avatars/UI_Icon_550303.png",
+          "file": "assets/avatars/UI_Icon_550303.png",
           "source": "avatars/UI_Icon_550303.png",
           "width": 128,
           "height": 128,
@@ -15762,12 +15774,13 @@
           "genre": "7sRefちほー4",
           "group": "2026 · 7sRefちほー4",
           "description": "アシッドを1回覚醒",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555101",
           "name": "超てんちゃん（てんしのたからばこ）",
-          "file": "avatars/UI_Icon_555101.png",
+          "file": "assets/avatars/UI_Icon_555101.png",
           "source": "avatars/UI_Icon_555101.png",
           "width": 128,
           "height": 128,
@@ -15776,12 +15789,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "超てんちゃん（てんしのたからばこ）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555102",
           "name": "あめちゃん（てんしのたからばこ）",
-          "file": "avatars/UI_Icon_555102.png",
+          "file": "assets/avatars/UI_Icon_555102.png",
           "source": "avatars/UI_Icon_555102.png",
           "width": 128,
           "height": 128,
@@ -15790,12 +15804,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "あめちゃん（てんしのたからばこ）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555103",
           "name": "超てんちゃん（私服）",
-          "file": "avatars/UI_Icon_555103.png",
+          "file": "assets/avatars/UI_Icon_555103.png",
           "source": "avatars/UI_Icon_555103.png",
           "width": 128,
           "height": 128,
@@ -15804,12 +15819,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "超てんちゃん（私服）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555104",
           "name": "超てんちゃん（浴衣）",
-          "file": "avatars/UI_Icon_555104.png",
+          "file": "assets/avatars/UI_Icon_555104.png",
           "source": "avatars/UI_Icon_555104.png",
           "width": 128,
           "height": 128,
@@ -15818,12 +15834,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "超てんちゃん（浴衣）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555105",
           "name": "超てんちゃん（きゅびずむ）",
-          "file": "avatars/UI_Icon_555105.png",
+          "file": "assets/avatars/UI_Icon_555105.png",
           "source": "avatars/UI_Icon_555105.png",
           "width": 128,
           "height": 128,
@@ -15832,12 +15849,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "超てんちゃん（きゅびずむ）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555106",
           "name": "ぴえん猫",
-          "file": "avatars/UI_Icon_555106.png",
+          "file": "assets/avatars/UI_Icon_555106.png",
           "source": "avatars/UI_Icon_555106.png",
           "width": 128,
           "height": 128,
@@ -15846,12 +15864,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "ぴえん猫を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555107",
           "name": "パペット超てんちゃん",
-          "file": "avatars/UI_Icon_555107.png",
+          "file": "assets/avatars/UI_Icon_555107.png",
           "source": "avatars/UI_Icon_555107.png",
           "width": 128,
           "height": 128,
@@ -15860,12 +15879,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "パペット超てんちゃんを1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555108",
           "name": "超てんちゃん（NEEDY GIRL OVERDOSE）",
-          "file": "avatars/UI_Icon_555108.png",
+          "file": "assets/avatars/UI_Icon_555108.png",
           "source": "avatars/UI_Icon_555108.png",
           "width": 128,
           "height": 128,
@@ -15874,12 +15894,13 @@
           "genre": "NEEDY GIRL OVERDOSEちほー2",
           "group": "2026 · NEEDY GIRL OVERDOSEちほー2",
           "description": "超てんちゃん（NEEDY GIRL OVERDOSE）を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555201",
           "name": "可不",
-          "file": "avatars/UI_Icon_555201.png",
+          "file": "assets/avatars/UI_Icon_555201.png",
           "source": "avatars/UI_Icon_555201.png",
           "width": 128,
           "height": 128,
@@ -15888,12 +15909,13 @@
           "genre": "神椿市協奏中。ちほー",
           "group": "2026 · 神椿市協奏中。ちほー",
           "description": "可不を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555202",
           "name": "星界",
-          "file": "avatars/UI_Icon_555202.png",
+          "file": "assets/avatars/UI_Icon_555202.png",
           "source": "avatars/UI_Icon_555202.png",
           "width": 128,
           "height": 128,
@@ -15902,12 +15924,13 @@
           "genre": "神椿市協奏中。ちほー",
           "group": "2026 · 神椿市協奏中。ちほー",
           "description": "星界を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555203",
           "name": "裏命",
-          "file": "avatars/UI_Icon_555203.png",
+          "file": "assets/avatars/UI_Icon_555203.png",
           "source": "avatars/UI_Icon_555203.png",
           "width": 128,
           "height": 128,
@@ -15916,12 +15939,13 @@
           "genre": "神椿市協奏中。ちほー",
           "group": "2026 · 神椿市協奏中。ちほー",
           "description": "裏命を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555204",
           "name": "狐子",
-          "file": "avatars/UI_Icon_555204.png",
+          "file": "assets/avatars/UI_Icon_555204.png",
           "source": "avatars/UI_Icon_555204.png",
           "width": 128,
           "height": 128,
@@ -15930,12 +15954,13 @@
           "genre": "神椿市協奏中。ちほー",
           "group": "2026 · 神椿市協奏中。ちほー",
           "description": "狐子を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555205",
           "name": "羽累",
-          "file": "avatars/UI_Icon_555205.png",
+          "file": "assets/avatars/UI_Icon_555205.png",
           "source": "avatars/UI_Icon_555205.png",
           "width": 128,
           "height": 128,
@@ -15944,12 +15969,13 @@
           "genre": "神椿市協奏中。ちほー",
           "group": "2026 · 神椿市協奏中。ちほー",
           "description": "羽累を1回覚醒",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555401",
           "name": "ポリー",
-          "file": "avatars/UI_Icon_555401.png",
+          "file": "assets/avatars/UI_Icon_555401.png",
           "source": "avatars/UI_Icon_555401.png",
           "width": 128,
           "height": 128,
@@ -15958,12 +15984,13 @@
           "genre": "那須どうぶつ王国ちほー",
           "group": "2026 · 那須どうぶつ王国ちほー",
           "description": "ポリーを1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555402",
           "name": "ボル",
-          "file": "avatars/UI_Icon_555402.png",
+          "file": "assets/avatars/UI_Icon_555402.png",
           "source": "avatars/UI_Icon_555402.png",
           "width": 128,
           "height": 128,
@@ -15972,12 +15999,13 @@
           "genre": "那須どうぶつ王国ちほー",
           "group": "2026 · 那須どうぶつ王国ちほー",
           "description": "ボルを1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555403",
           "name": "ポリー（あくび）",
-          "file": "avatars/UI_Icon_555403.png",
+          "file": "assets/avatars/UI_Icon_555403.png",
           "source": "avatars/UI_Icon_555403.png",
           "width": 128,
           "height": 128,
@@ -15986,12 +16014,13 @@
           "genre": "那須どうぶつ王国ちほー",
           "group": "2026 · 那須どうぶつ王国ちほー",
           "description": "ポリー（あくび）を1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555404",
           "name": "顔のパーツが中心に寄っているポリー",
-          "file": "avatars/UI_Icon_555404.png",
+          "file": "assets/avatars/UI_Icon_555404.png",
           "source": "avatars/UI_Icon_555404.png",
           "width": 128,
           "height": 128,
@@ -16000,12 +16029,13 @@
           "genre": "那須どうぶつ王国ちほー",
           "group": "2026 · 那須どうぶつ王国ちほー",
           "description": "顔のパーツが中心に寄っているポリーを1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555405",
           "name": "スナネコ",
-          "file": "avatars/UI_Icon_555405.png",
+          "file": "assets/avatars/UI_Icon_555405.png",
           "source": "avatars/UI_Icon_555405.png",
           "width": 128,
           "height": 128,
@@ -16014,12 +16044,13 @@
           "genre": "那須どうぶつ王国ちほー",
           "group": "2026 · 那須どうぶつ王国ちほー",
           "description": "スナネコを1回覚醒",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555501",
           "name": "初音ミク（あいたい星人）",
-          "file": "avatars/UI_Icon_555501.png",
+          "file": "assets/avatars/UI_Icon_555501.png",
           "source": "avatars/UI_Icon_555501.png",
           "width": 128,
           "height": 128,
@@ -16028,12 +16059,13 @@
           "genre": "DECO*27ちほー2",
           "group": "2026 · DECO*27ちほー2",
           "description": "初音ミク（あいたい星人）を1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555502",
           "name": "初音ミク（ラビットホール）",
-          "file": "avatars/UI_Icon_555502.png",
+          "file": "assets/avatars/UI_Icon_555502.png",
           "source": "avatars/UI_Icon_555502.png",
           "width": 128,
           "height": 128,
@@ -16042,12 +16074,13 @@
           "genre": "DECO*27ちほー2",
           "group": "2026 · DECO*27ちほー2",
           "description": "初音ミク（ラビットホール）を1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555503",
           "name": "初音ミク（デビルじゃないもん・黒天使）",
-          "file": "avatars/UI_Icon_555503.png",
+          "file": "assets/avatars/UI_Icon_555503.png",
           "source": "avatars/UI_Icon_555503.png",
           "width": 128,
           "height": 128,
@@ -16056,12 +16089,13 @@
           "genre": "DECO*27ちほー2",
           "group": "2026 · DECO*27ちほー2",
           "description": "初音ミク（デビルじゃないもん・黒天使）を1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555504",
           "name": "初音ミク（ハオ）",
-          "file": "avatars/UI_Icon_555504.png",
+          "file": "assets/avatars/UI_Icon_555504.png",
           "source": "avatars/UI_Icon_555504.png",
           "width": 128,
           "height": 128,
@@ -16070,12 +16104,13 @@
           "genre": "DECO*27ちほー2",
           "group": "2026 · DECO*27ちほー2",
           "description": "初音ミク（ハオ）を1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555601",
           "name": "ビートまりお",
-          "file": "avatars/UI_Icon_555601.png",
+          "file": "assets/avatars/UI_Icon_555601.png",
           "source": "avatars/UI_Icon_555601.png",
           "width": 128,
           "height": 128,
@@ -16084,12 +16119,13 @@
           "genre": "ビートまりおちほー",
           "group": "2026 · ビートまりおちほー",
           "description": "ビートまりおを1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555602",
           "name": "八意永琳",
-          "file": "avatars/UI_Icon_555602.png",
+          "file": "assets/avatars/UI_Icon_555602.png",
           "source": "avatars/UI_Icon_555602.png",
           "width": 128,
           "height": 128,
@@ -16098,12 +16134,13 @@
           "genre": "ビートまりおちほー",
           "group": "2026 · ビートまりおちほー",
           "description": "八意永琳を1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555603",
           "name": "因幡てゐ",
-          "file": "avatars/UI_Icon_555603.png",
+          "file": "assets/avatars/UI_Icon_555603.png",
           "source": "avatars/UI_Icon_555603.png",
           "width": 128,
           "height": 128,
@@ -16112,12 +16149,13 @@
           "genre": "ビートまりおちほー",
           "group": "2026 · ビートまりおちほー",
           "description": "因幡てゐを1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555604",
           "name": "藤原妹紅",
-          "file": "avatars/UI_Icon_555604.png",
+          "file": "assets/avatars/UI_Icon_555604.png",
           "source": "avatars/UI_Icon_555604.png",
           "width": 128,
           "height": 128,
@@ -16126,12 +16164,13 @@
           "genre": "ビートまりおちほー",
           "group": "2026 · ビートまりおちほー",
           "description": "藤原妹紅を1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555605",
           "name": "蓬莱山輝夜",
-          "file": "avatars/UI_Icon_555605.png",
+          "file": "assets/avatars/UI_Icon_555605.png",
           "source": "avatars/UI_Icon_555605.png",
           "width": 128,
           "height": 128,
@@ -16140,12 +16179,13 @@
           "genre": "ビートまりおちほー",
           "group": "2026 · ビートまりおちほー",
           "description": "蓬莱山輝夜を1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555606",
           "name": "鈴仙・優曇華院・イナバ",
-          "file": "avatars/UI_Icon_555606.png",
+          "file": "assets/avatars/UI_Icon_555606.png",
           "source": "avatars/UI_Icon_555606.png",
           "width": 128,
           "height": 128,
@@ -16154,12 +16194,13 @@
           "genre": "ビートまりおちほー",
           "group": "2026 · ビートまりおちほー",
           "description": "鈴仙・優曇華院・イナバを1回覚醒",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555801",
           "name": "エル・リベルテ",
-          "file": "avatars/UI_Icon_555801.png",
+          "file": "assets/avatars/UI_Icon_555801.png",
           "source": "avatars/UI_Icon_555801.png",
           "width": 128,
           "height": 128,
@@ -16168,12 +16209,13 @@
           "genre": "CHUNITHMちほー4",
           "group": "2026 · CHUNITHMちほー4",
           "description": "エル・リベルテを1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555802",
           "name": "スザク",
-          "file": "avatars/UI_Icon_555802.png",
+          "file": "assets/avatars/UI_Icon_555802.png",
           "source": "avatars/UI_Icon_555802.png",
           "width": 128,
           "height": 128,
@@ -16182,12 +16224,13 @@
           "genre": "CHUNITHMちほー4",
           "group": "2026 · CHUNITHMちほー4",
           "description": "スザクを1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555803",
           "name": "暁 凶香",
-          "file": "avatars/UI_Icon_555803.png",
+          "file": "assets/avatars/UI_Icon_555803.png",
           "source": "avatars/UI_Icon_555803.png",
           "width": 128,
           "height": 128,
@@ -16196,12 +16239,13 @@
           "genre": "CHUNITHMちほー4",
           "group": "2026 · CHUNITHMちほー4",
           "description": "暁 凶香を1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555804",
           "name": "マゼラン・マゼラン／ラブリーハンター",
-          "file": "avatars/UI_Icon_555804.png",
+          "file": "assets/avatars/UI_Icon_555804.png",
           "source": "avatars/UI_Icon_555804.png",
           "width": 128,
           "height": 128,
@@ -16210,12 +16254,13 @@
           "genre": "CHUNITHMちほー4",
           "group": "2026 · CHUNITHMちほー4",
           "description": "マゼラン・マゼラン／ラブリーハンターを1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555805",
           "name": "渋沢 ノノ",
-          "file": "avatars/UI_Icon_555805.png",
+          "file": "assets/avatars/UI_Icon_555805.png",
           "source": "avatars/UI_Icon_555805.png",
           "width": 128,
           "height": 128,
@@ -16224,12 +16269,13 @@
           "genre": "CHUNITHMちほー4",
           "group": "2026 · CHUNITHMちほー4",
           "description": "渋沢 ノノを1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555806",
           "name": "MIR-201【ヘカティ・ベアトリクス】",
-          "file": "avatars/UI_Icon_555806.png",
+          "file": "assets/avatars/UI_Icon_555806.png",
           "source": "avatars/UI_Icon_555806.png",
           "width": 128,
           "height": 128,
@@ -16238,12 +16284,13 @@
           "genre": "CHUNITHMちほー4",
           "group": "2026 · CHUNITHMちほー4",
           "description": "MIR-201【ヘカティ・ベアトリクス】を1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555901",
           "name": "三枝明那",
-          "file": "avatars/UI_Icon_555901.png",
+          "file": "assets/avatars/UI_Icon_555901.png",
           "source": "avatars/UI_Icon_555901.png",
           "width": 128,
           "height": 128,
@@ -16252,12 +16299,13 @@
           "genre": "三枝明那ちほー",
           "group": "2026 · 三枝明那ちほー",
           "description": "三枝明那を1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555902",
           "name": "三枝明那（うぇいびー）",
-          "file": "avatars/UI_Icon_555902.png",
+          "file": "assets/avatars/UI_Icon_555902.png",
           "source": "avatars/UI_Icon_555902.png",
           "width": 128,
           "height": 128,
@@ -16266,12 +16314,13 @@
           "genre": "三枝明那ちほー",
           "group": "2026 · 三枝明那ちほー",
           "description": "三枝明那（うぇいびー）を1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555903",
           "name": "三枝明那（UniVerse/A）",
-          "file": "avatars/UI_Icon_555903.png",
+          "file": "assets/avatars/UI_Icon_555903.png",
           "source": "avatars/UI_Icon_555903.png",
           "width": 128,
           "height": 128,
@@ -16280,12 +16329,13 @@
           "genre": "三枝明那ちほー",
           "group": "2026 · 三枝明那ちほー",
           "description": "三枝明那（UniVerse/A）を1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_555904",
           "name": "三枝明那（UniVerse/B）",
-          "file": "avatars/UI_Icon_555904.png",
+          "file": "assets/avatars/UI_Icon_555904.png",
           "source": "avatars/UI_Icon_555904.png",
           "width": 128,
           "height": 128,
@@ -16294,12 +16344,13 @@
           "genre": "三枝明那ちほー",
           "group": "2026 · 三枝明那ちほー",
           "description": "三枝明那（UniVerse/B）を1回覚醒",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_558032",
           "name": "♡みるく（ぷりずむ）♡",
-          "file": "avatars/UI_Icon_558032.png",
+          "file": "assets/avatars/UI_Icon_558032.png",
           "source": "avatars/UI_Icon_558032.png",
           "width": 128,
           "height": 128,
@@ -16308,12 +16359,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "みるく（ぷりずむ）の親密度が10に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_558034",
           "name": "♡リズ♡",
-          "file": "avatars/UI_Icon_558034.png",
+          "file": "assets/avatars/UI_Icon_558034.png",
           "source": "avatars/UI_Icon_558034.png",
           "width": 128,
           "height": 128,
@@ -16322,12 +16374,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "リズの親密度が10に到達",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559501",
           "name": "KALEIDXSCOPE -はじまりエリア-",
-          "file": "avatars/UI_Icon_559501.png",
+          "file": "assets/avatars/UI_Icon_559501.png",
           "source": "avatars/UI_Icon_559501.png",
           "width": 128,
           "height": 128,
@@ -16336,12 +16389,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "黄の扉をクリア",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559502",
           "name": "KALEIDXSCOPE -世界樹エリア-",
-          "file": "avatars/UI_Icon_559502.png",
+          "file": "assets/avatars/UI_Icon_559502.png",
           "source": "avatars/UI_Icon_559502.png",
           "width": 128,
           "height": 128,
@@ -16350,12 +16404,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "赤の扉をクリア",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559503",
           "name": "KALEIDXSCOPE -プリズムエリア-",
-          "file": "avatars/UI_Icon_559503.png",
+          "file": "assets/avatars/UI_Icon_559503.png",
           "source": "avatars/UI_Icon_559503.png",
           "width": 128,
           "height": 128,
@@ -16364,12 +16419,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "プリズムタワーをクリア",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559504",
           "name": "KALEIDXSCOPE -旧き世界-",
-          "file": "avatars/UI_Icon_559504.png",
+          "file": "assets/avatars/UI_Icon_559504.png",
           "source": "avatars/UI_Icon_559504.png",
           "width": 128,
           "height": 128,
@@ -16378,12 +16434,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "希望の扉をクリア",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559505",
           "name": "KALEIDXSCOPE -PRiSM-",
-          "file": "avatars/UI_Icon_559505.png",
+          "file": "assets/avatars/UI_Icon_559505.png",
           "source": "avatars/UI_Icon_559505.png",
           "width": 128,
           "height": 128,
@@ -16392,12 +16449,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "KALEIDXSCOPEモードをクリア",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559506",
           "name": "閉ざされた青の扉",
-          "file": "avatars/UI_Icon_559506.png",
+          "file": "assets/avatars/UI_Icon_559506.png",
           "source": "avatars/UI_Icon_559506.png",
           "width": 128,
           "height": 128,
@@ -16406,12 +16464,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559507",
           "name": "閉ざされた白の扉",
-          "file": "avatars/UI_Icon_559507.png",
+          "file": "assets/avatars/UI_Icon_559507.png",
           "source": "avatars/UI_Icon_559507.png",
           "width": 128,
           "height": 128,
@@ -16420,12 +16479,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559508",
           "name": "閉ざされた紫の扉",
-          "file": "avatars/UI_Icon_559508.png",
+          "file": "assets/avatars/UI_Icon_559508.png",
           "source": "avatars/UI_Icon_559508.png",
           "width": 128,
           "height": 128,
@@ -16434,12 +16494,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559509",
           "name": "閉ざされた黒の扉",
-          "file": "avatars/UI_Icon_559509.png",
+          "file": "assets/avatars/UI_Icon_559509.png",
           "source": "avatars/UI_Icon_559509.png",
           "width": 128,
           "height": 128,
@@ -16448,12 +16509,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559510",
           "name": "閉ざされた黄の扉",
-          "file": "avatars/UI_Icon_559510.png",
+          "file": "assets/avatars/UI_Icon_559510.png",
           "source": "avatars/UI_Icon_559510.png",
           "width": 128,
           "height": 128,
@@ -16462,12 +16524,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_559511",
           "name": "閉ざされた赤の扉",
-          "file": "avatars/UI_Icon_559511.png",
+          "file": "assets/avatars/UI_Icon_559511.png",
           "source": "avatars/UI_Icon_559511.png",
           "width": 128,
           "height": 128,
@@ -16476,12 +16539,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_605901",
           "name": "アルカイド",
-          "file": "avatars/UI_Icon_605901.png",
+          "file": "assets/avatars/UI_Icon_605901.png",
           "source": "avatars/UI_Icon_605901.png",
           "width": 128,
           "height": 128,
@@ -16490,12 +16554,13 @@
           "genre": "Paradigm: Rebootちほー",
           "group": "2026 · Paradigm: Rebootちほー",
           "description": "アルカイドを1回覚醒",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_605902",
           "name": "パラ",
-          "file": "avatars/UI_Icon_605902.png",
+          "file": "assets/avatars/UI_Icon_605902.png",
           "source": "avatars/UI_Icon_605902.png",
           "width": 128,
           "height": 128,
@@ -16504,12 +16569,13 @@
           "genre": "Paradigm: Rebootちほー",
           "group": "2026 · Paradigm: Rebootちほー",
           "description": "パラを1回覚醒",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_605903",
           "name": "ユン",
-          "file": "avatars/UI_Icon_605903.png",
+          "file": "assets/avatars/UI_Icon_605903.png",
           "source": "avatars/UI_Icon_605903.png",
           "width": 128,
           "height": 128,
@@ -16518,12 +16584,13 @@
           "genre": "Paradigm: Rebootちほー",
           "group": "2026 · Paradigm: Rebootちほー",
           "description": "ユンを1回覚醒",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_605904",
           "name": "リン",
-          "file": "avatars/UI_Icon_605904.png",
+          "file": "assets/avatars/UI_Icon_605904.png",
           "source": "avatars/UI_Icon_605904.png",
           "width": 128,
           "height": 128,
@@ -16532,12 +16599,13 @@
           "genre": "Paradigm: Rebootちほー",
           "group": "2026 · Paradigm: Rebootちほー",
           "description": "リンを1回覚醒",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "avatars/UI_Icon_605905",
           "name": "ログ",
-          "file": "avatars/UI_Icon_605905.png",
+          "file": "assets/avatars/UI_Icon_605905.png",
           "source": "avatars/UI_Icon_605905.png",
           "width": 128,
           "height": 128,
@@ -16546,7 +16614,8 @@
           "genre": "Paradigm: Rebootちほー",
           "group": "2026 · Paradigm: Rebootちほー",
           "description": "ログを1回覚醒",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         }
       ]
     },
@@ -20214,7 +20283,7 @@
         {
           "id": "backgrounds/UI_Frame_500101",
           "name": "スカイストリートちほー6",
-          "file": "backgrounds/UI_Frame_500101.png",
+          "file": "assets/backgrounds/UI_Frame_500101.png",
           "source": "backgrounds/UI_Frame_500101.png",
           "width": 1080,
           "height": 452,
@@ -20223,12 +20292,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "スカイストリートちほー6で獲得",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500102",
           "name": "KALEIDXSCOPE -青春エリア-",
-          "file": "backgrounds/UI_Frame_500102.png",
+          "file": "assets/backgrounds/UI_Frame_500102.png",
           "source": "backgrounds/UI_Frame_500102.png",
           "width": 1080,
           "height": 452,
@@ -20237,12 +20307,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "果ての空、僕らが見た光。[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500201",
           "name": "天界ちほー8",
-          "file": "backgrounds/UI_Frame_500201.png",
+          "file": "assets/backgrounds/UI_Frame_500201.png",
           "source": "backgrounds/UI_Frame_500201.png",
           "width": 1080,
           "height": 452,
@@ -20251,12 +20322,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "天界ちほー8で獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500202",
           "name": "KALEIDXSCOPE -神様エリア-",
-          "file": "backgrounds/UI_Frame_500202.png",
+          "file": "assets/backgrounds/UI_Frame_500202.png",
           "source": "backgrounds/UI_Frame_500202.png",
           "width": 1080,
           "height": 452,
@@ -20265,12 +20337,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "氷滅の135小節[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500301",
           "name": "BLACK ROSEちほー10",
-          "file": "backgrounds/UI_Frame_500301.png",
+          "file": "assets/backgrounds/UI_Frame_500301.png",
           "source": "backgrounds/UI_Frame_500301.png",
           "width": 1080,
           "height": 452,
@@ -20279,12 +20352,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "BLACK ROSEちほー10で獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500302",
           "name": "KALEIDXSCOPE -黒薔薇エリア-",
-          "file": "backgrounds/UI_Frame_500302.png",
+          "file": "assets/backgrounds/UI_Frame_500302.png",
           "source": "backgrounds/UI_Frame_500302.png",
           "width": 1080,
           "height": 452,
@@ -20293,12 +20367,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "有明/Ariake[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500401",
           "name": "メトロポリスちほー9",
-          "file": "backgrounds/UI_Frame_500401.png",
+          "file": "assets/backgrounds/UI_Frame_500401.png",
           "source": "backgrounds/UI_Frame_500401.png",
           "width": 1080,
           "height": 452,
@@ -20307,12 +20382,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "メトロポリスちほー9で獲得",
-          "releaseDate": "2026-04-28"
+          "releaseDate": "2026-04-28",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500402",
           "name": "KALEIDXSCOPE -終末エリア-",
-          "file": "backgrounds/UI_Frame_500402.png",
+          "file": "assets/backgrounds/UI_Frame_500402.png",
           "source": "backgrounds/UI_Frame_500402.png",
           "width": 1080,
           "height": 452,
@@ -20321,12 +20397,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "宙天[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-04-28"
+          "releaseDate": "2026-04-28",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_500501",
           "name": "プリズムちほー",
-          "file": "backgrounds/UI_Frame_500501.png",
+          "file": "assets/backgrounds/UI_Frame_500501.png",
           "source": "backgrounds/UI_Frame_500501.png",
           "width": 1080,
           "height": 452,
@@ -20335,12 +20412,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "プリズムちほーで獲得",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505201",
           "name": "かいりきベアちほー2 その1",
-          "file": "backgrounds/UI_Frame_505201.png",
+          "file": "assets/backgrounds/UI_Frame_505201.png",
           "source": "backgrounds/UI_Frame_505201.png",
           "width": 1080,
           "height": 452,
@@ -20349,12 +20427,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "かいりきベアちほー2で獲得",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505202",
           "name": "かいりきベアちほー2 その2",
-          "file": "backgrounds/UI_Frame_505202.png",
+          "file": "assets/backgrounds/UI_Frame_505202.png",
           "source": "backgrounds/UI_Frame_505202.png",
           "width": 1080,
           "height": 452,
@@ -20363,12 +20442,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "かいりきベアちほー2で獲得",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505301",
           "name": "MonsterZ MATEちほー その1",
-          "file": "backgrounds/UI_Frame_505301.png",
+          "file": "assets/backgrounds/UI_Frame_505301.png",
           "source": "backgrounds/UI_Frame_505301.png",
           "width": 1080,
           "height": 452,
@@ -20377,12 +20457,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "MonsterZ MATEちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505302",
           "name": "MonsterZ MATEちほー その2",
-          "file": "backgrounds/UI_Frame_505302.png",
+          "file": "assets/backgrounds/UI_Frame_505302.png",
           "source": "backgrounds/UI_Frame_505302.png",
           "width": 1080,
           "height": 452,
@@ -20391,12 +20472,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "MonsterZ MATEちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505401",
           "name": "おめがシスターズちほー",
-          "file": "backgrounds/UI_Frame_505401.png",
+          "file": "assets/backgrounds/UI_Frame_505401.png",
           "source": "backgrounds/UI_Frame_505401.png",
           "width": 1080,
           "height": 452,
@@ -20405,12 +20487,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "おめがシスターズちほーで獲得",
-          "releaseDate": "2026-04-28"
+          "releaseDate": "2026-04-28",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505501",
           "name": "ワールドダイスター 夢のステラリウムちほー その1",
-          "file": "backgrounds/UI_Frame_505501.png",
+          "file": "assets/backgrounds/UI_Frame_505501.png",
           "source": "backgrounds/UI_Frame_505501.png",
           "width": 1080,
           "height": 452,
@@ -20419,12 +20502,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "ワールドダイスター 夢のステラリウムちほーで獲得",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505502",
           "name": "ワールドダイスター 夢のステラリウムちほー その2",
-          "file": "backgrounds/UI_Frame_505502.png",
+          "file": "assets/backgrounds/UI_Frame_505502.png",
           "source": "backgrounds/UI_Frame_505502.png",
           "width": 1080,
           "height": 452,
@@ -20433,12 +20517,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "ワールドダイスター 夢のステラリウムちほーで獲得",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505601",
           "name": "夢限大みゅーたいぷ 仲町あられ",
-          "file": "backgrounds/UI_Frame_505601.png",
+          "file": "assets/backgrounds/UI_Frame_505601.png",
           "source": "backgrounds/UI_Frame_505601.png",
           "width": 1080,
           "height": 452,
@@ -20447,12 +20532,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "夢限大みゅーたいぷちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505602",
           "name": "夢限大みゅーたいぷ 宮永ののか",
-          "file": "backgrounds/UI_Frame_505602.png",
+          "file": "assets/backgrounds/UI_Frame_505602.png",
           "source": "backgrounds/UI_Frame_505602.png",
           "width": 1080,
           "height": 452,
@@ -20461,12 +20547,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "夢限大みゅーたいぷちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505603",
           "name": "夢限大みゅーたいぷ 峰月律",
-          "file": "backgrounds/UI_Frame_505603.png",
+          "file": "assets/backgrounds/UI_Frame_505603.png",
           "source": "backgrounds/UI_Frame_505603.png",
           "width": 1080,
           "height": 452,
@@ -20475,12 +20562,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "夢限大みゅーたいぷちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505604",
           "name": "夢限大みゅーたいぷ 藤都子",
-          "file": "backgrounds/UI_Frame_505604.png",
+          "file": "assets/backgrounds/UI_Frame_505604.png",
           "source": "backgrounds/UI_Frame_505604.png",
           "width": 1080,
           "height": 452,
@@ -20489,12 +20577,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "夢限大みゅーたいぷちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505605",
           "name": "夢限大みゅーたいぷ 千石ユノ",
-          "file": "backgrounds/UI_Frame_505605.png",
+          "file": "assets/backgrounds/UI_Frame_505605.png",
           "source": "backgrounds/UI_Frame_505605.png",
           "width": 1080,
           "height": 452,
@@ -20503,12 +20592,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "夢限大みゅーたいぷちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505701",
           "name": "Arcaeaちほー3 その1",
-          "file": "backgrounds/UI_Frame_505701.png",
+          "file": "assets/backgrounds/UI_Frame_505701.png",
           "source": "backgrounds/UI_Frame_505701.png",
           "width": 1080,
           "height": 452,
@@ -20517,12 +20607,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "Arcaeaちほー3で獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505702",
           "name": "Arcaeaちほー3 その2",
-          "file": "backgrounds/UI_Frame_505702.png",
+          "file": "assets/backgrounds/UI_Frame_505702.png",
           "source": "backgrounds/UI_Frame_505702.png",
           "width": 1080,
           "height": 452,
@@ -20531,12 +20622,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "Arcaeaちほー3で獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505703",
           "name": "Arcaeaちほー3 その3",
-          "file": "backgrounds/UI_Frame_505703.png",
+          "file": "assets/backgrounds/UI_Frame_505703.png",
           "source": "backgrounds/UI_Frame_505703.png",
           "width": 1080,
           "height": 452,
@@ -20545,12 +20637,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "Arcaeaちほー3で獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505801",
           "name": "重音テトちほー その1",
-          "file": "backgrounds/UI_Frame_505801.png",
+          "file": "assets/backgrounds/UI_Frame_505801.png",
           "source": "backgrounds/UI_Frame_505801.png",
           "width": 1080,
           "height": 452,
@@ -20559,12 +20652,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "重音テトちほーで獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505802",
           "name": "重音テトちほー その2",
-          "file": "backgrounds/UI_Frame_505802.png",
+          "file": "assets/backgrounds/UI_Frame_505802.png",
           "source": "backgrounds/UI_Frame_505802.png",
           "width": 1080,
           "height": 452,
@@ -20573,12 +20667,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "重音テトちほーで獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505803",
           "name": "重音テトちほー その3",
-          "file": "backgrounds/UI_Frame_505803.png",
+          "file": "assets/backgrounds/UI_Frame_505803.png",
           "source": "backgrounds/UI_Frame_505803.png",
           "width": 1080,
           "height": 452,
@@ -20587,12 +20682,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "重音テトちほーで獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505804",
           "name": "重音テトちほー その4",
-          "file": "backgrounds/UI_Frame_505804.png",
+          "file": "assets/backgrounds/UI_Frame_505804.png",
           "source": "backgrounds/UI_Frame_505804.png",
           "width": 1080,
           "height": 452,
@@ -20601,12 +20697,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "重音テトちほーで獲得",
-          "releaseDate": "2026-03-25"
+          "releaseDate": "2026-03-25",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505901",
           "name": "ななひらちほー その1",
-          "file": "backgrounds/UI_Frame_505901.png",
+          "file": "assets/backgrounds/UI_Frame_505901.png",
           "source": "backgrounds/UI_Frame_505901.png",
           "width": 1080,
           "height": 452,
@@ -20615,12 +20712,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "ななひらちほーで獲得",
-          "releaseDate": "2026-04-28"
+          "releaseDate": "2026-04-28",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_505902",
           "name": "ななひらちほー その2",
-          "file": "backgrounds/UI_Frame_505902.png",
+          "file": "assets/backgrounds/UI_Frame_505902.png",
           "source": "backgrounds/UI_Frame_505902.png",
           "width": 1080,
           "height": 452,
@@ -20629,12 +20727,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "ななひらちほーで獲得",
-          "releaseDate": "2026-04-28"
+          "releaseDate": "2026-04-28",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_506001",
           "name": "オンゲキちほー8",
-          "file": "backgrounds/UI_Frame_506001.png",
+          "file": "assets/backgrounds/UI_Frame_506001.png",
           "source": "backgrounds/UI_Frame_506001.png",
           "width": 1080,
           "height": 452,
@@ -20643,12 +20742,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "オンゲキちほー8で獲得",
-          "releaseDate": "2026-04-28"
+          "releaseDate": "2026-04-28",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_509101",
           "name": "Thank you for playing -BUDDiES-",
-          "file": "backgrounds/UI_Frame_509101.png",
+          "file": "assets/backgrounds/UI_Frame_509101.png",
           "source": "backgrounds/UI_Frame_509101.png",
           "width": 1080,
           "height": 452,
@@ -20657,12 +20757,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "舞萌DX2024 全曲/BASIC～MASTER/CLEAR",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_509102",
           "name": "SYNC Jewel [Topaz]",
-          "file": "backgrounds/UI_Frame_509102.png",
+          "file": "assets/backgrounds/UI_Frame_509102.png",
           "source": "backgrounds/UI_Frame_509102.png",
           "width": 1080,
           "height": 452,
@@ -20671,12 +20772,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "舞萌DX2024 全曲/BASIC～MASTER/FULL SYNC DX",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_509103",
           "name": "PERFECT Jewel [Topaz]",
-          "file": "backgrounds/UI_Frame_509103.png",
+          "file": "assets/backgrounds/UI_Frame_509103.png",
           "source": "backgrounds/UI_Frame_509103.png",
           "width": 1080,
           "height": 452,
@@ -20685,12 +20787,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "舞萌DX2024 全曲/BASIC～MASTER/ALL PERFECT",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_509504",
           "name": "Valsqotch",
-          "file": "backgrounds/UI_Frame_509504.png",
+          "file": "assets/backgrounds/UI_Frame_509504.png",
           "source": "backgrounds/UI_Frame_509504.png",
           "width": 1080,
           "height": 452,
@@ -20699,12 +20802,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "フレーム[Valsqotch]のスタンプを10個集める",
-          "releaseDate": "2026-01-23"
+          "releaseDate": "2026-01-23",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550101",
           "name": "なないろちほー",
-          "file": "backgrounds/UI_Frame_550101.png",
+          "file": "assets/backgrounds/UI_Frame_550101.png",
           "source": "backgrounds/UI_Frame_550101.png",
           "width": 1080,
           "height": 452,
@@ -20713,12 +20817,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "なないろちほーで獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550102",
           "name": "KALEIDXSCOPE -はじまりエリア-",
-          "file": "backgrounds/UI_Frame_550102.png",
+          "file": "assets/backgrounds/UI_Frame_550102.png",
           "source": "backgrounds/UI_Frame_550102.png",
           "width": 1080,
           "height": 452,
@@ -20727,12 +20832,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "Åntinomiε[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550201",
           "name": "ドラゴンちほー4",
-          "file": "backgrounds/UI_Frame_550201.png",
+          "file": "assets/backgrounds/UI_Frame_550201.png",
           "source": "backgrounds/UI_Frame_550201.png",
           "width": 1080,
           "height": 452,
@@ -20741,12 +20847,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "ドラゴンちほー4で獲得",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550202",
           "name": "KALEIDXSCOPE -世界樹エリア-",
-          "file": "backgrounds/UI_Frame_550202.png",
+          "file": "assets/backgrounds/UI_Frame_550202.png",
           "source": "backgrounds/UI_Frame_550202.png",
           "width": 1080,
           "height": 452,
@@ -20755,12 +20862,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "FLΛME/FRΦST[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550301",
           "name": "7sRefちほー4",
-          "file": "backgrounds/UI_Frame_550301.png",
+          "file": "assets/backgrounds/UI_Frame_550301.png",
           "source": "backgrounds/UI_Frame_550301.png",
           "width": 1080,
           "height": 452,
@@ -20769,12 +20877,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550302",
           "name": "KALEIDXSCOPE -プリズムエリア-",
-          "file": "backgrounds/UI_Frame_550302.png",
+          "file": "assets/backgrounds/UI_Frame_550302.png",
           "source": "backgrounds/UI_Frame_550302.png",
           "width": 1080,
           "height": 452,
@@ -20783,12 +20892,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "World's end BLACKBOX[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550303",
           "name": "KALEIDXSCOPE -旧き世界-",
-          "file": "backgrounds/UI_Frame_550303.png",
+          "file": "assets/backgrounds/UI_Frame_550303.png",
           "source": "backgrounds/UI_Frame_550303.png",
           "width": 1080,
           "height": 452,
@@ -20797,12 +20907,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "AFTER PANDORA[スタンダード]/全難易度/プレイ",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550304",
           "name": "KALEIDXSCOPE -アシッド-",
-          "file": "backgrounds/UI_Frame_550304.png",
+          "file": "assets/backgrounds/UI_Frame_550304.png",
           "source": "backgrounds/UI_Frame_550304.png",
           "width": 1080,
           "height": 452,
@@ -20811,12 +20922,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "Xaleid◆scopiX[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550305",
           "name": "KALEIDXSCOPE -プリズム-",
-          "file": "backgrounds/UI_Frame_550305.png",
+          "file": "assets/backgrounds/UI_Frame_550305.png",
           "source": "backgrounds/UI_Frame_550305.png",
           "width": 1080,
           "height": 452,
@@ -20825,12 +20937,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "Xaleid◆scopiX[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550306",
           "name": "KALEIDXSCOPE -PRiSM-",
-          "file": "backgrounds/UI_Frame_550306.png",
+          "file": "assets/backgrounds/UI_Frame_550306.png",
           "source": "backgrounds/UI_Frame_550306.png",
           "width": 1080,
           "height": 452,
@@ -20839,12 +20952,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "KALEIDXSCOPE 全曲/全難易度/プレイ",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550307",
           "name": "KALEIDXSCOPE -Ref:rain-",
-          "file": "backgrounds/UI_Frame_550307.png",
+          "file": "assets/backgrounds/UI_Frame_550307.png",
           "source": "backgrounds/UI_Frame_550307.png",
           "width": 1080,
           "height": 452,
@@ -20853,12 +20967,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "Ref:rain (for 7th Heaven)[でらっくす]/全難易度/プレイ",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_550401",
           "name": "プリズムちほー2",
-          "file": "backgrounds/UI_Frame_550401.png",
+          "file": "assets/backgrounds/UI_Frame_550401.png",
           "source": "backgrounds/UI_Frame_550401.png",
           "width": 1080,
           "height": 452,
@@ -20867,12 +20982,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "プリズムちほー2で獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555101",
           "name": "NEEDY GIRL OVERDOSEちほー2 その1",
-          "file": "backgrounds/UI_Frame_555101.png",
+          "file": "assets/backgrounds/UI_Frame_555101.png",
           "source": "backgrounds/UI_Frame_555101.png",
           "width": 1080,
           "height": 452,
@@ -20881,12 +20997,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "NEEDY GIRL OVERDOSEちほー2で獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555102",
           "name": "NEEDY GIRL OVERDOSEちほー2 その2",
-          "file": "backgrounds/UI_Frame_555102.png",
+          "file": "assets/backgrounds/UI_Frame_555102.png",
           "source": "backgrounds/UI_Frame_555102.png",
           "width": 1080,
           "height": 452,
@@ -20895,12 +21012,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "NEEDY GIRL OVERDOSEちほー2で獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555103",
           "name": "NEEDY GIRL OVERDOSEちほー2 その3",
-          "file": "backgrounds/UI_Frame_555103.png",
+          "file": "assets/backgrounds/UI_Frame_555103.png",
           "source": "backgrounds/UI_Frame_555103.png",
           "width": 1080,
           "height": 452,
@@ -20909,12 +21027,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "NEEDY GIRL OVERDOSEちほー2で獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555201",
           "name": "神椿市協奏中。ちほー その1",
-          "file": "backgrounds/UI_Frame_555201.png",
+          "file": "assets/backgrounds/UI_Frame_555201.png",
           "source": "backgrounds/UI_Frame_555201.png",
           "width": 1080,
           "height": 452,
@@ -20923,12 +21042,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "神椿市協奏中。ちほーで獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555202",
           "name": "神椿市協奏中。ちほー その2",
-          "file": "backgrounds/UI_Frame_555202.png",
+          "file": "assets/backgrounds/UI_Frame_555202.png",
           "source": "backgrounds/UI_Frame_555202.png",
           "width": 1080,
           "height": 452,
@@ -20937,12 +21057,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "神椿市協奏中。ちほーで獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555203",
           "name": "神椿市協奏中。ちほー その3",
-          "file": "backgrounds/UI_Frame_555203.png",
+          "file": "assets/backgrounds/UI_Frame_555203.png",
           "source": "backgrounds/UI_Frame_555203.png",
           "width": 1080,
           "height": 452,
@@ -20951,12 +21072,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "神椿市協奏中。ちほーで獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555401",
           "name": "那須どうぶつ王国ちほー",
-          "file": "backgrounds/UI_Frame_555401.png",
+          "file": "assets/backgrounds/UI_Frame_555401.png",
           "source": "backgrounds/UI_Frame_555401.png",
           "width": 1080,
           "height": 452,
@@ -20965,12 +21087,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "那須どうぶつ王国ちほーで獲得",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555501",
           "name": "DECO*27ちほー2 その1",
-          "file": "backgrounds/UI_Frame_555501.png",
+          "file": "assets/backgrounds/UI_Frame_555501.png",
           "source": "backgrounds/UI_Frame_555501.png",
           "width": 1080,
           "height": 452,
@@ -20979,12 +21102,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "DECO*27ちほー2で獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555502",
           "name": "DECO*27ちほー2 その2",
-          "file": "backgrounds/UI_Frame_555502.png",
+          "file": "assets/backgrounds/UI_Frame_555502.png",
           "source": "backgrounds/UI_Frame_555502.png",
           "width": 1080,
           "height": 452,
@@ -20993,12 +21117,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "DECO*27ちほー2で獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555503",
           "name": "DECO*27ちほー2 その3",
-          "file": "backgrounds/UI_Frame_555503.png",
+          "file": "assets/backgrounds/UI_Frame_555503.png",
           "source": "backgrounds/UI_Frame_555503.png",
           "width": 1080,
           "height": 452,
@@ -21007,12 +21132,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "DECO*27ちほー2で獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555601",
           "name": "ビートまりおちほー その1",
-          "file": "backgrounds/UI_Frame_555601.png",
+          "file": "assets/backgrounds/UI_Frame_555601.png",
           "source": "backgrounds/UI_Frame_555601.png",
           "width": 1080,
           "height": 452,
@@ -21021,12 +21147,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "ビートまりおちほーで獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555602",
           "name": "ビートまりおちほー その2",
-          "file": "backgrounds/UI_Frame_555602.png",
+          "file": "assets/backgrounds/UI_Frame_555602.png",
           "source": "backgrounds/UI_Frame_555602.png",
           "width": 1080,
           "height": 452,
@@ -21035,12 +21162,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "ビートまりおちほーで獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555801",
           "name": "CHUNITHMちほー4",
-          "file": "backgrounds/UI_Frame_555801.png",
+          "file": "assets/backgrounds/UI_Frame_555801.png",
           "source": "backgrounds/UI_Frame_555801.png",
           "width": 1080,
           "height": 452,
@@ -21049,12 +21177,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "CHUNITHMちほー4で獲得",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_555901",
           "name": "三枝明那ちほー",
-          "file": "backgrounds/UI_Frame_555901.png",
+          "file": "assets/backgrounds/UI_Frame_555901.png",
           "source": "backgrounds/UI_Frame_555901.png",
           "width": 1080,
           "height": 452,
@@ -21063,12 +21192,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "三枝明那ちほーで獲得",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558001",
           "name": "♡でらっくま♡",
-          "file": "backgrounds/UI_Frame_558001.png",
+          "file": "assets/backgrounds/UI_Frame_558001.png",
           "source": "backgrounds/UI_Frame_558001.png",
           "width": 1080,
           "height": 452,
@@ -21077,12 +21207,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "でらっくまの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558011",
           "name": "♡乙姫♡",
-          "file": "backgrounds/UI_Frame_558011.png",
+          "file": "assets/backgrounds/UI_Frame_558011.png",
           "source": "backgrounds/UI_Frame_558011.png",
           "width": 1080,
           "height": 452,
@@ -21091,12 +21222,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "乙姫の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558012",
           "name": "♡ラズ♡",
-          "file": "backgrounds/UI_Frame_558012.png",
+          "file": "assets/backgrounds/UI_Frame_558012.png",
           "source": "backgrounds/UI_Frame_558012.png",
           "width": 1080,
           "height": 452,
@@ -21105,12 +21237,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "ラズの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558013",
           "name": "♡シフォン♡",
-          "file": "backgrounds/UI_Frame_558013.png",
+          "file": "assets/backgrounds/UI_Frame_558013.png",
           "source": "backgrounds/UI_Frame_558013.png",
           "width": 1080,
           "height": 452,
@@ -21119,12 +21252,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "シフォンの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558014",
           "name": "♡ソルト♡",
-          "file": "backgrounds/UI_Frame_558014.png",
+          "file": "assets/backgrounds/UI_Frame_558014.png",
           "source": "backgrounds/UI_Frame_558014.png",
           "width": 1080,
           "height": 452,
@@ -21133,12 +21267,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "ソルトの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558015",
           "name": "♡しゃま♡",
-          "file": "backgrounds/UI_Frame_558015.png",
+          "file": "assets/backgrounds/UI_Frame_558015.png",
           "source": "backgrounds/UI_Frame_558015.png",
           "width": 1080,
           "height": 452,
@@ -21147,12 +21282,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "しゃまの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558016",
           "name": "♡みるく♡",
-          "file": "backgrounds/UI_Frame_558016.png",
+          "file": "assets/backgrounds/UI_Frame_558016.png",
           "source": "backgrounds/UI_Frame_558016.png",
           "width": 1080,
           "height": 452,
@@ -21161,12 +21297,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "みるくの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558017",
           "name": "♡らいむっくま＆れもんっくま♡",
-          "file": "backgrounds/UI_Frame_558017.png",
+          "file": "assets/backgrounds/UI_Frame_558017.png",
           "source": "backgrounds/UI_Frame_558017.png",
           "width": 1080,
           "height": 452,
@@ -21175,12 +21312,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "らいむっくま＆れもんっくまの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558018",
           "name": "♡乙姫（すぷらっしゅ）♡",
-          "file": "backgrounds/UI_Frame_558018.png",
+          "file": "assets/backgrounds/UI_Frame_558018.png",
           "source": "backgrounds/UI_Frame_558018.png",
           "width": 1080,
           "height": 452,
@@ -21189,12 +21327,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "乙姫（すぷらっしゅ）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558019",
           "name": "♡しゃま（ゆにばーす）♡",
-          "file": "backgrounds/UI_Frame_558019.png",
+          "file": "assets/backgrounds/UI_Frame_558019.png",
           "source": "backgrounds/UI_Frame_558019.png",
           "width": 1080,
           "height": 452,
@@ -21203,12 +21342,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "しゃま（ゆにばーす）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558020",
           "name": "♡みるく（ゆにばーす）♡",
-          "file": "backgrounds/UI_Frame_558020.png",
+          "file": "assets/backgrounds/UI_Frame_558020.png",
           "source": "backgrounds/UI_Frame_558020.png",
           "width": 1080,
           "height": 452,
@@ -21217,12 +21357,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "みるく（ゆにばーす）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558021",
           "name": "♡ちびみるく♡",
-          "file": "backgrounds/UI_Frame_558021.png",
+          "file": "assets/backgrounds/UI_Frame_558021.png",
           "source": "backgrounds/UI_Frame_558021.png",
           "width": 1080,
           "height": 452,
@@ -21231,12 +21372,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "ちびみるくの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558022",
           "name": "♡百合咲 ミカ♡",
-          "file": "backgrounds/UI_Frame_558022.png",
+          "file": "assets/backgrounds/UI_Frame_558022.png",
           "source": "backgrounds/UI_Frame_558022.png",
           "width": 1080,
           "height": 452,
@@ -21245,12 +21387,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "百合咲 ミカの親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558023",
           "name": "♡ラズ（ふぇすてぃばる）♡",
-          "file": "backgrounds/UI_Frame_558023.png",
+          "file": "assets/backgrounds/UI_Frame_558023.png",
           "source": "backgrounds/UI_Frame_558023.png",
           "width": 1080,
           "height": 452,
@@ -21259,12 +21402,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "ラズ（ふぇすてぃばる）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558024",
           "name": "♡シフォン（ふぇすてぃばる）♡",
-          "file": "backgrounds/UI_Frame_558024.png",
+          "file": "assets/backgrounds/UI_Frame_558024.png",
           "source": "backgrounds/UI_Frame_558024.png",
           "width": 1080,
           "height": 452,
@@ -21273,12 +21417,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "シフォン（ふぇすてぃばる）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558025",
           "name": "♡ソルト（ふぇすてぃばる）♡",
-          "file": "backgrounds/UI_Frame_558025.png",
+          "file": "assets/backgrounds/UI_Frame_558025.png",
           "source": "backgrounds/UI_Frame_558025.png",
           "width": 1080,
           "height": 452,
@@ -21287,12 +21432,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "ソルト（ふぇすてぃばる）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558026",
           "name": "♡黒姫♡",
-          "file": "backgrounds/UI_Frame_558026.png",
+          "file": "assets/backgrounds/UI_Frame_558026.png",
           "source": "backgrounds/UI_Frame_558026.png",
           "width": 1080,
           "height": 452,
@@ -21301,12 +21447,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "黒姫の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558028",
           "name": "♡乙姫（ばでぃーず）♡",
-          "file": "backgrounds/UI_Frame_558028.png",
+          "file": "assets/backgrounds/UI_Frame_558028.png",
           "source": "backgrounds/UI_Frame_558028.png",
           "width": 1080,
           "height": 452,
@@ -21315,12 +21462,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "乙姫（ばでぃーず）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558029",
           "name": "♡らいむっくま＆れもんっくま（ばでぃーず）♡",
-          "file": "backgrounds/UI_Frame_558029.png",
+          "file": "assets/backgrounds/UI_Frame_558029.png",
           "source": "backgrounds/UI_Frame_558029.png",
           "width": 1080,
           "height": 452,
@@ -21329,12 +21477,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "らいむっくま＆れもんっくま（ばでぃーず）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558030",
           "name": "♡ラズ（ばでぃーず）♡",
-          "file": "backgrounds/UI_Frame_558030.png",
+          "file": "assets/backgrounds/UI_Frame_558030.png",
           "source": "backgrounds/UI_Frame_558030.png",
           "width": 1080,
           "height": 452,
@@ -21343,12 +21492,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "ラズ（ばでぃーず）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558031",
           "name": "♡ソルト（ぷりずむ）♡",
-          "file": "backgrounds/UI_Frame_558031.png",
+          "file": "assets/backgrounds/UI_Frame_558031.png",
           "source": "backgrounds/UI_Frame_558031.png",
           "width": 1080,
           "height": 452,
@@ -21357,12 +21507,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "ソルト（ぷりずむ）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558032",
           "name": "♡みるく（ぷりずむ）♡",
-          "file": "backgrounds/UI_Frame_558032.png",
+          "file": "assets/backgrounds/UI_Frame_558032.png",
           "source": "backgrounds/UI_Frame_558032.png",
           "width": 1080,
           "height": 452,
@@ -21371,12 +21522,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "みるく（ぷりずむ）の親密度が1000に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_558034",
           "name": "♡リズ♡",
-          "file": "backgrounds/UI_Frame_558034.png",
+          "file": "assets/backgrounds/UI_Frame_558034.png",
           "source": "backgrounds/UI_Frame_558034.png",
           "width": 1080,
           "height": 452,
@@ -21385,12 +21537,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "リズの親密度が1000に到達",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_559504",
           "name": "Cryptarithm",
-          "file": "backgrounds/UI_Frame_559504.png",
+          "file": "assets/backgrounds/UI_Frame_559504.png",
           "source": "backgrounds/UI_Frame_559504.png",
           "width": 1080,
           "height": 452,
@@ -21399,12 +21552,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "フレーム[Cryptarithm]のスタンプを10個集める",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "backgrounds/UI_Frame_605901",
           "name": "Paradigm: Rebootちほー",
-          "file": "backgrounds/UI_Frame_605901.png",
+          "file": "assets/backgrounds/UI_Frame_605901.png",
           "source": "backgrounds/UI_Frame_605901.png",
           "width": 1080,
           "height": 452,
@@ -21413,7 +21567,8 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "Paradigm: Rebootちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         }
       ]
     },
@@ -26856,7 +27011,7 @@
         {
           "id": "nameplates/UI_Plate_550101",
           "name": "なないろちほー",
-          "file": "nameplates/UI_Plate_550101.png",
+          "file": "assets/nameplates/UI_Plate_550101.png",
           "source": "nameplates/UI_Plate_550101.png",
           "width": 720,
           "height": 116,
@@ -26865,12 +27020,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "なないろちほーで獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_550201",
           "name": "ドラゴンちほー4",
-          "file": "nameplates/UI_Plate_550201.png",
+          "file": "assets/nameplates/UI_Plate_550201.png",
           "source": "nameplates/UI_Plate_550201.png",
           "width": 720,
           "height": 116,
@@ -26879,12 +27035,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "ドラゴンちほー4で獲得",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_550301",
           "name": "7sRefちほー4",
-          "file": "nameplates/UI_Plate_550301.png",
+          "file": "assets/nameplates/UI_Plate_550301.png",
           "source": "nameplates/UI_Plate_550301.png",
           "width": 720,
           "height": 116,
@@ -26893,12 +27050,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "7sRefちほー4で獲得",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_550401",
           "name": "プリズムちほー2",
-          "file": "nameplates/UI_Plate_550401.png",
+          "file": "assets/nameplates/UI_Plate_550401.png",
           "source": "nameplates/UI_Plate_550401.png",
           "width": 720,
           "height": 116,
@@ -26907,12 +27065,13 @@
           "genre": "オリジナルちほー",
           "group": "2026 · オリジナルちほー",
           "description": "プリズムちほー2で獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555101",
           "name": "NEEDY GIRL OVERDOSEちほー2 その1",
-          "file": "nameplates/UI_Plate_555101.png",
+          "file": "assets/nameplates/UI_Plate_555101.png",
           "source": "nameplates/UI_Plate_555101.png",
           "width": 720,
           "height": 116,
@@ -26921,12 +27080,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "NEEDY GIRL OVERDOSEちほー2で獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555102",
           "name": "NEEDY GIRL OVERDOSEちほー2 その2",
-          "file": "nameplates/UI_Plate_555102.png",
+          "file": "assets/nameplates/UI_Plate_555102.png",
           "source": "nameplates/UI_Plate_555102.png",
           "width": 720,
           "height": 116,
@@ -26935,12 +27095,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "NEEDY GIRL OVERDOSEちほー2で獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555201",
           "name": "神椿市協奏中。ちほー その1",
-          "file": "nameplates/UI_Plate_555201.png",
+          "file": "assets/nameplates/UI_Plate_555201.png",
           "source": "nameplates/UI_Plate_555201.png",
           "width": 720,
           "height": 116,
@@ -26949,12 +27110,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "神椿市協奏中。ちほーで獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555202",
           "name": "神椿市協奏中。ちほー その2",
-          "file": "nameplates/UI_Plate_555202.png",
+          "file": "assets/nameplates/UI_Plate_555202.png",
           "source": "nameplates/UI_Plate_555202.png",
           "width": 720,
           "height": 116,
@@ -26963,12 +27125,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "神椿市協奏中。ちほーで獲得",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555401",
           "name": "那須どうぶつ王国ちほー",
-          "file": "nameplates/UI_Plate_555401.png",
+          "file": "assets/nameplates/UI_Plate_555401.png",
           "source": "nameplates/UI_Plate_555401.png",
           "width": 720,
           "height": 116,
@@ -26977,12 +27140,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "那須どうぶつ王国ちほーで獲得",
-          "releaseDate": "2026-08-05"
+          "releaseDate": "2026-08-05",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555501",
           "name": "DECO*27ちほー2 その1",
-          "file": "nameplates/UI_Plate_555501.png",
+          "file": "assets/nameplates/UI_Plate_555501.png",
           "source": "nameplates/UI_Plate_555501.png",
           "width": 720,
           "height": 116,
@@ -26991,12 +27155,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "DECO*27ちほー2で獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555502",
           "name": "DECO*27ちほー2 その2",
-          "file": "nameplates/UI_Plate_555502.png",
+          "file": "assets/nameplates/UI_Plate_555502.png",
           "source": "nameplates/UI_Plate_555502.png",
           "width": 720,
           "height": 116,
@@ -27005,12 +27170,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "DECO*27ちほー2で獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555601",
           "name": "ビートまりおちほー",
-          "file": "nameplates/UI_Plate_555601.png",
+          "file": "assets/nameplates/UI_Plate_555601.png",
           "source": "nameplates/UI_Plate_555601.png",
           "width": 720,
           "height": 116,
@@ -27019,12 +27185,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "ビートまりおちほーで獲得",
-          "releaseDate": "2026-07-15"
+          "releaseDate": "2026-07-15",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555801",
           "name": "CHUNITHMちほー4",
-          "file": "nameplates/UI_Plate_555801.png",
+          "file": "assets/nameplates/UI_Plate_555801.png",
           "source": "nameplates/UI_Plate_555801.png",
           "width": 720,
           "height": 116,
@@ -27033,12 +27200,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "CHUNITHMちほー4で獲得",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_555901",
           "name": "三枝明那ちほー",
-          "file": "nameplates/UI_Plate_555901.png",
+          "file": "assets/nameplates/UI_Plate_555901.png",
           "source": "nameplates/UI_Plate_555901.png",
           "width": 720,
           "height": 116,
@@ -27047,12 +27215,13 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "三枝明那ちほーで獲得",
-          "releaseDate": "2026-09-11"
+          "releaseDate": "2026-09-11",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557001",
           "name": "WEC2025 公开组全国冠军",
-          "file": "nameplates/UI_Plate_557001.png",
+          "file": "assets/nameplates/UI_Plate_557001.png",
           "source": "nameplates/UI_Plate_557001.png",
           "width": 720,
           "height": 116,
@@ -27061,12 +27230,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557002",
           "name": "WEC2025 女子组全国冠军",
-          "file": "nameplates/UI_Plate_557002.png",
+          "file": "assets/nameplates/UI_Plate_557002.png",
           "source": "nameplates/UI_Plate_557002.png",
           "width": 720,
           "height": 116,
@@ -27075,12 +27245,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557003",
           "name": "WEC2025 巅峰挑战者",
-          "file": "nameplates/UI_Plate_557003.png",
+          "file": "assets/nameplates/UI_Plate_557003.png",
           "source": "nameplates/UI_Plate_557003.png",
           "width": 720,
           "height": 116,
@@ -27089,12 +27260,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557004",
           "name": "WEC2025 海选赛第一名（南部）",
-          "file": "nameplates/UI_Plate_557004.png",
+          "file": "assets/nameplates/UI_Plate_557004.png",
           "source": "nameplates/UI_Plate_557004.png",
           "width": 720,
           "height": 116,
@@ -27103,12 +27275,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557005",
           "name": "WEC2025 海选赛第一名（东部）",
-          "file": "nameplates/UI_Plate_557005.png",
+          "file": "assets/nameplates/UI_Plate_557005.png",
           "source": "nameplates/UI_Plate_557005.png",
           "width": 720,
           "height": 116,
@@ -27117,12 +27290,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557006",
           "name": "WEC2025 海选赛第一名（北部）",
-          "file": "nameplates/UI_Plate_557006.png",
+          "file": "assets/nameplates/UI_Plate_557006.png",
           "source": "nameplates/UI_Plate_557006.png",
           "width": 720,
           "height": 116,
@@ -27131,12 +27305,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557007",
           "name": "WEC2025 海选赛第一名（西部）",
-          "file": "nameplates/UI_Plate_557007.png",
+          "file": "assets/nameplates/UI_Plate_557007.png",
           "source": "nameplates/UI_Plate_557007.png",
           "width": 720,
           "height": 116,
@@ -27145,12 +27320,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557008",
           "name": "WEC2025 海选赛第一名（中部）",
-          "file": "nameplates/UI_Plate_557008.png",
+          "file": "assets/nameplates/UI_Plate_557008.png",
           "source": "nameplates/UI_Plate_557008.png",
           "width": 720,
           "height": 116,
@@ -27159,12 +27335,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557009",
           "name": "WEC2025 预选赛第一名（南部）",
-          "file": "nameplates/UI_Plate_557009.png",
+          "file": "assets/nameplates/UI_Plate_557009.png",
           "source": "nameplates/UI_Plate_557009.png",
           "width": 720,
           "height": 116,
@@ -27173,12 +27350,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557010",
           "name": "WEC2025 预选赛第一名（东部）",
-          "file": "nameplates/UI_Plate_557010.png",
+          "file": "assets/nameplates/UI_Plate_557010.png",
           "source": "nameplates/UI_Plate_557010.png",
           "width": 720,
           "height": 116,
@@ -27187,12 +27365,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557011",
           "name": "WEC2025 预选赛第一名（北部）",
-          "file": "nameplates/UI_Plate_557011.png",
+          "file": "assets/nameplates/UI_Plate_557011.png",
           "source": "nameplates/UI_Plate_557011.png",
           "width": 720,
           "height": 116,
@@ -27201,12 +27380,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557012",
           "name": "WEC2025 预选赛第一名（西部）",
-          "file": "nameplates/UI_Plate_557012.png",
+          "file": "assets/nameplates/UI_Plate_557012.png",
           "source": "nameplates/UI_Plate_557012.png",
           "width": 720,
           "height": 116,
@@ -27215,12 +27395,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_557013",
           "name": "WEC2025 预选赛第一名（中部）",
-          "file": "nameplates/UI_Plate_557013.png",
+          "file": "assets/nameplates/UI_Plate_557013.png",
           "source": "nameplates/UI_Plate_557013.png",
           "width": 720,
           "height": 116,
@@ -27229,12 +27410,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "SEGAからのプレゼントです",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_558032",
           "name": "♡みるく（ぷりずむ）♡",
-          "file": "nameplates/UI_Plate_558032.png",
+          "file": "assets/nameplates/UI_Plate_558032.png",
           "source": "nameplates/UI_Plate_558032.png",
           "width": 720,
           "height": 116,
@@ -27243,12 +27425,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "みるく（ぷりずむ）の親密度が300に到達",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_558034",
           "name": "♡リズ♡",
-          "file": "nameplates/UI_Plate_558034.png",
+          "file": "assets/nameplates/UI_Plate_558034.png",
           "source": "nameplates/UI_Plate_558034.png",
           "width": 720,
           "height": 116,
@@ -27257,12 +27440,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "リズの親密度が300に到達",
-          "releaseDate": "2026-10-01"
+          "releaseDate": "2026-10-01",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_559101",
           "name": "鏡極",
-          "file": "nameplates/UI_Plate_559101.png",
+          "file": "assets/nameplates/UI_Plate_559101.png",
           "source": "nameplates/UI_Plate_559101.png",
           "width": 720,
           "height": 116,
@@ -27271,12 +27455,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "舞萌DX 2025 全曲/BASIC～MASTER/FULL COMBO",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_559102",
           "name": "鏡将",
-          "file": "nameplates/UI_Plate_559102.png",
+          "file": "assets/nameplates/UI_Plate_559102.png",
           "source": "nameplates/UI_Plate_559102.png",
           "width": 720,
           "height": 116,
@@ -27285,12 +27470,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "舞萌DX 2025 全曲/BASIC～MASTER/RANK SSS",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_559103",
           "name": "鏡神",
-          "file": "nameplates/UI_Plate_559103.png",
+          "file": "assets/nameplates/UI_Plate_559103.png",
           "source": "nameplates/UI_Plate_559103.png",
           "width": 720,
           "height": 116,
@@ -27299,12 +27485,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "舞萌DX 2025 全曲/BASIC～MASTER/ALL PERFECT",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_559104",
           "name": "鏡舞舞",
-          "file": "nameplates/UI_Plate_559104.png",
+          "file": "assets/nameplates/UI_Plate_559104.png",
           "source": "nameplates/UI_Plate_559104.png",
           "width": 720,
           "height": 116,
@@ -27313,12 +27500,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "舞萌DX 2025 全曲/BASIC～MASTER/FULL SYNC DX",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_559501",
           "name": "Divide et impera!（ソルト）",
-          "file": "nameplates/UI_Plate_559501.png",
+          "file": "assets/nameplates/UI_Plate_559501.png",
           "source": "nameplates/UI_Plate_559501.png",
           "width": 720,
           "height": 116,
@@ -27327,12 +27515,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "プレート[Divide et impera!（ソルト）]のスタンプを10個集める",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_559502",
           "name": "Divide et impera!（みるく）",
-          "file": "nameplates/UI_Plate_559502.png",
+          "file": "assets/nameplates/UI_Plate_559502.png",
           "source": "nameplates/UI_Plate_559502.png",
           "width": 720,
           "height": 116,
@@ -27341,12 +27530,13 @@
           "genre": "実績",
           "group": "2026 · 実績",
           "description": "プレート[Divide et impera!（みるく）]のスタンプを10個集める",
-          "releaseDate": "2026-06-10"
+          "releaseDate": "2026-06-10",
+          "local": true
         },
         {
           "id": "nameplates/UI_Plate_605901",
           "name": "Paradigm: Rebootちほー",
-          "file": "nameplates/UI_Plate_605901.png",
+          "file": "assets/nameplates/UI_Plate_605901.png",
           "source": "nameplates/UI_Plate_605901.png",
           "width": 720,
           "height": 116,
@@ -27355,7 +27545,8 @@
           "genre": "イベントちほー",
           "group": "2026 · イベントちほー",
           "description": "Paradigm: Rebootちほーで獲得",
-          "releaseDate": "2026-02-10"
+          "releaseDate": "2026-02-10",
+          "local": true
         }
       ]
     },
