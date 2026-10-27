@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maimai-diy-assets-v1';
+const CACHE_NAME = 'maimai-diy-assets-v2';
 const MANIFEST_NAMES = ['/materials/manifest.json', '/materials/titles.json', '/materials/badges.json'];
 
 self.addEventListener('install', () => self.skipWaiting());

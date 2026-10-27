@@ -281,7 +281,7 @@ function validateManifest(data) {
 }
 
 async function loadManifest() {
-  const sources = [COS.manifestUrl, COS.fallbackManifestUrl];
+  const sources = [COS.fallbackManifestUrl, COS.manifestUrl];
   for (const url of sources) {
     try {
       const data = validateManifest(await fetchJson(url, true));
