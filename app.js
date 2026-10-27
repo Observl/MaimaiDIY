@@ -1,6 +1,7 @@
 const CANVAS = { width: 1080, height: 452 };
 const DISPLAY_FONT = '"Morisawa UD Shin Go"';
 const RENDER_SCALE = 2;
+const DEFAULT_BACKGROUND = 'assets/default-background.png';
 const COS = {
   baseUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com',
   manifestUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/manifest.json',
@@ -79,7 +80,7 @@ const DEFAULT_PRESET = {
   titleName: 'チエルカ／エソテリカ',
   titleColor: 'Gold',
   files: {
-    background: `${COS.baseUrl}/materials/backgrounds/UI_Frame_200402.png`,
+    background: DEFAULT_BACKGROUND,
     nameplate: `${COS.baseUrl}/materials/nameplates/UI_Plate_006150.png`,
     avatar: `${COS.baseUrl}/materials/avatars/UI_Icon_559504.png`,
     titleBase: 'assets/titles/UI_CMN_Shougou_Gold.png',
@@ -215,9 +216,19 @@ function loadImage(src) {
   if (imageCache.has(src)) return imageCache.get(src);
   const request = new Promise((resolve, reject) => {
     const image = new Image();
+    const timer = window.setTimeout(() => {
+      image.src = '';
+      reject(new Error(`素材加载超时：${src}`));
+    }, COS.timeout);
     if (/^https?:\/\//.test(src)) image.crossOrigin = 'anonymous';
-    image.onload = () => resolve(image);
-    image.onerror = reject;
+    image.onload = () => {
+      window.clearTimeout(timer);
+      resolve(image);
+    };
+    image.onerror = (error) => {
+      window.clearTimeout(timer);
+      reject(error);
+    };
     image.src = src;
   });
   imageCache.set(src, request);
@@ -457,18 +468,22 @@ async function render() {
   ordered.push(['friendBattle', slots.friendBattle]);
   const drawable = [];
   try {
-    for (const [id, slot] of ordered) {
-      if (!state.visible[id]) continue;
+    const prepared = ordered.map(async ([id, slot]) => {
+      if (!state.visible[id]) return null;
       if (['ratingDigits', 'playerName'].includes(id) || (id === 'titleText' && state.titleName)) {
-        drawable.push({ id, slot });
-        continue;
+        return { id, slot };
       }
       try {
-        drawable.push({ id, slot, image: await loadImage(state.files[id]) });
+        return { id, slot, image: await loadImage(state.files[id]) };
       } catch (error) {
         console.warn(`素材加载失败：${state.files[id]}`, error);
+        if (id === 'background' && state.files[id] !== DEFAULT_BACKGROUND) {
+          return { id, slot, image: await loadImage(DEFAULT_BACKGROUND) };
+        }
+        return null;
       }
-    }
+    });
+    drawable.push(...(await Promise.all(prepared)).filter(Boolean));
     if (version !== renderVersion) return;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
