@@ -1,11 +1,13 @@
 const CANVAS = { width: 1080, height: 452 };
 const DISPLAY_FONT = '"Morisawa UD Shin Go"';
+const RENDER_SCALE = 2;
 const COS = {
   baseUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com',
   manifestUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/manifest.json',
   fallbackManifestUrl: 'materials/manifest.json',
   titleManifestUrl: 'materials/titles.json',
-  cacheKey: 'maimai-diy-manifest-v1',
+  badgeManifestUrl: 'materials/badges.json',
+  cacheKey: 'maimai-diy-manifest-v2',
   pageSize: 24,
   timeout: 12000,
   retries: 2
@@ -51,7 +53,15 @@ const controls = [
 ];
 
 const canvas = document.querySelector('#preview');
-const ctx = canvas.getContext('2d');
+const previewCtx = canvas.getContext('2d');
+const renderCanvas = document.createElement('canvas');
+renderCanvas.width = CANVAS.width * RENDER_SCALE;
+renderCanvas.height = CANVAS.height * RENDER_SCALE;
+const ctx = renderCanvas.getContext('2d');
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = 'high';
+previewCtx.imageSmoothingEnabled = true;
+previewCtx.imageSmoothingQuality = 'high';
 const loading = document.querySelector('#loading');
 const assetStatus = document.querySelector('#asset-status');
 const picker = document.querySelector('#asset-picker');
@@ -63,6 +73,7 @@ const pickerMore = document.querySelector('#picker-more');
 const state = { files: {}, visible: {}, ratingValue: 15000, playerName: 'maimai', titleName: null, titleColor: 'Normal' };
 let manifest;
 let titleManifest;
+let badgeManifest;
 let renderVersion = 0;
 const imageCache = new Map();
 let pickerState = { control: null, category: null, shown: 0 };
@@ -228,6 +239,11 @@ async function loadTitleManifest() {
   return titleManifest;
 }
 
+async function loadBadgeManifest() {
+  badgeManifest ||= validateManifest(await fetchJson(COS.badgeManifestUrl));
+  return badgeManifest;
+}
+
 function setAssetStatus(mode, text) {
   assetStatus.className = `status ${mode}`;
   assetStatus.innerHTML = `<i></i> ${text}`;
@@ -285,9 +301,14 @@ async function openPicker(control) {
   picker.showModal();
   try {
     manifest ||= await loadManifest();
-    const category = control.id === 'title'
-      ? { id: 'titles', label: '称号', items: (await loadTitleManifest()).items }
-      : manifest.categories.find((item) => item.id === control.category);
+    let category;
+    if (control.id === 'title') {
+      category = { id: 'titles', label: '称号', items: (await loadTitleManifest()).items };
+    } else if (['rank', 'friendBattle'].includes(control.id)) {
+      category = (await loadBadgeManifest()).categories.find((item) => item.id === control.category);
+    } else {
+      category = manifest.categories.find((item) => item.id === control.category);
+    }
     if (!category || !category.items?.length) {
       pickerMeta.textContent = '当前分类暂无云端素材';
       showPickerMessage('可继续使用默认素材，或通过“本地上传”替换。');
@@ -325,7 +346,9 @@ async function render() {
       }
     }
     if (version !== renderVersion) return;
-    ctx.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
+    ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0);
     for (const { id, slot, image } of drawable) {
       if (id === 'ratingDigits') { drawRatingValue(); continue; }
       if (id === 'playerName') { drawPlayerName(); continue; }
@@ -339,6 +362,8 @@ async function render() {
         ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
       }
     }
+    previewCtx.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    previewCtx.drawImage(renderCanvas, 0, 0, CANVAS.width, CANVAS.height);
   } finally {
     if (version === renderVersion) loading.hidden = true;
   }

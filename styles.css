@@ -2,7 +2,7 @@
   font-family: "Morisawa UD Shin Go";
   src: url("assets/fonts/MorisawaUDShinGoGb4B-site.otf") format("opentype");
   font-display: swap;
-  font-weight: 400 900;
+  font-weight: 700;
 }
 
 :root {
@@ -53,7 +53,7 @@ canvas { display: block; width: 100%; height: 100%; }
 .control-file { max-width: 340px; margin: 5px 0 0; overflow: hidden; color: #999ba5; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
 .control-actions { gap: 18px; }
 .rating-editor, .name-editor { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
-.rating-input, .name-input { min-height: 40px; padding: 0 10px; border: 1px solid #dedee6; border-radius: 12px; background: white; color: var(--ink); font-family: "Morisawa UD Shin Go", sans-serif; font-weight: 750; letter-spacing: .04em; }
+.rating-input, .name-input { min-height: 40px; padding: 0 10px; border: 1px solid #dedee6; border-radius: 12px; background: white; color: var(--ink); font-family: "Morisawa UD Shin Go", sans-serif; font-weight: 700; letter-spacing: .04em; }
 .rating-input { width: 92px; }
 .name-input { width: 150px; }
 .rating-input:focus, .name-input:focus { border-color: var(--accent); outline: 3px solid var(--accent-soft); }
