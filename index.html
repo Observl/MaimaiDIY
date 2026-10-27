@@ -16,7 +16,7 @@
         <h1>上屏装饰模拟器</h1>
         <p class="subtitle">组合素材、控制显示，并导出 1080 × 452 高清图片。</p>
       </div>
-      <span class="status"><i></i> 本地运行</span>
+      <span id="asset-status" class="status is-loading"><i></i> 正在连接素材库</span>
     </header>
 
     <section class="preview-card card">
@@ -38,7 +38,7 @@
       <div class="section-head">
         <div>
           <h2>组件</h2>
-          <p>上传只在浏览器本地处理，不会发送到服务器。</p>
+          <p>可从 COS 素材库选择，也可上传本地图片；本地图片不会发送到服务器。</p>
         </div>
       </div>
       <div id="controls" class="controls"></div>
@@ -60,14 +60,30 @@
           <input class="visibility" type="checkbox" checked>
           <i class="switch"></i>
         </label>
+        <button class="library-button" type="button">素材库</button>
         <label class="upload-button">
-          替换
+          本地上传
           <input class="file-input" type="file" accept="image/png,image/jpeg,image/webp">
         </label>
       </div>
     </article>
   </template>
 
+  <dialog id="asset-picker" class="asset-picker">
+    <div class="picker-head">
+      <div>
+        <p class="eyebrow">COS ASSETS</p>
+        <h2 id="picker-title">选择素材</h2>
+        <p id="picker-meta" class="picker-meta"></p>
+      </div>
+      <button id="picker-close" class="icon-button" type="button" aria-label="关闭">×</button>
+    </div>
+    <div id="picker-message" class="picker-message" hidden></div>
+    <div id="picker-grid" class="picker-grid"></div>
+    <button id="picker-more" class="button secondary picker-more" type="button" hidden>加载更多</button>
+  </dialog>
+
   <script src="app.js"></script>
 </body>
 </html>
+
