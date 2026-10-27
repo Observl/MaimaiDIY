@@ -180,7 +180,10 @@ async function openPicker(control) {
 async function render() {
   loading.hidden = false;
   ctx.clearRect(0, 0, CANVAS.width, CANVAS.height);
-  const ordered = Object.entries(slots).sort((a, b) => a[1].z - b[1].z);
+  const ordered = Object.entries(slots)
+    .filter(([id]) => id !== 'friendBattle')
+    .sort((a, b) => a[1].z - b[1].z);
+  ordered.push(['friendBattle', slots.friendBattle]);
   try {
     for (const [id, slot] of ordered) {
       if (!state.visible[id]) continue;
