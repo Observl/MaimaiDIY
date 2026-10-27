@@ -7,7 +7,7 @@
   <title>MaimaiDIY · 舞萌上屏装饰模拟器</title>
   <link rel="icon" href="assets/avatar.png">
   <link rel="preload" href="assets/fonts/MorisawaUDShinGoGb4B-site.otf" as="font" type="font/otf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261027-10">
+  <link rel="stylesheet" href="styles.css?v=1.0.1">
 </head>
 <body>
   <main class="app-shell">
@@ -30,6 +30,14 @@
         <div id="loading" class="loading" hidden>正在合成…</div>
       </div>
       <div class="toolbar">
+        <div class="history-tools" aria-label="编辑历史">
+          <button id="undo" class="history-button" type="button" aria-label="撤回" title="撤回" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M5 12h8a6 6 0 0 1 6 6"/></svg>
+          </button>
+          <button id="redo" class="history-button" type="button" aria-label="重做" title="重做" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5m4-5h-8a6 6 0 0 0-6 6"/></svg>
+          </button>
+        </div>
         <button id="reset" class="button secondary" type="button">恢复默认</button>
         <button id="export" class="button primary" type="button">导出 PNG</button>
       </div>
@@ -127,6 +135,6 @@
     <button id="picker-more" class="button secondary picker-more" type="button" hidden>加载更多</button>
   </dialog>
 
-  <script src="app.js?v=20261027-15"></script>
+  <script src="app.js?v=1.0.1"></script>
 </body>
 </html>

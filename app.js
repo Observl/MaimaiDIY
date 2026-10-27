@@ -74,6 +74,7 @@ const pickerMore = document.querySelector('#picker-more');
 const pickerSearch = document.querySelector('#picker-search');
 const pickerFilter = document.querySelector('#picker-filter');
 const TEMPLATE_STORAGE_KEY = 'maimai-diy-templates-v1';
+const HISTORY_LIMIT = 5;
 const DEFAULT_PRESET = {
   ratingValue: 16393,
   playerName: 'Observ.L',
@@ -103,10 +104,62 @@ let badgeManifest;
 let renderVersion = 0;
 const imageCache = new Map();
 let pickerState = { control: null, category: null, items: [], shown: 0 };
+const history = { past: [], future: [], transaction: null };
+const undoButton = document.querySelector('#undo');
+const redoButton = document.querySelector('#redo');
 
 const TITLE_COLOR_NAMES = {
   Normal: '普通', Bronze: '铜', Silver: '银', Gold: '金', Rainbow: '彩虹'
 };
+
+function snapshotState() {
+  return JSON.parse(JSON.stringify(state));
+}
+
+function updateHistoryButtons() {
+  undoButton.disabled = history.past.length === 0;
+  redoButton.disabled = history.future.length === 0;
+  undoButton.title = history.past.length ? `撤回（剩余 ${history.past.length} 步）` : '没有可撤回的操作';
+  redoButton.title = history.future.length ? `重做（剩余 ${history.future.length} 步）` : '没有可重做的操作';
+}
+
+function recordHistory(transaction = null) {
+  if (transaction && history.transaction === transaction) return;
+  history.past.push(snapshotState());
+  if (history.past.length > HISTORY_LIMIT) history.past.shift();
+  history.future.length = 0;
+  history.transaction = transaction;
+  updateHistoryButtons();
+}
+
+function endHistoryTransaction(transaction) {
+  if (history.transaction === transaction) history.transaction = null;
+}
+
+async function restoreHistoryState(snapshot) {
+  Object.assign(state, JSON.parse(JSON.stringify(snapshot)));
+  applyRatingBand();
+  syncControlsFromState();
+  await render();
+}
+
+async function undo() {
+  if (!history.past.length) return;
+  history.transaction = null;
+  history.future.push(snapshotState());
+  if (history.future.length > HISTORY_LIMIT) history.future.shift();
+  await restoreHistoryState(history.past.pop());
+  updateHistoryButtons();
+}
+
+async function redo() {
+  if (!history.future.length) return;
+  history.transaction = null;
+  history.past.push(snapshotState());
+  if (history.past.length > HISTORY_LIMIT) history.past.shift();
+  await restoreHistoryState(history.future.pop());
+  updateHistoryButtons();
+}
 
 function resetState() {
   if (state.files.avatar?.startsWith('blob:')) URL.revokeObjectURL(state.files.avatar);
@@ -374,6 +427,7 @@ function appendPickerItems() {
     button.title = [item.name, item.description, item.id].filter(Boolean).join('\n');
     button.append(image, name, group);
     button.addEventListener('click', async () => {
+      recordHistory();
       if (control.id === 'title') {
         state.titleName = item.name;
         state.titleColor = item.color || 'Normal';
@@ -536,20 +590,24 @@ function buildControls() {
     if (control.id === 'rating') {
       ratingEditor.hidden = false;
       ratingInput.addEventListener('input', () => {
+        recordHistory('rating');
         const parsed = Number.parseInt(ratingInput.value, 10);
         state.ratingValue = Number.isFinite(parsed) ? Math.min(99999, Math.max(0, parsed)) : 0;
         const band = applyRatingBand();
         fileLabel.textContent = `${band.label}框 · ${state.ratingValue}`;
         render();
       });
+      ratingInput.addEventListener('blur', () => endHistoryTransaction('rating'));
     }
     if (control.id === 'playerName') {
       nameEditor.hidden = false;
       nameInput.addEventListener('input', () => {
+        recordHistory('playerName');
         state.playerName = nameInput.value;
         fileLabel.textContent = nameInput.value || '未输入名称';
         render();
       });
+      nameInput.addEventListener('blur', () => endHistoryTransaction('playerName'));
     }
     if (control.id === 'avatar') {
       fileLabel.textContent = '默认素材 · 上传限 1:1，最大 720 × 720';
@@ -558,6 +616,7 @@ function buildControls() {
     libraryButton.addEventListener('click', () => openPicker(control));
 
     checkbox.addEventListener('change', () => {
+      recordHistory();
       control.slotIds.forEach((slotId) => { state.visible[slotId] = checkbox.checked; });
       render();
     });
@@ -576,6 +635,7 @@ function buildControls() {
           return;
         }
         if (state.files.avatar?.startsWith('blob:')) URL.revokeObjectURL(state.files.avatar);
+        recordHistory();
         state.files.avatar = await fileToDataUrl(file);
         URL.revokeObjectURL(objectUrl);
         state.visible.avatar = true;
@@ -655,6 +715,7 @@ async function loadTemplate() {
   const id = document.querySelector('#template-list').value;
   const template = readTemplates().find((item) => item.id === id);
   if (!template) return;
+  recordHistory();
   Object.assign(state, JSON.parse(JSON.stringify(template.state)));
   applyRatingBand();
   syncControlsFromState();
@@ -673,10 +734,14 @@ function deleteTemplate() {
 }
 
 document.querySelector('#reset').addEventListener('click', () => {
+  recordHistory();
   resetState();
   syncControlsFromState();
   render();
 });
+
+undoButton.addEventListener('click', undo);
+redoButton.addEventListener('click', redo);
 
 document.querySelector('#template-save').addEventListener('click', saveTemplate);
 document.querySelector('#template-load').addEventListener('click', loadTemplate);

@@ -40,6 +40,13 @@ h1 { margin: 0; font-size: clamp(32px, 5vw, 52px); line-height: 1.05; letter-spa
 canvas { display: block; width: 100%; height: 100%; }
 .loading { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(23, 24, 33, .38); color: white; font-weight: 700; }
 .toolbar { display: flex; gap: 14px; margin-top: 18px; }
+.history-tools { display: flex; flex: 0 0 auto; gap: 8px; }
+.history-button { display: grid; width: 48px; height: 48px; padding: 0; place-items: center; border: 0; border-radius: 14px; background: var(--accent-soft); color: #5d4cd0; cursor: pointer; transition: transform .16s ease, opacity .16s ease; }
+.history-button svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.history-button:hover:not(:disabled) { transform: translateY(-1px); }
+.history-button:active:not(:disabled) { transform: translateY(0); opacity: .82; }
+.history-button:disabled { cursor: default; opacity: .32; }
+.history-button:focus-visible { outline: 3px solid #cfc8ff; outline-offset: 2px; }
 .button { flex: 1; min-height: 48px; border: 0; border-radius: 14px; font-weight: 750; cursor: pointer; transition: transform .16s ease, opacity .16s ease; }
 .button:hover, .upload-button:hover, .library-button:hover { transform: translateY(-1px); }
 .button:active, .upload-button:active, .library-button:active { transform: translateY(0); opacity: .82; }
@@ -111,5 +118,8 @@ canvas { display: block; width: 100%; height: 100%; }
   .picker-tools { grid-template-columns: 1fr; }
   .asset-picker { padding: 16px; }
   .template-tools { grid-template-columns: 1fr; }
+  .toolbar { flex-wrap: wrap; }
+  .history-tools { order: 1; }
+  .toolbar > .button { min-width: calc(50% - 7px); }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
