@@ -17,7 +17,7 @@ const slots = {
   titleBase: { asset: 'assets/titleBase.png', x: 141, y: 111, width: 268, height: 25, z: 23 },
   titleText: { asset: 'assets/titleText.png', x: 247, y: 115, width: 51, height: 12, z: 24 },
   rank: { asset: 'assets/rank.png', x: 326, y: 69, width: 80, height: 35, z: 25 },
-  friendBattle: { asset: 'assets/friendBattle.png', x: 312, y: 7, width: 108, height: 67, z: 26 },
+  friendBattle: { asset: 'assets/friendBattle.png', x: 312, y: 7, width: 108, height: 67, z: 100 },
   nameBase: { asset: 'assets/nameBase.png', x: 142, y: 67, width: 267, height: 40, z: 27 },
   playerName: { asset: 'assets/playerName.png', x: 152, y: 78, width: 102, height: 18, z: 28 },
   avatar: { asset: 'assets/avatar.png', x: 37, y: 33, width: 100, height: 99, z: 30 }
