@@ -1,6 +1,7 @@
 const CANVAS = { width: 1080, height: 452 };
 const DISPLAY_FONT = '"Morisawa UD Shin Go"';
 const RENDER_SCALE = 2;
+const OUTPUT = { width: CANVAS.width * RENDER_SCALE, height: CANVAS.height * RENDER_SCALE };
 const DEFAULT_BACKGROUND = 'assets/default-background.png';
 const COS = {
   baseUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com',
@@ -56,8 +57,8 @@ const controls = [
 const canvas = document.querySelector('#preview');
 const previewCtx = canvas.getContext('2d');
 const renderCanvas = document.createElement('canvas');
-renderCanvas.width = CANVAS.width * RENDER_SCALE;
-renderCanvas.height = CANVAS.height * RENDER_SCALE;
+renderCanvas.width = OUTPUT.width;
+renderCanvas.height = OUTPUT.height;
 const ctx = renderCanvas.getContext('2d');
 ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
@@ -750,8 +751,8 @@ document.querySelector('#template-delete').addEventListener('click', deleteTempl
 document.querySelector('#export').addEventListener('click', () => {
   try {
     const link = document.createElement('a');
-    link.download = `maimai-diy-${Date.now()}.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.download = `maimai-diy-${OUTPUT.width}x${OUTPUT.height}-${Date.now()}.png`;
+    link.href = renderCanvas.toDataURL('image/png');
     link.click();
   } catch (error) {
     alert('云端素材的跨域设置尚未生效，暂时无法导出。请稍后重试。');
