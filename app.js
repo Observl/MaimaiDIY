@@ -9,6 +9,20 @@ const COS = {
   retries: 2
 };
 
+const RATING_BANDS = [
+  { min: 0, asset: 'UI_CMN_DXRating_S_01.png', label: '白' },
+  { min: 1000, asset: 'UI_CMN_DXRating_S_02.png', label: '蓝' },
+  { min: 2000, asset: 'UI_CMN_DXRating_S_03.png', label: '绿' },
+  { min: 4000, asset: 'UI_CMN_DXRating_S_04.png', label: '橙' },
+  { min: 7000, asset: 'UI_CMN_DXRating_S_05.png', label: '红' },
+  { min: 10000, asset: 'UI_CMN_DXRating_S_06.png', label: '紫' },
+  { min: 12000, asset: 'UI_CMN_DXRating_S_07.png', label: '铜' },
+  { min: 13000, asset: 'UI_CMN_DXRating_S_08.png', label: '银' },
+  { min: 14000, asset: 'UI_CMN_DXRating_S_09.png', label: '金' },
+  { min: 14500, asset: 'UI_CMN_DXRating_S_10.png', label: '白金' },
+  { min: 15000, asset: 'UI_CMN_DXRating_S_11.png', label: '虹' }
+];
+
 const slots = {
   background: { asset: 'assets/background.png', x: 0, y: 0, width: 1080, height: 452, z: 0 },
   nameplate: { asset: 'assets/nameplate.png', x: 32, y: 26, width: 717, height: 116, z: 20 },
@@ -44,7 +58,7 @@ const pickerMeta = document.querySelector('#picker-meta');
 const pickerGrid = document.querySelector('#picker-grid');
 const pickerMessage = document.querySelector('#picker-message');
 const pickerMore = document.querySelector('#picker-more');
-const state = { files: {}, visible: {} };
+const state = { files: {}, visible: {}, ratingValue: 15000 };
 let manifest;
 let pickerState = { control: null, category: null, shown: 0 };
 
@@ -53,6 +67,33 @@ function resetState() {
     state.files[id] = slot.asset;
     state.visible[id] = true;
   });
+  state.ratingValue = 15000;
+  applyRatingBand();
+}
+
+function ratingBand(value) {
+  return [...RATING_BANDS].reverse().find((band) => value >= band.min) || RATING_BANDS[0];
+}
+
+function applyRatingBand() {
+  const band = ratingBand(state.ratingValue);
+  state.files.ratingFrame = `${COS.baseUrl}/materials/ratings/${band.asset}`;
+  return band;
+}
+
+function drawRatingValue() {
+  const slot = slots.ratingDigits;
+  ctx.save();
+  ctx.font = '900 18px Arial Narrow, Arial, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#5f4700';
+  ctx.fillStyle = '#ffe234';
+  ctx.strokeText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1);
+  ctx.fillText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1);
+  ctx.restore();
 }
 
 function loadImage(src) {
@@ -187,6 +228,10 @@ async function render() {
   try {
     for (const [id, slot] of ordered) {
       if (!state.visible[id]) continue;
+      if (id === 'ratingDigits') {
+        drawRatingValue();
+        continue;
+      }
       const image = await loadImage(state.files[id]);
       ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
     }
@@ -208,10 +253,22 @@ function buildControls() {
     const checkbox = fragment.querySelector('.visibility');
     const input = fragment.querySelector('.file-input');
     const libraryButton = fragment.querySelector('.library-button');
+    const ratingEditor = fragment.querySelector('.rating-editor');
+    const ratingInput = fragment.querySelector('.rating-input');
     icon.textContent = control.short;
     label.textContent = control.label;
     row.dataset.control = control.id;
     if (!control.canHide) switchWrap.hidden = true;
+    if (control.id === 'rating') {
+      ratingEditor.hidden = false;
+      ratingInput.addEventListener('input', () => {
+        const parsed = Number.parseInt(ratingInput.value, 10);
+        state.ratingValue = Number.isFinite(parsed) ? Math.min(99999, Math.max(0, parsed)) : 0;
+        const band = applyRatingBand();
+        fileLabel.textContent = `${band.label}框 · ${state.ratingValue}`;
+        render();
+      });
+    }
     libraryButton.addEventListener('click', () => openPicker(control));
 
     checkbox.addEventListener('change', () => {
@@ -238,6 +295,7 @@ document.querySelector('#reset').addEventListener('click', () => {
   resetState();
   document.querySelectorAll('.visibility').forEach((input) => { input.checked = true; });
   document.querySelectorAll('.control-file').forEach((item) => { item.textContent = '默认素材'; });
+  document.querySelector('.rating-input').value = '15000';
   render();
 });
 
