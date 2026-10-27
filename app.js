@@ -594,8 +594,8 @@ function refreshTemplateList(selectedId = '') {
 }
 
 function syncControlsFromState() {
-  document.querySelector('.rating-input').value = String(state.ratingValue);
-  document.querySelector('.name-input').value = state.playerName;
+  document.querySelector('[data-control="rating"] .rating-input').value = String(state.ratingValue);
+  document.querySelector('[data-control="playerName"] .name-input').value = state.playerName;
   controls.forEach((control) => {
     const row = document.querySelector(`[data-control="${control.id}"]`);
     const visible = control.slotIds.every((slotId) => state.visible[slotId] !== false);
