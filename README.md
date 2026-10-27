@@ -12,6 +12,7 @@
 - 输入 DX Rating 数字后自动切换对应颜色框（白、蓝、绿、橙、红、紫、铜、银、金、白金、虹）
 - 名称直接输入，不再从素材库选择
 - 从 LXNS 公共 API 同步称号名称、颜色和获得条件；本地清单位于 `materials/titles.json`
+- 友人对战（0–25）和段位（0–23）徽章已加入本地素材库
 - 导出原尺寸透明度保留的 PNG
 - 响应式界面和减少动态效果支持
 
@@ -26,6 +27,8 @@
 当前 COS 地址在 `app.js` 的 `COS` 配置中。存储桶必须为 `https://observl.github.io` 配置 `GET/HEAD` 跨域许可，否则远程图片可浏览但 Canvas 无法导出。
 
 运行 `tools/sync-lxns-titles.ps1` 可重新同步 LXNS 称号数据，并自动更新 `materials/manifest.json` 的 `titles` 分类。
+
+友人对战和段位徽章来自 MIT 许可的 `@mai-kit/assets` 0.1.3；许可文本位于 `licenses/mai-kit-assets-LICENSE.txt`。
 
 ## GitHub Pages
 

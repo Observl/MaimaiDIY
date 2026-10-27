@@ -3,7 +3,7 @@
   "basePath": "materials/",
   "summary": {
     "categories": 7,
-    "items": 4698.0,
+    "items": 4748,
     "bytes": 255224646
   },
   "categories": [
@@ -13569,8 +13569,165 @@
     {
       "id": "friend-battles",
       "label": "友人对战",
-      "count": 0,
-      "items": []
+      "count": 26,
+      "items": [
+        {
+          "id": "friend-battles/0",
+          "name": "友人对战 00",
+          "file": "assets/friend-battles/00.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/1",
+          "name": "友人对战 01",
+          "file": "assets/friend-battles/01.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/2",
+          "name": "友人对战 02",
+          "file": "assets/friend-battles/02.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/3",
+          "name": "友人对战 03",
+          "file": "assets/friend-battles/03.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/4",
+          "name": "友人对战 04",
+          "file": "assets/friend-battles/04.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/5",
+          "name": "友人对战 05",
+          "file": "assets/friend-battles/05.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/6",
+          "name": "友人对战 06",
+          "file": "assets/friend-battles/06.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/7",
+          "name": "友人对战 07",
+          "file": "assets/friend-battles/07.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/8",
+          "name": "友人对战 08",
+          "file": "assets/friend-battles/08.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/9",
+          "name": "友人对战 09",
+          "file": "assets/friend-battles/09.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/10",
+          "name": "友人对战 10",
+          "file": "assets/friend-battles/10.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/11",
+          "name": "友人对战 11",
+          "file": "assets/friend-battles/11.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/12",
+          "name": "友人对战 12",
+          "file": "assets/friend-battles/12.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/13",
+          "name": "友人对战 13",
+          "file": "assets/friend-battles/13.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/14",
+          "name": "友人对战 14",
+          "file": "assets/friend-battles/14.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/15",
+          "name": "友人对战 15",
+          "file": "assets/friend-battles/15.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/16",
+          "name": "友人对战 16",
+          "file": "assets/friend-battles/16.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/17",
+          "name": "友人对战 17",
+          "file": "assets/friend-battles/17.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/18",
+          "name": "友人对战 18",
+          "file": "assets/friend-battles/18.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/19",
+          "name": "友人对战 19",
+          "file": "assets/friend-battles/19.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/20",
+          "name": "友人对战 20",
+          "file": "assets/friend-battles/20.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/21",
+          "name": "友人对战 21",
+          "file": "assets/friend-battles/21.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/22",
+          "name": "友人对战 22",
+          "file": "assets/friend-battles/22.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/23",
+          "name": "友人对战 23",
+          "file": "assets/friend-battles/23.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/24",
+          "name": "友人对战 24",
+          "file": "assets/friend-battles/24.png",
+          "local": true
+        },
+        {
+          "id": "friend-battles/25",
+          "name": "友人对战 25",
+          "file": "assets/friend-battles/25.png",
+          "local": true
+        }
+      ]
     },
     {
       "id": "nameplates",
@@ -17272,8 +17429,153 @@
     {
       "id": "ranks",
       "label": "段位",
-      "count": 0,
-      "items": []
+      "count": 24,
+      "items": [
+        {
+          "id": "ranks/0",
+          "name": "段位 00",
+          "file": "assets/ranks/00.png",
+          "local": true
+        },
+        {
+          "id": "ranks/1",
+          "name": "段位 01",
+          "file": "assets/ranks/01.png",
+          "local": true
+        },
+        {
+          "id": "ranks/2",
+          "name": "段位 02",
+          "file": "assets/ranks/02.png",
+          "local": true
+        },
+        {
+          "id": "ranks/3",
+          "name": "段位 03",
+          "file": "assets/ranks/03.png",
+          "local": true
+        },
+        {
+          "id": "ranks/4",
+          "name": "段位 04",
+          "file": "assets/ranks/04.png",
+          "local": true
+        },
+        {
+          "id": "ranks/5",
+          "name": "段位 05",
+          "file": "assets/ranks/05.png",
+          "local": true
+        },
+        {
+          "id": "ranks/6",
+          "name": "段位 06",
+          "file": "assets/ranks/06.png",
+          "local": true
+        },
+        {
+          "id": "ranks/7",
+          "name": "段位 07",
+          "file": "assets/ranks/07.png",
+          "local": true
+        },
+        {
+          "id": "ranks/8",
+          "name": "段位 08",
+          "file": "assets/ranks/08.png",
+          "local": true
+        },
+        {
+          "id": "ranks/9",
+          "name": "段位 09",
+          "file": "assets/ranks/09.png",
+          "local": true
+        },
+        {
+          "id": "ranks/10",
+          "name": "段位 10",
+          "file": "assets/ranks/10.png",
+          "local": true
+        },
+        {
+          "id": "ranks/11",
+          "name": "段位 11",
+          "file": "assets/ranks/11.png",
+          "local": true
+        },
+        {
+          "id": "ranks/12",
+          "name": "段位 12",
+          "file": "assets/ranks/12.png",
+          "local": true
+        },
+        {
+          "id": "ranks/13",
+          "name": "段位 13",
+          "file": "assets/ranks/13.png",
+          "local": true
+        },
+        {
+          "id": "ranks/14",
+          "name": "段位 14",
+          "file": "assets/ranks/14.png",
+          "local": true
+        },
+        {
+          "id": "ranks/15",
+          "name": "段位 15",
+          "file": "assets/ranks/15.png",
+          "local": true
+        },
+        {
+          "id": "ranks/16",
+          "name": "段位 16",
+          "file": "assets/ranks/16.png",
+          "local": true
+        },
+        {
+          "id": "ranks/17",
+          "name": "段位 17",
+          "file": "assets/ranks/17.png",
+          "local": true
+        },
+        {
+          "id": "ranks/18",
+          "name": "段位 18",
+          "file": "assets/ranks/18.png",
+          "local": true
+        },
+        {
+          "id": "ranks/19",
+          "name": "段位 19",
+          "file": "assets/ranks/19.png",
+          "local": true
+        },
+        {
+          "id": "ranks/20",
+          "name": "段位 20",
+          "file": "assets/ranks/20.png",
+          "local": true
+        },
+        {
+          "id": "ranks/21",
+          "name": "段位 21",
+          "file": "assets/ranks/21.png",
+          "local": true
+        },
+        {
+          "id": "ranks/22",
+          "name": "段位 22",
+          "file": "assets/ranks/22.png",
+          "local": true
+        },
+        {
+          "id": "ranks/23",
+          "name": "段位 23",
+          "file": "assets/ranks/23.png",
+          "local": true
+        }
+      ]
     },
     {
       "id": "ratings",
