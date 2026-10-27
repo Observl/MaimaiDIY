@@ -42,14 +42,14 @@ const slots = {
 };
 
 const controls = [
-  { id: 'background', label: '背景板', short: '景', slotIds: ['background'], target: 'background', category: 'backgrounds', canHide: false },
-  { id: 'nameplate', label: '名牌', short: '牌', slotIds: ['nameplate'], target: 'nameplate', category: 'nameplates', canHide: false },
-  { id: 'avatar', label: '头像', short: '像', slotIds: ['avatar'], target: 'avatar', category: 'avatars', canHide: false },
+  { id: 'background', label: '背景板', short: '景', slotIds: ['background'], target: 'background', category: 'backgrounds', canHide: false, hasUpload: false },
+  { id: 'nameplate', label: '名牌', short: '牌', slotIds: ['nameplate'], target: 'nameplate', category: 'nameplates', canHide: false, hasUpload: false },
+  { id: 'avatar', label: '头像', short: '像', slotIds: ['avatar'], target: 'avatar', category: 'avatars', canHide: false, hasUpload: true },
   { id: 'rating', label: 'Rating', short: 'R', slotIds: ['ratingFrame', 'ratingDigits'], target: 'ratingFrame', category: 'ratings', canHide: true, hasLibrary: false, hasUpload: false },
-  { id: 'title', label: '称号', short: '称', slotIds: ['titleBase', 'titleText'], target: 'titleBase', category: 'titles', canHide: false },
+  { id: 'title', label: '称号', short: '称', slotIds: ['titleBase', 'titleText'], target: 'titleBase', category: 'titles', canHide: false, hasUpload: false },
   { id: 'playerName', label: '名称', short: '名', slotIds: ['nameBase', 'playerName'], target: 'nameBase', category: 'name-bases', canHide: false, hasLibrary: false, hasUpload: false },
-  { id: 'rank', label: '段位', short: '段', slotIds: ['rank'], target: 'rank', category: 'ranks', canHide: true },
-  { id: 'friendBattle', label: '友人对战', short: '战', slotIds: ['friendBattle'], target: 'friendBattle', category: 'friend-battles', canHide: true }
+  { id: 'rank', label: '段位', short: '段', slotIds: ['rank'], target: 'rank', category: 'ranks', canHide: true, hasUpload: false },
+  { id: 'friendBattle', label: '友人对战', short: '战', slotIds: ['friendBattle'], target: 'friendBattle', category: 'friend-battles', canHide: true, hasUpload: false }
 ];
 
 const canvas = document.querySelector('#preview');
@@ -79,6 +79,7 @@ const imageCache = new Map();
 let pickerState = { control: null, category: null, shown: 0 };
 
 function resetState() {
+  if (state.files.avatar?.startsWith('blob:')) URL.revokeObjectURL(state.files.avatar);
   Object.entries(slots).forEach(([id, slot]) => {
     state.files[id] = slot.asset;
     state.visible[id] = true;
@@ -180,6 +181,21 @@ function loadImage(src) {
   imageCache.set(src, request);
   request.catch(() => imageCache.delete(src));
   return request;
+}
+
+function inspectLocalImage(file) {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      resolve({ width: image.naturalWidth, height: image.naturalHeight, objectUrl });
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('无法读取图片'));
+    };
+    image.src = objectUrl;
+  });
 }
 
 function wait(ms) {
@@ -411,6 +427,10 @@ function buildControls() {
         render();
       });
     }
+    if (control.id === 'avatar') {
+      fileLabel.textContent = '默认素材 · 上传限 1:1，最大 720 × 720';
+      input.setAttribute('aria-label', '上传头像，要求 1:1，最大 720 × 720 像素');
+    }
     libraryButton.addEventListener('click', () => openPicker(control));
 
     checkbox.addEventListener('change', () => {
@@ -418,16 +438,28 @@ function buildControls() {
       render();
     });
 
-    input.addEventListener('change', () => {
+    input.addEventListener('change', async () => {
       const file = input.files?.[0];
       if (!file) return;
-      const objectUrl = URL.createObjectURL(file);
-      control.slotIds.forEach((slotId, index) => {
-        if (index === 0) state.files[slotId] = objectUrl;
-        else state.visible[slotId] = false;
-      });
-      fileLabel.textContent = file.name;
-      render();
+      input.value = '';
+      if (control.id !== 'avatar') return;
+      try {
+        const { width, height, objectUrl } = await inspectLocalImage(file);
+        if (width > 720 || height > 720 || width !== height) {
+          URL.revokeObjectURL(objectUrl);
+          fileLabel.textContent = `不符合要求：${width} × ${height}`;
+          alert('头像必须为 1:1 正方形，且宽、高均不得超过 720 像素。');
+          return;
+        }
+        if (state.files.avatar?.startsWith('blob:')) URL.revokeObjectURL(state.files.avatar);
+        state.files.avatar = objectUrl;
+        state.visible.avatar = true;
+        fileLabel.textContent = `${file.name} · ${width} × ${height}`;
+        await render();
+      } catch (error) {
+        fileLabel.textContent = '图片读取失败';
+        alert('无法读取该头像图片，请选择 PNG、JPEG 或 WebP 文件。');
+      }
     });
     root.appendChild(fragment);
   });
@@ -437,6 +469,7 @@ document.querySelector('#reset').addEventListener('click', () => {
   resetState();
   document.querySelectorAll('.visibility').forEach((input) => { input.checked = true; });
   document.querySelectorAll('.control-file').forEach((item) => { item.textContent = '默认素材'; });
+  document.querySelector('[data-control="avatar"] .control-file').textContent = '默认素材 · 上传限 1:1，最大 720 × 720';
   document.querySelector('.rating-input').value = '15000';
   document.querySelector('.name-input').value = 'maimai';
   render();
