@@ -73,7 +73,29 @@ const pickerMore = document.querySelector('#picker-more');
 const pickerSearch = document.querySelector('#picker-search');
 const pickerFilter = document.querySelector('#picker-filter');
 const TEMPLATE_STORAGE_KEY = 'maimai-diy-templates-v1';
-const state = { files: {}, visible: {}, labels: {}, ratingValue: 15000, playerName: 'maimai', titleName: null, titleColor: 'Normal' };
+const DEFAULT_PRESET = {
+  ratingValue: 16393,
+  playerName: 'Observ.L',
+  titleName: 'チエルカ／エソテリカ',
+  titleColor: 'Gold',
+  files: {
+    background: `${COS.baseUrl}/materials/backgrounds/UI_Frame_200402.png`,
+    nameplate: `${COS.baseUrl}/materials/nameplates/UI_Plate_006150.png`,
+    avatar: `${COS.baseUrl}/materials/avatars/UI_Icon_559504.png`,
+    titleBase: 'assets/titles/UI_CMN_Shougou_Gold.png',
+    rank: 'assets/ranks/18.png',
+    friendBattle: 'assets/friend-battles/21.png'
+  },
+  labels: {
+    background: '7sRefちほー おまけ',
+    nameplate: '舞将',
+    avatar: 'KALEIDXSCOPE -旧き世界-',
+    title: 'チエルカ／エソテリカ',
+    rank: '真七段',
+    friendBattle: 'SSS4'
+  }
+};
+const state = { files: {}, visible: {}, labels: {}, ratingValue: 16393, playerName: 'Observ.L', titleName: DEFAULT_PRESET.titleName, titleColor: 'Gold' };
 let manifest;
 let titleManifest;
 let badgeManifest;
@@ -91,11 +113,13 @@ function resetState() {
     state.files[id] = slot.asset;
     state.visible[id] = true;
   });
-  state.ratingValue = 15000;
-  state.playerName = 'maimai';
-  state.titleName = null;
-  state.titleColor = 'Normal';
-  state.labels = {};
+  Object.assign(state.files, DEFAULT_PRESET.files);
+  state.ratingValue = DEFAULT_PRESET.ratingValue;
+  state.playerName = DEFAULT_PRESET.playerName;
+  state.titleName = DEFAULT_PRESET.titleName;
+  state.titleColor = DEFAULT_PRESET.titleColor;
+  state.labels = { ...DEFAULT_PRESET.labels };
+  applyRatingBand();
 }
 
 function ratingBand(value) {
@@ -134,21 +158,22 @@ function drawSpacedText(text, x, y, spacing, maxWidth, align = 'left', stroke = 
 
 function drawRatingValue() {
   const digits = String(state.ratingValue).slice(-5);
-  const firstCellCenter = slots.ratingFrame.x + 90.5;
-  const cellWidth = 16.45;
+  const firstCellCenter = slots.ratingFrame.x + 90.2;
+  const cellWidth = 16.35;
   const startCell = 5 - digits.length;
   ctx.save();
-  ctx.font = `700 17px ${DISPLAY_FONT}, sans-serif`;
+  ctx.font = `700 15px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1.45;
   ctx.strokeStyle = '#5f4700';
   ctx.fillStyle = '#ffe234';
   [...digits].forEach((digit, index) => {
     const x = firstCellCenter + (startCell + index) * cellWidth;
-    ctx.strokeText(digit, x, slots.ratingDigits.y + slots.ratingDigits.height / 2 + 1);
-    ctx.fillText(digit, x, slots.ratingDigits.y + slots.ratingDigits.height / 2 + 1);
+    const y = slots.ratingDigits.y + slots.ratingDigits.height / 2 + 0.25;
+    ctx.strokeText(digit, x, y);
+    ctx.fillText(digit, x, y);
   });
   ctx.restore();
 }
@@ -167,14 +192,16 @@ function drawPlayerName() {
 function drawTitleText() {
   const slot = slots.titleBase;
   ctx.save();
-  ctx.font = `700 14px ${DISPLAY_FONT}, sans-serif`;
+  const longTitle = [...state.titleName].length > 18;
+  ctx.font = `700 ${longTitle ? 11.5 : 13}px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = '#302400';
-  ctx.fillStyle = '#ffffff';
-  drawSpacedText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2, .8, slot.width - 18, 'center', true);
+  const normal = state.titleColor === 'Normal';
+  ctx.lineWidth = normal ? 0 : 1.4;
+  ctx.strokeStyle = 'rgba(42, 31, 5, .9)';
+  ctx.fillStyle = normal ? '#222633' : '#ffffff';
+  drawSpacedText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2 + .15, .55, slot.width - 20, 'center', !normal);
   ctx.restore();
 }
 
@@ -226,13 +253,14 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchJson(url) {
+async function fetchJson(url, forceFresh = false) {
   let lastError;
   for (let attempt = 0; attempt <= COS.retries; attempt += 1) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), COS.timeout);
     try {
-      const response = await fetch(url, { signal: controller.signal, cache: 'no-cache' });
+      const requestUrl = forceFresh ? `${url}${url.includes('?') ? '&' : '?'}refresh=${Date.now()}` : url;
+      const response = await fetch(requestUrl, { signal: controller.signal, cache: forceFresh ? 'reload' : 'default' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (error) {
@@ -253,10 +281,11 @@ function validateManifest(data) {
 }
 
 async function loadManifest() {
-  const sources = [COS.fallbackManifestUrl, COS.manifestUrl];
+  const sources = [COS.manifestUrl, COS.fallbackManifestUrl];
   for (const url of sources) {
     try {
-      const data = validateManifest(await fetchJson(url));
+      const data = validateManifest(await fetchJson(url, true));
+      normalizeManifestGroups(data);
       localStorage.setItem(COS.cacheKey, JSON.stringify(data));
       return data;
     } catch (error) {
@@ -266,6 +295,20 @@ async function loadManifest() {
   const cached = localStorage.getItem(COS.cacheKey);
   if (cached) return validateManifest(JSON.parse(cached));
   throw new Error('素材库暂时不可用');
+}
+
+function normalizeManifestGroups(data) {
+  data.categories.forEach((category) => {
+    const genreGroups = new Map();
+    category.items.forEach((item) => {
+      if (item.genre && item.group && !/^2026\s*·\s*/.test(item.group)) genreGroups.set(item.genre, item.group);
+    });
+    category.items.forEach((item) => {
+      if (!/^2026\s*·\s*/.test(item.group || '')) return;
+      item.group = genreGroups.get(item.genre) || item.group.replace(/^2026\s*·\s*/, '');
+    });
+  });
+  return data;
 }
 
 function assetUrl(item) {
@@ -643,8 +686,14 @@ picker.addEventListener('click', (event) => {
 });
 
 async function initialize() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then((registration) => registration.update()).catch((error) => {
+      console.warn('素材缓存初始化失败', error);
+    });
+  }
   resetState();
   buildControls();
+  syncControlsFromState();
   refreshTemplateList();
   loading.hidden = false;
   try {
