@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#171821">
   <title>MaimaiDIY · 舞萌上屏装饰模拟器</title>
   <link rel="icon" href="assets/avatar.png">
-  <link rel="stylesheet" href="styles.css?v=20261027-3">
+  <link rel="stylesheet" href="styles.css?v=20261027-4">
 </head>
 <body>
   <main class="app-shell">
@@ -59,6 +59,10 @@
           <span>数值</span>
           <input class="rating-input" type="number" min="0" max="99999" step="1" value="15000" inputmode="numeric">
         </label>
+        <label class="name-editor" hidden>
+          <span>名称</span>
+          <input class="name-input" type="text" maxlength="16" value="maimai" autocomplete="off">
+        </label>
         <label class="switch-wrap">
           <span>展示</span>
           <input class="visibility" type="checkbox" checked>
@@ -87,7 +91,7 @@
     <button id="picker-more" class="button secondary picker-more" type="button" hidden>加载更多</button>
   </dialog>
 
-  <script src="app.js?v=20261027-3"></script>
+  <script src="app.js?v=20261027-4"></script>
 </body>
 </html>
 

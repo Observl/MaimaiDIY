@@ -3,7 +3,7 @@
   "basePath": "materials/",
   "summary": {
     "categories": 7,
-    "items": 1926,
+    "items": 4698.0,
     "bytes": 255224646
   },
   "categories": [
@@ -17384,8 +17384,9 @@
     {
       "id": "titles",
       "label": "称号",
-      "count": 0,
-      "items": []
+      "count": 2772,
+      "items": [],
+      "manifest": "titles.json"
     }
   ]
 }

@@ -3,6 +3,7 @@ const COS = {
   baseUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com',
   manifestUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/manifest.json',
   fallbackManifestUrl: 'materials/manifest.json',
+  titleManifestUrl: 'materials/titles.json',
   cacheKey: 'maimai-diy-manifest-v1',
   pageSize: 24,
   timeout: 12000,
@@ -30,7 +31,7 @@ const slots = {
   ratingDigits: { asset: 'assets/ratingDigits.png', x: 227, y: 42, width: 69, height: 14, z: 22 },
   titleBase: { asset: 'assets/titleBase.png', x: 141, y: 111, width: 268, height: 25, z: 23 },
   titleText: { asset: 'assets/titleText.png', x: 247, y: 115, width: 51, height: 12, z: 24 },
-  rank: { asset: 'assets/rank.png', x: 326, y: 69, width: 80, height: 35, z: 25 },
+  rank: { asset: 'assets/rank.png', x: 326, y: 69, width: 80, height: 35, z: 90 },
   friendBattle: { asset: 'assets/friendBattle.png', x: 312, y: 7, width: 108, height: 67, z: 100 },
   nameBase: { asset: 'assets/nameBase.png', x: 142, y: 67, width: 267, height: 40, z: 27 },
   playerName: { asset: 'assets/playerName.png', x: 152, y: 78, width: 102, height: 18, z: 28 },
@@ -41,9 +42,9 @@ const controls = [
   { id: 'background', label: '背景板', short: '景', slotIds: ['background'], target: 'background', category: 'backgrounds', canHide: false },
   { id: 'nameplate', label: '名牌', short: '牌', slotIds: ['nameplate'], target: 'nameplate', category: 'nameplates', canHide: false },
   { id: 'avatar', label: '头像', short: '像', slotIds: ['avatar'], target: 'avatar', category: 'avatars', canHide: false },
-  { id: 'rating', label: 'Rating', short: 'R', slotIds: ['ratingFrame', 'ratingDigits'], target: 'ratingFrame', category: 'ratings', canHide: true },
+  { id: 'rating', label: 'Rating', short: 'R', slotIds: ['ratingFrame', 'ratingDigits'], target: 'ratingFrame', category: 'ratings', canHide: true, hasLibrary: false, hasUpload: false },
   { id: 'title', label: '称号', short: '称', slotIds: ['titleBase', 'titleText'], target: 'titleBase', category: 'titles', canHide: false },
-  { id: 'playerName', label: '名称', short: '名', slotIds: ['nameBase', 'playerName'], target: 'nameBase', category: 'name-bases', canHide: false },
+  { id: 'playerName', label: '名称', short: '名', slotIds: ['nameBase', 'playerName'], target: 'nameBase', category: 'name-bases', canHide: false, hasLibrary: false, hasUpload: false },
   { id: 'rank', label: '段位', short: '段', slotIds: ['rank'], target: 'rank', category: 'ranks', canHide: true },
   { id: 'friendBattle', label: '友人对战', short: '战', slotIds: ['friendBattle'], target: 'friendBattle', category: 'friend-battles', canHide: true }
 ];
@@ -58,8 +59,9 @@ const pickerMeta = document.querySelector('#picker-meta');
 const pickerGrid = document.querySelector('#picker-grid');
 const pickerMessage = document.querySelector('#picker-message');
 const pickerMore = document.querySelector('#picker-more');
-const state = { files: {}, visible: {}, ratingValue: 15000 };
+const state = { files: {}, visible: {}, ratingValue: 15000, playerName: 'maimai', titleName: null, titleColor: 'Normal' };
 let manifest;
+let titleManifest;
 let pickerState = { control: null, category: null, shown: 0 };
 
 function resetState() {
@@ -68,6 +70,9 @@ function resetState() {
     state.visible[id] = true;
   });
   state.ratingValue = 15000;
+  state.playerName = 'maimai';
+  state.titleName = null;
+  state.titleColor = 'Normal';
   applyRatingBand();
 }
 
@@ -94,6 +99,38 @@ function drawRatingValue() {
   ctx.strokeText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1);
   ctx.fillText(String(state.ratingValue), slot.x + slot.width, slot.y + slot.height / 2 + 1);
   ctx.restore();
+}
+
+function drawPlayerName() {
+  const slot = slots.playerName;
+  ctx.save();
+  ctx.font = '600 19px "Segoe UI", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#111318';
+  ctx.fillText(state.playerName || '', slot.x, slot.y + slot.height / 2, slots.nameBase.width - 18);
+  ctx.restore();
+}
+
+function drawTitleText() {
+  const slot = slots.titleBase;
+  ctx.save();
+  ctx.font = '700 14px "Segoe UI", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = '#302400';
+  ctx.fillStyle = '#ffffff';
+  ctx.strokeText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2, slot.width - 18);
+  ctx.fillText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2, slot.width - 18);
+  ctx.restore();
+}
+
+function titleAsset(color) {
+  const supported = ['Normal', 'Silver', 'Gold', 'Rainbow'];
+  const fileColor = supported.includes(color) ? color : 'Gold';
+  return `assets/titles/UI_CMN_Shougou_${fileColor}.png`;
 }
 
 function loadImage(src) {
@@ -157,6 +194,11 @@ function assetUrl(item) {
   return `${COS.baseUrl}/materials/${path}`;
 }
 
+async function loadTitleManifest() {
+  titleManifest ||= await fetchJson(COS.titleManifestUrl);
+  return titleManifest;
+}
+
 function setAssetStatus(mode, text) {
   assetStatus.className = `status ${mode}`;
   assetStatus.innerHTML = `<i></i> ${text}`;
@@ -174,15 +216,26 @@ function appendPickerItems() {
     const button = document.createElement('button');
     button.className = 'asset-item';
     button.type = 'button';
-    const image = document.createElement('img');
-    image.loading = 'lazy';
-    image.alt = item.name;
-    image.src = assetUrl(item);
+    const image = control.id === 'title' ? document.createElement('i') : document.createElement('img');
+    if (control.id === 'title') {
+      image.className = `title-swatch title-${String(item.color).toLowerCase()}`;
+      image.textContent = item.name;
+    } else {
+      image.loading = 'lazy';
+      image.alt = item.name;
+      image.src = assetUrl(item);
+    }
     const name = document.createElement('span');
     name.textContent = item.name;
     button.append(image, name);
     button.addEventListener('click', async () => {
-      state.files[control.target] = assetUrl(item);
+      if (control.id === 'title') {
+        state.titleName = item.name;
+        state.titleColor = item.color || 'Normal';
+        state.files.titleBase = titleAsset(state.titleColor);
+      } else {
+        state.files[control.target] = assetUrl(item);
+      }
       state.visible[control.target] = true;
       document.querySelector(`[data-control="${control.id}"] .control-file`).textContent = item.name;
       picker.close();
@@ -203,7 +256,9 @@ async function openPicker(control) {
   picker.showModal();
   try {
     manifest ||= await loadManifest();
-    const category = manifest.categories.find((item) => item.id === control.category);
+    const category = control.id === 'title'
+      ? { id: 'titles', label: '称号', items: (await loadTitleManifest()).items }
+      : manifest.categories.find((item) => item.id === control.category);
     if (!category || !category.items?.length) {
       pickerMeta.textContent = '当前分类暂无云端素材';
       showPickerMessage('可继续使用默认素材，或通过“本地上传”替换。');
@@ -222,8 +277,9 @@ async function render() {
   loading.hidden = false;
   ctx.clearRect(0, 0, CANVAS.width, CANVAS.height);
   const ordered = Object.entries(slots)
-    .filter(([id]) => id !== 'friendBattle')
+    .filter(([id]) => !['rank', 'friendBattle'].includes(id))
     .sort((a, b) => a[1].z - b[1].z);
+  ordered.push(['rank', slots.rank]);
   ordered.push(['friendBattle', slots.friendBattle]);
   try {
     for (const [id, slot] of ordered) {
@@ -232,8 +288,23 @@ async function render() {
         drawRatingValue();
         continue;
       }
+      if (id === 'playerName') {
+        drawPlayerName();
+        continue;
+      }
+      if (id === 'titleText' && state.titleName) {
+        drawTitleText();
+        continue;
+      }
       const image = await loadImage(state.files[id]);
-      ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
+      if (id === 'titleBase' && state.titleColor === 'Bronze') {
+        ctx.save();
+        ctx.filter = 'sepia(1) saturate(1.25) brightness(.78)';
+        ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
+        ctx.restore();
+      } else {
+        ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
+      }
     }
   } finally {
     loading.hidden = true;
@@ -255,10 +326,15 @@ function buildControls() {
     const libraryButton = fragment.querySelector('.library-button');
     const ratingEditor = fragment.querySelector('.rating-editor');
     const ratingInput = fragment.querySelector('.rating-input');
+    const nameEditor = fragment.querySelector('.name-editor');
+    const nameInput = fragment.querySelector('.name-input');
+    const uploadButton = fragment.querySelector('.upload-button');
     icon.textContent = control.short;
     label.textContent = control.label;
     row.dataset.control = control.id;
     if (!control.canHide) switchWrap.hidden = true;
+    if (control.hasLibrary === false) libraryButton.hidden = true;
+    if (control.hasUpload === false) uploadButton.hidden = true;
     if (control.id === 'rating') {
       ratingEditor.hidden = false;
       ratingInput.addEventListener('input', () => {
@@ -266,6 +342,14 @@ function buildControls() {
         state.ratingValue = Number.isFinite(parsed) ? Math.min(99999, Math.max(0, parsed)) : 0;
         const band = applyRatingBand();
         fileLabel.textContent = `${band.label}框 · ${state.ratingValue}`;
+        render();
+      });
+    }
+    if (control.id === 'playerName') {
+      nameEditor.hidden = false;
+      nameInput.addEventListener('input', () => {
+        state.playerName = nameInput.value;
+        fileLabel.textContent = nameInput.value || '未输入名称';
         render();
       });
     }
@@ -296,6 +380,7 @@ document.querySelector('#reset').addEventListener('click', () => {
   document.querySelectorAll('.visibility').forEach((input) => { input.checked = true; });
   document.querySelectorAll('.control-file').forEach((item) => { item.textContent = '默认素材'; });
   document.querySelector('.rating-input').value = '15000';
+  document.querySelector('.name-input').value = 'maimai';
   render();
 });
 
