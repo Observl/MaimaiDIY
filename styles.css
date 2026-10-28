@@ -31,6 +31,15 @@ select { font: inherit; }
 .app-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 72px; }
 .hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px; margin: 0 4px 30px; }
 .hero-side { display: flex; align-items: center; gap: 10px; }
+.version-link { display: inline-grid; place-items: center; min-height: 44px; color: var(--muted); text-decoration: none; font-size: 13px; }
+.version-link:hover { color: var(--accent); text-decoration: underline; }
+.component-panels { display: grid; gap: 18px; }
+.component-panel { padding: 20px; border: 1px solid var(--line); border-radius: 20px; min-width: 0; }
+.input-panel { background: #f7f5ff; }
+.component-panel > h3 { margin: 0; font-size: 16px; }
+.panel-description { margin: 6px 0 2px; color: var(--muted); font-size: 13px; }
+@media (min-width: 900px) { #input-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; } #input-controls .control-row { flex-direction: column; align-items: stretch; border-bottom: 0; padding-bottom: 0; } #input-controls .control-actions { justify-content: space-between; } }
+@media (max-width: 680px) { .component-panel { padding: 14px; } .preview-card .section-head { flex-wrap: wrap; gap: 6px; } }
 .github-profile { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 8px 12px; border-radius: 12px; color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 700; white-space: nowrap; }
 .github-profile svg { width: 22px; height: 22px; flex-shrink: 0; }
 .github-profile:hover { background: var(--accent-soft); }
@@ -127,6 +136,7 @@ canvas { display: block; width: 100%; height: 100%; }
 .template-io .button { width: 100%; text-align: center; }
 .template-import-button { display: inline-grid; place-items: center; }
 .template-import-button { position: relative; overflow: hidden; }
+.template-tools label.template-import-button { font-size: inherit; font-weight: 750; }
 .template-tools .template-import-button .file-input { position: absolute; width: 1px; height: 1px; min-height: 0; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); }
 .danger { background: #fff0f1; color: #b4232f; }
 .template-status { min-height: 20px; margin: 12px 0 0; color: var(--muted); font-size: 13px; }
@@ -178,6 +188,45 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 #large-preview[open] { display: grid; place-items: center; }
 #large-preview canvas { width: min(100vw, calc(100dvh * 1080 / 452)); height: auto; aspect-ratio: 1080 / 452; }
 #large-preview::backdrop { background: #101014; }
+.component-panel > h3 { margin-bottom: 16px; }
+#input-controls, #material-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.component-panel .control-row { display: flex; flex-direction: column; align-items: stretch; justify-content: space-between; gap: 16px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; min-width: 0; }
+.component-panel .control-row:last-child { padding-bottom: 16px; }
+.component-panel .control-actions { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-end; max-width: none; gap: 8px; }
+.component-panel .control-file { max-width: 100%; }
+#input-controls [data-control="avatar"] { grid-column: 1 / -1; flex-direction: row; align-items: center; order: 0; }
+#input-controls [data-control="playerName"] { order: 1; }
+#input-controls [data-control="rating"] { order: 2; }
+#input-controls [data-control="rating"] .control-actions { display: flex; flex-wrap: nowrap; justify-content: space-between; }
+#input-controls [data-control="rating"] .rating-editor { flex: 1; min-width: 0; flex-wrap: nowrap; }
+#input-controls [data-control="rating"] .rating-input { width: 100%; min-width: 0; }
+#input-controls [data-control="rating"] .switch-wrap { flex-shrink: 0; margin-left: auto; }
+#material-controls [data-control="nameplate"] { order: -1; grid-column: 1 / -1; }
+#material-controls [data-control="nameplate"] { flex-direction: row; align-items: center; flex-wrap: nowrap; }
+#material-controls [data-control="nameplate"] .control-main { flex: 1; min-width: 0; }
+#material-controls [data-control="nameplate"] .control-actions { flex: 0 0 auto; margin-left: auto; }
+#material-controls .control-actions { justify-content: space-between; flex-wrap: nowrap; }
+#material-controls .library-button { order: 0; }
+#material-controls .switch-wrap { order: 1; margin-left: auto; flex-shrink: 0; }
+.component-panel .name-editor { width: 100%; }
+.component-panel .name-input { flex: 1; width: 100%; min-width: 0; }
+@media (max-width: 680px) {
+  .hero h1 { font-size: 36px; }
+  .hero > div:first-child { padding-top: 12px; }
+  .hero .subtitle { font-size: 14px; margin-top: 12px; }
+  .github-profile { top: -8px; right: 0; padding-right: 0; }
+  .version-link { position: absolute; right: 0; top: 40px; min-height: 32px; }
+  .component-panel .control-row { padding: 12px; gap: 12px; }
+  .component-panel .control-row:last-child { padding-bottom: 12px; }
+  .component-panel .control-main { gap: 8px; }
+  .component-panel .control-icon { flex-basis: 36px; width: 36px; height: 36px; }
+  .component-panel .control-label { font-size: 14px; }
+  .component-panel .name-editor > span { display: none; }
+  .component-panel .rating-editor { flex-wrap: wrap; }
+  .component-panel .rating-input { width: 80px; }
+  .component-panel .library-button, .component-panel .upload-button { min-width: 0; padding: 0 10px; }
+  #input-controls [data-control="avatar"] .control-actions { flex-wrap: nowrap; }
+}
 .picker-sticky { position: sticky; top: -24px; z-index: 5; background: white; padding: 10px 0 4px; }
 .picker-sticky .picker-head { margin-bottom: 8px; align-items: center; }
 .picker-sticky .eyebrow { display: none; }

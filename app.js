@@ -45,7 +45,7 @@ const slots = {
 
 const controls = [
   { id: 'background', label: '背景板', short: '景', slotIds: ['background'], target: 'background', category: 'backgrounds', canHide: false, hasUpload: false },
-  { id: 'nameplate', label: '名牌', short: '牌', slotIds: ['nameplate'], target: 'nameplate', category: 'nameplates', canHide: false, hasUpload: false },
+  { id: 'nameplate', label: '姓名框', short: '牌', slotIds: ['nameplate'], target: 'nameplate', category: 'nameplates', canHide: false, hasUpload: false },
   { id: 'avatar', label: '头像', short: '像', slotIds: ['avatar'], target: 'avatar', category: 'avatars', canHide: false, hasUpload: true },
   { id: 'rating', label: 'Rating', short: 'R', slotIds: ['ratingFrame', 'ratingDigits'], target: 'ratingFrame', category: 'ratings', canHide: true, hasLibrary: false, hasUpload: false },
   { id: 'title', label: '称号', short: '称', slotIds: ['titleBase', 'titleText'], target: 'titleBase', category: 'titles', canHide: false, hasUpload: false },
@@ -755,7 +755,9 @@ function buildControls() {
         alert('无法读取该头像图片，请选择 PNG、JPEG 或 WebP 文件。');
       }
     });
-    root.appendChild(fragment);
+    const panel = ['avatar', 'rating', 'playerName'].includes(control.id)
+      ? root.querySelector('#input-controls') : root.querySelector('#material-controls');
+    panel.appendChild(fragment);
   });
 }
 
