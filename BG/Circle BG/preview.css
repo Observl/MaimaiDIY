@@ -1,0 +1,15 @@
+/* Local experiment: SEGA maimai CiRCLE background, retrieved 2026-10-29.
+ * Source: https://maimai.sega.com/assets/css/style.css
+ * Original artwork remains the property of its respective rights holders.
+ */
+body { background: transparent; isolation: isolate; }
+.bg.circle { z-index: -1; overflow: hidden; }
+.bg.circle, .bg.circle * { box-sizing: border-box; }
+.hero { padding: 24px; margin-left: 0; margin-right: 0; background: rgba(255,255,255,.91); border-radius: 24px; }
+.card, .support-card { background: rgba(255,255,255,.94); }
+.github-profile { right: 24px; }
+@media (max-width: 680px) {
+  .hero { padding: 18px; }
+  .hero .github-profile { top: 10px; right: 18px; }
+  .hero .version-link { top: 58px; right: 18px; }
+}
