@@ -254,7 +254,7 @@ function drawRatingValue() {
 function drawPlayerName() {
   const slot = slots.playerName;
   ctx.save();
-  ctx.font = `400 16px ${DISPLAY_FONT}, sans-serif`;
+  ctx.font = `400 21.33333px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#111318';
