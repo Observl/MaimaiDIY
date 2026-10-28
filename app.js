@@ -507,8 +507,21 @@ function materialNumericId(item) {
   return matches ? Number(matches[matches.length - 1]) : Number.MAX_SAFE_INTEGER;
 }
 
+function compareMaterialGroups(a, b) {
+  if (pickerState.category?.id === 'friend-battles') {
+    const order = ['B', 'A', 'S', 'SS', 'SSS', 'LEGEND'];
+    const rank = value => {
+      const index = order.indexOf(value.replace(/级$/, '').toUpperCase());
+      return index < 0 ? order.length : index;
+    };
+    const difference = rank(a) - rank(b);
+    if (difference) return difference;
+  }
+  return a.localeCompare(b, 'zh-CN', { numeric: true });
+}
+
 function comparePickerItems(a, b, selectedGroup) {
-  const byGroup = selectedGroup ? 0 : itemGroup(a).localeCompare(itemGroup(b), 'zh-CN', { numeric: true });
+  const byGroup = selectedGroup ? 0 : compareMaterialGroups(itemGroup(a), itemGroup(b));
   return byGroup || materialNumericId(a) - materialNumericId(b)
     || String(a.id || a.file || '').localeCompare(String(b.id || b.file || ''), 'zh-CN', { numeric: true });
 }
@@ -538,7 +551,7 @@ function preparePickerFilters(category) {
   pickerSearch.value = '';
   pickerFilter.replaceChildren(new Option('全部分类', ''));
   const groups = [...new Set(category.items.map(itemGroup))]
-    .sort((a, b) => a.localeCompare(b, 'zh-CN', { numeric: true }));
+    .sort(compareMaterialGroups);
   groups.forEach((group) => pickerFilter.add(new Option(`${group}（${category.items.filter((item) => itemGroup(item) === group).length}）`, group)));
 }
 
