@@ -25,7 +25,7 @@ foreach ($config in $collections) {
   }
 
   $items = @($api.($config.Property) | Where-Object {
-    $_.release_date -ge '2026-01-01' -and [datetime]$_.release_date -le $CutoffDate.Date -and -not $existing.ContainsKey([string]$_.id)
+    [datetime]$_.release_date -le $CutoffDate.Date -and -not $existing.ContainsKey([string]$_.id)
   })
 
   foreach ($item in $items) {
@@ -35,7 +35,12 @@ foreach ($config in $collections) {
     $target = Join-Path $targetDir $fileName
     New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
     if (-not $MetadataOnly -and -not (Test-Path -LiteralPath $target)) {
-      Invoke-WebRequest -UseBasicParsing "https://assets2.lxns.net/maimai/$($config.Remote)/$($item.id).png" -OutFile $target
+      try {
+        Invoke-WebRequest -UseBasicParsing "https://assets2.lxns.net/maimai/$($config.Remote)/$($item.id).png" -OutFile $target
+      } catch {
+        Write-Warning "Download failed: $($config.Category)/$($item.id)"
+        continue
+      }
       Start-Sleep -Milliseconds 120
     }
     if (-not (Test-Path -LiteralPath $target)) { continue }
@@ -49,7 +54,7 @@ foreach ($config in $collections) {
       bytes = (Get-Item -LiteralPath $target).Length
       gameId = $item.id
       genre = $item.genre
-      group = "2026 · $($item.genre)"
+      group = $item.genre.Replace('ちほー', '区域')
       description = $item.description
       releaseDate = $item.release_date
       local = $true

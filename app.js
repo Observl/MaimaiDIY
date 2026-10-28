@@ -389,7 +389,19 @@ async function loadManifest() {
 }
 
 function normalizeManifestGroups(data) {
+  const regionNames = {
+    'イベント': '活动', 'オリジナル': '原创', '天界': '天界',
+    '月面': '月面', '裏 月面': '里 月面', 'はじまりの': '启程',
+    'メトロポリス': '大都会', '宇宙すてーしょん': '宇宙空间站', 'BLACKROSE': '黑蔷薇',
+    'BLACK ROSE': '黑蔷薇', 'しゅわしゅわ': '咻哇咻哇'
+  };
   data.categories.forEach((category) => {
+    category.items.forEach(item => {
+      const region = /^(.*)ちほー(\d*)(.*)$/.exec(item.genre || '');
+      if (region && regionNames[region[1]]) {
+        item.group = `${regionNames[region[1]]}区域${region[2]}${region[3]}`;
+      }
+    });
     const genreGroups = new Map();
     category.items.forEach((item) => {
       if (item.genre && item.group && !/^2026\s*·\s*/.test(item.group)) genreGroups.set(item.genre, item.group);
