@@ -64,3 +64,9 @@ MaimaiDIY 由个人维护。如果这个工具对你有帮助，可以自愿赞�
 本项目为非官方的玩家创作工具，与 SEGA 无隶属或授权关系。游戏名称、图片及相关素材的权利归各自权利人所有，请勿将素材用于商业用途。
 
 友人对战和段位徽章包含来自 `@mai-kit/assets` 的 MIT 许可资源，许可文本见 `licenses/mai-kit-assets-LICENSE.txt`。
+
+## 网站访问趋势
+
+![MaimaiDIY 每日访问趋势](docs/traffic/daily.svg)
+
+统计来自网站的 GoatCounter 访问记录，每日自动更新，展示最近 30 个完整 UTC 日期。这里显示的是网站访问次数（GoatCounter visits），不是 GitHub 仓库浏览量；同一会话的重复访问可能被合并。统计从接入日起积累，更早的日期没有采集记录。

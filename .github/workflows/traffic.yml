@@ -1,0 +1,32 @@
+name: Update website traffic chart
+on:
+  schedule:
+    - cron: '30 1 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: website-traffic-chart
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch aggregate traffic and render chart
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+        run: node tools/update-traffic.mjs
+      - name: Save chart
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/traffic/daily.svg docs/traffic/daily.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Update daily website traffic chart'
+          git push origin HEAD:main
