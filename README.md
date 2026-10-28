@@ -1,6 +1,6 @@
 # MaimaiDIY · 舞萌 DX 上屏装饰模拟器
 
-当前版本：**v1.1.2** · 作者：[@ObservL](https://github.com/ObservL)
+当前版本：**v1.2.0** · 作者：[@ObservL](https://github.com/ObservL)
 
 在浏览器中组合舞萌 DX 玩家信息区：选择背景板、名牌、头像、称号、段位与友人对战标识，输入名称和 Rating，实时预览并导出 2160 × 904 PNG。
 
