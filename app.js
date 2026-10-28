@@ -376,7 +376,8 @@ async function loadManifest() {
     try {
       const data = validateManifest(await fetchJson(url, true));
       normalizeManifestGroups(data);
-      localStorage.setItem(COS.cacheKey, JSON.stringify(data));
+      try { localStorage.setItem(COS.cacheKey, JSON.stringify(data)); }
+      catch (error) { console.warn('素材索引缓存写入失败', error); }
       return data;
     } catch (error) {
       console.warn(`无法读取素材清单：${url}`, error);
@@ -880,6 +881,17 @@ function deleteTemplate() {
 document.querySelector('#reset').addEventListener('click', () => {
   recordHistory();
   resetState();
+  Object.assign(state.files, {
+    background: `${COS.baseUrl}/materials/backgrounds/UI_Frame_000001.png`,
+    nameplate: `${COS.baseUrl}/materials/nameplates/UI_Plate_000001.png`,
+    avatar: `${COS.baseUrl}/materials/avatars/UI_Icon_000001.png`,
+    titleBase: titleAsset('Normal'),
+    rank: 'assets/ranks/00.png',
+    friendBattle: 'assets/friend-battles/00.png'
+  });
+  state.titleName = '新人出道';
+  state.titleColor = 'Normal';
+  Object.assign(state.labels, { background: 'デフォルト', nameplate: 'デフォルト', avatar: 'デフォルト', title: '新人出道', rank: '初学者', friendBattle: 'B5' });
   syncControlsFromState();
   render();
 });
@@ -931,15 +943,13 @@ async function initialize() {
   refreshTemplateList();
   loading.hidden = false;
   try {
-    const [data] = await Promise.all([
-      loadManifest(),
-      document.fonts.load(`18px ${DISPLAY_FONT}`)
-    ]);
+    const data = await loadManifest();
     manifest = data;
     setAssetStatus('is-online', `云端素材已连接 · ${data.summary?.items ?? 0} 项`);
   } catch (error) {
-    setAssetStatus('is-offline', '本地素材模式');
+    setAssetStatus('is-offline', '素材索引暂时不可用 · 云端图片仍可加载');
   }
+  await document.fonts.load(`18px ${DISPLAY_FONT}`).catch(error => console.warn('字体加载失败', error));
   await Promise.allSettled(Object.values(state.files).map(loadImage));
   await render();
 }

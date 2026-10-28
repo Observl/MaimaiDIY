@@ -119,6 +119,8 @@ canvas { display: block; width: 100%; height: 100%; }
 .template-io { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-column: 1 / -1; gap: 12px; align-items: stretch; justify-content: center; }
 .template-io .button { width: 100%; text-align: center; }
 .template-import-button { display: inline-grid; place-items: center; }
+.template-import-button { position: relative; overflow: hidden; }
+.template-import-button .file-input { max-width: 100%; }
 .danger { background: #fff0f1; color: #b4232f; }
 .template-status { min-height: 20px; margin: 12px 0 0; color: var(--muted); font-size: 13px; }
 .support-shell { width: min(1040px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 72px; }
@@ -169,3 +171,23 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 #large-preview[open] { display: grid; place-items: center; }
 #large-preview canvas { width: min(100vw, calc(100dvh * 1080 / 452)); height: auto; aspect-ratio: 1080 / 452; }
 #large-preview::backdrop { background: #101014; }
+.picker-sticky { position: sticky; top: -24px; z-index: 5; background: white; padding: 10px 0 4px; }
+.picker-sticky .picker-head { margin-bottom: 8px; align-items: center; }
+.picker-sticky .eyebrow { display: none; }
+.picker-sticky .picker-head h2 { font-size: 18px; }
+.picker-sticky .picker-meta { margin-top: 2px; font-size: 11px; }
+.picker-sticky .picker-tools { margin-bottom: 8px; gap: 8px; grid-template-columns: minmax(0, 1fr) minmax(100px, .55fr); }
+.picker-sticky .picker-search-wrap, .picker-sticky .picker-filter-wrap { gap: 3px; }
+.picker-sticky .picker-search, .picker-sticky .picker-filter { min-height: 38px; padding: 0 8px; }
+@media (max-width: 680px) {
+  .app-shell { width: calc(100% - 20px); min-width: 0; }
+  .control-row > *, .control-main > div { min-width: 0; }
+  .control-file { max-width: 100%; overflow-wrap: anywhere; }
+  .control-main { flex: 1; }
+  .control-icon { width: 48px; overflow: hidden; }
+  .control-actions { flex: 0 1 auto; max-width: 52%; }
+  .name-input { max-width: 100%; min-width: 0; }
+  .name-editor { min-width: 0; }
+  .picker-sticky { top: -16px; }
+  .template-tools > *, .support-card > * { min-width: 0; }
+}

@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#171821">
-  <title>MaimaiDIY v1.1.0 · 舞萌上屏装饰模拟器</title>
+  <title>MaimaiDIY v1.1.1 · 舞萌上屏装饰模拟器</title>
   <link rel="icon" href="assets/avatar.png">
   <link rel="preload" href="assets/fonts/MorisawaUDShinGoGb4B-site.otf" as="font" type="font/otf" crossorigin>
   <link rel="preload" href="assets/fonts/SEGA_MARUGOTHICDB-web.ttf?v=2" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=1.1.0">
+  <link rel="stylesheet" href="styles.css?v=1.1.1">
 </head>
 <body>
   <main class="app-shell">
@@ -20,7 +20,7 @@
       </div>
       <div class="hero-side">
         <span id="asset-status" class="status is-loading"><i></i> 正在连接素材库</span>
-        <span>v1.1.0</span>
+        <span>v1.1.1</span>
       </div>
     </header>
 
@@ -42,7 +42,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5m4-5h-8a6 6 0 0 0-6 6"/></svg>
           </button>
         </div>
-        <button id="reset" class="button secondary" type="button">恢复默认</button>
+        <button id="reset" class="button secondary" type="button">清空</button>
         <button id="export" class="button primary" type="button">导出高清 PNG</button>
       </div>
     </section>
@@ -139,6 +139,7 @@
   </template>
 
   <dialog id="asset-picker" class="asset-picker">
+    <div class="picker-sticky">
     <div class="picker-head">
       <div>
         <p class="eyebrow">COS ASSETS</p>
@@ -159,11 +160,12 @@
         </select>
       </label>
     </div>
+    </div>
     <div id="picker-message" class="picker-message" hidden></div>
     <div id="picker-grid" class="picker-grid"></div>
     <button id="picker-more" class="button secondary picker-more" type="button" hidden>加载更多</button>
   </dialog>
 
-  <script src="app.js?v=1.1.0"></script>
+  <script src="app.js?v=1.1.1"></script>
 </body>
 </html>
