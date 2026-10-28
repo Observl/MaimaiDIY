@@ -14,6 +14,13 @@ function isManifest(url) {
   return MANIFEST_NAMES.some((name) => url.pathname.endsWith(name));
 }
 
+function assetCacheKey(request) {
+  const url = new URL(request.url);
+  url.searchParams.delete('selected');
+  url.searchParams.delete('refresh');
+  return url.href;
+}
+
 function isCacheableAsset(request, url) {
   return request.method === 'GET' && (
     url.pathname.includes('/materials/') ||
@@ -43,9 +50,11 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
-    const cached = await cache.match(request);
+    const key = assetCacheKey(request);
+    const cached = await cache.match(key);
     if (cached) return cached;
-    const response = await fetch(request);
+    const response = await fetch(url.origin !== self.location.origin && url.hostname.endsWith('.myqcloud.com')
+      ? new Request(request, { mode: 'cors', credentials: 'omit' }) : request);
     if (response.ok && response.type !== 'opaque') {
       try {
         const blob = await response.clone().blob();
@@ -57,7 +66,7 @@ self.addEventListener('fetch', (event) => {
         } else if (/\.json$/i.test(url.pathname)) {
           JSON.parse(await blob.text());
         }
-        await cache.put(request, response.clone());
+        await cache.put(key, response.clone());
       } catch { /* Invalid bodies must never persist in the asset cache. */ }
     }
     return response;

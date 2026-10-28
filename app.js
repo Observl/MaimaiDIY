@@ -424,11 +424,10 @@ function normalizeManifestGroups(data) {
   return data;
 }
 
-function assetUrl(item, refresh = false) {
-  const suffix = refresh ? `${item.file.includes('?') ? '&' : '?'}selected=${Date.now()}` : '';
-  if (item.local) return `${item.file}${suffix}`;
+function assetUrl(item) {
+  if (item.local) return item.file;
   const path = item.source || item.file.split('/').map(encodeURIComponent).join('/');
-  return `${COS.baseUrl}/materials/${path}${suffix}`;
+  return `${COS.baseUrl}/materials/${path}`;
 }
 
 async function loadTitleManifest() {
@@ -469,6 +468,7 @@ function appendPickerItems() {
       image.decoding = 'async';
       image.fetchPriority = 'low';
       image.alt = item.name;
+      image.crossOrigin = 'anonymous';
       image.src = assetUrl(item);
     }
     const name = document.createElement('span');
@@ -484,7 +484,7 @@ function appendPickerItems() {
         state.titleColor = item.color || 'Normal';
         state.files.titleBase = titleAsset(state.titleColor);
       } else {
-        state.files[control.target] = assetUrl(item, true);
+        state.files[control.target] = assetUrl(item);
       }
       state.labels[control.id] = item.name;
       state.visible[control.target] = true;
@@ -653,6 +653,7 @@ async function render() {
       if (!icon) return;
       const image = document.createElement('img');
       image.alt = '';
+      image.crossOrigin = 'anonymous';
       image.src = state.files[control.target] || slots[control.target].asset;
       icon.replaceChildren(image);
     });
