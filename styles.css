@@ -31,6 +31,12 @@ select { font: inherit; }
 .app-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 72px; }
 .hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px; margin: 0 4px 30px; }
 .hero-side { display: flex; align-items: center; gap: 10px; }
+.github-profile { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 8px 12px; border-radius: 12px; color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.github-profile svg { width: 22px; height: 22px; flex-shrink: 0; }
+.github-profile:hover { background: var(--accent-soft); }
+.github-profile:focus-visible { outline: 3px solid #cfc8ff; outline-offset: 2px; }
+.hero { position: relative; }
+@media (max-width: 680px) { .github-profile { position: absolute; top: 0; right: 0; } }
 .eyebrow { margin: 0 0 9px; color: var(--accent); font-size: 12px; font-weight: 850; letter-spacing: .22em; }
 h1 { margin: 0; font-size: clamp(32px, 5vw, 52px); line-height: 1.05; letter-spacing: -.045em; }
 .subtitle { margin: 13px 0 0; color: var(--muted); font-size: 16px; }
