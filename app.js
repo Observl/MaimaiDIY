@@ -386,16 +386,6 @@ function assetUrl(item, refresh = false) {
   return `${COS.baseUrl}/materials/${path}${suffix}`;
 }
 
-function assetThumbnailUrl(item) {
-  if (item.local) return assetUrl(item);
-  if (item.thumbnail) {
-    if (/^https:\/\//i.test(item.thumbnail)) return item.thumbnail;
-    return item.thumbnail.split('/').map(encodeURIComponent).join('/');
-  }
-  const path = item.source || item.file.split('/').map(encodeURIComponent).join('/');
-  return `${COS.baseUrl}/materials/${path}?imageMogr2/thumbnail/240x240%3E/format/webp/quality/58`;
-}
-
 async function loadTitleManifest() {
   titleManifest ||= await fetchJson(COS.titleManifestUrl);
   return titleManifest;
@@ -434,11 +424,7 @@ function appendPickerItems() {
       image.decoding = 'async';
       image.fetchPriority = 'low';
       image.alt = item.name;
-      image.src = assetThumbnailUrl(item);
-      image.addEventListener('error', () => {
-        const original = assetUrl(item);
-        if (image.src !== original) image.src = original;
-      }, { once: true });
+      image.src = assetUrl(item);
     }
     const name = document.createElement('span');
     name.textContent = item.name;
