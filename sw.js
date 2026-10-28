@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maimai-diy-assets-v1.0.1';
+const CACHE_NAME = 'maimai-diy-assets-v1.0.1-json';
 const MANIFEST_NAMES = ['/materials/manifest.json', '/materials/titles.json', '/materials/badges.json'];
 
 self.addEventListener('install', () => self.skipWaiting());
@@ -15,6 +15,7 @@ function isManifest(url) {
 }
 
 function isCacheableAsset(request, url) {
+  if (url.search.includes('imageMogr2/')) return false;
   return request.method === 'GET' && (
     url.pathname.includes('/materials/') ||
     url.pathname.includes('/assets/') ||

@@ -75,6 +75,9 @@ const pickerMore = document.querySelector('#picker-more');
 const pickerSearch = document.querySelector('#picker-search');
 const pickerFilter = document.querySelector('#picker-filter');
 const TEMPLATE_STORAGE_KEY = 'maimai-diy-templates-v1';
+const TEMPLATE_FILE_FORMAT = 'MaimaiDIY-template';
+const TEMPLATE_FILE_VERSION = 1;
+const TEMPLATE_FILE_MAX_BYTES = 10 * 1024 * 1024;
 const HISTORY_LIMIT = 5;
 const DEFAULT_PRESET = {
   ratingValue: 16393,
@@ -383,6 +386,16 @@ function assetUrl(item, refresh = false) {
   return `${COS.baseUrl}/materials/${path}${suffix}`;
 }
 
+function assetThumbnailUrl(item) {
+  if (item.local) return assetUrl(item);
+  if (item.thumbnail) {
+    if (/^https:\/\//i.test(item.thumbnail)) return item.thumbnail;
+    return item.thumbnail.split('/').map(encodeURIComponent).join('/');
+  }
+  const path = item.source || item.file.split('/').map(encodeURIComponent).join('/');
+  return `${COS.baseUrl}/materials/${path}?imageMogr2/thumbnail/240x240%3E/format/webp/quality/58`;
+}
+
 async function loadTitleManifest() {
   titleManifest ||= await fetchJson(COS.titleManifestUrl);
   return titleManifest;
@@ -418,8 +431,14 @@ function appendPickerItems() {
       image.textContent = item.name;
     } else {
       image.loading = 'lazy';
+      image.decoding = 'async';
+      image.fetchPriority = 'low';
       image.alt = item.name;
-      image.src = assetUrl(item);
+      image.src = assetThumbnailUrl(item);
+      image.addEventListener('error', () => {
+        const original = assetUrl(item);
+        if (image.src !== original) image.src = original;
+      }, { once: true });
     }
     const name = document.createElement('span');
     name.textContent = item.name;
@@ -712,6 +731,112 @@ function saveTemplate() {
   }
 }
 
+function safeTemplateName(value) {
+  const name = String(value || '').trim().slice(0, 30);
+  return name || 'MaimaiDIY 模板';
+}
+
+function isAllowedAsset(value, slotId) {
+  if (typeof value !== 'string' || value.length > TEMPLATE_FILE_MAX_BYTES) return false;
+  if (/^(?:assets|materials)\//.test(value)) return true;
+  if (value.startsWith(`${COS.baseUrl}/materials/`)) return true;
+  return slotId === 'avatar' && /^data:image\/(?:png|jpeg|webp);base64,/i.test(value);
+}
+
+function sanitizeImportedState(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('模板状态无效');
+  const next = snapshotState();
+  if (value.files && typeof value.files === 'object') {
+    Object.keys(slots).forEach((slotId) => {
+      if (isAllowedAsset(value.files[slotId], slotId)) next.files[slotId] = value.files[slotId];
+    });
+  }
+  if (value.visible && typeof value.visible === 'object') {
+    Object.keys(slots).forEach((slotId) => {
+      if (typeof value.visible[slotId] === 'boolean') next.visible[slotId] = value.visible[slotId];
+    });
+  }
+  ['nameplate', 'avatar', 'titleBase', 'titleText', 'nameBase', 'playerName'].forEach((slotId) => {
+    next.visible[slotId] = true;
+  });
+  if (value.labels && typeof value.labels === 'object') {
+    controls.forEach((control) => {
+      if (typeof value.labels[control.id] === 'string') next.labels[control.id] = value.labels[control.id].slice(0, 120);
+    });
+  }
+  const rating = Number(value.ratingValue);
+  if (Number.isFinite(rating)) next.ratingValue = Math.max(0, Math.min(99999, Math.round(rating)));
+  if (typeof value.playerName === 'string') next.playerName = value.playerName.slice(0, 16);
+  if (typeof value.titleName === 'string') next.titleName = value.titleName.slice(0, 100);
+  if (Object.hasOwn(TITLE_COLOR_NAMES, value.titleColor)) next.titleColor = value.titleColor;
+  return next;
+}
+
+function selectedTemplateName() {
+  const selectedId = document.querySelector('#template-list').value;
+  return readTemplates().find((item) => item.id === selectedId)?.name;
+}
+
+function exportTemplateFile() {
+  const name = safeTemplateName(document.querySelector('#template-name').value || selectedTemplateName());
+  const payload = {
+    format: TEMPLATE_FILE_FORMAT,
+    version: TEMPLATE_FILE_VERSION,
+    name,
+    exportedAt: new Date().toISOString(),
+    state: snapshotState()
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  const safeName = name.replace(/[\\/:*?"<>|\x00-\x1f]/g, '-').replace(/\s+/g, ' ').trim();
+  const url = URL.createObjectURL(blob);
+  link.download = `${safeName || 'MaimaiDIY-template'}.maimai.json`;
+  link.href = url;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+  document.querySelector('#template-status').textContent = `已导出“${name}”。`;
+}
+
+async function importTemplateFile(event) {
+  const input = event.currentTarget;
+  const file = input.files?.[0];
+  const status = document.querySelector('#template-status');
+  input.value = '';
+  if (!file) return;
+  if (file.size > TEMPLATE_FILE_MAX_BYTES) {
+    status.textContent = '导入失败：JSON 文件不能超过 10 MB。';
+    return;
+  }
+  try {
+    const payload = JSON.parse(await file.text());
+    if (payload.format !== TEMPLATE_FILE_FORMAT || payload.version !== TEMPLATE_FILE_VERSION) {
+      throw new Error('不是受支持的 MaimaiDIY 模板文件');
+    }
+    const name = safeTemplateName(payload.name);
+    const importedState = sanitizeImportedState(payload.state);
+    recordHistory();
+    Object.assign(state, importedState);
+    applyRatingBand();
+    syncControlsFromState();
+    const templates = readTemplates();
+    const existing = templates.find((item) => item.name === name);
+    const template = {
+      id: existing?.id || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name,
+      savedAt: new Date().toISOString(),
+      state: snapshotState()
+    };
+    const next = existing ? templates.map((item) => item.id === existing.id ? template : item) : [...templates, template];
+    localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(next));
+    refreshTemplateList(template.id);
+    document.querySelector('#template-name').value = name;
+    status.textContent = existing ? `已导入并更新“${name}”。` : `已导入并保存“${name}”。`;
+    await render();
+  } catch (error) {
+    status.textContent = `导入失败：${error.message || '文件内容无效'}`;
+  }
+}
+
 async function loadTemplate() {
   const id = document.querySelector('#template-list').value;
   const template = readTemplates().find((item) => item.id === id);
@@ -747,6 +872,8 @@ redoButton.addEventListener('click', redo);
 document.querySelector('#template-save').addEventListener('click', saveTemplate);
 document.querySelector('#template-load').addEventListener('click', loadTemplate);
 document.querySelector('#template-delete').addEventListener('click', deleteTemplate);
+document.querySelector('#template-export').addEventListener('click', exportTemplateFile);
+document.querySelector('#template-import').addEventListener('change', importTemplateFile);
 
 document.querySelector('#export').addEventListener('click', () => {
   try {

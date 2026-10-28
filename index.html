@@ -7,7 +7,7 @@
   <title>MaimaiDIY · 舞萌上屏装饰模拟器</title>
   <link rel="icon" href="assets/avatar.png">
   <link rel="preload" href="assets/fonts/MorisawaUDShinGoGb4B-site.otf" as="font" type="font/otf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=1.0.1">
+  <link rel="stylesheet" href="styles.css?v=1.0.1-json">
 </head>
 <body>
   <main class="app-shell">
@@ -62,6 +62,13 @@
         </label>
         <button id="template-load" class="button secondary" type="button">载入</button>
         <button id="template-delete" class="button danger" type="button">删除</button>
+        <div class="template-io" aria-label="模板文件">
+          <button id="template-export" class="button secondary" type="button">导出 JSON</button>
+          <label class="button secondary template-import-button">
+            导入 JSON
+            <input id="template-import" class="file-input" type="file" accept="application/json,.json">
+          </label>
+        </div>
       </div>
       <p id="template-status" class="template-status" aria-live="polite"></p>
     </section>
@@ -135,6 +142,6 @@
     <button id="picker-more" class="button secondary picker-more" type="button" hidden>加载更多</button>
   </dialog>
 
-  <script src="app.js?v=1.0.1-hd"></script>
+  <script src="app.js?v=1.0.1-json"></script>
 </body>
 </html>
