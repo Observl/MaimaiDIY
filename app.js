@@ -500,6 +500,19 @@ function itemGroup(item) {
   return item.group || TITLE_COLOR_NAMES[item.color] || '未分类';
 }
 
+function materialNumericId(item) {
+  const gameId = Number(item.gameId);
+  if (item.gameId != null && Number.isFinite(gameId)) return gameId;
+  const matches = String(item.id || item.file || '').match(/\d+/g);
+  return matches ? Number(matches[matches.length - 1]) : Number.MAX_SAFE_INTEGER;
+}
+
+function comparePickerItems(a, b, selectedGroup) {
+  const byGroup = selectedGroup ? 0 : itemGroup(a).localeCompare(itemGroup(b), 'zh-CN', { numeric: true });
+  return byGroup || materialNumericId(a) - materialNumericId(b)
+    || String(a.id || a.file || '').localeCompare(String(b.id || b.file || ''), 'zh-CN', { numeric: true });
+}
+
 function applyPickerFilters() {
   if (!pickerState.category) return;
   const query = pickerSearch.value.trim().toLocaleLowerCase('zh-CN');
@@ -512,7 +525,7 @@ function applyPickerFilters() {
       .join(' ')
       .toLocaleLowerCase('zh-CN');
     return searchable.includes(query);
-  });
+  }).sort((a, b) => comparePickerItems(a, b, group));
   pickerState.shown = 0;
   pickerGrid.replaceChildren();
   pickerMessage.hidden = pickerState.items.length > 0;
