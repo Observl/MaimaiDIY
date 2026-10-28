@@ -60,9 +60,15 @@ self.addEventListener('fetch', (event) => {
         const blob = await response.clone().blob();
         if (!blob.size) return response;
         if (/\.(?:png|jpe?g|webp)$/i.test(url.pathname)) {
+          if (!blob.type.startsWith('image/')) return response;
           const bitmap = await createImageBitmap(blob);
           if (!bitmap.width || !bitmap.height) return response;
           bitmap.close();
+          const headers = new Headers(response.headers);
+          headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+          const validated = new Response(blob, { status: response.status, statusText: response.statusText, headers });
+          await cache.put(key, validated.clone());
+          return validated;
         } else if (/\.json$/i.test(url.pathname)) {
           JSON.parse(await blob.text());
         }

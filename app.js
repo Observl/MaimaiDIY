@@ -10,7 +10,7 @@ const COS = {
   titleManifestUrl: 'materials/titles.json',
   badgeManifestUrl: 'materials/badges.json',
   cacheKey: 'maimai-diy-manifest-v2',
-  pageSize: 24,
+  pageSize: 18,
   timeout: 12000,
   retries: 2
 };
