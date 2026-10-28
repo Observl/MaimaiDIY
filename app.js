@@ -891,6 +891,9 @@ document.querySelector('#reset').addEventListener('click', () => {
   });
   state.titleName = '新人出道';
   state.titleColor = 'Normal';
+  state.ratingValue = 0;
+  state.playerName = 'GUEST';
+  applyRatingBand();
   Object.assign(state.labels, { background: 'デフォルト', nameplate: 'デフォルト', avatar: 'デフォルト', title: '新人出道', rank: '初学者', friendBattle: 'B5' });
   syncControlsFromState();
   render();
