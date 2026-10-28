@@ -1,7 +1,7 @@
 const CANVAS = { width: 1080, height: 452 };
-const DISPLAY_FONT = '"Morisawa UD Shin Go"';
-const RENDER_SCALE = 2;
-const OUTPUT = { width: CANVAS.width * RENDER_SCALE, height: CANVAS.height * RENDER_SCALE };
+const DISPLAY_FONT = '"SEGA Maru Gothic DB"';
+const RENDER_SCALE = 4;
+const OUTPUT = { width: 2160, height: 904 };
 const DEFAULT_BACKGROUND = 'assets/default-background.png';
 const COS = {
   baseUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com',
@@ -39,7 +39,7 @@ const slots = {
   rank: { asset: 'assets/rank.png', x: 326, y: 69, width: 80, height: 35, z: 90 },
   friendBattle: { asset: 'assets/friendBattle.png', x: 312, y: 7, width: 108, height: 67, z: 100 },
   nameBase: { asset: 'assets/nameBase.png', x: 142, y: 67, width: 267, height: 40, z: 27 },
-  playerName: { asset: 'assets/playerName.png', x: 152, y: 78, width: 102, height: 18, z: 28 },
+  playerName: { asset: 'assets/playerName.png', x: 150.93611859870788, y: 78.05231089799081, width: 174.57249, height: 18, z: 28 },
   avatar: { asset: 'assets/avatar.png', x: 37, y: 33, width: 100, height: 99, z: 30 }
 };
 
@@ -57,8 +57,8 @@ const controls = [
 const canvas = document.querySelector('#preview');
 const previewCtx = canvas.getContext('2d');
 const renderCanvas = document.createElement('canvas');
-renderCanvas.width = OUTPUT.width;
-renderCanvas.height = OUTPUT.height;
+renderCanvas.width = CANVAS.width * RENDER_SCALE;
+renderCanvas.height = CANVAS.height * RENDER_SCALE;
 const ctx = renderCanvas.getContext('2d');
 ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
@@ -109,6 +109,22 @@ let renderVersion = 0;
 const imageCache = new Map();
 let pickerState = { control: null, category: null, items: [], shown: 0 };
 const history = { past: [], future: [], transaction: null };
+const largePreview = document.querySelector('#large-preview');
+canvas.tabIndex = 0;
+canvas.setAttribute('role', 'button');
+canvas.setAttribute('aria-label', '打开横屏大屏预览');
+function openLargePreview() {
+  const enlarged = largePreview.querySelector('canvas');
+  const enlargedContext = enlarged.getContext('2d');
+  enlargedContext.imageSmoothingQuality = 'high';
+  enlargedContext.drawImage(renderCanvas, 0, 0, enlarged.width, enlarged.height);
+  largePreview.showModal();
+}
+canvas.addEventListener('click', openLargePreview);
+canvas.addEventListener('keydown', event => {
+  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openLargePreview(); }
+});
+largePreview.addEventListener('click', () => largePreview.close());
 const undoButton = document.querySelector('#undo');
 const redoButton = document.querySelector('#redo');
 
@@ -216,20 +232,19 @@ function drawSpacedText(text, x, y, spacing, maxWidth, align = 'left', stroke = 
 
 function drawRatingValue() {
   const digits = String(state.ratingValue).slice(-5);
-  const firstCellCenter = slots.ratingFrame.x + 90.2;
-  const cellWidth = 16.35;
+  const cellCenters = [230.5, 246, 261, 276, 291];
   const startCell = 5 - digits.length;
   ctx.save();
   ctx.font = `700 15px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
-  ctx.lineWidth = 1.45;
-  ctx.strokeStyle = '#5f4700';
-  ctx.fillStyle = '#ffe234';
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#fbc802';
+  ctx.fillStyle = '#fbc802';
   [...digits].forEach((digit, index) => {
-    const x = firstCellCenter + (startCell + index) * cellWidth;
-    const y = slots.ratingDigits.y + slots.ratingDigits.height / 2 + 0.25;
+    const x = cellCenters[startCell + index];
+    const y = 49;
     ctx.strokeText(digit, x, y);
     ctx.fillText(digit, x, y);
   });
@@ -239,28 +254,35 @@ function drawRatingValue() {
 function drawPlayerName() {
   const slot = slots.playerName;
   ctx.save();
-  ctx.font = `600 19px ${DISPLAY_FONT}, sans-serif`;
+  ctx.font = `400 21.33333px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#111318';
-  drawSpacedText(state.playerName || '', slot.x, slot.y + slot.height / 2, 1.15, slots.nameBase.width - 20);
+  drawSpacedText(state.playerName || '', slot.x, 87, 5.5466658, 174.57249);
   ctx.restore();
 }
 
 function drawTitleText() {
   const slot = slots.titleBase;
   ctx.save();
-  const longTitle = [...state.titleName].length > 18;
-  ctx.font = `700 ${longTitle ? 11.5 : 13}px ${DISPLAY_FONT}, sans-serif`;
+  ctx.font = `600 13.33333px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
+  ctx.textBaseline = 'alphabetic';
   ctx.lineJoin = 'round';
   const normal = state.titleColor === 'Normal';
-  ctx.lineWidth = normal ? 1.15 : 1.4;
+  // Canvas strokes are centered on the glyph edge. Drawing twice the desired
+  // outer width and then filling the glyph leaves a true outside-only outline.
+  ctx.lineWidth = normal ? 2 : 2.4;
   ctx.strokeStyle = normal ? 'rgba(35, 39, 52, .92)' : 'rgba(42, 31, 5, .9)';
   ctx.fillStyle = '#ffffff';
-  drawSpacedText(state.titleName, slot.x + slot.width / 2, slot.y + slot.height / 2 + .15, .55, slot.width - 20, 'center', true);
+  drawSpacedText(state.titleName, 272.2223658521258, 126.44731107159686, .2666666, slot.width - 20, 'center', true);
   ctx.restore();
+}
+
+function drawTitleBase(image, slot) {
+  // The source has transparent rows 0–4 and 30–35. Cropping only those rows
+  // thickens the frame vertically without changing its destination bounds.
+  ctx.drawImage(image, 0, 5, image.naturalWidth, 25, slot.x, slot.y, slot.width, slot.height);
 }
 
 function titleAsset(color) {
@@ -556,14 +578,24 @@ async function render() {
       if (id === 'titleBase' && state.titleColor === 'Bronze') {
         ctx.save();
         ctx.filter = 'sepia(1) saturate(1.25) brightness(.78)';
-        ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
+        drawTitleBase(image, slot);
         ctx.restore();
+      } else if (id === 'titleBase') {
+        drawTitleBase(image, slot);
       } else {
         ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
       }
     }
     previewCtx.clearRect(0, 0, CANVAS.width, CANVAS.height);
     previewCtx.drawImage(renderCanvas, 0, 0, CANVAS.width, CANVAS.height);
+    controls.forEach(control => {
+      const icon = document.querySelector(`[data-control="${control.id}"] .control-icon`);
+      if (!icon) return;
+      const image = document.createElement('img');
+      image.alt = '';
+      image.src = state.files[control.target] || slots[control.target].asset;
+      icon.replaceChildren(image);
+    });
   } finally {
     if (version === renderVersion) loading.hidden = true;
   }
@@ -587,7 +619,7 @@ function buildControls() {
     const nameEditor = fragment.querySelector('.name-editor');
     const nameInput = fragment.querySelector('.name-input');
     const uploadButton = fragment.querySelector('.upload-button');
-    icon.textContent = control.short;
+    icon.textContent = '';
     label.textContent = control.label;
     row.dataset.control = control.id;
     if (!control.canHide) switchWrap.hidden = true;
@@ -865,7 +897,14 @@ document.querySelector('#export').addEventListener('click', () => {
   try {
     const link = document.createElement('a');
     link.download = `maimai-diy-${OUTPUT.width}x${OUTPUT.height}-${Date.now()}.png`;
-    link.href = renderCanvas.toDataURL('image/png');
+    const outputCanvas = document.createElement('canvas');
+    outputCanvas.width = OUTPUT.width;
+    outputCanvas.height = OUTPUT.height;
+    const outputContext = outputCanvas.getContext('2d');
+    outputContext.imageSmoothingEnabled = true;
+    outputContext.imageSmoothingQuality = 'high';
+    outputContext.drawImage(renderCanvas, 0, 0, OUTPUT.width, OUTPUT.height);
+    link.href = outputCanvas.toDataURL('image/png');
     link.click();
   } catch (error) {
     alert('云端素材的跨域设置尚未生效，暂时无法导出。请稍后重试。');

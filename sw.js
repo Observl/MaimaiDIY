@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maimai-diy-assets-v1.0.1-json';
+const CACHE_NAME = 'maimai-diy-assets-v1.1.0';
 const MANIFEST_NAMES = ['/materials/manifest.json', '/materials/titles.json', '/materials/badges.json'];
 
 self.addEventListener('install', () => self.skipWaiting());
@@ -46,7 +46,20 @@ self.addEventListener('fetch', (event) => {
     const cached = await cache.match(request);
     if (cached) return cached;
     const response = await fetch(request);
-    if (response.ok || response.type === 'opaque') await cache.put(request, response.clone());
+    if (response.ok && response.type !== 'opaque') {
+      try {
+        const blob = await response.clone().blob();
+        if (!blob.size) return response;
+        if (/\.(?:png|jpe?g|webp)$/i.test(url.pathname)) {
+          const bitmap = await createImageBitmap(blob);
+          if (!bitmap.width || !bitmap.height) return response;
+          bitmap.close();
+        } else if (/\.json$/i.test(url.pathname)) {
+          JSON.parse(await blob.text());
+        }
+        await cache.put(request, response.clone());
+      } catch { /* Invalid bodies must never persist in the asset cache. */ }
+    }
     return response;
   })());
 });
