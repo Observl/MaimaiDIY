@@ -31,6 +31,8 @@ select { font: inherit; }
 .app-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 72px; }
 .hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px; margin: 0 4px 30px; }
 .hero-side { display: flex; align-items: center; gap: 10px; }
+.material-disclaimer { margin-top: 24px; padding: 16px 20px; border-radius: 16px; background: rgba(255,255,255,.94); color: #626470; text-align: center; font-size: 12px; line-height: 1.8; }
+.material-disclaimer p { margin: 0; overflow-wrap: anywhere; }
 .version-link { display: inline-grid; place-items: center; min-height: 44px; color: var(--muted); text-decoration: none; font-size: 13px; }
 .version-link:hover { color: var(--accent); text-decoration: underline; }
 .component-panels { display: grid; gap: 18px; }
