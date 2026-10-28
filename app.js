@@ -396,6 +396,14 @@ function normalizeManifestGroups(data) {
     'BLACK ROSE': '黑蔷薇', 'しゅわしゅわ': '咻哇咻哇'
   };
   data.categories.forEach((category) => {
+    const seenAssets = new Set();
+    category.items = category.items.filter(item => {
+      const key = item.gameId != null ? `game:${item.gameId}` : `file:${item.source || item.file}`;
+      if (seenAssets.has(key)) return false;
+      seenAssets.add(key);
+      return true;
+    });
+    category.count = category.items.length;
     category.items.forEach(item => {
       const region = /^(.*)ちほー(\d*)(.*)$/.exec(item.genre || '');
       if (region && regionNames[region[1]]) {
