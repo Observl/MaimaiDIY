@@ -9,7 +9,7 @@ const url = new URL('https://observl.goatcounter.com/api/v0/stats/total');
 url.searchParams.set('start', start.toISOString());
 url.searchParams.set('end', end.toISOString());
 const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(30000) });
-if (!response.ok) throw new Error(`GoatCounter returned ${response.status}`);
+if (!response.ok) throw new Error(`GoatCounter returned ${response.status}: ${(await response.text()).slice(0, 400)}`);
 const data = await response.json();
 if (!Array.isArray(data.stats)) throw new Error('Invalid statistics response; previous chart preserved');
 const counts = new Map();
