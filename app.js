@@ -254,11 +254,13 @@ function drawRatingValue() {
 function drawPlayerName() {
   const slot = slots.playerName;
   ctx.save();
-  ctx.font = `400 21.33333px ${DISPLAY_FONT}, sans-serif`;
+  ctx.font = `400 16px ${DISPLAY_FONT}, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#111318';
-  drawSpacedText(state.playerName || '', slot.x, 87, 5.5466658, 174.57249);
+  const availableWidth = slots.rank.x - slot.x - 4;
+  const spacing = (availableWidth - ctx.measureText('あ').width * 8) / 7;
+  drawSpacedText(state.playerName || '', slot.x, 87, spacing, availableWidth);
   ctx.restore();
 }
 
@@ -588,7 +590,18 @@ async function openPicker(control) {
   }
 }
 
+function nameCharacterCount(value) {
+  if (typeof Intl.Segmenter === 'function') {
+    return [...new Intl.Segmenter('zh', { granularity: 'grapheme' }).segment(value)].length;
+  }
+  return [...value].length;
+}
+
 async function render() {
+  if (nameCharacterCount(state.playerName || '') > 8) {
+    alert('名称最多允许八个字符，请修改后再试。');
+    return;
+  }
   const version = ++renderVersion;
   loading.hidden = false;
   const ordered = Object.entries(slots)
@@ -687,12 +700,21 @@ function buildControls() {
     if (control.id === 'playerName') {
       nameEditor.hidden = false;
       nameInput.addEventListener('input', () => {
+        const valid = nameCharacterCount(nameInput.value) <= 8;
+        nameInput.setCustomValidity(valid ? '' : '名称最多允许八个字符');
+        nameInput.setAttribute('aria-invalid', String(!valid));
+        if (!valid) return;
         recordHistory('playerName');
         state.playerName = nameInput.value;
         fileLabel.textContent = nameInput.value || '未输入名称';
         render();
       });
-      nameInput.addEventListener('blur', () => endHistoryTransaction('playerName'));
+      nameInput.addEventListener('blur', () => {
+        endHistoryTransaction('playerName');
+        if (nameCharacterCount(nameInput.value) > 8) {
+          alert('名称最多允许八个字符，超出部分不会渲染。请修改名称。');
+        }
+      });
     }
     if (control.id === 'avatar') {
       fileLabel.textContent = '默认素材 · 上传限 1:1，最大 720 × 720';
@@ -831,7 +853,10 @@ function sanitizeImportedState(value) {
   }
   const rating = Number(value.ratingValue);
   if (Number.isFinite(rating)) next.ratingValue = Math.max(0, Math.min(99999, Math.round(rating)));
-  if (typeof value.playerName === 'string') next.playerName = value.playerName.slice(0, 16);
+  if (typeof value.playerName === 'string') {
+    if (nameCharacterCount(value.playerName) > 8) throw new Error('模板名称字段中的玩家名称超过八个字符');
+    next.playerName = value.playerName;
+  }
   if (typeof value.titleName === 'string') next.titleName = value.titleName.slice(0, 100);
   if (Object.hasOwn(TITLE_COLOR_NAMES, value.titleColor)) next.titleColor = value.titleColor;
   return next;
