@@ -65,49 +65,58 @@ test('default rendering, required controls, large preview and PNG export', async
   await testInfo.attach('default-export', { body: png, contentType: 'image/png' });
   // Compare decoded pixels against the previously published default, not PNG encoding.
   const actual = `data:image/png;base64,${png.toString('base64')}`;
-  const differences = await page.evaluate(async (src) => {
-    const load = (src) =>
-      new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = src;
-      });
-    const [a, b] = await Promise.all([load(src), load('docs/screenshots/composition-v1.2.0.png')]);
-    const pixels = (image) => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 2160;
-      canvas.height = 904;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(image, 0, 0);
-      return ctx.getImageData(0, 0, 2160, 904).data;
-    };
-    const left = pixels(a),
-      right = pixels(b);
-    let different = 0,
-      outsideText = 0,
-      absolute = 0,
-      maxError = 0;
-    for (let index = 0; index < left.length; index++) {
-      if (left[index] === right[index]) continue;
-      const error = Math.abs(left[index] - right[index]);
-      absolute += error;
-      maxError = Math.max(maxError, error);
-      different++;
-      const pixel = Math.floor(index / 4),
-        x = (pixel % 2160) / 2,
-        y = Math.floor(pixel / 2160) / 2;
-      const glyph =
-        (x >= 142 && x <= 409 && y >= 65 && y <= 108) ||
-        (x >= 225 && x <= 300 && y >= 35 && y <= 65) ||
-        (x >= 141 && x <= 409 && y >= 110 && y <= 138);
-      if (!glyph) outsideText++;
-    }
-    return { different, outsideText, meanAbsoluteError: absolute / left.length, maxError };
-  }, actual);
-  // The fixture was rendered on Windows; FreeType glyph edges differ on Linux.
+  const reference = await readFile(
+    process.platform === 'linux'
+      ? 'tests/fixtures/default-linux.png'
+      : 'docs/screenshots/composition-v1.2.0.png'
+  );
+  const expected = `data:image/png;base64,${reference.toString('base64')}`;
+  const differences = await page.evaluate(
+    async ({ src, expected }) => {
+      const load = (src) =>
+        new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = src;
+        });
+      const [a, b] = await Promise.all([load(src), load(expected)]);
+      const pixels = (image) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 2160;
+        canvas.height = 904;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0);
+        return ctx.getImageData(0, 0, 2160, 904).data;
+      };
+      const left = pixels(a),
+        right = pixels(b);
+      let different = 0,
+        outsideText = 0,
+        absolute = 0,
+        maxError = 0;
+      for (let index = 0; index < left.length; index++) {
+        if (left[index] === right[index]) continue;
+        const error = Math.abs(left[index] - right[index]);
+        absolute += error;
+        maxError = Math.max(maxError, error);
+        different++;
+        const pixel = Math.floor(index / 4),
+          x = (pixel % 2160) / 2,
+          y = Math.floor(pixel / 2160) / 2;
+        const glyph =
+          (x >= 142 && x <= 409 && y >= 65 && y <= 108) ||
+          (x >= 225 && x <= 300 && y >= 35 && y <= 65) ||
+          (x >= 141 && x <= 409 && y >= 110 && y <= 138);
+        if (!glyph) outsideText++;
+      }
+      return { different, outsideText, meanAbsoluteError: absolute / left.length, maxError };
+    },
+    { src: actual, expected }
+  );
+  // OS-specific, visually reviewed goldens retain a strict comparison everywhere.
   if (differences.different) console.log('Pixel comparison:', JSON.stringify(differences));
-  expect(process.platform === 'win32' ? differences.different : differences.outsideText).toBe(0);
+  expect(differences.different).toBe(0);
   expect(errors).toEqual([]);
 });
 
