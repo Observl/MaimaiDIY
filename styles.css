@@ -31,6 +31,16 @@ select { font: inherit; }
 .app-shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 72px; }
 .hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px; margin: 0 4px 30px; }
 .hero-side { display: flex; align-items: center; gap: 10px; }
+.recommendations-entry { display: block; width: 100%; margin-top: 20px; color: #5d4cd0; background: var(--accent-soft); }
+.recommendations-grid { display: grid; gap: 18px; }
+.recommendation-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 18px; }
+.recommendation-card img { display: block; width: 100%; aspect-ratio: 1080 / 452; object-fit: contain; border-radius: 12px; background: var(--canvas); }
+.recommendation-card h3 { margin: 12px 0; font-size: 16px; }
+.recommendation-card .button { width: 100%; }
+#recommendations-admin { padding: 16px; background: var(--accent-soft); border-radius: 14px; }
+#recommendations-admin input { width: 100%; margin: 8px 0; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+#recommendations-admin .button { padding: 10px; margin: 4px 0; }
+.asset-item.is-selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .material-disclaimer { margin-top: 24px; padding: 16px 20px; border-radius: 16px; background: rgba(255,255,255,.94); color: #626470; text-align: center; font-size: 12px; line-height: 1.8; }
 .material-disclaimer p { margin: 0; overflow-wrap: anywhere; }
 .version-link { display: inline-grid; place-items: center; min-height: 44px; color: var(--muted); text-decoration: none; font-size: 13px; }

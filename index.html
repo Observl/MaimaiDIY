@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/avatar.png">
   <link rel="preload" href="assets/fonts/MorisawaUDShinGoGb4B-site.otf" as="font" type="font/otf" crossorigin>
   <link rel="preload" href="assets/fonts/SEGA_MARUGOTHICDB-web.ttf?v=2" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=1.2.0">
+  <link rel="stylesheet" href="styles.css?v=local-recommendations-1">
   <link rel="stylesheet" href="BG/Circle%20BG/background.css?v=sega-com-1">
   <link rel="stylesheet" href="BG/Circle%20BG/preview.css?v=borderless-1">
   <script src="background-motion.js" defer></script>
@@ -118,6 +118,7 @@
           <div id="material-controls"></div>
         </section>
       </div>
+      <button id="author-recommendations" class="button secondary recommendations-entry" type="button">作者推荐</button>
     </section>
     <section class="support-card" id="support">
       <div class="support-copy">
@@ -196,11 +197,24 @@
     </div>
     </div>
     <div id="picker-message" class="picker-message" hidden></div>
+    <button id="picker-previous" class="button secondary picker-more" type="button" hidden>加载前面的素材</button>
     <div id="picker-grid" class="picker-grid"></div>
     <button id="picker-more" class="button secondary picker-more" type="button" hidden>加载更多</button>
   </dialog>
 
-  <script src="app.js?v=1.2.0"></script>
+  <dialog id="recommendations-dialog" class="asset-picker recommendations-dialog" aria-labelledby="recommendations-title">
+    <div class="picker-head"><div><h2 id="recommendations-title">作者推荐</h2><p class="picker-meta">套用仅更换头像、姓名框、背景与称号，保留你的名称、Rating、段位和友人对战。</p></div><button id="recommendations-close" class="icon-button" type="button" aria-label="关闭作者推荐">×</button></div>
+    <div id="recommendations-admin" hidden>
+      <label>推荐名称 <input id="recommendation-name" type="text" maxlength="30" placeholder="为当前搭配命名"></label>
+      <button id="recommendation-save" class="button secondary" type="button">添加当前搭配</button>
+      <button id="recommendation-export" class="button secondary" type="button">导出推荐配置</button>
+      <p class="picker-meta">仅本地调试显示：添加后保存在本浏览器，导出配置用于后续发布，访客无法编辑。</p>
+    </div>
+    <p id="recommendations-status" role="status"></p>
+    <div id="recommendations-grid" class="recommendations-grid"></div>
+  </dialog>
+  <script src="app.js?v=local-recommendations-1"></script>
+  <script src="author-recommendations.js?v=local-recommendations-1"></script>
   <script data-goatcounter="https://observl.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
