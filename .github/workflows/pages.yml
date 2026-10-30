@@ -23,6 +23,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install development tools
+        run: npm ci
+      - name: Check and build
+        run: npm run check
+      - name: Install test browser
+        run: npx playwright install --with-deps chromium
+      - name: Browser regression
+        run: npm run test:e2e
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -30,8 +42,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-

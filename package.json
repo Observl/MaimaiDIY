@@ -1,0 +1,18 @@
+{
+  "name": "maimai-diy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/serve.mjs",
+    "lint": "eslint app.js src author-recommendations.js background-motion.js ui-motion.js sw.js tools/*.mjs tests",
+    "test": "node --test tests/unit/*.test.mjs",
+    "test:e2e": "playwright test",
+    "build": "node tools/build.mjs",
+    "check": "npm run lint && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10"
+  }
+}

@@ -6,11 +6,10 @@
   <meta name="theme-color" content="#171821">
   <title>MaimaiDIY v1.2.1 · 舞萌上屏装饰模拟器</title>
   <link rel="icon" href="assets/avatar.png">
-  <link rel="preload" href="assets/fonts/MorisawaUDShinGoGb4B-site.otf" as="font" type="font/otf" crossorigin>
   <link rel="preload" href="assets/fonts/SEGA_MARUGOTHICDB-web.ttf?v=2" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=local-recommendations-1">
+  <link rel="stylesheet" href="styles.css?v=cleanup-1">
   <link rel="stylesheet" href="BG/Circle%20BG/background.css?v=sega-com-1">
-  <link rel="stylesheet" href="BG/Circle%20BG/preview.css?v=borderless-1">
+  <link rel="stylesheet" href="BG/Circle%20BG/preview.css?v=cleanup-1">
   <link rel="stylesheet" href="ui-motion.css?v=1">
   <script src="ui-motion.js?v=1" defer></script>
   <script src="background-motion.js" defer></script>
@@ -159,7 +158,7 @@
         </label>
         <label class="name-editor" hidden>
           <span>名称</span>
-          <input class="name-input" type="text" maxlength="16" value="maimai" autocomplete="off">
+          <input class="name-input" type="text" maxlength="128" value="maimai" autocomplete="off" aria-label="玩家名称">
         </label>
         <label class="switch-wrap">
           <span>展示</span>
@@ -215,8 +214,7 @@
     <p id="recommendations-status" role="status"></p>
     <div id="recommendations-grid" class="recommendations-grid"></div>
   </dialog>
-  <script src="app.js?v=default-rating-16411"></script>
-  <script src="author-recommendations.js?v=default-rating-16411"></script>
+  <script type="module" src="app.js?v=cleanup-1"></script>
   <script data-goatcounter="https://observl.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

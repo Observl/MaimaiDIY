@@ -2,7 +2,9 @@
   const button = document.querySelector('#background-motion');
   const storageKey = 'maimai-diy-background-motion';
   let enabled = true;
-  try { enabled = localStorage.getItem(storageKey) !== 'paused'; } catch {}
+  try {
+    enabled = localStorage.getItem(storageKey) !== 'paused';
+  } catch {}
 
   function update() {
     document.documentElement.dataset.backgroundMotion = enabled ? 'running' : 'paused';
@@ -15,6 +17,8 @@
   button.addEventListener('click', () => {
     enabled = !enabled;
     update();
-    try { localStorage.setItem(storageKey, enabled ? 'running' : 'paused'); } catch {}
+    try {
+      localStorage.setItem(storageKey, enabled ? 'running' : 'paused');
+    } catch {}
   });
 })();
