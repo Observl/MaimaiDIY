@@ -41,7 +41,9 @@ async function exportState(page) {
   return JSON.parse(await readFile(await (await download).path(), 'utf8'));
 }
 
-test('default rendering, required controls, large preview and PNG export', async ({ page }) => {
+test('default rendering, required controls, large preview and PNG export', async ({
+  page,
+}, testInfo) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await ready(page);
@@ -60,6 +62,7 @@ test('default rendering, required controls, large preview and PNG export', async
   const png = await readFile(await (await download).path());
   expect(png.readUInt32BE(16)).toBe(2160);
   expect(png.readUInt32BE(20)).toBe(904);
+  await testInfo.attach('default-export', { body: png, contentType: 'image/png' });
   // Compare decoded pixels against the previously published default, not PNG encoding.
   const actual = `data:image/png;base64,${png.toString('base64')}`;
   const differences = await page.evaluate(async (src) => {
@@ -82,9 +85,14 @@ test('default rendering, required controls, large preview and PNG export', async
     const left = pixels(a),
       right = pixels(b);
     let different = 0,
-      outsideText = 0;
+      outsideText = 0,
+      absolute = 0,
+      maxError = 0;
     for (let index = 0; index < left.length; index++) {
       if (left[index] === right[index]) continue;
+      const error = Math.abs(left[index] - right[index]);
+      absolute += error;
+      maxError = Math.max(maxError, error);
       different++;
       const pixel = Math.floor(index / 4),
         x = (pixel % 2160) / 2,
@@ -95,9 +103,10 @@ test('default rendering, required controls, large preview and PNG export', async
         (x >= 141 && x <= 409 && y >= 110 && y <= 138);
       if (!glyph) outsideText++;
     }
-    return { different, outsideText };
+    return { different, outsideText, meanAbsoluteError: absolute / left.length, maxError };
   }, actual);
   // The fixture was rendered on Windows; FreeType glyph edges differ on Linux.
+  if (differences.different) console.log('Pixel comparison:', JSON.stringify(differences));
   expect(process.platform === 'win32' ? differences.different : differences.outsideText).toBe(0);
   expect(errors).toEqual([]);
 });
