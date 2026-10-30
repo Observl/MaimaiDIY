@@ -1,0 +1,48 @@
+:root { --ui-ease-out: cubic-bezier(.23, 1, .32, 1); }
+
+/* Keep feedback on the control itself; surrounding layout never moves. */
+:is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile, .asset-item) {
+  transition: transform 150ms var(--ui-ease-out), background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, opacity 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+:is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile, .asset-item):hover { transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  :is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile):hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(48, 38, 100, .12);
+  }
+  .asset-item:hover { transform: translateY(-2px); box-shadow: 0 5px 14px rgba(48, 38, 100, .1); }
+}
+:is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile, .asset-item):active:not(:disabled) {
+  transform: scale(.975);
+  box-shadow: none;
+  transition-duration: 90ms;
+}
+:is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile, .asset-item):focus-visible {
+  outline: 3px solid #bcb1ff;
+  outline-offset: 3px;
+}
+.upload-button:focus-within, .template-import-button:focus-within { outline: 3px solid #bcb1ff; outline-offset: 3px; }
+.switch { transition: background-color 160ms ease; }
+.switch::after { transition: transform 180ms var(--ui-ease-out); }
+.visibility:focus-visible + .switch { outline: 3px solid #bcb1ff; outline-offset: 3px; }
+
+:is(.asset-picker, #large-preview)[open] { animation: ui-dialog-enter 180ms var(--ui-ease-out); }
+:is(.asset-picker, #large-preview)[open]::backdrop { animation: ui-backdrop-enter 150ms ease-out; }
+@keyframes ui-dialog-enter {
+  from { opacity: 0; transform: translateY(6px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes ui-backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+
+/* Keyboard operations stay immediate; focus remains clearly visible. */
+html[data-input-method="keyboard"] :is(.asset-picker, #large-preview)[open],
+html[data-input-method="keyboard"] :is(.asset-picker, #large-preview)[open]::backdrop { animation: none; }
+html[data-input-method="keyboard"] :is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile, .asset-item):active { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.asset-picker, #large-preview)[open], :is(.asset-picker, #large-preview)[open]::backdrop { animation: none; }
+  :is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile, .asset-item), .switch, .switch::after { transition: none; }
+  :is(.button, .library-button, .upload-button, .history-button, .icon-button, .background-motion, .github-profile, .asset-item):is(:hover, :active) { transform: none !important; }
+}
