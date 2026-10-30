@@ -20,7 +20,7 @@ function defaultRecommendation() {
   composition.files.ratingFrame = `${COS.baseUrl}/materials/ratings/${ratingBand(DEFAULT_PRESET.ratingValue).asset}`;
   composition.visible = Object.fromEntries(Object.keys(slots).map(id => [id, true]));
   Object.assign(composition, { playerName: DEFAULT_PRESET.playerName, ratingValue: DEFAULT_PRESET.ratingValue, titleName: DEFAULT_PRESET.titleName, titleColor: DEFAULT_PRESET.titleColor, labels: { ...DEFAULT_PRESET.labels } });
-  return { id: 'author-default', name: '作者默认搭配', preview: 'docs/screenshots/composition-v1.2.0.png', state: composition };
+  return { id: 'author-default', name: '作者默认搭配', preview: 'docs/screenshots/composition-v1.2.0.png?v=16411', state: composition };
 }
 
 async function getRecommendations() {

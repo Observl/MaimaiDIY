@@ -85,7 +85,7 @@ const TEMPLATE_FILE_VERSION = 1;
 const TEMPLATE_FILE_MAX_BYTES = 10 * 1024 * 1024;
 const HISTORY_LIMIT = 5;
 const DEFAULT_PRESET = {
-  ratingValue: 16393,
+  ratingValue: 16411,
   playerName: 'Observ.L',
   titleName: 'チエルカ／エソテリカ',
   titleColor: 'Gold',
@@ -106,7 +106,7 @@ const DEFAULT_PRESET = {
     friendBattle: 'SSS4'
   }
 };
-const state = { files: {}, visible: {}, labels: {}, ratingValue: 16393, playerName: 'Observ.L', titleName: DEFAULT_PRESET.titleName, titleColor: 'Gold' };
+const state = { files: {}, visible: {}, labels: {}, ratingValue: DEFAULT_PRESET.ratingValue, playerName: 'Observ.L', titleName: DEFAULT_PRESET.titleName, titleColor: 'Gold' };
 let manifest;
 let titleManifest;
 let badgeManifest;
