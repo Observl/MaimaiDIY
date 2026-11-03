@@ -38,6 +38,7 @@ test('draft snapshot contains the tier manufacturing specification', () => {
   assert.equal(draft.rightsReview, 'required');
   assert.equal(draft.quote.totalFen, 8998);
   assert.ok(draft.product.effectRequests.includes('ai-glitter'));
+  assert.equal(draft.product.acrylicThicknessMm, 15);
 });
 
 test('accessories and cards are not discounted', () => {
@@ -45,8 +46,9 @@ test('accessories and cards are not discounted', () => {
     variant: 'basic', quantity: 5, accessory: 'clearStand', cardQuantity: 2, newCustomer: true,
   });
   assert.equal(q.bodyFen, 13495);
-  assert.equal(q.extrasFen, 5000);
-  assert.equal(q.totalFen, 18495);
+  assert.equal(q.extrasFen, 4998);
+  assert.equal(q.comboDiscountFen, 700);
+  assert.equal(q.totalFen, 17793);
   assert.equal(q.discountFen, 1500);
   assert.equal(q.discountReason, 'new-customer');
 });
@@ -62,4 +64,22 @@ test('fixed newcomer prices are not rounded percentage discounts', () => {
     assert.equal(quoteAcrylicOrder({variant,quantity:1,newCustomer:true}).totalFen,newcomer);
     assert.equal(quoteProductBundle({variant,quantity:2,newCustomer:true}).bodyFen,newcomer*2);
   }
+});
+
+test('holographic card standalone costs 14.99 plus one shipping fee', () => {
+  const one = quoteProductBundle({ variant: 'basic', quantity: 0, cardQuantity: 1 });
+  assert.equal(one.totalFen, 1899);
+  assert.equal(one.shippingFen, 400);
+  assert.equal(one.comboDiscountFen, 0);
+  const many = quoteProductBundle({ variant: 'basic', quantity: 0, cardQuantity: 3, newCustomer: true });
+  assert.equal(many.totalFen, 4897);
+  assert.equal(many.discountApplied, false);
+});
+test('bundle discounts are applied to eligible combinations only', () => {
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand' }).totalFen, 3299);
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, cardQuantity: 1 }).totalFen, 4298);
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1 }).totalFen, 4598);
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1, newCustomer: true }).totalFen, 4298);
+  assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 0 }));
+  assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 0, accessory: 'clearStand', cardQuantity: 1 }));
 });
