@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 
 export const PRICE_TABLE = Object.freeze({
   basic: 2999, light: 3499, premium: 4499, none: 0, clearStand: 400,
-  ledBase: 2000, holographicCard: 1499,
+  holographicCard: 1499,
 });
 
 function positiveCount(value, min, max, field) {
@@ -15,7 +15,7 @@ function positiveCount(value, min, max, field) {
 export const NEWCOMER_PRICE_TABLE = Object.freeze({ basic: 2699, light: 2999, premium: 3999 });
 
 export function calculateQuote({ variant, quantity, accessory = 'none', cardQuantity = 0, eligibleNewCustomer = false }) {
-  if (!['basic', 'light', 'premium'].includes(variant) || !['none', 'clearStand', 'ledBase'].includes(accessory)) {
+  if (!['basic', 'light', 'premium'].includes(variant) || !['none', 'clearStand'].includes(accessory)) {
     throw Object.assign(new Error('Unknown product'), { status: 400 });
   }
   positiveCount(quantity, 0, 99, 'quantity');
