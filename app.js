@@ -11,6 +11,7 @@ import { createRenderer } from './src/renderer.js';
 import { initializePicker } from './src/picker.js';
 import { initializeTemplates } from './src/templates.js';
 import { initializeRecommendations } from './author-recommendations.js';
+import { initializeCustomOrder } from './src/custom-order.js';
 const canvas = document.querySelector('#preview');
 const renderer = createRenderer(canvas);
 const renderCanvas = renderer.renderCanvas;
@@ -373,6 +374,7 @@ const templates = initializeTemplates({
   syncControlsFromState,
   render,
 });
+initializeCustomOrder({ snapshotState, renderCanvas });
 initializeRecommendations({
   state,
   snapshotState,
