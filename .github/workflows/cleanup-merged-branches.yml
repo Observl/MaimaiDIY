@@ -1,0 +1,50 @@
+name: Cleanup verified merged branches
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/cleanup-merged-branches.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  delete-merged-branches:
+    if: github.repository == 'Observl/MaimaiDIY' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete only branches with verified merged PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const targets = [
+              [1, 'feat/custom-acrylic-order-foundation'],
+              [3, 'fix/newcomer-only-discount'],
+              [4, 'feat/three-tier-acrylic-pricing'],
+              [5, 'fix/fixed-newcomer-tier-prices'],
+              [6, 'feat/holographic-card-combos'],
+              [7, 'feat/support-merch-entry'],
+              [8, 'fix/pages-deploy-workflow'],
+            ];
+            const { owner, repo } = context.repo;
+            for (const [pull_number, branch] of targets) {
+              const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number });
+              if (!pr.merged || pr.base.ref !== 'main' ||
+                  pr.head.ref !== branch || pr.head.repo?.full_name !== context.repo.owner + '/' + context.repo.repo) {
+                core.warning('Skipped branch without matching merged PR: ' + branch);
+                continue;
+              }
+              try {
+                await github.rest.git.deleteRef({ owner, repo, ref: 'heads/' + branch });
+                core.info('Deleted obsolete merged branch ' + branch);
+              } catch (error) {
+                if (error.status === 404 || error.status === 422) {
+                  core.info('Branch already absent or cannot be removed: ' + branch);
+                } else {
+                  throw error;
+                }
+              }
+            }
