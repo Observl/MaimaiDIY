@@ -28,6 +28,7 @@ jobs:
               [6, 'feat/holographic-card-combos'],
               [7, 'feat/support-merch-entry'],
               [8, 'fix/pages-deploy-workflow'],
+              [9, 'chore/cleanup-merged-branches'],
             ];
             const { owner, repo } = context.repo;
             for (const [pull_number, branch] of targets) {
