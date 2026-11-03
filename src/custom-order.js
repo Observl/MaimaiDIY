@@ -93,6 +93,8 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
   if (!anchor) return;
   const section = document.createElement('section');
   section.className = 'card custom-order-card';
+  section.id = 'custom-order';
+  section.tabIndex = -1;
   section.innerHTML = `
     <div class="section-head"><div><h2>亚克力实体定制 · 方案预览</h2>
     <p>当前仅可计算报价并导出方案；未开放购买和商业生产。</p></div></div>
