@@ -6,13 +6,14 @@ test('newcomer-only discount', () => {
   const q = calculateQuote({ variant: 'premium', quantity: 5, accessory: 'ledBase', cardQuantity: 2, eligibleNewCustomer: true });
   assert.equal(q.subtotalFen, 22495);
   assert.equal(q.discountFen, 2500);
-  assert.equal(q.addonsFen, 13000);
-  assert.equal(q.totalFen, 32995);
+  assert.equal(q.addonsFen, 12998);
+  assert.equal(q.comboDiscountFen, 200);
+  assert.equal(q.totalFen, 32793);
   assert.equal(q.discountType, 'newcomer');
 });
 test('single unit and optional accessories', () => {
   assert.equal(calculateQuote({ variant: 'basic', quantity: 1 }).totalFen, 2999);
-  assert.equal(calculateQuote({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1 }).totalFen, 4899);
+  assert.equal(calculateQuote({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1 }).totalFen, 4598);
 });
 test('invalid counts and inputs rejected', () => {
   for (const count of [-1, 0, 1.2, 100]) assert.throws(() => calculateQuote({ variant: 'basic', quantity: count }));
@@ -45,4 +46,13 @@ test('newcomer fixed prices have no floating point rounding', () => {
     assert.equal(calculateQuote({variant,quantity:1,eligibleNewCustomer:true}).totalFen,newcomer);
     assert.equal(calculateQuote({variant,quantity:5,eligibleNewCustomer:true}).totalFen,newcomer*5);
   }
+});
+
+test('card-only has one delivery fee, matching front-end checkout quote', () => {
+  assert.equal(calculateQuote({ variant: 'basic', quantity: 0, cardQuantity: 1 }).totalFen, 1899);
+  assert.equal(calculateQuote({ variant: 'basic', quantity: 0, cardQuantity: 3 }).totalFen, 4897);
+  assert.equal(calculateQuote({ variant: 'basic', quantity: 1, cardQuantity: 1 }).totalFen, 4298);
+  assert.equal(calculateQuote({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1, eligibleNewCustomer: true }).totalFen, 4298);
+  assert.throws(() => calculateQuote({ variant: 'basic', quantity: 0, cardQuantity: 0 }));
+  assert.throws(() => calculateQuote({ variant: 'basic', quantity: 0, accessory: 'clearStand', cardQuantity: 1 }));
 });
