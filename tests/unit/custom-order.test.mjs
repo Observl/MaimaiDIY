@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ACRYLIC_PRODUCTS, quoteAcrylicOrder, buildAcrylicDesignDraft } from '../../src/custom-order.js';
+import { ACRYLIC_PRODUCTS, quoteAcrylicOrder, quoteProductBundle, buildAcrylicDesignDraft } from '../../src/custom-order.js';
 
 test('fixed unit prices are 30 and 40 yuan', () => {
   assert.equal(ACRYLIC_PRODUCTS.basic.priceFen, 3000);
@@ -31,4 +31,20 @@ test('exported draft freezes design snapshot and is not a payable order', () => 
   assert.equal(draft.status, 'not-for-production-or-payment');
   assert.equal(draft.rightsReview, 'required');
   assert.equal(draft.quote.totalFen, 8000);
+});
+
+test('accessories and foil cards are priced separately from 20% body discount', () => {
+  const q = quoteProductBundle({
+    variant: 'basic', quantity: 5, accessory: 'clearStand', cardQuantity: 2, newCustomer: true,
+  });
+  assert.equal(q.bodyFen, 12000);
+  assert.equal(q.extrasFen, 5000);
+  assert.equal(q.totalFen, 17000);
+  assert.equal(q.discountFen, 3000);
+  assert.equal(q.discountReason, 'bulk');
+});
+test('LED bundle is selectable and quantities are validated', () => {
+  assert.equal(quoteProductBundle({ variant: 'special', quantity: 1, accessory: 'ledBase' }).totalFen, 6000);
+  assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'invalid' }), RangeError);
+  assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 1, cardQuantity: -1 }), RangeError);
 });
