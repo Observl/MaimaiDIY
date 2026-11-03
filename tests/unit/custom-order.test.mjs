@@ -2,51 +2,56 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ACRYLIC_PRODUCTS, quoteAcrylicOrder, quoteProductBundle, buildAcrylicDesignDraft } from '../../src/custom-order.js';
 
-test('fixed unit prices are 30 and 40 yuan', () => {
+test('three product variants and process requests', () => {
   assert.equal(ACRYLIC_PRODUCTS.basic.priceFen, 3000);
-  assert.equal(ACRYLIC_PRODUCTS.special.priceFen, 4000);
-  assert.equal(quoteAcrylicOrder({ variant: 'basic', quantity: 1 }).totalFen, 3000);
-  assert.equal(quoteAcrylicOrder({ variant: 'special', quantity: 1 }).totalFen, 4000);
+  assert.equal(ACRYLIC_PRODUCTS.light.priceFen, 3500);
+  assert.equal(ACRYLIC_PRODUCTS.premium.priceFen, 4500);
+  assert.deepEqual(ACRYLIC_PRODUCTS.light.effects, ['uv-color', 'white-ink', 'ai-spot-uv']);
+  assert.ok(ACRYLIC_PRODUCTS.premium.effects.includes('double-sided-print'));
+  assert.ok(ACRYLIC_PRODUCTS.premium.effects.includes('ai-glitter'));
+  for (const [variant, expected] of [['basic', 3000], ['light', 3500], ['premium', 4500]]) {
+    assert.equal(quoteAcrylicOrder({ variant, quantity: 1 }).totalFen, expected);
+  }
 });
 
-test('new customer receives 20 percent discount', () => {
-  assert.equal(quoteAcrylicOrder({ variant: 'basic', quantity: 1, newCustomer: true }).totalFen, 2400);
-  assert.equal(quoteAcrylicOrder({ variant: 'special', quantity: 5 }).totalFen, 20000);
-  assert.equal(quoteAcrylicOrder({ variant: 'special', quantity: 5, newCustomer: true }).totalFen, 16000);
-  assert.equal(quoteAcrylicOrder({ variant: 'basic', quantity: 4 }).totalFen, 12000);
+test('newcomer discount is 10 percent and quantity does not trigger promotion', () => {
+  assert.equal(quoteAcrylicOrder({ variant: 'basic', quantity: 1, newCustomer: true }).totalFen, 2700);
+  assert.equal(quoteAcrylicOrder({ variant: 'light', quantity: 1, newCustomer: true }).totalFen, 3150);
+  assert.equal(quoteAcrylicOrder({ variant: 'premium', quantity: 1, newCustomer: true }).totalFen, 4050);
+  assert.equal(quoteAcrylicOrder({ variant: 'premium', quantity: 5 }).totalFen, 22500);
+  assert.equal(quoteAcrylicOrder({ variant: 'premium', quantity: 5, newCustomer: true }).totalFen, 20250);
 });
 
-test('rejects unknown products and invalid quantities', () => {
+test('invalid products or quantities are rejected', () => {
   for (const quantity of [0, -1, 1.5, 100, NaN, Infinity]) {
     assert.throws(() => quoteAcrylicOrder({ variant: 'basic', quantity }), RangeError);
   }
-  assert.throws(() => quoteAcrylicOrder({ variant: 'unknown', quantity: 1 }), RangeError);
+  assert.throws(() => quoteAcrylicOrder({ variant: 'special', quantity: 1 }), RangeError);
 });
 
-test('exported draft freezes design snapshot and is not a payable order', () => {
+test('draft snapshot contains the tier manufacturing specification', () => {
   const state = { playerName: 'Example', files: { avatar: 'assets/avatar.png' } };
-  const draft = buildAcrylicDesignDraft({ state, variant: 'special', quantity: 2 });
+  const draft = buildAcrylicDesignDraft({ state, variant: 'premium', quantity: 2 });
   state.playerName = 'Changed';
   assert.equal(draft.design.playerName, 'Example');
   assert.equal(draft.status, 'not-for-production-or-payment');
   assert.equal(draft.rightsReview, 'required');
-  assert.equal(draft.quote.totalFen, 8000);
+  assert.equal(draft.quote.totalFen, 9000);
+  assert.ok(draft.product.effectRequests.includes('ai-glitter'));
 });
 
-test('accessories and foil cards are priced separately from 20% body discount', () => {
+test('accessories and cards are not discounted', () => {
   const q = quoteProductBundle({
     variant: 'basic', quantity: 5, accessory: 'clearStand', cardQuantity: 2, newCustomer: true,
   });
-  assert.equal(q.bodyFen, 12000);
+  assert.equal(q.bodyFen, 13500);
   assert.equal(q.extrasFen, 5000);
-  assert.equal(q.totalFen, 17000);
-  assert.equal(q.discountFen, 3000);
+  assert.equal(q.totalFen, 18500);
+  assert.equal(q.discountFen, 1500);
   assert.equal(q.discountReason, 'new-customer');
 });
-test('LED bundle is selectable and quantities are validated', () => {
-  assert.equal(quoteProductBundle({ variant: 'special', quantity: 1, accessory: 'ledBase' }).totalFen, 6000);
+test('LED accessory and count validation', () => {
+  assert.equal(quoteProductBundle({ variant: 'premium', quantity: 1, accessory: 'ledBase' }).totalFen, 6500);
   assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'invalid' }), RangeError);
   assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 1, cardQuantity: -1 }), RangeError);
 });
-
-test('bulk purchases without newcomer eligibility are full price', () => { assert.equal(quoteProductBundle({ variant: 'special', quantity: 5 }).totalFen, 20000); });

@@ -1,7 +1,8 @@
 // Commercial-order foundation. No checkout or manufacture is enabled for unlicensed assets.
 export const ACRYLIC_PRODUCTS = Object.freeze({
   basic: Object.freeze({ label: '基础款', priceFen: 3000, effects: ['uv-color', 'white-ink'] }),
-  special: Object.freeze({ label: '特殊款', priceFen: 4000, effects: ['uv-color', 'white-ink', 'spot-effect'] }),
+  light: Object.freeze({ label: '轻量特效款', priceFen: 3500, effects: ['uv-color', 'white-ink', 'ai-spot-uv'] }),
+  premium: Object.freeze({ label: '高配特效款', priceFen: 4500, effects: ['uv-color', 'white-ink', 'double-sided-print', 'ai-spot-uv', 'ai-glitter'] }),
 });
 
 export const ACCESSORIES = Object.freeze({
@@ -18,7 +19,7 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
   if (!Number.isSafeInteger(cardQuantity) || cardQuantity < 0 || cardQuantity > 99) throw new RangeError('收藏卡数量须为0～99');
   const bodyOriginalFen = ACRYLIC_PRODUCTS[variant].priceFen * quantity;
   const discounted = Boolean(newCustomer);
-  const bodyFen = discounted ? bodyOriginalFen * 0.8 : bodyOriginalFen;
+  const bodyFen = discounted ? bodyOriginalFen * 0.9 : bodyOriginalFen;
   // Discounts apply only to the acrylic bodies, never to add-ons.
   const extrasFen = ACCESSORIES[accessory].priceFen * quantity + COLLECTIBLE_CARD.priceFen * cardQuantity;
   return Object.freeze({
@@ -38,7 +39,7 @@ export function quoteAcrylicOrder({ variant, quantity, newCustomer = false }) {
   const unitFen = ACRYLIC_PRODUCTS[variant].priceFen;
   const discountApplied = Boolean(newCustomer);
   const originalFen = unitFen * quantity;
-  const totalFen = discountApplied ? originalFen * 8 / 10 : originalFen;
+  const totalFen = discountApplied ? originalFen * 9 / 10 : originalFen;
   return Object.freeze({
     variant, quantity, unitFen, originalFen, totalFen,
     discountApplied, discountReason: discountApplied ? 'new-customer' : null,
@@ -87,7 +88,8 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
     <div class="custom-order-grid">
       <label>工艺款式<select id="acrylic-variant">
         <option value="basic">基础款 · ¥30</option>
-        <option value="special">特殊款 · ¥40</option>
+        <option value="light">轻量特效款 · ¥35（AI局部UV）</option>
+        <option value="premium">高配特效款 · ¥45（双面印刷＋局部UV＋闪粉）</option>
       </select></label>
       <label>购买数量<input id="acrylic-quantity" type="number" inputmode="numeric" min="1" max="99" step="1" value="1"></label>
       <label>展示配件<select id="acrylic-accessory">
@@ -96,7 +98,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
         <option value="ledBase">发光底座 · +¥20/件</option>
       </select></label>
       <label>镭射收藏卡数量<input id="acrylic-cards" type="number" min="0" max="99" step="1" value="0"></label>
-      <label class="custom-order-check"><input id="acrylic-newcomer" type="checkbox"> 模拟新人首单八折</label>
+      <label class="custom-order-check"><input id="acrylic-newcomer" type="checkbox"> 模拟新人首单九折</label>
     </div>
     <div class="custom-order-summary" aria-live="polite">
       <span id="acrylic-discount"></span>
@@ -128,7 +130,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       const quote = readQuote();
       total.textContent = `参考价 ¥${yuan(quote.totalFen)}`;
       discount.textContent = quote.discountApplied
-        ? `主体优惠 -¥${yuan(quote.discountFen)} · 新人首单八折；配件及卡片不打折`
+        ? `主体优惠 -¥${yuan(quote.discountFen)} · 新人首单九折；配件及卡片不打折`
         : '无主体优惠；配件及卡片单独计价';
       section.querySelector('#acrylic-export').disabled = false;
     } catch {
