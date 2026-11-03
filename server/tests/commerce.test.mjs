@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { calculateQuote, createDesignRecord, validateDesign } from '../lib/commerce.mjs';
 
-test('pricing and non-stacking discounts', () => {
+test('newcomer-only discount', () => {
   const q = calculateQuote({ variant: 'special', quantity: 5, accessory: 'ledBase', cardQuantity: 2, eligibleNewCustomer: true });
   assert.equal(q.subtotalFen, 20000);
   assert.equal(q.discountFen, 4000);
   assert.equal(q.addonsFen, 13000);
   assert.equal(q.totalFen, 29000);
-  assert.equal(q.discountType, 'bulk');
+  assert.equal(q.discountType, 'newcomer');
 });
 test('single unit and optional accessories', () => {
   assert.equal(calculateQuote({ variant: 'basic', quantity: 1 }).totalFen, 3000);
@@ -28,3 +28,5 @@ test('immutable design copy and pending rights default', () => {
   assert.equal(record.rightsStatus, 'pending');
   assert.match(record.digest, /^[a-f0-9]{64}$/);
 });
+
+test('no automatic discount at five units', () => { assert.equal(calculateQuote({ variant: 'basic', quantity: 5 }).totalFen, 15000); });
