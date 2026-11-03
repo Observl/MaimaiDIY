@@ -73,7 +73,7 @@ export function buildAcrylicDesignDraft({ state, variant, quantity, newCustomer 
       cardQuantity,
       widthMm: 120,
       heightMm: 50,
-      acrylicThicknessMm: 3,
+      acrylicThicknessMm: 15,
       effectRequests: [...ACRYLIC_PRODUCTS[variant].effects],
     },
     quote,
@@ -105,7 +105,6 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       <label>展示配件<select id="acrylic-accessory">
         <option value="none">不加配件</option>
         <option value="clearStand">透明托架 · +¥4/件</option>
-        <option value="ledBase">发光底座 · +¥20/件</option>
       </select></label>
       <label>镭射收藏卡数量（¥14.99/张）<input id="acrylic-cards" type="number" min="0" max="99" step="1" value="0"></label>
       <label class="custom-order-check"><input id="acrylic-newcomer" type="checkbox"> 模拟新人专属价</label>
@@ -148,7 +147,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       discount.textContent = [
         quote.discountApplied ? `新人优惠 -¥${yuan(quote.discountFen)}` : '',
         quote.comboDiscountFen ? `组合优惠 -¥${yuan(quote.comboDiscountFen)}` : '',
-        quote.shippingFen ? `镭射卡单买运费 ¥${yuan(quote.shippingFen)}` : '镭射卡随砖免单独运费',
+        quote.shippingFen ? `镭射卡单买运费 ¥${yuan(quote.shippingFen)}` : (quote.cardQuantity > 0 && quote.quantity > 0 ? '镭射卡随砖免单独运费' : ''),
       ].filter(Boolean).join(' · ');
       section.querySelector('#acrylic-export').disabled = false;
     } catch {
