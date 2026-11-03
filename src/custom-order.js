@@ -8,23 +8,31 @@ export const ACRYLIC_PRODUCTS = Object.freeze({
 export const ACCESSORIES = Object.freeze({
   none: Object.freeze({ label: '不加配件', priceFen: 0 }),
   clearStand: Object.freeze({ label: '透明托架', priceFen: 400 }),
-  ledBase: Object.freeze({ label: '发光底座', priceFen: 2000 }),
 });
-export const COLLECTIBLE_CARD = Object.freeze({ label: '镭射收藏卡', priceFen: 1500 });
+export const COLLECTIBLE_CARD = Object.freeze({ label: '镭射收藏卡', priceFen: 1499 });
 // Configurable sales prices; these are test prices, not manufacturer quotations.
+export const CARD_ONLY_SHIPPING_FEN = 400; // configurable domestic shipping estimate
+export const COMBO_DISCOUNTS = Object.freeze({ standFen: 100, cardFen: 200 });
+
 export function quoteProductBundle({ variant, quantity, accessory = 'none', cardQuantity = 0, newCustomer = false }) {
   if (!Object.hasOwn(ACRYLIC_PRODUCTS, variant)) throw new RangeError('未知主体款式');
   if (!Object.hasOwn(ACCESSORIES, accessory)) throw new RangeError('未知配件');
-  if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > 99) throw new RangeError('主体数量须为1～99');
+  if (!Number.isSafeInteger(quantity) || quantity < 0 || quantity > 99) throw new RangeError('主体数量须为0～99');
   if (!Number.isSafeInteger(cardQuantity) || cardQuantity < 0 || cardQuantity > 99) throw new RangeError('收藏卡数量须为0～99');
+  if (quantity === 0 && cardQuantity === 0) throw new RangeError('请至少购买一件商品');
+  if (quantity === 0 && accessory !== 'none') throw new RangeError('托架或底座不可单独购买');
   const bodyOriginalFen = ACRYLIC_PRODUCTS[variant].priceFen * quantity;
-  const discounted = Boolean(newCustomer);
+  const discounted = Boolean(newCustomer) && quantity > 0;
   const bodyFen = (discounted ? ACRYLIC_PRODUCTS[variant].newcomerPriceFen : ACRYLIC_PRODUCTS[variant].priceFen) * quantity;
   // Discounts apply only to the acrylic bodies, never to add-ons.
   const extrasFen = ACCESSORIES[accessory].priceFen * quantity + COLLECTIBLE_CARD.priceFen * cardQuantity;
+  const comboDiscountFen = quantity > 0
+    ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + (cardQuantity > 0 ? COMBO_DISCOUNTS.cardFen : 0)
+    : 0;
+  const shippingFen = quantity === 0 ? CARD_ONLY_SHIPPING_FEN : 0;
   return Object.freeze({
     variant, quantity, accessory, cardQuantity, newCustomer: Boolean(newCustomer),
-    bodyOriginalFen, bodyFen, extrasFen, totalFen: bodyFen + extrasFen,
+    bodyOriginalFen, bodyFen, extrasFen, comboDiscountFen, shippingFen, totalFen: bodyFen + extrasFen - comboDiscountFen + shippingFen,
     discountApplied: discounted, discountFen: bodyOriginalFen - bodyFen,
     discountReason: discounted ? 'new-customer' : null,
     currency: 'CNY',
@@ -58,14 +66,17 @@ export function buildAcrylicDesignDraft({ state, variant, quantity, newCustomer 
     version: 1,
     status: 'not-for-production-or-payment',
     product: {
-      variant,
+      type: quantity === 0 ? 'holographic-card' : 'acrylic-brick',
+      variant: quantity === 0 ? null : variant,
       quantity,
       accessory,
       cardQuantity,
-      widthMm: 120,
-      heightMm: 50,
-      acrylicThicknessMm: 3,
-      effectRequests: [...ACRYLIC_PRODUCTS[variant].effects],
+      ...(quantity > 0 ? {
+        widthMm: 120,
+        heightMm: 50,
+        acrylicThicknessMm: 15,
+        effectRequests: [...ACRYLIC_PRODUCTS[variant].effects],
+      } : {}),
     },
     quote,
     design: JSON.parse(JSON.stringify(state)),
@@ -91,13 +102,13 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
         <option value="light">轻量特效款 · ¥34.99（AI局部UV）</option>
         <option value="premium">高配特效款 · ¥44.99（双面印刷＋局部UV＋闪粉）</option>
       </select></label>
+      <label class="custom-order-check"><input id="acrylic-card-only" type="checkbox"> 仅购买镭射收藏卡（运费另计）</label>
       <label>购买数量<input id="acrylic-quantity" type="number" inputmode="numeric" min="1" max="99" step="1" value="1"></label>
       <label>展示配件<select id="acrylic-accessory">
         <option value="none">不加配件</option>
         <option value="clearStand">透明托架 · +¥4/件</option>
-        <option value="ledBase">发光底座 · +¥20/件</option>
       </select></label>
-      <label>镭射收藏卡数量<input id="acrylic-cards" type="number" min="0" max="99" step="1" value="0"></label>
+      <label>镭射收藏卡数量（¥14.99/张）<input id="acrylic-cards" type="number" min="0" max="99" step="1" value="0"></label>
       <label class="custom-order-check"><input id="acrylic-newcomer" type="checkbox"> 模拟新人专属价</label>
     </div>
     <div class="custom-order-summary" aria-live="polite">
@@ -114,24 +125,32 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
   const variant = section.querySelector('#acrylic-variant');
   const quantity = section.querySelector('#acrylic-quantity');
   const newcomer = section.querySelector('#acrylic-newcomer');
+  const cardOnly = section.querySelector('#acrylic-card-only');
   const accessory = section.querySelector('#acrylic-accessory');
   const cards = section.querySelector('#acrylic-cards');
   const total = section.querySelector('#acrylic-total');
   const discount = section.querySelector('#acrylic-discount');
   function readQuote() {
     return quoteProductBundle({
-      variant: variant.value, quantity: Number(quantity.value),
-      accessory: accessory.value, cardQuantity: Number(cards.value),
+      variant: variant.value, quantity: cardOnly.checked ? 0 : Number(quantity.value),
+      accessory: cardOnly.checked ? 'none' : accessory.value, cardQuantity: Number(cards.value),
       newCustomer: newcomer.checked,
     });
   }
   function refresh() {
+    quantity.disabled = cardOnly.checked;
+    accessory.disabled = cardOnly.checked;
+    variant.disabled = cardOnly.checked;
+    newcomer.disabled = cardOnly.checked;
+    if (cardOnly.checked && Number(cards.value) < 1) cards.value = '1';
     try {
       const quote = readQuote();
       total.textContent = `参考价 ¥${yuan(quote.totalFen)}`;
-      discount.textContent = quote.discountApplied
-        ? `主体优惠 -¥${yuan(quote.discountFen)} · 新人专属固定价格；配件及卡片不打折`
-        : '无主体优惠；配件及卡片单独计价';
+      discount.textContent = [
+        quote.discountApplied ? `新人优惠 -¥${yuan(quote.discountFen)}` : '',
+        quote.comboDiscountFen ? `组合优惠 -¥${yuan(quote.comboDiscountFen)}` : '',
+        quote.shippingFen ? `镭射卡单买运费 ¥${yuan(quote.shippingFen)}` : (quote.cardQuantity > 0 && quote.quantity > 0 ? '镭射卡随砖免单独运费' : ''),
+      ].filter(Boolean).join(' · ');
       section.querySelector('#acrylic-export').disabled = false;
     } catch {
       total.textContent = '请输入1～99的整数数量';
@@ -139,7 +158,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       section.querySelector('#acrylic-export').disabled = true;
     }
   }
-  [variant, quantity, accessory, cards, newcomer].forEach((control) => {
+  [variant, quantity, accessory, cards, newcomer, cardOnly].forEach((control) => {
     control.addEventListener('input', refresh);
     control.addEventListener('change', refresh);
   });
@@ -148,9 +167,9 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       const draft = buildAcrylicDesignDraft({
         state: snapshotState(),
         variant: variant.value,
-        quantity: Number(quantity.value),
-        newCustomer: newcomer.checked,
-        accessory: accessory.value,
+        quantity: cardOnly.checked ? 0 : Number(quantity.value),
+        newCustomer: cardOnly.checked ? false : newcomer.checked,
+        accessory: cardOnly.checked ? 'none' : accessory.value,
         cardQuantity: Number(cards.value),
       });
       // The current renderer preview is not a manufacturing-ready print/white-ink/cut file.
