@@ -52,8 +52,8 @@ test('accessories and cards are not discounted', () => {
   assert.equal(q.discountFen, 1500);
   assert.equal(q.discountReason, 'new-customer');
 });
-test('LED accessory and count validation', () => {
-  assert.equal(quoteProductBundle({ variant: 'premium', quantity: 1, accessory: 'ledBase' }).totalFen, 6499);
+test('accessory and count validation', () => {
+  assert.throws(() => quoteProductBundle({ variant: 'premium', quantity: 1, accessory: 'ledBase' }), RangeError);
   assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'invalid' }), RangeError);
   assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 1, cardQuantity: -1 }), RangeError);
 });
@@ -74,6 +74,9 @@ test('holographic card standalone costs 14.99 plus one shipping fee', () => {
   const many = quoteProductBundle({ variant: 'basic', quantity: 0, cardQuantity: 3, newCustomer: true });
   assert.equal(many.totalFen, 4897);
   assert.equal(many.discountApplied, false);
+  const draft = buildAcrylicDesignDraft({ state: { playerName: 'Player' }, variant: 'basic', quantity: 0, cardQuantity: 1 });
+  assert.equal(draft.product.type, 'holographic-card');
+  assert.equal(draft.product.acrylicThicknessMm, undefined);
 });
 test('bundle discounts are applied to eligible combinations only', () => {
   assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand' }).totalFen, 3299);
