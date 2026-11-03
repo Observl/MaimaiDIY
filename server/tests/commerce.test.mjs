@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { calculateQuote, createDesignRecord, validateDesign } from '../lib/commerce.mjs';
 
 test('newcomer-only discount', () => {
-  const q = calculateQuote({ variant: 'special', quantity: 5, accessory: 'ledBase', cardQuantity: 2, eligibleNewCustomer: true });
-  assert.equal(q.subtotalFen, 20000);
-  assert.equal(q.discountFen, 4000);
+  const q = calculateQuote({ variant: 'premium', quantity: 5, accessory: 'ledBase', cardQuantity: 2, eligibleNewCustomer: true });
+  assert.equal(q.subtotalFen, 22500);
+  assert.equal(q.discountFen, 2250);
   assert.equal(q.addonsFen, 13000);
-  assert.equal(q.totalFen, 29000);
+  assert.equal(q.totalFen, 33250);
   assert.equal(q.discountType, 'newcomer');
 });
 test('single unit and optional accessories', () => {
@@ -30,3 +30,11 @@ test('immutable design copy and pending rights default', () => {
 });
 
 test('no automatic discount at five units', () => { assert.equal(calculateQuote({ variant: 'basic', quantity: 5 }).totalFen, 15000); });
+
+test('three-tier quote amounts and 10 percent newcomer promotion', () => {
+  assert.equal(calculateQuote({ variant: 'light', quantity: 1 }).totalFen, 3500);
+  assert.equal(calculateQuote({ variant: 'premium', quantity: 1 }).totalFen, 4500);
+  assert.equal(calculateQuote({ variant: 'light', quantity: 1, eligibleNewCustomer: true }).totalFen, 3150);
+  assert.equal(calculateQuote({ variant: 'premium', quantity: 1, eligibleNewCustomer: true }).totalFen, 4050);
+  assert.throws(() => calculateQuote({ variant: 'special', quantity: 1 }));
+});
