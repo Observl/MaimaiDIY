@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 
 export const PRICE_TABLE = Object.freeze({
-  basic: 3000, special: 4000, none: 0, clearStand: 400,
+  basic: 3000, light: 3500, premium: 4500, none: 0, clearStand: 400,
   ledBase: 2000, holographicCard: 1500,
 });
 
@@ -13,14 +13,14 @@ function positiveCount(value, min, max, field) {
 }
 
 export function calculateQuote({ variant, quantity, accessory = 'none', cardQuantity = 0, eligibleNewCustomer = false }) {
-  if (!['basic', 'special'].includes(variant) || !['none', 'clearStand', 'ledBase'].includes(accessory)) {
+  if (!['basic', 'light', 'premium'].includes(variant) || !['none', 'clearStand', 'ledBase'].includes(accessory)) {
     throw Object.assign(new Error('Unknown product'), { status: 400 });
   }
   positiveCount(quantity, 1, 99, 'quantity');
   positiveCount(cardQuantity, 0, 99, 'cardQuantity');
   const subtotalFen = PRICE_TABLE[variant] * quantity;
   const hasDiscount = Boolean(eligibleNewCustomer);
-  const discountFen = hasDiscount ? subtotalFen / 5 : 0;
+  const discountFen = hasDiscount ? subtotalFen / 10 : 0;
   const addonsFen = PRICE_TABLE[accessory] * quantity + PRICE_TABLE.holographicCard * cardQuantity;
   return {
     variant, quantity, accessory, cardQuantity,
