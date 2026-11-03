@@ -17,7 +17,7 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
   if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > 99) throw new RangeError('主体数量须为1～99');
   if (!Number.isSafeInteger(cardQuantity) || cardQuantity < 0 || cardQuantity > 99) throw new RangeError('收藏卡数量须为0～99');
   const bodyOriginalFen = ACRYLIC_PRODUCTS[variant].priceFen * quantity;
-  const discounted = Boolean(newCustomer) || quantity >= 5;
+  const discounted = Boolean(newCustomer);
   const bodyFen = discounted ? bodyOriginalFen * 0.8 : bodyOriginalFen;
   // Discounts apply only to the acrylic bodies, never to add-ons.
   const extrasFen = ACCESSORIES[accessory].priceFen * quantity + COLLECTIBLE_CARD.priceFen * cardQuantity;
@@ -25,7 +25,7 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
     variant, quantity, accessory, cardQuantity, newCustomer: Boolean(newCustomer),
     bodyOriginalFen, bodyFen, extrasFen, totalFen: bodyFen + extrasFen,
     discountApplied: discounted, discountFen: bodyOriginalFen - bodyFen,
-    discountReason: discounted ? (quantity >= 5 ? 'bulk' : 'new-customer') : null,
+    discountReason: discounted ? 'new-customer' : null,
     currency: 'CNY',
   });
 }
@@ -36,12 +36,12 @@ export function quoteAcrylicOrder({ variant, quantity, newCustomer = false }) {
     throw new RangeError('数量必须为1至99之间的整数');
   }
   const unitFen = ACRYLIC_PRODUCTS[variant].priceFen;
-  const discountApplied = Boolean(newCustomer) || quantity >= 5;
+  const discountApplied = Boolean(newCustomer);
   const originalFen = unitFen * quantity;
   const totalFen = discountApplied ? originalFen * 8 / 10 : originalFen;
   return Object.freeze({
     variant, quantity, unitFen, originalFen, totalFen,
-    discountApplied, discountReason: discountApplied ? (quantity >= 5 ? 'bulk' : 'new-customer') : null,
+    discountApplied, discountReason: discountApplied ? 'new-customer' : null,
     currency: 'CNY',
   });
 }
@@ -128,7 +128,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       const quote = readQuote();
       total.textContent = `参考价 ¥${yuan(quote.totalFen)}`;
       discount.textContent = quote.discountApplied
-        ? `主体优惠 -¥${yuan(quote.discountFen)} · ${quote.discountReason === 'bulk' ? '满5件' : '新人'}八折；配件及卡片不打折`
+        ? `主体优惠 -¥${yuan(quote.discountFen)} · 新人首单八折；配件及卡片不打折`
         : '无主体优惠；配件及卡片单独计价';
       section.querySelector('#acrylic-export').disabled = false;
     } catch {
