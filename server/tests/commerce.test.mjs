@@ -3,17 +3,18 @@ import assert from 'node:assert/strict';
 import { calculateQuote, createDesignRecord, validateDesign } from '../lib/commerce.mjs';
 
 test('newcomer-only discount', () => {
-  const q = calculateQuote({ variant: 'premium', quantity: 5, accessory: 'ledBase', cardQuantity: 2, eligibleNewCustomer: true });
+  const q = calculateQuote({ variant: 'premium', quantity: 5, accessory: 'clearStand', cardQuantity: 2, eligibleNewCustomer: true });
   assert.equal(q.subtotalFen, 22495);
   assert.equal(q.discountFen, 2500);
-  assert.equal(q.addonsFen, 12998);
-  assert.equal(q.comboDiscountFen, 200);
-  assert.equal(q.totalFen, 32793);
+  assert.equal(q.addonsFen, 4998);
+  assert.equal(q.comboDiscountFen, 700);
+  assert.equal(q.totalFen, 24293);
   assert.equal(q.discountType, 'newcomer');
 });
 test('single unit and optional accessories', () => {
   assert.equal(calculateQuote({ variant: 'basic', quantity: 1 }).totalFen, 2999);
   assert.equal(calculateQuote({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1 }).totalFen, 4598);
+  assert.throws(() => calculateQuote({ variant: 'basic', quantity: 1, accessory: 'ledBase' }));
 });
 test('invalid counts and inputs rejected', () => {
   for (const count of [-1, 0, 1.2, 100]) assert.throws(() => calculateQuote({ variant: 'basic', quantity: count }));
