@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 
 export const PRICE_TABLE = Object.freeze({
   basic: 2999, light: 3499, premium: 4499, none: 0, clearStand: 400,
-  ledBase: 2000, holographicCard: 1500,
+  ledBase: 2000, holographicCard: 1499,
 });
 
 function positiveCount(value, min, max, field) {
@@ -18,15 +18,19 @@ export function calculateQuote({ variant, quantity, accessory = 'none', cardQuan
   if (!['basic', 'light', 'premium'].includes(variant) || !['none', 'clearStand', 'ledBase'].includes(accessory)) {
     throw Object.assign(new Error('Unknown product'), { status: 400 });
   }
-  positiveCount(quantity, 1, 99, 'quantity');
+  positiveCount(quantity, 0, 99, 'quantity');
   positiveCount(cardQuantity, 0, 99, 'cardQuantity');
+  if (quantity === 0 && cardQuantity === 0) throw Object.assign(new Error('Empty order'), { status: 400 });
+  if (quantity === 0 && accessory !== 'none') throw Object.assign(new Error('Accessory requires acrylic block'), { status: 400 });
   const subtotalFen = PRICE_TABLE[variant] * quantity;
-  const hasDiscount = Boolean(eligibleNewCustomer);
+  const hasDiscount = Boolean(eligibleNewCustomer) && quantity > 0;
   const discountFen = hasDiscount ? (PRICE_TABLE[variant] - NEWCOMER_PRICE_TABLE[variant]) * quantity : 0;
   const addonsFen = PRICE_TABLE[accessory] * quantity + PRICE_TABLE.holographicCard * cardQuantity;
+  const comboDiscountFen = quantity > 0 ? (accessory === 'clearStand' ? 100 * quantity : 0) + (cardQuantity > 0 ? 200 : 0) : 0;
+  const shippingFen = quantity === 0 ? 400 : 0;
   return {
     variant, quantity, accessory, cardQuantity,
-    subtotalFen, discountFen, addonsFen, totalFen: subtotalFen - discountFen + addonsFen,
+    subtotalFen, discountFen, addonsFen, comboDiscountFen, shippingFen, totalFen: subtotalFen - discountFen + addonsFen - comboDiscountFen + shippingFen,
     currency: 'CNY', discountType: hasDiscount ? 'newcomer' : null,
   };
 }
