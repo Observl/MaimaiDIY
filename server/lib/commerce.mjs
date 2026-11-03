@@ -19,13 +19,13 @@ export function calculateQuote({ variant, quantity, accessory = 'none', cardQuan
   positiveCount(quantity, 1, 99, 'quantity');
   positiveCount(cardQuantity, 0, 99, 'cardQuantity');
   const subtotalFen = PRICE_TABLE[variant] * quantity;
-  const hasDiscount = eligibleNewCustomer || quantity >= 5;
+  const hasDiscount = Boolean(eligibleNewCustomer);
   const discountFen = hasDiscount ? subtotalFen / 5 : 0;
   const addonsFen = PRICE_TABLE[accessory] * quantity + PRICE_TABLE.holographicCard * cardQuantity;
   return {
     variant, quantity, accessory, cardQuantity,
     subtotalFen, discountFen, addonsFen, totalFen: subtotalFen - discountFen + addonsFen,
-    currency: 'CNY', discountType: hasDiscount ? (quantity >= 5 ? 'bulk' : 'newcomer') : null,
+    currency: 'CNY', discountType: hasDiscount ? 'newcomer' : null,
   };
 }
 
