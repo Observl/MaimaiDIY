@@ -8,7 +8,6 @@ export const ACRYLIC_PRODUCTS = Object.freeze({
 export const ACCESSORIES = Object.freeze({
   none: Object.freeze({ label: '不加配件', priceFen: 0 }),
   clearStand: Object.freeze({ label: '透明托架', priceFen: 400 }),
-  ledBase: Object.freeze({ label: '发光底座', priceFen: 2000 }),
 });
 export const COLLECTIBLE_CARD = Object.freeze({ label: '镭射收藏卡', priceFen: 1499 });
 // Configurable sales prices; these are test prices, not manufacturer quotations.
@@ -67,14 +66,17 @@ export function buildAcrylicDesignDraft({ state, variant, quantity, newCustomer 
     version: 1,
     status: 'not-for-production-or-payment',
     product: {
-      variant,
+      type: quantity === 0 ? 'holographic-card' : 'acrylic-brick',
+      variant: quantity === 0 ? null : variant,
       quantity,
       accessory,
       cardQuantity,
-      widthMm: 120,
-      heightMm: 50,
-      acrylicThicknessMm: 15,
-      effectRequests: [...ACRYLIC_PRODUCTS[variant].effects],
+      ...(quantity > 0 ? {
+        widthMm: 120,
+        heightMm: 50,
+        acrylicThicknessMm: 15,
+        effectRequests: [...ACRYLIC_PRODUCTS[variant].effects],
+      } : {}),
     },
     quote,
     design: JSON.parse(JSON.stringify(state)),
