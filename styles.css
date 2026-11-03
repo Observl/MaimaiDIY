@@ -1180,3 +1180,9 @@ canvas {
 .custom-order-actions button:disabled { cursor: not-allowed; opacity: .5; }
 .custom-order-warning { margin-top: 12px; font-size: 13px; line-height: 1.65; }
 @media (max-width: 640px) { .custom-order-grid { grid-template-columns: 1fr; } }
+
+/* In-page support CTA leading to the non-transactional merch configurator. */
+.support-merch-link { display: inline-flex; align-items: center; justify-content: center; margin-top: 16px; text-decoration: none; }
+.support-merch-hint { margin-top: 8px; font-size: 12px; line-height: 1.65; opacity: .85; }
+#custom-order { scroll-margin-top: 24px; }
+#custom-order:target { outline: 2px solid currentColor; outline-offset: 4px; }
