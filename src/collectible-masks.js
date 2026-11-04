@@ -37,11 +37,10 @@ export async function createCollectibleMasks(state) {
       const x=Math.round(slot.x*scale),y=Math.round(slot.y*scale);
       const w=Math.round(slot.width*scale),h=Math.round(slot.height*scale);
       const source=layerContext.getImageData(x,y,w,h);
-      const generated=createSourceFinishMask(source.data,w,h);
-      if(id==='titleText') {
-        // This text has white glyph fills, not white outer strokes.
-        generated.uv.fill(0);
-        for(let p=0;p<generated.powder.length;p++)generated.powder[p]=source.data[p*4+3]>96?255:0;
+      const generated=createSourceFinishMask(source.data,w,h,{powderFraction:id==='nameplate'?0.24:0.14});
+      if(['titleBase','rank','friendBattle'].includes(id)) {
+        // Title board: full coverage. Badges: full real shape except white varnish strokes.
+        for(let p=0;p<generated.powder.length;p++)generated.powder[p]=source.data[p*4+3]>0&&(id==='titleBase'||!generated.uv[p])?255:0;
       }
       const shapes=[generated.uv,generated.powder].map(mask=>{
         const pixels=regionContext.createImageData(w,h);
@@ -68,7 +67,7 @@ export async function createCollectibleMasks(state) {
       if(alpha>0.5) {owners[i/4]=0;letteringOwners[i/4]=0;}
       // Every real layer erases covered effects, including exact text glyphs.
       for(let c=0;c<3;c++) { data.data[i+c]*=1-alpha; colors.data[i+c]*=1-alpha; }
-      if(['playerName','ratingDigits'].includes(id))data.data[i+2]=255*alpha;
+      if(['playerName','ratingDigits','titleText'].includes(id))data.data[i+2]=255*alpha;
       if (!profile) continue;
       // No full-alpha finish fallback: each component uses its own source-derived contours.
       const u=(uvShape?.[i]||0)/255*alpha;
