@@ -20,6 +20,7 @@ const files = new Set(tracked.filter(publicFile));
 for (const file of [
   'index.html',
   'support.html',
+  'custom-order.html',
   'styles.css',
   'ui-motion.css',
   'ui-motion.js',

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171821">
+  <title>定制周边 · MaimaiDIY</title>
+  <link rel="icon" href="assets/avatar.png">
+  <link rel="preload" href="assets/fonts/SEGA_MARUGOTHICDB-web.ttf?v=2" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=cleanup-1">
+  <link rel="stylesheet" href="BG/Circle%20BG/background.css?v=sega-com-1">
+  <link rel="stylesheet" href="BG/Circle%20BG/preview.css?v=cleanup-1">
+  <link rel="stylesheet" href="ui-motion.css?v=1">
+  <script src="ui-motion.js?v=1" defer></script>
+  <script src="background-motion.js" defer></script>
+</head>
+<body>
+  <div class="bg circle" aria-hidden="true"><div class="bg--wrap">
+    <div class="bg--pattern"></div>
+    <div class="bg--layer">
+      <div class="bg--corner bg--corner__top-left"></div><div class="bg--corner bg--corner__top-right"></div>
+      <div class="bg--corner bg--corner__bottom-left"></div><div class="bg--corner bg--corner__bottom-right"></div>
+      <div class="bg--tile bg--tile__green"></div><div class="bg--tile bg--tile__purple-left"></div><div class="bg--tile bg--tile__purple-right"></div>
+      <div class="bg--star bg--star__pink-left"></div><div class="bg--star bg--star__pink-right"></div>
+      <div class="bg--star bg--star__yellow-left"></div><div class="bg--star bg--star__yellow-right"></div>
+      <div class="bg--circle bg--circle__colorful"></div><div class="bg--circle bg--circle__yellow"></div><div class="bg--circle bg--circle__white"></div>
+      <div class="bg--rotation">
+        <div class="bg--3d bg--3d__cube-small"></div><div class="bg--3d bg--3d__cube"></div>
+        <div class="bg--3d bg--3d__star-small"></div><div class="bg--3d bg--3d__stars"></div>
+        <div class="bg--3d bg--3d__glove-blue"></div><div class="bg--3d bg--3d__glove-pink"></div>
+        <div class="bg--3d bg--3d__circle-pink"></div><div class="bg--3d bg--3d__circle-orange"></div>
+      </div>
+    </div>
+  </div></div>
+  <main class="app-shell order-page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">MAIMAI DIY</p>
+        <h1>定制周边</h1>
+        <p class="subtitle">把你的最新上屏搭配带到这里</p>
+      </div>
+      <div class="hero-side">
+        <a class="button secondary" href="./">返回编辑器</a>
+        <button id="background-motion" class="background-motion" type="button" aria-pressed="true">关闭动效</button>
+      </div>
+    </header>
+    <section class="preview-card card" aria-labelledby="design-title">
+      <div class="section-head"><h2 id="design-title">你的上屏设计</h2><a href="./">继续编辑</a></div>
+      <p id="design-status" class="template-status" role="status">正在读取最新设计…</p>
+      <div class="canvas-shell" id="order-preview-shell" hidden>
+        <canvas id="preview" width="1080" height="452" aria-label="用于定制周边的最新上屏设计"></canvas>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="src/order-page.js"></script>
+</body>
+</html>

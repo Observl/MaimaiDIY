@@ -1186,3 +1186,14 @@ canvas {
 .support-merch-hint { margin-top: 8px; font-size: 12px; line-height: 1.65; opacity: .85; }
 #custom-order { scroll-margin-top: 24px; }
 #custom-order:target { outline: 2px solid currentColor; outline-offset: 4px; }
+
+/* The merch entry spans both the support copy and QR columns. */
+.support-card > .support-merch-link {
+  grid-column: 1 / -1;
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 0;
+}
+.order-page #preview { cursor: default; }
+.order-page .hero-side .button { text-decoration: none; }
