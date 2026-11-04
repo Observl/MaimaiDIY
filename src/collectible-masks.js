@@ -1,8 +1,7 @@
 import { CANVAS, slots, COMPOSITION_ORDER } from './config.js';
 import { createRenderer } from './renderer.js';
 import { collectibleFinish } from './collectible-finishes.js';
-import { COLLECTIBLE_MASK_FILES } from './collectible-mask-files.js';
-import { loadImage } from './assets.js';
+import { createSourceFinishMask } from './source-finish-mask.js';
 import { COLLECTIBLE_PLATES } from './collectible-catalog.js';
 import { createPlateLetteringMask } from './plate-lettering-mask.js';
 
@@ -32,23 +31,24 @@ export async function createCollectibleMasks(state) {
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
     const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0, letteringPixels:0 }) : 0;
-    let uvShape;
-    if (profile) {
-      if(!['titleBase','ratingFrame','playerName','rank','friendBattle'].includes(id)) {
-        const key=id+'|'+state.files[id].split(/[?#]/)[0].split('/').pop();
-        const files=COLLECTIBLE_MASK_FILES[key];
-        if(files) {
-        const images=[await loadImage(files.uv)];
-        const slot=slots[id];
-        const masks=images.map(image=>{
-          regionContext.clearRect(0,0,width,height);
-          if(id==='titleBase') regionContext.drawImage(image,0,5,image.naturalWidth,25,slot.x*scale,slot.y*scale,slot.width*scale,slot.height*scale);
-          else regionContext.drawImage(image,slot.x*scale,slot.y*scale,slot.width*scale,slot.height*scale);
-          return regionContext.getImageData(0,0,width,height).data;
-        });
-        [uvShape]=masks;
+    let uvShape, glitterShape;
+    if (profile && id==='nameplate') {
+      const slot=slots[id];
+      const x=Math.round(slot.x*scale),y=Math.round(slot.y*scale);
+      const w=Math.round(slot.width*scale),h=Math.round(slot.height*scale);
+      const source=layerContext.getImageData(x,y,w,h);
+      const generated=createSourceFinishMask(source.data,w,h);
+      const shapes=[generated.uv,generated.glitter].map(mask=>{
+        const pixels=regionContext.createImageData(w,h);
+        for(let p=0;p<mask.length;p++) {
+          pixels.data[p*4]=pixels.data[p*4+1]=pixels.data[p*4+2]=mask[p];
+          pixels.data[p*4+3]=255;
         }
-      }
+        regionContext.clearRect(0,0,width,height);
+        regionContext.putImageData(pixels,x,y);
+        return regionContext.getImageData(0,0,width,height).data;
+      });
+      [uvShape,glitterShape]=shapes;
     }
     let letteringShape;
     const plate=id==='nameplate'?COLLECTIBLE_PLATES[state.files[id].match(/UI_Plate_\d+\.png/)?.[0]]:null;
@@ -67,9 +67,10 @@ export async function createCollectibleMasks(state) {
       if (!profile) continue;
       // User-selected title text is dynamic; use its rendered glyph alpha, never a template.
       const u=uvShape?uvShape[i]/255*alpha:alpha;
-      const g=id==='titleBase'?0:alpha;
+      // Plate backing never receives a fallback full-surface glitter coat.
+      const g=id==='titleBase'?0:id==='nameplate'?(glitterShape?.[i]||0)/255*alpha:alpha;
       const lettering=letteringShape?letteringShape[i/4]/255:0;
-      const glitterStrength=letteringShape?profile.glitter*0.25+(1-profile.glitter*0.25)*lettering:profile.glitter;
+      const glitterStrength=letteringShape?profile.glitter+(1-profile.glitter)*lettering:profile.glitter;
       if(u>0||g>0) owners[i/4]=entryId;
       data.data[i]=255*profile.uv*u;
       data.data[i+1]=255*glitterStrength*g;
