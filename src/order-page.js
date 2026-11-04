@@ -3,6 +3,7 @@ import { readCurrentDesign } from './current-design.js';
 import { createRenderer } from './renderer.js';
 import { initializeCustomOrder } from './custom-order.js';
 import { createCollectibleMasks } from './collectible-masks.js';
+import { initializeLightDial } from './light-dial.js';
 
 const status = document.querySelector('#design-status');
 const preview = document.querySelector('#order-preview-shell');
@@ -13,6 +14,7 @@ let physicalPreview;
 let previewLoading;
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
+const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
 const details = { basic: '背面彩印 · 白墨', light: '背面彩印 · 局部 UV 示意', premium: '双面印刷 · 局部 UV · 闪粉示意' };
 function syncPhysicalSelection() {
   const variant = document.querySelector('#acrylic-variant').value;
@@ -38,6 +40,7 @@ async function updatePhysicalPreview(request) {
     physicalPreview = viewer;
     viewer.setDesign(renderer.renderCanvas, finishMaps);
     syncPhysicalSelection();
+    viewer.setLightAngle(lightDial.value);
     viewport.hidden = false;
     physicalStatus.hidden = true;
   } catch (error) {
@@ -51,9 +54,6 @@ viewport.addEventListener('preview-unavailable', () => {
 });
 document.querySelector('#acrylic-view-reset').addEventListener('click', () => physicalPreview?.reset());
 document.querySelector('#acrylic-view-detail').addEventListener('click', () => physicalPreview?.focusCollectibles());
-document.querySelector('#acrylic-light-angle').addEventListener('input', (event) => {
-  physicalPreview?.setLightAngle(Number(event.target.value));
-});
 document.querySelectorAll('[data-preview-variant]').forEach((button) => button.addEventListener('click', () => {
   document.querySelector('#acrylic-variant').value = button.dataset.previewVariant;
   document.querySelector('#acrylic-card-only').checked = false;

@@ -1,4 +1,4 @@
-import { CANVAS, slots } from './config.js';
+import { CANVAS, slots, COMPOSITION_ORDER } from './config.js';
 import { createRenderer } from './renderer.js';
 import { collectibleFinish } from './collectible-finishes.js';
 import { COLLECTIBLE_MASK_FILES } from './collectible-mask-files.js';
@@ -17,8 +17,7 @@ export async function createCollectibleMasks(state) {
   const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
   const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
   const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
-  const ordered = Object.keys(slots).filter(id => !['rank','friendBattle'].includes(id)).sort((a,b)=>slots[a].z-slots[b].z);
-  ordered.push('rank','friendBattle');
+  const ordered = COMPOSITION_ORDER;
   for (const id of ordered) {
     if (!state.visible[id]) continue;
     const visible = Object.fromEntries(Object.keys(slots).map(key => [key, key === id]));
