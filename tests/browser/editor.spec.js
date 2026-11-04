@@ -449,6 +449,9 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('.support-merch-link').click();
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('.purchase-art canvas')).toHaveCount(3);
+  await expect(page.locator('.configuration-choice')).toHaveCount(8);
+  await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
+  await expect(page.locator('.purchase-product-caption')).toHaveCount(0);
   await page.locator('[data-finish="basic"]').focus();
   await page.keyboard.press('Space');
   await expect(page.locator('#acrylic-variant')).toHaveValue('basic');
@@ -459,6 +462,14 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('#buy-acrylic')).not.toBeChecked();
   await expect(page.locator('.purchase-options')).toBeHidden();
   await expect(page.locator('#acrylic-total')).toHaveText('¥24.99');
+  await page.locator('#shikishi-quantity').fill('2');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥44.98');
+  await page.locator('[data-config="cardPaper"]').click();
+  await expect(page.locator('#acrylic-total')).toHaveText('¥39.98');
+  await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
+  await page.locator('[data-config="shikishi"]').click();
+  await expect(page.locator('#shikishi-quantity')).toHaveValue('2');
+  await page.locator('#shikishi-quantity').fill('1');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','shikishi');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-material.png'});
   const paperBefore=await page.locator('#acrylic-viewport').screenshot();
@@ -486,9 +497,15 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.setViewportSize({width:390,height:844});
   await page.locator('#custom-order').screenshot({path:'output/playwright/purchase-mobile.png'});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
-  for(const id of ['buy-acrylic','buy-card','buy-shikishi'])await page.locator('#'+id).uncheck();
+  await page.locator('[data-config="shikishi"]').click();
+  await page.locator('#shikishi-quantity').fill('0');
   await expect(page.locator('#acrylic-export')).toBeDisabled();
   await expect(page.locator('#purchase-message')).toContainText('至少选择一件商品');
+  await page.locator('[data-config="card"]').click();
+  await page.locator('[data-config="shikishi"]').click();
+  await expect(page.locator('#shikishi-quantity')).toBeVisible();
+  await page.locator('#shikishi-quantity').fill('1');
+  await expect(page.locator('#acrylic-export')).toBeEnabled();
 });
 
 test('direct order-page visit asks for a design instead of showing someone else’s default', async ({ page }) => {

@@ -14,10 +14,13 @@ export const COLLECTIBLE_CARD = Object.freeze({ label: '镭射收藏卡', priceF
 export const SHIKISHI_PRODUCT = Object.freeze({ label: '色纸', priceFen: 1999, newcomerPriceFen: 1699 });
 export const SHIKISHI_SHIPPING_POLICY = 'shared';
 export const BUNDLE_PRESETS = Object.freeze({
+  acrylic: Object.freeze({ label:'亚克力砖单品', quantity:1, cardQuantity:0, shikishiQuantity:0, accessory:'none' }),
   shikishi: Object.freeze({ label:'色纸单品', description:'1 张色纸', quantity:0, cardQuantity:0, shikishiQuantity:1, accessory:'none' }),
   card: Object.freeze({ label:'镭射票单品', description:'1 张镭射票', quantity:0, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
-  display: Object.freeze({ label:'桌面展示', description:'亚克力砖＋透明托架', quantity:1, cardQuantity:0, shikishiQuantity:0, accessory:'clearStand' }),
-  duo: Object.freeze({ label:'双品收藏', description:'亚克力砖＋镭射票', quantity:1, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
+  display: Object.freeze({ label:'亚克力砖＋托架', quantity:1, cardQuantity:0, shikishiQuantity:0, accessory:'clearStand' }),
+  duo: Object.freeze({ label:'亚克力砖＋镭射票', quantity:1, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
+  acrylicPaper: Object.freeze({ label:'亚克力砖＋色纸', quantity:1, cardQuantity:0, shikishiQuantity:1, accessory:'none' }),
+  cardPaper: Object.freeze({ label:'镭射票＋色纸', quantity:0, cardQuantity:1, shikishiQuantity:1, accessory:'none' }),
   complete: Object.freeze({ label:'全收藏套餐', description:'砖＋托架＋镭射票＋色纸', quantity:1, cardQuantity:1, shikishiQuantity:1, accessory:'clearStand' }),
 });
 // Configurable sales prices; these are test prices, not manufacturer quotations.
