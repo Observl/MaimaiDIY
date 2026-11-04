@@ -3,7 +3,6 @@ import { readCurrentDesign } from './current-design.js';
 import { createRenderer } from './renderer.js';
 import { initializeCustomOrder } from './custom-order.js';
 import { createCollectibleMasks } from './collectible-masks.js';
-import { initializeFinishInspector } from './finish-inspector.js';
 
 const status = document.querySelector('#design-status');
 const preview = document.querySelector('#order-preview-shell');
@@ -12,7 +11,6 @@ let state = null;
 let version = 0;
 let physicalPreview;
 let previewLoading;
-const finishInspector=initializeFinishInspector();
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
 const details = { basic: '背面彩印 · 白墨', light: '背面彩印 · 局部 UV 示意', premium: '双面印刷 · 局部 UV · 闪粉示意' };
@@ -27,7 +25,6 @@ function syncPhysicalSelection() {
   document.querySelector('.acrylic-preview-detail > span:last-child').textContent = cardOnly
     ? '镭射材质示意' : '120 × 50 × 15 mm · 材质示意';
   physicalPreview?.setSelection({ variant, cardOnly, accessory });
-  finishInspector.select(variant,cardOnly);
 }
 async function updatePhysicalPreview(request) {
   physicalStatus.hidden = false;
@@ -35,16 +32,11 @@ async function updatePhysicalPreview(request) {
   try {
     const finishMaps = await createCollectibleMasks(structuredClone(state));
     if (request !== version) return;
-    finishInspector.update(renderer.renderCanvas,finishMaps);
     previewLoading ||= import('./acrylic-preview.js').then(({ createAcrylicPreview }) => createAcrylicPreview(viewport));
     const viewer = await previewLoading;
     if (request !== version) return;
     physicalPreview = viewer;
     viewer.setDesign(renderer.renderCanvas, finishMaps);
-    for (const [id, source] of [['uv-mask-preview', finishMaps.uv], ['glitter-mask-preview', finishMaps.glitter]]) {
-      const canvas = document.querySelector('#' + id);
-      canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height);
-    }
     syncPhysicalSelection();
     viewport.hidden = false;
     physicalStatus.hidden = true;
@@ -58,6 +50,7 @@ viewport.addEventListener('preview-unavailable', () => {
   physicalStatus.textContent = '3D 画面已暂停，请刷新页面重试。';
 });
 document.querySelector('#acrylic-view-reset').addEventListener('click', () => physicalPreview?.reset());
+document.querySelector('#acrylic-view-detail').addEventListener('click', () => physicalPreview?.focusCollectibles());
 document.querySelector('#acrylic-light-angle').addEventListener('input', (event) => {
   physicalPreview?.setLightAngle(Number(event.target.value));
 });
@@ -81,7 +74,6 @@ initializeCustomOrder({
 async function refreshDesign() {
   const request = ++version;
   state = null;
-  finishInspector.clear();
   status.hidden = false;
   preview.hidden = true;
   viewport.hidden = true;

@@ -1,0 +1,1131 @@
+{
+  "method": "source-pixel-connected-components",
+  "sharedRegionTemplates": false,
+  "assets": [
+    {
+      "id": "nameplate|UI_Plate_359104.png",
+      "name": "祭舞舞",
+      "source": "UI_Plate_359104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_359103.png",
+      "name": "祭神",
+      "source": "UI_Plate_359103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_359102.png",
+      "name": "祭将",
+      "source": "UI_Plate_359102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_359101.png",
+      "name": "祭極",
+      "source": "UI_Plate_359101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_409104.png",
+      "name": "祝舞舞",
+      "source": "UI_Plate_409104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_409103.png",
+      "name": "祝神",
+      "source": "UI_Plate_409103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_409102.png",
+      "name": "祝将",
+      "source": "UI_Plate_409102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_409101.png",
+      "name": "祝極",
+      "source": "UI_Plate_409101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_309104.png",
+      "name": "星舞舞",
+      "source": "UI_Plate_309104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_309103.png",
+      "name": "星神",
+      "source": "UI_Plate_309103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_309102.png",
+      "name": "星将",
+      "source": "UI_Plate_309102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_309101.png",
+      "name": "星極",
+      "source": "UI_Plate_309101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_509104.png",
+      "name": "宴舞舞",
+      "source": "UI_Plate_509104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_509103.png",
+      "name": "宴神",
+      "source": "UI_Plate_509103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_509102.png",
+      "name": "宴将",
+      "source": "UI_Plate_509102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_509101.png",
+      "name": "宴極",
+      "source": "UI_Plate_509101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_559104.png",
+      "name": "鏡舞舞",
+      "source": "UI_Plate_559104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_559103.png",
+      "name": "鏡神",
+      "source": "UI_Plate_559103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_559102.png",
+      "name": "鏡将",
+      "source": "UI_Plate_559102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_559101.png",
+      "name": "鏡極",
+      "source": "UI_Plate_559101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_459104.png",
+      "name": "双舞舞",
+      "source": "UI_Plate_459104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_459103.png",
+      "name": "双神",
+      "source": "UI_Plate_459103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_459102.png",
+      "name": "双将",
+      "source": "UI_Plate_459102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_459101.png",
+      "name": "双極",
+      "source": "UI_Plate_459101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 19118,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006149.png",
+      "name": "舞極",
+      "source": "UI_Plate_006149.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20026,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006147.png",
+      "name": "輝舞舞",
+      "source": "UI_Plate_006147.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 18890,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006146.png",
+      "name": "輝神",
+      "source": "UI_Plate_006146.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006145.png",
+      "name": "輝将",
+      "source": "UI_Plate_006145.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 19010,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006144.png",
+      "name": "輝極",
+      "source": "UI_Plate_006144.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 16832,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006143.png",
+      "name": "雪舞舞",
+      "source": "UI_Plate_006143.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006142.png",
+      "name": "雪神",
+      "source": "UI_Plate_006142.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006141.png",
+      "name": "雪将",
+      "source": "UI_Plate_006141.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006140.png",
+      "name": "雪極",
+      "source": "UI_Plate_006140.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006139.png",
+      "name": "白舞舞",
+      "source": "UI_Plate_006139.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006150.png",
+      "name": "舞将",
+      "source": "UI_Plate_006150.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006138.png",
+      "name": "白神",
+      "source": "UI_Plate_006138.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006136.png",
+      "name": "白極",
+      "source": "UI_Plate_006136.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006135.png",
+      "name": "菫舞舞",
+      "source": "UI_Plate_006135.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 14609,
+      "glitterPixels": 10428
+    },
+    {
+      "id": "nameplate|UI_Plate_006134.png",
+      "name": "菫神",
+      "source": "UI_Plate_006134.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 16138,
+      "glitterPixels": 9710
+    },
+    {
+      "id": "nameplate|UI_Plate_006133.png",
+      "name": "菫将",
+      "source": "UI_Plate_006133.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 12171,
+      "glitterPixels": 7247
+    },
+    {
+      "id": "nameplate|UI_Plate_006132.png",
+      "name": "菫極",
+      "source": "UI_Plate_006132.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 14399,
+      "glitterPixels": 7906
+    },
+    {
+      "id": "nameplate|UI_Plate_006131.png",
+      "name": "紫舞舞",
+      "source": "UI_Plate_006131.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 12426,
+      "glitterPixels": 8338
+    },
+    {
+      "id": "nameplate|UI_Plate_006130.png",
+      "name": "紫神",
+      "source": "UI_Plate_006130.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 14444,
+      "glitterPixels": 10172
+    },
+    {
+      "id": "nameplate|UI_Plate_006129.png",
+      "name": "紫将",
+      "source": "UI_Plate_006129.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 13679,
+      "glitterPixels": 9903
+    },
+    {
+      "id": "nameplate|UI_Plate_006128.png",
+      "name": "紫極",
+      "source": "UI_Plate_006128.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 10975,
+      "glitterPixels": 8232
+    },
+    {
+      "id": "nameplate|UI_Plate_006127.png",
+      "name": "櫻舞舞",
+      "source": "UI_Plate_006127.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006126.png",
+      "name": "櫻神",
+      "source": "UI_Plate_006126.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006137.png",
+      "name": "白将",
+      "source": "UI_Plate_006137.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006151.png",
+      "name": "舞神",
+      "source": "UI_Plate_006151.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006152.png",
+      "name": "舞舞舞",
+      "source": "UI_Plate_006152.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 19915,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_055104.png",
+      "name": "熊舞舞",
+      "source": "UI_Plate_055104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_055103.png",
+      "name": "熊神",
+      "source": "UI_Plate_055103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_055102.png",
+      "name": "熊将",
+      "source": "UI_Plate_055102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_055101.png",
+      "name": "熊極",
+      "source": "UI_Plate_055101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006125.png",
+      "name": "櫻将",
+      "source": "UI_Plate_006125.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006124.png",
+      "name": "櫻極",
+      "source": "UI_Plate_006124.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006122.png",
+      "name": "桃神",
+      "source": "UI_Plate_006122.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 17321,
+      "glitterPixels": 8920
+    },
+    {
+      "id": "nameplate|UI_Plate_006121.png",
+      "name": "桃将",
+      "source": "UI_Plate_006121.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 15729,
+      "glitterPixels": 8542
+    },
+    {
+      "id": "nameplate|UI_Plate_006120.png",
+      "name": "桃極",
+      "source": "UI_Plate_006120.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 11986,
+      "glitterPixels": 7201
+    },
+    {
+      "id": "nameplate|UI_Plate_006119.png",
+      "name": "暁舞舞",
+      "source": "UI_Plate_006119.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006118.png",
+      "name": "暁神",
+      "source": "UI_Plate_006118.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006117.png",
+      "name": "暁将",
+      "source": "UI_Plate_006117.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006116.png",
+      "name": "暁極",
+      "source": "UI_Plate_006116.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006115.png",
+      "name": "橙舞舞",
+      "source": "UI_Plate_006115.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006114.png",
+      "name": "橙神",
+      "source": "UI_Plate_006114.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006113.png",
+      "name": "橙将",
+      "source": "UI_Plate_006113.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006112.png",
+      "name": "橙極",
+      "source": "UI_Plate_006112.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006111.png",
+      "name": "檄舞舞",
+      "source": "UI_Plate_006111.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006110.png",
+      "name": "檄神",
+      "source": "UI_Plate_006110.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11075
+    },
+    {
+      "id": "nameplate|UI_Plate_006109.png",
+      "name": "檄将",
+      "source": "UI_Plate_006109.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 10548
+    },
+    {
+      "id": "nameplate|UI_Plate_006108.png",
+      "name": "檄極",
+      "source": "UI_Plate_006108.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006107.png",
+      "name": "超舞舞",
+      "source": "UI_Plate_006107.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006106.png",
+      "name": "超神",
+      "source": "UI_Plate_006106.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006105.png",
+      "name": "超将",
+      "source": "UI_Plate_006105.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006104.png",
+      "name": "超極",
+      "source": "UI_Plate_006104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006103.png",
+      "name": "真舞舞",
+      "source": "UI_Plate_006103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006102.png",
+      "name": "真神",
+      "source": "UI_Plate_006102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_006101.png",
+      "name": "真極",
+      "source": "UI_Plate_006101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 9823,
+      "glitterPixels": 6542
+    },
+    {
+      "id": "nameplate|UI_Plate_006123.png",
+      "name": "桃舞舞",
+      "source": "UI_Plate_006123.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 10591,
+      "glitterPixels": 5910
+    },
+    {
+      "id": "nameplate|UI_Plate_209104.png",
+      "name": "煌舞舞",
+      "source": "UI_Plate_209104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 13201,
+      "glitterPixels": 9246
+    },
+    {
+      "id": "nameplate|UI_Plate_209103.png",
+      "name": "煌神",
+      "source": "UI_Plate_209103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 17753,
+      "glitterPixels": 7879
+    },
+    {
+      "id": "nameplate|UI_Plate_209102.png",
+      "name": "煌将",
+      "source": "UI_Plate_209102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 11947,
+      "glitterPixels": 4897
+    },
+    {
+      "id": "nameplate|UI_Plate_209101.png",
+      "name": "煌極",
+      "source": "UI_Plate_209101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 7140,
+      "glitterPixels": 4471
+    },
+    {
+      "id": "nameplate|UI_Plate_259104.png",
+      "name": "宙舞舞",
+      "source": "UI_Plate_259104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_259103.png",
+      "name": "宙神",
+      "source": "UI_Plate_259103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_259102.png",
+      "name": "宙将",
+      "source": "UI_Plate_259102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_259101.png",
+      "name": "宙極",
+      "source": "UI_Plate_259101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_109104.png",
+      "name": "華舞舞",
+      "source": "UI_Plate_109104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_109103.png",
+      "name": "華神",
+      "source": "UI_Plate_109103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_109102.png",
+      "name": "華将",
+      "source": "UI_Plate_109102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_109101.png",
+      "name": "華極",
+      "source": "UI_Plate_109101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_159104.png",
+      "name": "爽舞舞",
+      "source": "UI_Plate_159104.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_159103.png",
+      "name": "爽神",
+      "source": "UI_Plate_159103.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_159102.png",
+      "name": "爽将",
+      "source": "UI_Plate_159102.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "nameplate|UI_Plate_159101.png",
+      "name": "爽極",
+      "source": "UI_Plate_159101.png",
+      "width": 720,
+      "height": 116,
+      "uvPixels": 20044,
+      "glitterPixels": 11692
+    },
+    {
+      "id": "rank|12.png",
+      "name": "rank-12",
+      "source": "12.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|13.png",
+      "name": "rank-13",
+      "source": "13.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|14.png",
+      "name": "rank-14",
+      "source": "14.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|15.png",
+      "name": "rank-15",
+      "source": "15.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|16.png",
+      "name": "rank-16",
+      "source": "16.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|17.png",
+      "name": "rank-17",
+      "source": "17.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|18.png",
+      "name": "rank-18",
+      "source": "18.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|19.png",
+      "name": "rank-19",
+      "source": "19.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|20.png",
+      "name": "rank-20",
+      "source": "20.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|21.png",
+      "name": "rank-21",
+      "source": "21.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|22.png",
+      "name": "rank-22",
+      "source": "22.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "rank|23.png",
+      "name": "rank-23",
+      "source": "23.png",
+      "width": 380,
+      "height": 160,
+      "uvPixels": 14592,
+      "glitterPixels": 8512
+    },
+    {
+      "id": "friendBattle|10.png",
+      "name": "battle-10",
+      "source": "10.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2579,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|11.png",
+      "name": "battle-11",
+      "source": "11.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2560,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|12.png",
+      "name": "battle-12",
+      "source": "12.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2608,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|13.png",
+      "name": "battle-13",
+      "source": "13.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2590,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|14.png",
+      "name": "battle-14",
+      "source": "14.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2500,
+      "glitterPixels": 1617
+    },
+    {
+      "id": "friendBattle|15.png",
+      "name": "battle-15",
+      "source": "15.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2076,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|16.png",
+      "name": "battle-16",
+      "source": "16.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2070,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|17.png",
+      "name": "battle-17",
+      "source": "17.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 1979,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|18.png",
+      "name": "battle-18",
+      "source": "18.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 1985,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|19.png",
+      "name": "battle-19",
+      "source": "19.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2028,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|20.png",
+      "name": "battle-20",
+      "source": "20.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2822,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|21.png",
+      "name": "battle-21",
+      "source": "21.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2822,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|22.png",
+      "name": "battle-22",
+      "source": "22.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2822,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|23.png",
+      "name": "battle-23",
+      "source": "23.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2822,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|24.png",
+      "name": "battle-24",
+      "source": "24.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2822,
+      "glitterPixels": 1646
+    },
+    {
+      "id": "friendBattle|25.png",
+      "name": "battle-25",
+      "source": "25.png",
+      "width": 140,
+      "height": 84,
+      "uvPixels": 2822,
+      "glitterPixels": 1618
+    },
+    {
+      "id": "titleBase|UI_CMN_Shougou_Gold.png",
+      "name": "Gold title",
+      "source": "UI_CMN_Shougou_Gold.png",
+      "width": 276,
+      "height": 36,
+      "uvPixels": 2136,
+      "glitterPixels": 0
+    },
+    {
+      "id": "titleBase|UI_CMN_Shougou_Silver.png",
+      "name": "Silver title",
+      "source": "UI_CMN_Shougou_Silver.png",
+      "width": 276,
+      "height": 36,
+      "uvPixels": 2384,
+      "glitterPixels": 0
+    }
+  ]
+}

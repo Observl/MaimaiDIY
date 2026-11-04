@@ -81,7 +81,7 @@ export function createAcrylicPreview(host) {
   let spotTexture;
   let glitterTintTexture;
   const windowPosition = new THREE.Vector3(-8, 7, 6);
-  let selection = { variant: 'basic', cardOnly: false, accessory: 'none' };
+  let selection = { variant: 'premium', cardOnly: false, accessory: 'none' };
   let disposed = false;
   const draw = () => { if (!disposed && host.clientWidth) renderer.render(scene, camera); };
   controls.addEventListener('change', draw);
@@ -197,6 +197,11 @@ export function createAcrylicPreview(host) {
     setDesign,
     setSelection(next) { selection = next; rebuild(); },
     reset,
+    focusCollectibles() {
+      controls.target.set(host.clientWidth<500 ? -0.5 : -1.8,4.1,0);
+      camera.position.copy(controls.target).add(new THREE.Vector3(2.5,1.2,6.8));
+      controls.update(); draw();
+    },
     setLightAngle(degrees) {
       const angle = THREE.MathUtils.degToRad(degrees);
       key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);

@@ -49,32 +49,16 @@
         <canvas id="preview" width="1080" height="452" aria-label="用于定制周边的最新上屏设计"></canvas>
       </div>
     </section>
-    <section id="finish-inspector" class="card finish-inspector" hidden aria-labelledby="finish-inspector-title">
-      <h2 id="finish-inspector-title">特效位置检查</h2>
-      <div class="finish-inspector-tools">
-        <label><input id="show-uv-mask" type="checkbox" checked><span class="finish-swatch uv-swatch"></span>UV 高光（橙色）</label>
-        <label><input id="show-glitter-mask" type="checkbox" checked><span class="finish-swatch glitter-swatch"></span>闪粉（青色）</label>
-        <label class="finish-zoom-control">放大<input id="finish-zoom" type="range" min="1" max="4" step="0.5" value="1"><output id="finish-zoom-value">1×</output></label>
-      </div>
-      <div class="finish-overlay-scroll"><canvas id="finish-overlay" width="2160" height="904" aria-label="在上屏原图上叠加橙色 UV 和青色闪粉蒙版，重叠处以双色斜纹显示"></canvas></div>
-      <p id="finish-enabled-state" role="status"></p>
-      <h3>当前设计的特效收藏品</h3>
-      <ul id="finish-collectibles" class="finish-collectibles"></ul>
-    </section>
     <section id="acrylic-preview-card" class="card acrylic-preview-card" aria-labelledby="acrylic-preview-title">
-      <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2><button id="acrylic-view-reset" class="button secondary" type="button">复位视角</button></div>
+      <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2><div class="acrylic-view-tools"><button id="acrylic-view-detail" class="button secondary" type="button">收藏品近景</button><button id="acrylic-view-reset" class="button secondary" type="button">复位视角</button></div></div>
       <div class="acrylic-variants" role="group" aria-label="预览款式">
-        <button type="button" data-preview-variant="basic" aria-pressed="true">基础款</button>
+        <button type="button" data-preview-variant="basic" aria-pressed="false">基础款</button>
         <button type="button" data-preview-variant="light" aria-pressed="false">轻量特效款</button>
-        <button type="button" data-preview-variant="premium" aria-pressed="false">高配特效款</button>
+        <button type="button" data-preview-variant="premium" aria-pressed="true">高配特效款</button>
       </div>
       <div id="acrylic-viewport" class="acrylic-viewport"></div>
       <label class="acrylic-light-control" for="acrylic-light-angle">光照角度<input id="acrylic-light-angle" type="range" min="-150" max="150" step="1" value="0" aria-label="调整光照角度，观察局部 UV 和闪粉反光"></label>
       <p id="acrylic-preview-status" role="status">等待上屏设计</p>
-      <details class="finish-mask-inspector" hidden><summary>查看特效区域</summary><div class="finish-mask-grid">
-        <figure><figcaption>UV 高光区域</figcaption><canvas id="uv-mask-preview" width="1080" height="452" aria-label="白色区域为局部 UV，黑色区域无特效"></canvas></figure>
-        <figure><figcaption>闪粉区域</figcaption><canvas id="glitter-mask-preview" width="1080" height="452" aria-label="白色区域为闪粉，黑色区域无闪粉"></canvas></figure>
-      </div></details>
       <p class="acrylic-preview-detail"><span id="acrylic-material-detail">背面彩印 · 白墨</span><span>120 × 50 × 15 mm · 材质示意</span></p>
     </section>
   </main>
