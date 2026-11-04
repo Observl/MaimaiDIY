@@ -12,21 +12,24 @@ let state = null;
 let version = 0;
 let physicalPreview;
 let previewLoading;
+let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
 const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
 const details = { basic: '背面彩印 · 白墨', light: '背面彩印 · 局部 UV 示意', premium: '双面印刷 · 局部 UV · 闪粉示意' };
 function syncPhysicalSelection() {
   const variant = document.querySelector('#acrylic-variant').value;
-  const cardOnly = document.querySelector('#acrylic-card-only').checked;
+  const cardOnly = previewProduct==='card';
   const accessory = document.querySelector('#acrylic-accessory').value;
   document.querySelectorAll('[data-preview-variant]').forEach((button) => {
     button.setAttribute('aria-pressed', String(!cardOnly && button.dataset.previewVariant === variant));
   });
-  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射收藏卡 · 薄片示意' : details[variant];
+  document.querySelectorAll('[data-preview-product]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.previewProduct===previewProduct)));
+  document.querySelector('.acrylic-variants').hidden=cardOnly;
+  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射卡 · UV 高光与同色闪粉' : details[variant];
   document.querySelector('.acrylic-preview-detail > span:last-child').textContent = cardOnly
-    ? '镭射材质示意' : '120 × 50 × 15 mm · 材质示意';
-  physicalPreview?.setSelection({ variant, cardOnly, accessory });
+    ? '统一特效工艺 · 薄片示意' : '120 × 50 × 15 mm · 材质示意';
+  physicalPreview?.setSelection({ variant:cardOnly?'premium':variant, cardOnly, accessory });
 }
 async function updatePhysicalPreview(request) {
   physicalStatus.hidden = false;
@@ -54,12 +57,17 @@ viewport.addEventListener('preview-unavailable', () => {
 });
 document.querySelector('#acrylic-view-reset').addEventListener('click', () => physicalPreview?.reset());
 document.querySelector('#acrylic-view-detail').addEventListener('click', () => physicalPreview?.focusCollectibles());
+document.querySelectorAll('[data-preview-product]').forEach(button=>button.addEventListener('click',()=>{
+  previewProduct=button.dataset.previewProduct;
+  syncPhysicalSelection();
+}));
 document.querySelectorAll('[data-preview-variant]').forEach((button) => button.addEventListener('click', () => {
   document.querySelector('#acrylic-variant').value = button.dataset.previewVariant;
   document.querySelector('#acrylic-card-only').checked = false;
   document.querySelector('#acrylic-variant').dispatchEvent(new window.Event('change', { bubbles: true }));
 }));
 document.addEventListener('change', (event) => {
+  if(event.target.id==='acrylic-card-only')previewProduct=event.target.checked?'card':'acrylic';
   if (event.target.closest('#custom-order')) syncPhysicalSelection();
 });
 

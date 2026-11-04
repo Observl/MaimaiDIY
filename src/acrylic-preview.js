@@ -12,7 +12,7 @@ export function createAcrylicPreview(host) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.tabIndex = 0;
-  renderer.domElement.setAttribute('aria-label', '3D 亚克力预览，拖动旋转，滚轮或双指缩放，方向键调整视角');
+  renderer.domElement.setAttribute('aria-label', '3D 产品预览，拖动旋转，滚轮或双指缩放，方向键调整视角');
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#f3eee4');
@@ -122,7 +122,9 @@ export function createAcrylicPreview(host) {
   function rebuild() {
     clearObject();
     if (!designTexture) return;
-    const { variant, cardOnly, accessory } = selection;
+    const { cardOnly, accessory } = selection;
+    const variant=cardOnly?'premium':selection.variant;
+    contact.scale.set(1,cardOnly?0.3:1,1);
     const depth = cardOnly ? 0.035 : 1.5;
     const acrylic = new THREE.MeshPhysicalMaterial({
       color: '#ffffff', metalness: 0, roughness: 0.018,
@@ -131,6 +133,9 @@ export function createAcrylicPreview(host) {
       clearcoat: 1, clearcoatRoughness: 0.025, envMapIntensity: 1.2,
     });
     const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : 0.065), acrylic);
+    if(cardOnly) {
+      acrylic.transmission=0; acrylic.color.set('#d5d2ca'); acrylic.metalness=0.25; acrylic.roughness=0.32;
+    }
     brick.position.y = 2.5;
     object.add(brick);
     if (!cardOnly) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, depth, variant, keyPosition: key.position, windowPosition });
@@ -138,19 +143,21 @@ export function createAcrylicPreview(host) {
       clearcoat: variant === 'basic' ? 0.15 : 1,
       clearcoatMap: variant === 'basic' ? null : spotTexture,
       clearcoatRoughness: 0.06,
-      iridescence: cardOnly ? 0.75 : 0, iridescenceIOR: 1.45,
-      iridescenceThicknessRange: [180, 500], metalness: cardOnly ? 0.45 : 0,
+      iridescence: 0, iridescenceIOR: 1.45,
+      iridescenceThicknessRange: [180, 500], metalness: cardOnly ? 0.2 : 0,
     });
     const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
-    art.position.set(0, 2.5, -depth / 2 + 0.004);
+    art.position.set(0, 2.5, cardOnly ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
     object.add(art);
+    if(cardOnly)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:true});
     const reverseMaterial = variant === 'premium' || cardOnly
       ? print.clone() : new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
     const reverse = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), reverseMaterial);
     reverse.rotation.y = Math.PI;
     reverse.position.set(0, 2.5, -depth / 2 - 0.004);
     object.add(reverse);
+    if(cardOnly)applyPrintOptics(reverseMaterial,reverse,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:true});
     if (accessory === 'clearStand' && !cardOnly) {
       const stand = new THREE.Mesh(new RoundedBoxGeometry(8, 0.25, 4, 3, 0.07), acrylic.clone());
       stand.position.set(0, 0.13, 0);
@@ -159,6 +166,7 @@ export function createAcrylicPreview(host) {
       for (const item of object.children) if (item !== stand) item.position.y += 0.25;
     }
     host.dataset.variant = cardOnly ? 'card' : variant;
+    host.dataset.product = cardOnly ? 'card' : 'acrylic';
     draw();
   }
   function setDesign(source, finishMaps) {
