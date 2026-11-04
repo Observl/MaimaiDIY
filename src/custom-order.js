@@ -98,7 +98,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
   section.innerHTML = `
     <div class="section-head"><h2>定制选配</h2></div>
     <div class="custom-order-grid">
-      <label>工艺款式<select id="acrylic-variant">
+      <label>亚克力砖工艺<select id="acrylic-variant">
         <option value="basic">基础款 · ¥29.99</option>
         <option value="light">轻量特效款 · ¥34.99（AI局部UV）</option>
         <option value="premium" selected>高配特效款 · ¥44.99（双面印刷＋局部UV＋闪粉）</option>
@@ -141,6 +141,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
     quantity.disabled = cardOnly.checked;
     accessory.disabled = cardOnly.checked;
     variant.disabled = cardOnly.checked;
+    variant.closest('label').hidden=cardOnly.checked;
     newcomer.disabled = cardOnly.checked;
     if (cardOnly.checked && Number(cards.value) < 1) cards.value = '1';
     try {
