@@ -373,7 +373,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#acrylic-material-detail')).toContainText('彩色镭射覆膜');
   await expect(page.locator('#acrylic-total')).toHaveText(quotedBefore);
   const cardStyle=await page.locator('#acrylic-viewport').screenshot({path:'output/playwright/card-style-before.png'});
-  await page.locator('#acrylic-variant').selectOption('basic');
+  await page.locator('[data-finish="basic"]').click();
   const cardAfter=await page.locator('#acrylic-viewport').screenshot({path:'output/playwright/card-style-after.png'});
   const cardStyleError=await page.evaluate(async({before,after})=>{
     const decode=src=>new Promise(resolve=>{const image=new Image();image.onload=()=>resolve(image);image.src=src;});
@@ -399,7 +399,7 @@ test('merch opens separately with the latest design and returns to the same edit
   for(let i=0;i<26;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/card-black-reverse.png'});
   await page.getByRole('button',{name:'复位视角'}).click();
-  await page.locator('#acrylic-variant').selectOption('premium');
+  await page.locator('[data-finish="premium"]').click();
   await page.getByRole('button',{name:'亚克力砖',exact:true}).click();
   await expect(page.locator('.acrylic-variants')).toBeVisible();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','acrylic');
@@ -448,9 +448,16 @@ test('purchase presets select products, update newcomer prices and export all it
   await ready(page);
   await page.locator('.support-merch-link').click();
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
+  await expect(page.locator('.purchase-art canvas')).toHaveCount(3);
+  await page.locator('[data-finish="basic"]').focus();
+  await page.keyboard.press('Space');
+  await expect(page.locator('#acrylic-variant')).toHaveValue('basic');
+  await expect(page.locator('[data-finish="basic"]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('[data-finish="premium"]').click();
   await page.locator('[data-bundle="shikishi"]').click();
   await expect(page.locator('#buy-shikishi')).toBeChecked();
   await expect(page.locator('#buy-acrylic')).not.toBeChecked();
+  await expect(page.locator('.purchase-options')).toBeHidden();
   await expect(page.locator('#acrylic-total')).toHaveText('¥24.99');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','shikishi');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-material.png'});
