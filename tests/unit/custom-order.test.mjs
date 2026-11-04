@@ -50,9 +50,9 @@ test('three product variants and process requests', () => {
   assert.equal(ACRYLIC_PRODUCTS.basic.priceFen, 2999);
   assert.equal(ACRYLIC_PRODUCTS.light.priceFen, 3499);
   assert.equal(ACRYLIC_PRODUCTS.premium.priceFen, 4499);
-  assert.deepEqual(ACRYLIC_PRODUCTS.light.effects, ['uv-color', 'white-ink', 'ai-spot-uv', 'background-glitter', 'collectible-glitter', 'single-plane-print']);
+  assert.deepEqual(ACRYLIC_PRODUCTS.light.effects, ['white-ink', 'white-outline-uv', 'background-glitter', 'colored-fine-powder', 'single-plane-print']);
   assert.ok(ACRYLIC_PRODUCTS.premium.effects.includes('double-sided-print'));
-  assert.ok(ACRYLIC_PRODUCTS.premium.effects.includes('ai-glitter'));
+  assert.ok(ACRYLIC_PRODUCTS.premium.effects.includes('colored-fine-powder'));
   for (const [variant, expected] of [['basic', 2999], ['light', 3499], ['premium', 4499]]) {
     assert.equal(quoteAcrylicOrder({ variant, quantity: 1 }).totalFen, expected);
   }
@@ -81,7 +81,7 @@ test('draft snapshot contains the tier manufacturing specification', () => {
   assert.equal(draft.status, 'not-for-production-or-payment');
   assert.equal(draft.rightsReview, 'required');
   assert.equal(draft.quote.totalFen, 8998);
-  assert.ok(draft.product.effectRequests.includes('ai-glitter'));
+  assert.ok(draft.product.effectRequests.includes('colored-fine-powder'));
   assert.equal(draft.product.acrylicThicknessMm, 15);
 });
 

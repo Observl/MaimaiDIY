@@ -1,4 +1,37 @@
-// Generate independent white effect contours from the current source pixels in memory.
+// Trace thin, neutral-white strokes. Broad white backing and colored foil are matte.
+export function createWhiteOutlineMask(data,width,height) {
+  const white=new Uint8Array(width*height),result=new Uint8Array(width*height);
+  for(let p=0;p<white.length;p++) {
+    const i=p*4,r=data[i],g=data[i+1],b=data[i+2];
+    white[p]=data[i+3]>96&&Math.min(r,g,b)>=215&&Math.max(r,g,b)-Math.min(r,g,b)<=22?1:0;
+  }
+  function distance(x,y,dx,dy) {
+    for(let n=1;n<=6;n++) {
+      const nx=x+dx*n,ny=y+dy*n;
+      if(nx<0||ny<0||nx>=width||ny>=height||!white[ny*width+nx])return n;
+    }
+    return 99;
+  }
+  function boundary(x,y) {
+    if(x<0||y<0||x>=width||y>=height)return [0,0,0,0];
+    return data.subarray((y*width+x)*4,(y*width+x)*4+4);
+  }
+  function isStroke(x,y,dx,dy) {
+    const left=distance(x,y,-dx,-dy),right=distance(x,y,dx,dy);
+    if(left+right>8)return false;
+    const a=boundary(x-dx*left,y-dy*left),b=boundary(x+dx*right,y+dy*right);
+    if((a[3]>96)!==(b[3]>96))return true;
+    return a[3]>96&&b[3]>96&&Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])>48;
+  }
+  for(let y=0;y<height;y++)for(let x=0;x<width;x++) {
+    const p=y*width+x;if(!white[p])continue;
+    // Both sides must terminate nearby, rather than merely tracing a white panel edge.
+    if(isStroke(x,y,1,0)||isStroke(x,y,0,1))result[p]=255;
+  }
+  return result;
+}
+
+// Independent powder and white-outline masks, generated in memory from each source.
 export function createSourceFinishMask(data,width,height) {
   const count=width*height;
   const candidate=new Uint8Array(count), luma=new Float32Array(count), contrast=new Float32Array(count);
@@ -9,7 +42,8 @@ export function createSourceFinishMask(data,width,height) {
     const pale=Math.min(r,g,b)>165&&spread<95;
     const gold=r>165&&g>105&&b<175&&r>b*1.12;
     const cool=g>175&&b>180&&r>135&&spread<100;
-    if(data[i+3]>96&&(pale||gold||cool)) candidate[p]=1;
+    const colored=spread>35&&luma[p]>45;
+    if(data[i+3]>96&&(pale||gold||cool||colored)) candidate[p]=1;
   }
   for(let y=0;y<height;y++) for(let x=0;x<width;x++) {
     const p=y*width+x; let low=luma[p],high=low;
@@ -19,7 +53,7 @@ export function createSourceFinishMask(data,width,height) {
     }
     contrast[p]=high-low;
   }
-  const uv=new Uint8Array(count), glitter=new Uint8Array(count), seen=new Uint8Array(count);
+  const powder=new Uint8Array(count), seen=new Uint8Array(count);
   for(let start=0;start<count;start++) {
     if(!candidate[start]||seen[start])continue;
     const component=[start]; seen[start]=1;let edge=0;
@@ -35,12 +69,11 @@ export function createSourceFinishMask(data,width,height) {
     if(component.length<3||(!contourOnly&&edge/component.length<12))continue;
     for(const p of component) {
       if(contourOnly&&contrast[p]<16)continue;
-      uv[p]=255;
-      if(luma[p]>170&&contrast[p]>14) glitter[p]=255;
+      if(luma[p]>45&&contrast[p]>14) powder[p]=255;
     }
   }
   // Per-source contrast ranking keeps flat backing colors out of the selected foil.
-  for(const [mask,maxFraction] of [[uv,0.24],[glitter,0.14]]) {
+  for(const [mask,maxFraction] of [[powder,0.14]]) {
     const selected=[];for(let p=0;p<count;p++)if(mask[p])selected.push(p);
     const limit=Math.floor(count*maxFraction);
     if(selected.length>limit) {
@@ -48,6 +81,9 @@ export function createSourceFinishMask(data,width,height) {
       mask.fill(0);for(const p of selected.slice(0,limit))mask[p]=255;
     }
   }
-  return {uv,glitter};
+  const uv=createWhiteOutlineMask(data,width,height);
+  // White strokes have their own clear finish, never additive glitter particles.
+  for(let p=0;p<count;p++)if(uv[p])powder[p]=0;
+  return {uv,powder};
 }
 

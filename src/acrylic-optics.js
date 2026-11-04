@@ -76,7 +76,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
         vec3 artwork = texture2D(printArtwork, printUV).rgb;
         vec3 finishPosition=pPos,finishNormal=pN,finishView=pV;
         #ifdef USE_TRANSMISSION
-        // All UV and glitter live on the same innermost plane as the flattened artwork.
+        // Powder and white-outline varnish share the single innermost artwork plane.
         finishPosition=(printWorld*vec4(printHit,1.0)).xyz;
         finishNormal=normalize(mat3(printWorld)*vec3(0.0,0.0,1.0));
         finishView=normalize(-internalRay);
@@ -90,7 +90,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
         // Clear surface reflections are neutral; colored finish reflections belong to the rear ink plane.
         totalSpecular=min(totalSpecular,vec3(0.22));
         #else
-        totalSpecular=mix(totalSpecular,min(totalSpecular,vec3(0.12))*imageTint,insidePrint)*(1.0-finish.b*insidePrint);
+        totalSpecular=mix(totalSpecular,min(totalSpecular,vec3(0.12))*imageTint*(1.0-componentPrint),insidePrint)*(1.0-finish.b*insidePrint);
         #endif
         #ifdef USE_TRANSMISSION
         float f0=pow((material.ior-1.0)/(material.ior+1.0),2.0);
@@ -101,6 +101,17 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           float pigmentLight=0.72+0.28*max(dot(pN,normalize(printWindow-pPos)),0.0);
           totalDiffuse=mix(totalDiffuse,artwork*pigmentLight,insidePrint);
         #endif
+        if(printCard<0.5 && printFinish>0.5 && insidePrint>0.5) {
+          // Colored powder is a diffuse pigment texture, without sparkle or white emission.
+          vec2 powderCells=printUV*vec2(1250.0,522.0);
+          vec2 powderCell=floor(powderCells);
+          vec3 powderGrain=vec3(printHash(powderCell),printHash(powderCell+17.0),printHash(powderCell+43.0));
+          float powderFootprint=max(fwidth(powderCells.x),fwidth(powderCells.y));
+          powderGrain=mix(powderGrain,vec3(0.5),smoothstep(0.8,2.0,powderFootprint));
+          vec3 powderModulation=vec3(0.82)+powderGrain*0.30;
+          float powderAmount=finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
+          totalDiffuse*=mix(vec3(1.0),powderModulation,powderAmount);
+        }
         if(printCard>0.5) {
           // Diffractive color modulation without a white mirror/varnish highlight.
           totalSpecular=vec3(0.0);
@@ -141,9 +152,9 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
             vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
             float distanceToFlake = length(fract(cells) - center);
             float footprint = max(length(fwidth(cells)), 0.04);
-            // Background glitter plus explicit nameplate, lettering and badge finishes.
+            // Existing background glitter stays separate from diffuse component powder.
             float density=printFinish>1.5?1.0:0.7;
-            float finishCoverage=max(1.0-componentPrint,finish.g);
+            float finishCoverage=1.0-componentPrint;
             float flake = (1.0 - smoothstep(0.14, 0.14 + min(footprint,0.14), distanceToFlake)) * step(0.22, seed) * density * (1.0-finish.b) * finishCoverage;
             vec3 flakeNormal = normalize(finishNormal + vec3(
               (printHash(cell + 19.0) - 0.5) * 1.4,
@@ -159,5 +170,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'snell-rear-ink-collectible-finishes-v12-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'snell-rear-ink-powder-white-outlines-v13-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }
