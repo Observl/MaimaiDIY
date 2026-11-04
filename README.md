@@ -76,7 +76,7 @@ MaimaiDIY 由个人维护。如果这个工具对你有帮助，可以自愿赞�
 
 赞赏区域位于模拟器页面最下方，无需跳转。
 
-<img src="assets/support-qr.jpg" alt="用于支持 MaimaiDIY 服务器维护的赞赏二维码" width="420">
+<img src="https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/support-qr.jpg" alt="用于支持 MaimaiDIY 服务器维护的赞赏二维码" width="420">
 
 ## 版权说明
 

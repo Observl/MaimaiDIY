@@ -1,5 +1,7 @@
-import { titleAsset, createDefaultState, sanitizeImportedState as sanitize } from './src/model.js';
+import { titleAsset, createDefaultState, sanitizeImportedState as sanitize, isAllowedAsset } from './src/model.js';
 import { fetchJson } from './src/assets.js';
+import { COS } from './src/config.js';
+import { resolveAssetUrl } from './src/asset-paths.js';
 export function initializeRecommendations({
   state,
   snapshotState,
@@ -40,14 +42,14 @@ export function initializeRecommendations({
     return {
       id: 'author-default',
       name: '作者默认搭配',
-      preview: 'docs/screenshots/composition-v1.2.0.png?v=16411',
+      preview: `${COS.baseUrl}/materials/previews/recommended.png`,
       state: createDefaultState(),
     };
   }
 
   async function getRecommendations() {
     if (!publishedRecommendations) {
-      const data = await fetchJson('materials/recommendations.json');
+      const data = await fetchJson(COS.recommendationsUrl);
       if (data?.version !== 1 || !Array.isArray(data.items)) throw new Error('推荐配置格式无效。');
       publishedRecommendations = data.items;
     }
@@ -94,16 +96,12 @@ export function initializeRecommendations({
           typeof item.preview !== 'string'
         )
           continue;
-        if (
-          !/^(?:docs\/screenshots\/|assets\/|data:image\/(?:png|jpeg|webp);base64,)/.test(
-            item.preview
-          )
-        )
-          continue;
+        const previewUrl=resolveAssetUrl(item.preview);
+        if(!isAllowedAsset(previewUrl,'avatar'))continue;
         const card = document.createElement('article');
         card.className = 'recommendation-card';
         const image = document.createElement('img');
-        image.src = item.preview;
+        image.src = previewUrl;
         image.alt = `${item.name}完整搭配预览`;
         image.loading = 'lazy';
         const title = document.createElement('h3');
@@ -213,7 +211,7 @@ export function initializeRecommendations({
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       recommendationsStatus.textContent =
-        '已导出。将文件用于 materials/recommendations.json 后发布，所有访客即可看到。';
+        '已导出。上传至 COS 的 materials/recommendations.json 后，所有访客即可看到。';
     } catch (error) {
       recommendationsStatus.textContent = error.message;
     }

@@ -226,9 +226,16 @@ test('all author combinations preserve player information and remain undoable', 
     friend: value.files.friendBattle,
     visible: value.visible,
   });
-  for (let i = 0; i < 5; i++) {
+  const recommendationCount=await page.evaluate(async()=>{
+    const {COS}=await import('/src/config.js');
+    const {fetchJson}=await import('/src/assets.js');
+    const data=await fetchJson(COS.recommendationsUrl);
+    return new Set(['author-default',...data.items.map(item=>item.id)]).size;
+  });
+  expect(recommendationCount).toBeGreaterThan(1);
+  for (let i = 0; i < recommendationCount; i++) {
     await page.locator('#author-recommendations').click();
-    await expect(page.locator('.recommendation-card')).toHaveCount(5);
+    await expect(page.locator('.recommendation-card')).toHaveCount(recommendationCount);
     await page.locator('.recommendation-card .primary').nth(i).click();
     await expect(page.locator('#loading')).toBeHidden();
     const applied = (await exportState(page)).state;
@@ -671,4 +678,17 @@ test('generated finishes remain visible in the final acrylic and paper render',a
     expect(Math.max(...views.map(item=>item.visible)),`${width} ${product} ${mode}`).toBeGreaterThan(width===1000?200:25);
     if(mode==='uv')expect(Math.abs(views[0].total-views[1].total),`${width} ${product} lighting response`).toBeGreaterThan(50);
   }
+});
+
+test('editor and product preview work without a local assets directory',async({page})=>{
+  const localRequests=[];
+  page.on('request',request=>{const url=new URL(request.url());if(url.hostname==='127.0.0.1'&&url.pathname.startsWith('/assets/'))localRequests.push(url.pathname);});
+  await ready(page);
+  expect(await page.evaluate(()=>[...document.fonts].some(font=>font.family.includes('SEGA Maru Gothic DB')&&font.status==='loaded'))).toBe(true);
+  const defaults=await exportState(page);
+  for(const url of Object.values(defaults.state.files))expect(url).toMatch(/^https:\/\/maimai-diy-assets-1517578456\.cos\.ap-shanghai\.myqcloud\.com\/materials\//);
+  await page.locator('.support-merch-link').click();
+  await expect(page.locator('#acrylic-preview-status')).toBeHidden();
+  await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
+  expect(localRequests).toEqual([]);
 });

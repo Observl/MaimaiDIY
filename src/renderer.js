@@ -117,7 +117,7 @@ export function createRenderer(canvas) {
       if (!snapshot.visible[id]) return null;
       if (
         ['ratingDigits', 'playerName'].includes(id) ||
-        (id === 'titleText' && snapshot.titleName)
+          id === 'titleText'
       ) {
         return { id, slot };
       }
@@ -147,7 +147,7 @@ export function createRenderer(canvas) {
         drawPlayerName();
         continue;
       }
-      if (id === 'titleText' && snapshot.titleName) {
+      if (id === 'titleText') {
         drawTitleText();
         continue;
       }

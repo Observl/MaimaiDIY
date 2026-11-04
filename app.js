@@ -7,6 +7,7 @@ import {
   applyRatingBand as updateRatingBand,
 } from './src/model.js';
 import { loadManifest } from './src/assets.js';
+import { resolveAssetUrl } from './src/asset-paths.js';
 import { createRenderer } from './src/renderer.js';
 import { initializePicker } from './src/picker.js';
 import { initializeTemplates } from './src/templates.js';
@@ -268,8 +269,8 @@ document.querySelector('#reset').addEventListener('click', () => {
     nameplate: `${COS.baseUrl}/materials/nameplates/UI_Plate_000001.png`,
     avatar: `${COS.baseUrl}/materials/avatars/UI_Icon_000001.png`,
     titleBase: titleAsset('Normal'),
-    rank: 'assets/ranks/00.png',
-    friendBattle: 'assets/friend-battles/00.png',
+    rank: COS.baseUrl+'/materials/ranks/00.png',
+    friendBattle: COS.baseUrl+'/materials/friend-battles/00.png',
   });
   state.titleName = '新人出道';
   state.titleColor = 'Normal';
@@ -353,7 +354,7 @@ async function render(options) {
 function updateControlIcons() {
   for (const control of controls) {
     const icon = document.querySelector(`[data-control="${control.id}"] .control-icon`);
-    const src = state.files[control.target] || slots[control.target].asset;
+    const src = resolveAssetUrl(state.files[control.target] || slots[control.target].asset);
     if (icon.firstElementChild?.getAttribute('src') === src) continue;
     const image = new Image();
     image.alt = '';

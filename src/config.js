@@ -2,7 +2,7 @@ export const CANVAS = { width: 1080, height: 452 };
 export const DISPLAY_FONT = '"SEGA Maru Gothic DB"';
 export const RENDER_SCALE = 4;
 export const OUTPUT = { width: 2160, height: 904 };
-export const DEFAULT_BACKGROUND = 'assets/default-background.png';
+export const DEFAULT_BACKGROUND = 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/backgrounds/UI_Frame_200402.png';
 // Back to front. Both artwork and effect-mask occlusion use this exact order.
 export const COMPOSITION_ORDER = Object.freeze([
   'background',
@@ -14,9 +14,10 @@ export const COS = {
   baseUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com',
   manifestUrl:
     'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/manifest.json',
-  fallbackManifestUrl: 'materials/manifest.json',
-  titleManifestUrl: 'materials/titles.json',
-  badgeManifestUrl: 'materials/badges.json',
+  
+  titleManifestUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/titles.json',
+  badgeManifestUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/badges.json',
+  recommendationsUrl: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/recommendations.json',
   cacheKey: 'maimai-diy-manifest-v2',
   pageSize: 18,
   timeout: 12000,
@@ -38,31 +39,31 @@ export const RATING_BANDS = [
 ];
 
 export const slots = {
-  background: { asset: 'assets/background.png', x: 0, y: 0, width: 1080, height: 452, z: 0 },
-  nameplate: { asset: 'assets/nameplate.png', x: 32, y: 26, width: 717, height: 116, z: 10 },
-  ratingFrame: { asset: 'assets/ratingFrame.png', x: 138, y: 30, width: 173, height: 36, z: 24 },
-  ratingDigits: { asset: 'assets/ratingDigits.png', x: 227, y: 42, width: 69, height: 14, z: 25 },
+  background: { asset: DEFAULT_BACKGROUND, x: 0, y: 0, width: 1080, height: 452, z: 0 },
+  nameplate: { asset: `${COS.baseUrl}/materials/nameplates/UI_Plate_006150.png`, x: 32, y: 26, width: 717, height: 116, z: 10 },
+  ratingFrame: { asset: `${COS.baseUrl}/materials/ratings/UI_CMN_DXRating_S_11.png`, x: 138, y: 30, width: 173, height: 36, z: 24 },
+  ratingDigits: { asset: `${COS.baseUrl}/materials/ratings/UI_CMN_DXRating_S_11.png`, x: 227, y: 42, width: 69, height: 14, z: 25 },
   titleBase: {
-    asset: 'assets/titles/UI_CMN_Shougou_Normal.png',
+    asset: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/titles/UI_CMN_Shougou_Normal.png',
     x: 141,
     y: 111,
     width: 268,
     height: 25,
     z: 21,
   },
-  titleText: { asset: 'assets/titleText.png', x: 247, y: 115, width: 51, height: 12, z: 22 },
-  rank: { asset: 'assets/rank.png', x: 326, y: 69, width: 80, height: 35, z: 23 },
-  friendBattle: { asset: 'assets/friendBattle.png', x: 312, y: 7, width: 108, height: 67, z: 30 },
-  nameBase: { asset: 'assets/nameBase.png', x: 142, y: 67, width: 267, height: 40, z: 11 },
+  titleText: { asset: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/titles/UI_CMN_Shougou_Normal.png', x: 247, y: 115, width: 51, height: 12, z: 22 },
+  rank: { asset: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/ranks/18.png', x: 326, y: 69, width: 80, height: 35, z: 23 },
+  friendBattle: { asset: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/friend-battles/21.png', x: 312, y: 7, width: 108, height: 67, z: 30 },
+  nameBase: { asset: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/name-bases/default.png', x: 142, y: 67, width: 267, height: 40, z: 11 },
   playerName: {
-    asset: 'assets/playerName.png',
+    asset: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/name-bases/default.png',
     x: 150.93611859870788,
     y: 78.05231089799081,
     width: 174.57249,
     height: 18,
     z: 12,
   },
-  avatar: { asset: 'assets/avatar.png', x: 37, y: 33, width: 100, height: 99, z: 20 },
+  avatar: { asset: `${COS.baseUrl}/materials/avatars/UI_Icon_559504.png`, x: 37, y: 33, width: 100, height: 99, z: 20 },
 };
 
 export const controls = [
@@ -156,9 +157,9 @@ export const DEFAULT_PRESET = {
     background: DEFAULT_BACKGROUND,
     nameplate: `${COS.baseUrl}/materials/nameplates/UI_Plate_006150.png`,
     avatar: `${COS.baseUrl}/materials/avatars/UI_Icon_559504.png`,
-    titleBase: 'assets/titles/UI_CMN_Shougou_Gold.png',
-    rank: 'assets/ranks/18.png',
-    friendBattle: 'assets/friend-battles/21.png',
+    titleBase: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/titles/UI_CMN_Shougou_Gold.png',
+    rank: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/ranks/18.png',
+    friendBattle: 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/friend-battles/21.png',
   },
   labels: {
     background: '7sRefちほー おまけ',
