@@ -12,6 +12,7 @@ export function createAcrylicPreview(host) {
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.shadowMap.autoUpdate = false;
   renderer.domElement.tabIndex = 0;
   renderer.domElement.setAttribute('aria-label', '3D 产品预览，拖动旋转，滚轮或双指缩放，方向键调整视角');
   host.append(renderer.domElement);
@@ -90,9 +91,14 @@ export function createAcrylicPreview(host) {
   const windowPosition = new THREE.Vector3(-8, 7, 6);
   let selection = { variant: 'premium', cardOnly: false, accessory: 'none' };
   let disposed = false;
+  let pendingFrame=0;
   const draw = () => {
-    host.dataset.cameraDistance=controls.getDistance().toFixed(3);
-    if (!disposed && host.clientWidth) renderer.render(scene, camera);
+    if(disposed||pendingFrame)return;
+    pendingFrame=window.requestAnimationFrame(()=>{
+      pendingFrame=0;
+      host.dataset.cameraDistance=controls.getDistance().toFixed(3);
+      if(!disposed&&host.clientWidth)renderer.render(scene,camera);
+    });
   };
   controls.addEventListener('change', draw);
   function reset() {
@@ -184,6 +190,7 @@ export function createAcrylicPreview(host) {
     host.dataset.product = cardOnly ? 'card' : shikishi?'shikishi':'acrylic';
     host.dataset.printLayers='1';
     host.dataset.reverseTexture=cardOnly?'fine-card-grain':shikishi?'paper-fibers':'none';
+    renderer.shadowMap.needsUpdate=true;
     draw();
   }
   function setDesign(source, finishMaps) {
@@ -243,10 +250,11 @@ export function createAcrylicPreview(host) {
       key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
       windowPosition.set(-8, 7, 6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
       scene.environmentRotation.set(0, angle, 0);
+      renderer.shadowMap.needsUpdate=true;
       draw();
     },
     dispose() {
-      disposed = true; observer.disconnect(); controls.dispose(); clearObject();
+      disposed = true;window.cancelAnimationFrame(pendingFrame);observer.disconnect(); controls.dispose(); clearObject();
       designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();componentTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
