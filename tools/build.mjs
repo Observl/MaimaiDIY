@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { resolve, relative, sep } from 'node:path';
 import { createHash } from 'node:crypto';
+import { build } from 'esbuild';
 
 const root = process.cwd();
 const dist = resolve(root, 'dist');
@@ -32,6 +33,7 @@ for (const file of [
   files.add(file);
 for (const file of await readdir('src')) if (file.endsWith('.js')) files.add(`src/${file}`);
 const hash = createHash('sha256');
+hash.update(await readFile('package-lock.json'));
 for (const file of [...files].filter((file) => /\.(js|css)$/.test(file)).sort()) {
   hash.update(file);
   hash.update(await readFile(file).catch(() => ''));
@@ -74,6 +76,19 @@ for (const [source, target] of [
   await writeFile(resolve(dist, 'vendor', target), code.replace(/from 'three'/g, "from './three.module.js'"));
 }
 await cp(resolve(root, 'node_modules/three/LICENSE'), resolve(dist, 'vendor/three-LICENSE.txt'));
+// Bundle only the selected helpers, sharing exactly the site's Three.js instance.
+await build({
+  stdin:{contents:`export {default as CustomShaderMaterial} from 'three-custom-shader-material/vanilla';
+    export {MeshTransmissionMaterial} from '@pmndrs/vanilla/materials/MeshTransmissionMaterial.js';
+    export {getGPUTier} from '@pmndrs/detect-gpu';`,resolveDir:root,sourcefile:'render-extensions.js'},
+  bundle:true,format:'esm',minify:true,target:'es2022',outfile:resolve(dist,'vendor/render-extensions.js'),
+  plugins:[{name:'shared-three',setup(builder){builder.onResolve({filter:/^three$/},()=>({path:'./three.module.js',external:true}));}}],
+});
+await cp(resolve(root,'node_modules/@pmndrs/detect-gpu/dist/benchmarks'),resolve(dist,'vendor/gpu-benchmarks'),{recursive:true});
+for(const [name,path] of [['custom-shader-material','three-custom-shader-material/LICENSE.md'],['drei-vanilla','@pmndrs/vanilla/LICENSE'],['detect-gpu','@pmndrs/detect-gpu/LICENSE']]) {
+  const notice=await readFile(resolve(root,'node_modules',path),'utf8');
+  await writeFile(resolve(dist,`vendor/${name}-LICENSE.txt`),notice);
+}
 await writeFile(resolve(dist, '.nojekyll'), '');
 const html = await readFile(resolve(dist, 'index.html'), 'utf8');
 for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
