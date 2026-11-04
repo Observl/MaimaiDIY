@@ -20,12 +20,12 @@ test('gold and silver title rails have UV but no glitter', () => {
   const state=createDefaultState();
   for(const color of ['Gold','Silver']) {
     state.titleColor=color;
-    assert.equal(collectibleFinish(state,'titleBase').shape,'title-rails');
+    assert.equal(collectibleFinish(state,'titleBase').shape,'title-board');
     assert.equal(collectibleFinish(state,'titleBase').glitter,0);
-    assert.equal(collectibleFinish(state,'titleText').shape,'title-lettering');
-    assert.equal(collectibleFinish(state,'titleText').glitter,0);
+    assert.equal(collectibleFinish(state,'titleText'),null);
   }
-  state.titleColor='Normal'; assert.equal(collectibleFinish(state,'titleBase'),null);
+  state.titleColor='Normal'; assert.equal(collectibleFinish(state,'titleBase').uv,1);
+  assert.ok(collectibleFinish(state,'ratingFrame').glitter>0);
   assert.equal(collectibleFinish(state,'playerName'),null);
 });
 test('special plates are selected by registered asset ID, never the label', () => {

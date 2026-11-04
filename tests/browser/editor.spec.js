@@ -325,6 +325,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'premium');
   await expect(page.locator('#acrylic-variant')).toHaveValue('premium');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-layers','4');
   await expect(page.locator('#finish-inspector')).toHaveCount(0);
   await page.getByRole('button',{name:'收藏品近景'}).click();
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/acrylic-actual-detail.png'});
@@ -441,13 +442,14 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('[data-bundle="shikishi"]').click();
   await expect(page.locator('#buy-shikishi')).toBeChecked();
   await expect(page.locator('#buy-acrylic')).not.toBeChecked();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥19.99');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥24.99');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','shikishi');
+  await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-material.png'});
   await page.locator('#acrylic-newcomer').check();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥16.99');
-  await expect(page.locator('#purchase-message')).toContainText('运费待确认');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥21.99');
+  await expect(page.locator('#purchase-lines')).toContainText('¥5.00');
   await page.locator('[data-bundle="complete"]').click();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥72.97');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥77.97');
   await expect(page.locator('#acrylic-accessory')).toHaveValue('clearStand');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','acrylic');
   await page.locator('#custom-order').screenshot({path:'output/playwright/purchase-desktop.png'});

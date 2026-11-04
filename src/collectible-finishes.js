@@ -19,8 +19,11 @@ export function collectibleFinish(state, slot) {
     return { shape: 'battle-emblems', uv: 0.8, glitter: level < 15 ? 0 : level < 20 ? 0.4 : 0.8,
       rainbow: level === 25 ? 1 : 0.1, tint: level === 25 ? prism : level < 20 ? silver : gold };
   }
-  if (['titleBase','titleText'].includes(slot) && ['Gold', 'Silver'].includes(state.titleColor)) {
-    return { shape: slot==='titleText' ? 'title-lettering' : 'title-rails', metal: state.titleColor, uv: 1, glitter: 0, rainbow: 0, tint: state.titleColor === 'Gold' ? gold : silver };
+  if (slot === 'titleBase') {
+    return { shape: 'title-board', metal: state.titleColor, uv: 1, glitter: 0, rainbow: 0, tint: state.titleColor === 'Gold' ? gold : silver };
+  }
+  if (slot === 'ratingFrame') {
+    return { shape:'rating-frame', uv:1, glitter:0.9, rainbow:0, tint:gold };
   }
   if (slot === 'nameplate') {
     const id = file.match(/UI_Plate_\d+\.png/)?.[0];

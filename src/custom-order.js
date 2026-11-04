@@ -2,8 +2,8 @@ import { initializePurchaseUI } from './purchase-ui.js';
 // Commercial-order foundation. No checkout or manufacture is enabled for unlicensed assets.
 export const ACRYLIC_PRODUCTS = Object.freeze({
   basic: Object.freeze({ label: '基础款', priceFen: 2999, newcomerPriceFen: 2699, effects: ['uv-color', 'white-ink'] }),
-  light: Object.freeze({ label: '轻量特效款', priceFen: 3499, newcomerPriceFen: 2999, effects: ['uv-color', 'white-ink', 'ai-spot-uv'] }),
-  premium: Object.freeze({ label: '高配特效款', priceFen: 4499, newcomerPriceFen: 3999, effects: ['uv-color', 'white-ink', 'double-sided-print', 'ai-spot-uv', 'ai-glitter'] }),
+  light: Object.freeze({ label: '轻量特效款', priceFen: 3499, newcomerPriceFen: 2999, effects: ['uv-color', 'white-ink', 'ai-spot-uv', 'global-glitter', 'layered-print'] }),
+  premium: Object.freeze({ label: '高配特效款', priceFen: 4499, newcomerPriceFen: 3999, effects: ['uv-color', 'white-ink', 'double-sided-print', 'ai-spot-uv', 'ai-glitter', 'global-glitter', 'layered-print'] }),
 });
 
 export const ACCESSORIES = Object.freeze({
@@ -12,7 +12,7 @@ export const ACCESSORIES = Object.freeze({
 });
 export const COLLECTIBLE_CARD = Object.freeze({ label: '镭射收藏卡', priceFen: 1499 });
 export const SHIKISHI_PRODUCT = Object.freeze({ label: '色纸', priceFen: 1999, newcomerPriceFen: 1699 });
-export const SHIKISHI_SHIPPING_POLICY = 'pending';
+export const SHIKISHI_SHIPPING_POLICY = 'shared';
 export const BUNDLE_PRESETS = Object.freeze({
   shikishi: Object.freeze({ label:'色纸单品', description:'1 张色纸', quantity:0, cardQuantity:0, shikishiQuantity:1, accessory:'none' }),
   card: Object.freeze({ label:'镭射票单品', description:'1 张镭射票', quantity:0, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
@@ -21,7 +21,7 @@ export const BUNDLE_PRESETS = Object.freeze({
   complete: Object.freeze({ label:'全收藏套餐', description:'砖＋托架＋镭射票＋色纸', quantity:1, cardQuantity:1, shikishiQuantity:1, accessory:'clearStand' }),
 });
 // Configurable sales prices; these are test prices, not manufacturer quotations.
-export const CARD_ONLY_SHIPPING_FEN = 400; // configurable domestic shipping estimate
+export const CARD_ONLY_SHIPPING_FEN = 500;
 export const COMBO_DISCOUNTS = Object.freeze({ standFen: 100, cardFen: 200 });
 
 export function quoteProductBundle({ variant, quantity, accessory = 'none', cardQuantity = 0, shikishiQuantity = 0, newCustomer = false }) {
@@ -42,8 +42,8 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
   const comboDiscountFen = quantity > 0
     ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + (cardQuantity > 0 ? COMBO_DISCOUNTS.cardFen : 0)
     : 0;
-  const shippingPending=quantity===0 && shikishiQuantity>0 && cardQuantity===0 && SHIKISHI_SHIPPING_POLICY==='pending';
-  const shippingFen = quantity===0 && (cardQuantity>0 || (shikishiQuantity>0 && SHIKISHI_SHIPPING_POLICY==='shared')) ? CARD_ONLY_SHIPPING_FEN : 0;
+  const shippingPending=false;
+  const shippingFen = CARD_ONLY_SHIPPING_FEN; // One fee per order, including mixed bundles.
   return Object.freeze({
     variant, quantity, accessory, cardQuantity, shikishiQuantity, newCustomer: Boolean(newCustomer),
     bodyOriginalFen, bodyFen, extrasFen, shikishiOriginalFen, shikishiFen, comboDiscountFen, shippingFen, shippingPending,

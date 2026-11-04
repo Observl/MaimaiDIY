@@ -84,6 +84,7 @@ export function createAcrylicPreview(host) {
   let designTexture;
   let spotTexture;
   let glitterTintTexture;
+  let layerTextures=[];
   const windowPosition = new THREE.Vector3(-8, 7, 6);
   let selection = { variant: 'premium', cardOnly: false, accessory: 'none' };
   let disposed = false;
@@ -123,14 +124,14 @@ export function createAcrylicPreview(host) {
     clearObject();
     if (!designTexture) return;
     const { cardOnly, accessory, shikishi=false } = selection;
-    const variant=cardOnly?'premium':shikishi?'basic':selection.variant;
+    const variant=cardOnly||shikishi?'premium':selection.variant;
     contact.scale.set(1,cardOnly?0.3:shikishi?0.5:1,1);
     const depth = cardOnly ? 0.035 : shikishi ? 0.12 : 1.5;
     const acrylic = new THREE.MeshPhysicalMaterial({
       color: '#ffffff', metalness: 0, roughness: 0.018,
       transmission: 1, thickness: depth, ior: 1.49,
       attenuationColor: new THREE.Color('#e3f5f5'), attenuationDistance: 55,
-      clearcoat: 1, clearcoatRoughness: 0.025, envMapIntensity: 1.2,
+      clearcoat: 0, clearcoatRoughness: 0.025, envMapIntensity: 0.65,
     });
     const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : shikishi?0.035:0.065), acrylic);
     if(cardOnly||shikishi) {
@@ -138,20 +139,35 @@ export function createAcrylicPreview(host) {
     }
     brick.position.y = 2.5;
     object.add(brick);
-    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, depth, variant, keyPosition: key.position, windowPosition });
+    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, layers:layerTextures, depth, variant, keyPosition: key.position, windowPosition });
     const print = new THREE.MeshPhysicalMaterial({ map: designTexture, roughness: 0.38,
-      clearcoat: variant === 'basic' ? 0.15 : 1,
-      clearcoatMap: variant === 'basic' ? null : spotTexture,
+      clearcoat: 0,
+      clearcoatMap: null,
       clearcoatRoughness: 0.06,
       iridescence: 0, iridescenceIOR: 1.45,
       iridescenceThicknessRange: [180, 500], metalness: cardOnly ? 0.2 : 0,
     });
-    if(cardOnly||shikishi) { print.clearcoat=0;print.clearcoatMap=null;print.metalness=0;print.roughness=1;print.envMapIntensity=0;print.specularIntensity=0; }
+    if(cardOnly||shikishi) { print.clearcoat=0;print.clearcoatMap=null;print.metalness=0;print.roughness=shikishi?0.62:0.42;print.envMapIntensity=0;print.specularIntensity=0; }
     const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
     art.position.set(0, 2.5, cardOnly||shikishi ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
-    object.add(art);
-    if(cardOnly)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:true});
+    if(!cardOnly&&!shikishi&&variant!=='basic'&&layerTextures.length===4) {
+      for(const [i,z] of [-0.43,-0.15,0.15,0.36].entries()) {
+        const pigment=new THREE.MeshPhysicalMaterial({map:layerTextures[i],transparent:i>0,alphaTest:0.015,depthWrite:true,roughness:0.48,metalness:0.08,side:THREE.BackSide});
+        const layer=new THREE.Mesh(new THREE.PlaneGeometry(11.91,4.91),pigment);
+        layer.position.set(0,2.5,z*depth);layer.renderOrder=i;object.add(layer);
+      }
+      art.geometry.dispose();print.dispose();
+    } else object.add(art);
+    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
+    if(shikishi) {
+      // A raised warm-metal paper binding, visible from both face and side.
+      const borderMaterial=new THREE.MeshStandardMaterial({color:'#c3a66d',metalness:0.55,roughness:0.38});
+      for(const [w,h,x,y] of [[12.12,0.075,0,0.015],[12.12,0.075,0,4.985],[0.075,5.0,-6.02,2.5],[0.075,5.0,6.02,2.5]]) {
+        const edge=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.17),borderMaterial.clone());edge.position.set(x,y,0);object.add(edge);
+      }
+      borderMaterial.dispose();
+    }
     const reverseMaterial = variant === 'premium' || cardOnly
       ? print.clone() : new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
     const reverse = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), reverseMaterial);
@@ -168,10 +184,11 @@ export function createAcrylicPreview(host) {
     }
     host.dataset.variant = cardOnly ? 'card' : shikishi?'shikishi':variant;
     host.dataset.product = cardOnly ? 'card' : shikishi?'shikishi':'acrylic';
+    host.dataset.printLayers=!cardOnly&&!shikishi&&variant!=='basic'?'4':'1';
     draw();
   }
   function setDesign(source, finishMaps) {
-    designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();
+    designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();layerTextures.forEach(texture=>texture.dispose());
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
     const scale = Math.min(1, limit / source.width, limit / source.height);
@@ -185,6 +202,10 @@ export function createAcrylicPreview(host) {
     designTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
     designTexture.minFilter = THREE.LinearMipmapLinearFilter;
     designTexture.magFilter = THREE.LinearFilter;
+    layerTextures=(finishMaps.layers||[]).map(source=>{
+      const texture=new THREE.CanvasTexture(source);texture.colorSpace=THREE.SRGBColorSpace;
+      texture.anisotropy=renderer.capabilities.getMaxAnisotropy();return texture;
+    });
     // Only authored collectible shapes receive a finish. Ordinary artwork stays matte.
     spotTexture = new THREE.CanvasTexture(finishMaps.packed);
     glitterTintTexture = new THREE.CanvasTexture(finishMaps.tint);
@@ -229,7 +250,7 @@ export function createAcrylicPreview(host) {
     },
     dispose() {
       disposed = true; observer.disconnect(); controls.dispose(); clearObject();
-      designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();
+      designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();layerTextures.forEach(texture=>texture.dispose());
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
       renderer.dispose(); renderer.domElement.remove();
