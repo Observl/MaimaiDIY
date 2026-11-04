@@ -30,15 +30,20 @@ export async function createCollectibleMasks(state) {
     if(id!=='background')componentCoverage.getContext('2d').drawImage(layerCanvas,0,0);
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
-    const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0, letteringPixels:0 }) : 0;
-    let uvShape, glitterShape;
-    if (profile && id==='nameplate') {
-      const slot=slots[id];
+    const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, powderPixels:0, letteringPixels:0 }) : 0;
+    let uvShape, powderShape;
+    if (profile) {
+      const slot=id==='titleText'?slots.titleBase:slots[id];
       const x=Math.round(slot.x*scale),y=Math.round(slot.y*scale);
       const w=Math.round(slot.width*scale),h=Math.round(slot.height*scale);
       const source=layerContext.getImageData(x,y,w,h);
       const generated=createSourceFinishMask(source.data,w,h);
-      const shapes=[generated.uv,generated.glitter].map(mask=>{
+      if(id==='titleText') {
+        // This text has white glyph fills, not white outer strokes.
+        generated.uv.fill(0);
+        for(let p=0;p<generated.powder.length;p++)generated.powder[p]=source.data[p*4+3]>96?255:0;
+      }
+      const shapes=[generated.uv,generated.powder].map(mask=>{
         const pixels=regionContext.createImageData(w,h);
         for(let p=0;p<mask.length;p++) {
           pixels.data[p*4]=pixels.data[p*4+1]=pixels.data[p*4+2]=mask[p];
@@ -48,13 +53,13 @@ export async function createCollectibleMasks(state) {
         regionContext.putImageData(pixels,x,y);
         return regionContext.getImageData(0,0,width,height).data;
       });
-      [uvShape,glitterShape]=shapes;
+      [uvShape,powderShape]=shapes;
     }
     let letteringShape;
     const plate=id==='nameplate'?COLLECTIBLE_PLATES[state.files[id].match(/UI_Plate_\d+\.png/)?.[0]]:null;
-    if(uvShape&&['shogun','kiwami','maimai','god'].includes(plate?.kind)) {
+    if(powderShape&&['shogun','kiwami','maimai','god'].includes(plate?.kind)) {
       const slot=slots[id];
-      const shape=createPlateLetteringMask(uvShape,width,height,{x:slot.x*scale,y:slot.y*scale,width:slot.width*scale,height:slot.height*scale});
+      const shape=createPlateLetteringMask(powderShape,width,height,{x:slot.x*scale,y:slot.y*scale,width:slot.width*scale,height:slot.height*scale});
       if(shape.some(Boolean))letteringShape=shape;
     }
     for (let i=0;i<layer.length;i+=4) {
@@ -63,17 +68,16 @@ export async function createCollectibleMasks(state) {
       if(alpha>0.5) {owners[i/4]=0;letteringOwners[i/4]=0;}
       // Every real layer erases covered effects, including exact text glyphs.
       for(let c=0;c<3;c++) { data.data[i+c]*=1-alpha; colors.data[i+c]*=1-alpha; }
-      if(id==='titleText') data.data[i+2]=255*alpha;
+      if(['playerName','ratingDigits'].includes(id))data.data[i+2]=255*alpha;
       if (!profile) continue;
-      // User-selected title text is dynamic; use its rendered glyph alpha, never a template.
-      const u=uvShape?uvShape[i]/255*alpha:alpha;
-      // Plate backing never receives a fallback full-surface glitter coat.
-      const g=id==='titleBase'?0:id==='nameplate'?(glitterShape?.[i]||0)/255*alpha:alpha;
+      // No full-alpha finish fallback: each component uses its own source-derived contours.
+      const u=(uvShape?.[i]||0)/255*alpha;
+      const g=(powderShape?.[i]||0)/255*alpha;
       const lettering=letteringShape?letteringShape[i/4]/255:0;
-      const glitterStrength=letteringShape?profile.glitter+(1-profile.glitter)*lettering:profile.glitter;
+      const powderStrength=letteringShape?profile.powder+(1-profile.powder)*lettering:profile.powder;
       if(u>0||g>0) owners[i/4]=entryId;
       data.data[i]=255*profile.uv*u;
-      data.data[i+1]=255*glitterStrength*g;
+      data.data[i+1]=255*powderStrength*g;
       if(lettering>0.5)letteringOwners[i/4]=1;
       for(let c=0;c<3;c++) colors.data[i+c]=profile.tint[c]*Math.max(u,g);
     }
@@ -82,12 +86,12 @@ export async function createCollectibleMasks(state) {
   for(let pixel=0;pixel<owners.length;pixel++) {
     const entry=entries[owners[pixel]-1]; if(!entry) continue;
     if(data.data[pixel*4]>12) entry.uvPixels++;
-    if(data.data[pixel*4+1]>12) entry.glitterPixels++;
+    if(data.data[pixel*4+1]>12) entry.powderPixels++;
     if(letteringOwners[pixel])entry.letteringPixels++;
   }
   pctx.putImageData(data,0,0); tctx.putImageData(colors,0,0);
-  const uv = canvas(width,height), glitter = canvas(width,height);
-  for(const [target,channel] of [[uv,0],[glitter,1]]) {
+  const uv = canvas(width,height), powder = canvas(width,height);
+  for(const [target,channel] of [[uv,0],[powder,1]]) {
     const ctx=target.getContext('2d'), pixels=ctx.createImageData(width,height);
     for(let i=0;i<pixels.data.length;i+=4) {
       pixels.data[i]=pixels.data[i+1]=pixels.data[i+2]=data.data[i+channel]; pixels.data[i+3]=255;
@@ -96,5 +100,5 @@ export async function createCollectibleMasks(state) {
   }
   // Release the temporary 4x renderer buffers after composing the masks.
   isolated.renderCanvas.width=1; layerCanvas.width=1; region.width=1;
-  return { packed,tint,uv,glitter,entries,componentCoverage };
+  return { packed,tint,uv,powder,entries,componentCoverage };
 }

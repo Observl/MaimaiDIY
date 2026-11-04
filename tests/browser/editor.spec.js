@@ -468,13 +468,13 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('.configuration-panel img')).toHaveCount(0);
   await expect(page.locator('#bundle-presets')).toHaveCount(0);
   await expect(page.locator('.configuration-image')).toHaveCount(8);
-  const glitterSlots=await page.evaluate(async()=>{
+  const powderSlots=await page.evaluate(async()=>{
     const {readCurrentDesign}=await import('/src/current-design.js');
     const {createCollectibleMasks}=await import('/src/collectible-masks.js');
     const maps=await createCollectibleMasks(readCurrentDesign());
-    return maps.entries.filter(entry=>entry.glitterPixels>0).map(entry=>entry.slot);
+    return maps.entries.filter(entry=>entry.powderPixels>0).map(entry=>entry.slot);
   });
-  for(const slot of ['nameplate','playerName','rank','friendBattle'])expect(glitterSlots).toContain(slot);
+  for(const slot of ['nameplate','titleBase','ratingFrame','rank','friendBattle'])expect(powderSlots).toContain(slot);
   await expect(page.locator('[data-config-image="acrylic"]').first()).toHaveAttribute('src',/^data:image\/png/);
   await expect(page.locator('[data-config-image="complete"]').first()).toHaveAttribute('data-products','acrylic,card,shikishi');
   await expect(page.locator('[data-config-image="shikishi"]').first()).toHaveAttribute('data-products','shikishi');
@@ -556,14 +556,14 @@ test('special plate lettering masks emphasize all four collectible families',asy
       const state=readCurrentDesign();state.files.nameplate=`assets/nameplates/UI_Plate_${id}.png`;
       const maps=await createCollectibleMasks(state);
       const entry=maps.entries.find(entry=>entry.slot==='nameplate');
-      result.push({lettering:entry.letteringPixels,glitter:entry.glitterPixels});
+      result.push({lettering:entry.letteringPixels,powder:entry.powderPixels});
     }
     return result;
   });
   for(const count of counts) {
     expect(count.lettering).toBeGreaterThan(50);
-    expect(count.glitter).toBeGreaterThan(50);
-    expect(count.glitter).toBeLessThan(717*116*4*0.14+1);
+    expect(count.powder).toBeGreaterThan(50);
+    expect(count.powder).toBeLessThan(717*116*4*0.14+1);
   }
 });
 
@@ -572,4 +572,42 @@ test('direct order-page visit asks for a design instead of showing someone else�
   await expect(page.locator('#design-status')).toContainText('还没有可用的上屏设计');
   await expect(page.locator('#order-preview-shell')).toBeHidden();
   await expect(page.locator('#acrylic-export')).toBeDisabled();
+});
+
+test('component powder and reflection masks follow source pixels with reflection only on white',async({page})=>{
+  await ready(page);await page.locator('.support-merch-link').click();
+  await expect(page.locator('#acrylic-preview-status')).toBeHidden();
+  const results=await page.evaluate(async()=>{
+    const {readCurrentDesign}=await import('/src/current-design.js');
+    const {createCollectibleMasks}=await import('/src/collectible-masks.js');
+    const {createRenderer}=await import('/src/renderer.js');
+    const {slots}=await import('/src/config.js');
+    const results=[];
+    for(const id of ['nameplate','friendBattle','rank','titleBase','ratingFrame']) {
+      const state=readCurrentDesign();state.visible=Object.fromEntries(Object.keys(slots).map(key=>[key,key===id]));
+      const maps=await createCollectibleMasks(state);
+      const original=createRenderer(document.createElement('canvas'));await original.render(state,{strict:true});
+      const canvas=document.createElement('canvas');canvas.width=maps.packed.width;canvas.height=maps.packed.height;
+      const context=canvas.getContext('2d');context.drawImage(original.renderCanvas,0,0,canvas.width,canvas.height);
+      const art=context.getImageData(0,0,canvas.width,canvas.height).data;
+      const mask=maps.packed.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+      let coloredReflection=0,powder=0,whiteReflection=0;
+      for(let i=0;i<mask.length;i+=4) {
+        if(mask[i+1]>12)powder++;
+        if(mask[i]>12) {
+          whiteReflection++;
+          const r=art[i],g=art[i+1],b=art[i+2];
+          if(Math.min(r,g,b)<215||Math.max(r,g,b)-Math.min(r,g,b)>22)coloredReflection++;
+        }
+      }
+      results.push({id,powder,whiteReflection,coloredReflection});
+      original.renderCanvas.width=1;
+    }
+    return results;
+  });
+  for(const item of results) {
+    expect(item.powder,item.id).toBeGreaterThan(0);
+    expect(item.coloredReflection,item.id).toBe(0);
+  }
+  expect(results.reduce((total,item)=>total+item.whiteReflection,0)).toBeGreaterThan(50);
 });
