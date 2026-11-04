@@ -8,14 +8,14 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     <div id="bundle-presets" class="bundle-presets" role="group" aria-label="快捷套餐"></div>
     <div class="purchase-layout"><div class="purchase-products">
       <article class="purchase-product" data-product="acrylic">
-        <div class="purchase-product-head"><div class="purchase-art acrylic-art" aria-hidden="true"><canvas width="320" height="134"></canvas></div><label class="purchase-toggle"><input id="buy-acrylic" type="checkbox" checked><span><strong>亚克力砖</strong><span id="acrylic-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"></label></div>
+        <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-acrylic" type="checkbox" checked><span><strong>亚克力砖</strong><span id="acrylic-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"></label></div>
         <div class="purchase-options"><div><p class="finish-label">选择你的工艺。</p><select id="acrylic-variant" aria-label="亚克力砖工艺" hidden><option value="basic">基础款</option><option value="light">轻量特效款</option><option value="premium" selected>高配特效款</option></select><div class="finish-options" role="group" aria-label="亚克力砖工艺"></div></div><label class="accessory-choice">搭配配件<select id="acrylic-accessory"><option value="none">不加配件</option><option value="clearStand">透明托架 · +¥4/件</option></select></label></div>
       </article>
       <article class="purchase-product" data-product="card">
-        <div class="purchase-product-head"><div class="purchase-art laser-art" aria-hidden="true"><canvas width="320" height="134"></canvas></div><label class="purchase-toggle"><input id="buy-card" type="checkbox"><span><strong>镭射票</strong><span id="card-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-cards" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
+        <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-card" type="checkbox"><span><strong>镭射票</strong><span id="card-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-cards" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
       </article>
       <article class="purchase-product" data-product="shikishi">
-        <div class="purchase-product-head"><div class="purchase-art paper-art" aria-hidden="true"><canvas width="320" height="134"></canvas></div><label class="purchase-toggle"><input id="buy-shikishi" type="checkbox"><span><strong>色纸</strong><span id="shikishi-product-price" class="purchase-unit-price">¥19.99 / 张 · 新人 ¥16.99</span></span></label><label class="purchase-quantity">数量<input id="shikishi-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
+        <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-shikishi" type="checkbox"><span><strong>色纸</strong><span id="shikishi-product-price" class="purchase-unit-price">¥19.99 / 张 · 新人 ¥16.99</span></span></label><label class="purchase-quantity">数量<input id="shikishi-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
       </article>
     </div><aside class="purchase-receipt" aria-label="费用明细">
       <h3>你的定制方案</h3><p id="purchase-item-count" class="purchase-item-count"></p><div id="purchase-lines"></div>
@@ -41,24 +41,44 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     button.addEventListener('click',()=>{variant.value=id;variant.dispatchEvent(new window.Event('change',{bubbles:true}));});
     editor.querySelector('.finish-options').append(button);
   }
-  function updateArtwork() {
-    for(const canvas of editor.querySelectorAll('.purchase-art canvas')) {
-      canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-      if(renderCanvas)canvas.getContext('2d').drawImage(renderCanvas,0,0,canvas.width,canvas.height);
-    }
+  let imageRenderer, imageGeneration=0, sourceGeneration=0;
+  function requestImages() {
+    if(!imageRenderer)return;
+    const generation=++imageGeneration;
+    void (async()=>{
+      for(const [id,preset] of Object.entries(BUNDLE_PRESETS)) {
+        if(generation!==imageGeneration)return;
+        const saved=configSelections.get(id);
+        const config={...preset,variant:saved?.variant||variant.value,accessory:saved?.accessory??preset.accessory};
+        const source=imageRenderer.render(config);
+        for(const image of section.querySelectorAll(`[data-config-image="${id}"]`)) {
+          if(image.src!==source)image.src=source;image.hidden=false;
+          image.dataset.products=[config.quantity>0?'acrylic':'',config.cardQuantity>0?'card':'',config.shikishiQuantity>0?'shikishi':''].filter(Boolean).join(',');
+        }
+        await new Promise(resolve=>window.requestAnimationFrame(resolve));
+      }
+    })().catch(error=>console.warn('商品图片渲染失败',error));
   }
-  document.addEventListener('order-design-ready',updateArtwork);
-  updateArtwork();
+  document.addEventListener('order-render-ready',async event=>{
+    const generation=++sourceGeneration;
+    try {
+      const {createConfigurationImages}=await import('./configuration-images.js');
+      if(generation!==sourceGeneration)return;
+      imageGeneration++;imageRenderer?.dispose();
+      imageRenderer=createConfigurationImages(event.detail.source,event.detail.finishMaps);requestImages();
+    }catch(error){console.warn('商品图片暂时不可用',error);}
+  });
   let lastPreviewProduct;
   for(const [id,preset] of Object.entries(BUNDLE_PRESETS)) {
     const button=document.createElement('button');button.type='button';button.dataset.bundle=id;button.setAttribute('aria-pressed','false');
     const title=document.createElement('strong');title.textContent=preset.label;
     const price=document.createElement('span');price.className='bundle-price';
-    button.append(title,price);get('bundle-presets').append(button);presetButtons.set(id,button);
+    const image=document.createElement('img');image.className='configuration-image';image.dataset.configImage=id;image.alt=preset.label+'商品渲染图';image.width=560;image.height=340;image.hidden=true;
+    button.append(image,title,price);get('bundle-presets').append(button);presetButtons.set(id,button);
     const row=document.createElement('article');row.className='configuration-row';
     const header=document.createElement('button');header.type='button';header.className='configuration-choice';header.dataset.config=id;
     header.id='config-choice-'+id;header.setAttribute('aria-expanded','false');header.setAttribute('aria-controls','config-panel-'+id);
-    header.innerHTML=`<strong>${preset.label}</strong><span class="config-price"></span><span class="config-expander" aria-hidden="true">＋</span>`;
+    header.innerHTML=`<img class="configuration-image" data-config-image="${id}" alt="${preset.label}商品渲染图" width="560" height="340" hidden><strong>${preset.label}</strong><span class="config-price"></span><span class="config-expander" aria-hidden="true">＋</span>`;
     const panel=document.createElement('div');panel.className='configuration-panel';panel.id='config-panel-'+id;panel.hidden=true;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby',header.id);
     row.append(header,panel);configList.append(row);configHeaders.set(id,header);configPanels.set(id,panel);
     header.addEventListener('click',()=>activate(id,true));
@@ -96,9 +116,9 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       cardQuantity:products[1].check.checked?Number(products[1].input.value):0,
       shikishiQuantity:products[2].check.checked?Number(products[2].input.value):0,newCustomer:newcomer.checked};
   }
-  function addLine(label,fen,discount=false) {
+  function addLine(label,fen,discount=false,valueText=null) {
     const row=document.createElement('div');row.className='purchase-line'+(discount?' is-discount':'');
-    const name=document.createElement('span');name.textContent=label;const value=document.createElement('span');value.textContent=(fen<0?'-':'')+'¥'+yuan(Math.abs(fen));
+    const name=document.createElement('span');name.textContent=label;const value=document.createElement('span');value.textContent=valueText||((fen<0?'-':'')+'¥'+yuan(Math.abs(fen)));
     row.append(name,value);get('purchase-lines').append(row);
   }
   function refresh() {
@@ -137,7 +157,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       if(quote.shikishiQuantity)addLine(`色纸 × ${quote.shikishiQuantity}`,quote.shikishiFen);
       if(quote.comboDiscountFen)addLine('组合优惠',-quote.comboDiscountFen,true);
       if(quote.shippingFen)addLine('运费',quote.shippingFen);
-      else if(!quote.shippingPending)addLine('运费',0);
+      else addLine('运费',0,false,'免运费');
       get('acrylic-total').textContent='¥'+yuan(quote.totalFen);
       get('purchase-total-label').textContent=quote.shippingPending?'商品金额':'参考合计';
       get('acrylic-discount').textContent=quote.discountFen?`新人已省 ¥${yuan(quote.discountFen)}`:'';
@@ -147,6 +167,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       get('purchase-item-count').textContent='尚未选择商品';get('acrylic-total').textContent='—';get('acrylic-discount').textContent='';get('purchase-message').textContent=error.message;
       get('acrylic-export').disabled=true;
     }
+    requestImages();
   }
   for(const control of new Set([...section.querySelectorAll('input,select'),...editor.querySelectorAll('input,select')])) {control.addEventListener('input',refresh);control.addEventListener('change',refresh);}
   get('acrylic-export').addEventListener('click',()=>{

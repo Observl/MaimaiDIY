@@ -4,9 +4,9 @@ import { RoundedBoxGeometry } from '../vendor/RoundedBoxGeometry.js';
 import { applyPrintOptics } from './acrylic-optics.js';
 import { createPaperTexture } from './paper-texture.js';
 
-export function createAcrylicPreview(host) {
+export function createAcrylicPreview(host,{snapshot=false}={}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(snapshot?1:Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -56,7 +56,7 @@ export function createAcrylicPreview(host) {
   const key = new THREE.DirectionalLight(0xfff6e5, 3.2);
   key.position.set(-8, 12, -6);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(snapshot?512:2048,snapshot?512:2048);
   Object.assign(key.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12 });
   key.shadow.bias = -0.0005;
   key.shadow.normalBias = 0.03;
@@ -125,8 +125,10 @@ export function createAcrylicPreview(host) {
   function clearObject() {
     for (const mesh of [...object.children]) {
       object.remove(mesh);
-      mesh.geometry.dispose();
-      for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) material.dispose();
+      mesh.traverse(item=>{
+        item.geometry?.dispose();
+        for(const material of Array.isArray(item.material)?item.material:[item.material])material?.dispose();
+      });
     }
   }
   function rebuild() {
@@ -202,7 +204,7 @@ export function createAcrylicPreview(host) {
   function setDesign(source, finishMaps) {
     designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();componentTexture?.dispose();
     const image = document.createElement('canvas');
-    const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
+    const limit = Math.min(renderer.capabilities.maxTextureSize, snapshot?2048:4096);
     const scale = Math.min(1, limit / source.width, limit / source.height);
     image.width = Math.round(source.width * scale);
     image.height = Math.round(source.height * scale);
@@ -244,6 +246,34 @@ export function createAcrylicPreview(host) {
   return {
     setDesign,
     setSelection(next) { selection = next; rebuild(); },
+    captureConfiguration(config) {
+      // Render the actual configured product meshes together, then freeze the frame as a PNG.
+      const items=[...(config.quantity>0?[{cardOnly:false,shikishi:false,accessory:config.accessory}]:[]),
+        ...(config.cardQuantity>0?[{cardOnly:true,shikishi:false,accessory:'none'}]:[]),
+        ...(config.shikishiQuantity>0?[{cardOnly:false,shikishi:true,accessory:'none'}]:[])];
+      clearObject();
+      const groups=[];
+      for(const [index,item] of items.entries()) {
+        selection={variant:config.variant,...item};rebuild();
+        const group=new THREE.Group();group.add(...[...object.children]);
+        if(items.length>1) {
+          group.scale.setScalar(0.82);
+          group.position.x=(index-(items.length-1)/2)*(items.length===2?3.4:2.6);
+          group.position.y=index*0.4;
+          group.position.z=-index*0.5;
+          group.rotation.y=(index-(items.length-1)/2)*0.08;
+        }
+        groups.push(group);
+      }
+      object.add(...groups);
+      const bounds=new THREE.Box3().setFromObject(object),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
+      const tangent=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+      const distance=Math.max(size.y/(2*tangent),size.x/(2*tangent*camera.aspect))*1.35+size.z;
+      camera.position.copy(center).add(new THREE.Vector3(0.22,0.18,1).normalize().multiplyScalar(distance));camera.lookAt(center);
+      window.cancelAnimationFrame(pendingFrame);pendingFrame=0;
+      renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera);
+      return renderer.domElement.toDataURL('image/png');
+    },
     reset,
     focusCollectibles() {
       controls.minDistance=9;

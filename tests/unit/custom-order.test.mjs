@@ -2,13 +2,23 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ACRYLIC_PRODUCTS, BUNDLE_PRESETS, quoteAcrylicOrder, quoteProductBundle, buildAcrylicDesignDraft } from '../../src/custom-order.js';
 
-test('presets cover every nonempty product combination with one shipping fee',()=>{
+test('presets cover every combination with shipping waived for bricks or multiple items',()=>{
   const combinations=new Set();
   for(const preset of Object.values(BUNDLE_PRESETS)) {
     combinations.add([preset.quantity,preset.cardQuantity,preset.shikishiQuantity].map(value=>Number(value>0)).join(''));
-    assert.equal(quoteProductBundle({...preset,variant:'premium'}).shippingFen,500);
+    assert.equal(quoteProductBundle({...preset,variant:'premium'}).shippingFen,preset.quantity>0||preset.cardQuantity+preset.shikishiQuantity>=2?0:500);
   }
   assert.deepEqual([...combinations].sort(),['001','010','011','100','101','110','111']);
+});
+
+test('shipping is 5 for one card or paper, and free at exactly two items',()=>{
+  const selection={variant:'premium',quantity:0};
+  assert.equal(quoteProductBundle({...selection,cardQuantity:1}).shippingFen,500);
+  assert.equal(quoteProductBundle({...selection,shikishiQuantity:1}).shippingFen,500);
+  assert.equal(quoteProductBundle({...selection,cardQuantity:2}).shippingFen,0);
+  assert.equal(quoteProductBundle({...selection,shikishiQuantity:2}).shippingFen,0);
+  assert.equal(quoteProductBundle({...selection,cardQuantity:1,shikishiQuantity:1}).shippingFen,0);
+  assert.equal(quoteProductBundle({...selection,quantity:1}).shippingFen,0);
 });
 
 test('shikishi has fixed retail and newcomer prices and one fixed shipping fee', () => {
@@ -16,7 +26,7 @@ test('shikishi has fixed retail and newcomer prices and one fixed shipping fee',
   assert.equal(quoteProductBundle(selection).totalFen,2499);
   assert.equal(quoteProductBundle(selection).shippingPending,false);
   const newcomer=quoteProductBundle({...selection,shikishiQuantity:2,newCustomer:true});
-  assert.equal(newcomer.totalFen,3898);
+  assert.equal(newcomer.totalFen,3398);
   assert.equal(newcomer.discountFen,600);
   for(const count of [-1,1.5,100,NaN])assert.throws(()=>quoteProductBundle({...selection,shikishiQuantity:count}),RangeError);
   const draft=buildAcrylicDesignDraft({...selection,state:{playerName:'色纸'},newCustomer:true});
@@ -27,13 +37,13 @@ test('shikishi has fixed retail and newcomer prices and one fixed shipping fee',
 
 test('full collection preset combines existing offers without invented discounts', () => {
   const selection={...BUNDLE_PRESETS.complete,variant:'premium'};
-  assert.equal(quoteProductBundle(selection).totalFen,8597);
+  assert.equal(quoteProductBundle(selection).totalFen,8097);
   const quote=quoteProductBundle({...selection,newCustomer:true});
-  assert.equal(quote.totalFen,7797);
+  assert.equal(quote.totalFen,7297);
   assert.equal(quote.comboDiscountFen,300);
   assert.equal(quote.discountFen,800);
   assert.equal(quote.shippingPending,false);
-  assert.equal(quote.shippingFen,500);
+  assert.equal(quote.shippingFen,0);
 });
 
 test('three product variants and process requests', () => {
@@ -70,7 +80,7 @@ test('draft snapshot contains the tier manufacturing specification', () => {
   assert.equal(draft.design.playerName, 'Example');
   assert.equal(draft.status, 'not-for-production-or-payment');
   assert.equal(draft.rightsReview, 'required');
-  assert.equal(draft.quote.totalFen, 9498);
+  assert.equal(draft.quote.totalFen, 8998);
   assert.ok(draft.product.effectRequests.includes('ai-glitter'));
   assert.equal(draft.product.acrylicThicknessMm, 15);
 });
@@ -82,7 +92,7 @@ test('accessories and cards are not discounted', () => {
   assert.equal(q.bodyFen, 13495);
   assert.equal(q.extrasFen, 4998);
   assert.equal(q.comboDiscountFen, 700);
-  assert.equal(q.totalFen, 18293);
+  assert.equal(q.totalFen, 17793);
   assert.equal(q.discountFen, 1500);
   assert.equal(q.discountReason, 'new-customer');
 });
@@ -106,17 +116,17 @@ test('holographic card standalone costs 14.99 plus one shipping fee', () => {
   assert.equal(one.shippingFen, 500);
   assert.equal(one.comboDiscountFen, 0);
   const many = quoteProductBundle({ variant: 'basic', quantity: 0, cardQuantity: 3, newCustomer: true });
-  assert.equal(many.totalFen, 4997);
+  assert.equal(many.totalFen, 4497);
   assert.equal(many.discountApplied, false);
   const draft = buildAcrylicDesignDraft({ state: { playerName: 'Player' }, variant: 'basic', quantity: 0, cardQuantity: 1 });
   assert.equal(draft.product.type, 'holographic-card');
   assert.equal(draft.product.acrylicThicknessMm, undefined);
 });
 test('bundle discounts are applied to eligible combinations only', () => {
-  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand' }).totalFen, 3799);
-  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, cardQuantity: 1 }).totalFen, 4798);
-  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1 }).totalFen, 5098);
-  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1, newCustomer: true }).totalFen, 4798);
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand' }).totalFen, 3299);
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, cardQuantity: 1 }).totalFen, 4298);
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1 }).totalFen, 4598);
+  assert.equal(quoteProductBundle({ variant: 'basic', quantity: 1, accessory: 'clearStand', cardQuantity: 1, newCustomer: true }).totalFen, 4298);
   assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 0 }));
   assert.throws(() => quoteProductBundle({ variant: 'basic', quantity: 0, accessory: 'clearStand', cardQuantity: 1 }));
 });

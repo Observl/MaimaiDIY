@@ -454,7 +454,10 @@ test('purchase presets select products, update newcomer prices and export all it
   await ready(page);
   await page.locator('.support-merch-link').click();
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
-  await expect(page.locator('.purchase-art canvas')).toHaveCount(3);
+  await expect(page.locator('.configuration-panel img')).toHaveCount(0);
+  await expect(page.locator('[data-config-image="acrylic"]').first()).toHaveAttribute('src',/^data:image\/png/);
+  await expect(page.locator('[data-config-image="complete"]').first()).toHaveAttribute('data-products','acrylic,card,shikishi');
+  await expect(page.locator('[data-config-image="shikishi"]').first()).toHaveAttribute('data-products','shikishi');
   await expect(page.locator('.configuration-choice')).toHaveCount(8);
   await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
   await expect(page.locator('.purchase-product-caption')).toHaveCount(0);
@@ -469,9 +472,9 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('.purchase-options')).toBeHidden();
   await expect(page.locator('#acrylic-total')).toHaveText('¥24.99');
   await page.locator('#shikishi-quantity').fill('2');
-  await expect(page.locator('#acrylic-total')).toHaveText('¥44.98');
-  await page.locator('[data-config="cardPaper"]').click();
   await expect(page.locator('#acrylic-total')).toHaveText('¥39.98');
+  await page.locator('[data-config="cardPaper"]').click();
+  await expect(page.locator('#acrylic-total')).toHaveText('¥34.98');
   await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
   await page.locator('[data-config="shikishi"]').click();
   await expect(page.locator('#shikishi-quantity')).toHaveValue('2');
@@ -494,7 +497,7 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('#acrylic-total')).toHaveText('¥21.99');
   await expect(page.locator('#purchase-lines')).toContainText('¥5.00');
   await page.locator('[data-bundle="complete"]').click();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥77.97');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥72.97');
   await expect(page.locator('#acrylic-accessory')).toHaveValue('clearStand');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','acrylic');
   await page.locator('#custom-order').screenshot({path:'output/playwright/purchase-desktop.png'});

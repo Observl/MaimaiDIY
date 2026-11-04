@@ -43,6 +43,7 @@ async function updatePhysicalPreview(request) {
     if (request !== version) return;
     physicalPreview = viewer;
     viewer.setDesign(renderer.renderCanvas, finishMaps);
+    document.dispatchEvent(new window.CustomEvent('order-render-ready',{detail:{source:renderer.renderCanvas,finishMaps}}));
     syncPhysicalSelection();
     viewer.setLightAngle(lightDial.value);
     viewport.hidden = false;
