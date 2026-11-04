@@ -1,9 +1,11 @@
 import { COS } from './config.js';
+import { resolveAssetUrl } from './asset-paths.js';
 const imageCache = new Map();
 let titleManifest;
 let badgeManifest;
 let manifestRequest;
 export function loadImage(src) {
+  src=resolveAssetUrl(src);
   if (imageCache.has(src)) return imageCache.get(src);
   const request = new Promise((resolve, reject) => {
     const image = new Image();
@@ -89,7 +91,7 @@ export function loadManifest() {
 }
 
 async function readManifest() {
-  const sources = [COS.fallbackManifestUrl, COS.manifestUrl];
+  const sources = [COS.manifestUrl];
   for (const url of sources) {
     try {
       const data = validateManifest(await fetchJson(url, true));
@@ -156,7 +158,7 @@ export function normalizeManifestGroups(data) {
 }
 
 export function assetUrl(item) {
-  if (item.local) return item.file;
+  if (item.local) return resolveAssetUrl(item.file);
   const path = item.source || item.file.split('/').map(encodeURIComponent).join('/');
   return `${COS.baseUrl}/materials/${path}`;
 }

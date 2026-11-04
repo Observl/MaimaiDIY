@@ -7,6 +7,7 @@ import {
   TITLE_COLOR_NAMES,
   TEMPLATE_FILE_MAX_BYTES,
 } from './config.js';
+import { resolveAssetUrl } from './asset-paths.js';
 export function ratingBand(value) {
   return [...RATING_BANDS].reverse().find((band) => value >= band.min) || RATING_BANDS[0];
 }
@@ -20,7 +21,7 @@ export function applyRatingBand(state) {
 export function titleAsset(color) {
   const supported = ['Normal', 'Silver', 'Gold', 'Rainbow'];
   const fileColor = supported.includes(color) ? color : 'Gold';
-  return `assets/titles/UI_CMN_Shougou_${fileColor}.png`;
+  return `${COS.baseUrl}/materials/titles/UI_CMN_Shougou_${fileColor}.png`;
 }
 
 export function nameCharacterCount(value) {
@@ -65,7 +66,7 @@ export function sanitizeImportedState(value, baseState = createDefaultState()) {
       if (!Object.hasOwn(value.files, slotId)) return;
       if (!isAllowedAsset(value.files[slotId], slotId))
         throw new Error('模板包含不受支持的素材地址');
-      next.files[slotId] = value.files[slotId];
+      next.files[slotId] = resolveAssetUrl(value.files[slotId]);
     });
   }
   if (value.visible && typeof value.visible === 'object') {

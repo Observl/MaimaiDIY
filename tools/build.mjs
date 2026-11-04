@@ -14,7 +14,7 @@ const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
   .split('\0')
   .filter(Boolean);
 const publicFile = (path) =>
-  /^(assets\/|materials\/|licenses\/|docs\/screenshots\/|BG\/Circle BG\/(?:live-assets\/|background.css$|preview.css$))/.test(
+  /^(licenses\/|BG\/Circle BG\/(?:live-assets\/|background.css$|preview.css$))/.test(
     path
   );
 const files = new Set(tracked.filter(publicFile));

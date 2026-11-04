@@ -7,3 +7,9 @@ output/
 dist/
 test-results/
 playwright-report/
+
+# Artwork stays in COS or local source folders; masks are computed at runtime.
+/assets/
+/materials/*.json
+/COS-upload/
+/COS-excluded/
