@@ -1,6 +1,31 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ACRYLIC_PRODUCTS, quoteAcrylicOrder, quoteProductBundle, buildAcrylicDesignDraft } from '../../src/custom-order.js';
+import { ACRYLIC_PRODUCTS, BUNDLE_PRESETS, quoteAcrylicOrder, quoteProductBundle, buildAcrylicDesignDraft } from '../../src/custom-order.js';
+
+test('shikishi has fixed retail and newcomer prices and explicit pending shipping', () => {
+  const selection={variant:'premium',quantity:0,shikishiQuantity:1};
+  assert.equal(quoteProductBundle(selection).totalFen,1999);
+  assert.equal(quoteProductBundle(selection).shippingPending,true);
+  const newcomer=quoteProductBundle({...selection,shikishiQuantity:2,newCustomer:true});
+  assert.equal(newcomer.totalFen,3398);
+  assert.equal(newcomer.discountFen,600);
+  for(const count of [-1,1.5,100,NaN])assert.throws(()=>quoteProductBundle({...selection,shikishiQuantity:count}),RangeError);
+  const draft=buildAcrylicDesignDraft({...selection,state:{playerName:'色纸'},newCustomer:true});
+  assert.equal(draft.product.type,'shikishi');
+  assert.equal(draft.product.acrylicThicknessMm,undefined);
+  assert.deepEqual(draft.items,[{type:'shikishi',quantity:1,totalFen:1699}]);
+});
+
+test('full collection preset combines existing offers without invented discounts', () => {
+  const selection={...BUNDLE_PRESETS.complete,variant:'premium'};
+  assert.equal(quoteProductBundle(selection).totalFen,8097);
+  const quote=quoteProductBundle({...selection,newCustomer:true});
+  assert.equal(quote.totalFen,7297);
+  assert.equal(quote.comboDiscountFen,300);
+  assert.equal(quote.discountFen,800);
+  assert.equal(quote.shippingPending,false);
+  assert.equal(quote.shippingFen,0);
+});
 
 test('three product variants and process requests', () => {
   assert.equal(ACRYLIC_PRODUCTS.basic.priceFen, 2999);

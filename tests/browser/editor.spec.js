@@ -369,7 +369,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await page.getByRole('button',{name:'镭射卡',exact:true}).click();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','card');
   await expect(page.locator('.acrylic-variants')).toBeHidden();
-  await expect(page.locator('#acrylic-material-detail')).toContainText('同色闪粉');
+  await expect(page.locator('#acrylic-material-detail')).toContainText('彩色镭射覆膜');
   await expect(page.locator('#acrylic-total')).toHaveText(quotedBefore);
   const cardStyle=await page.locator('#acrylic-viewport').screenshot({path:'output/playwright/card-style-before.png'});
   await page.locator('#acrylic-variant').selectOption('basic');
@@ -434,6 +434,34 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(name(page)).toHaveValue('最新设计');
   await expect(rating(page)).toHaveValue('12345');
 });
+test('purchase presets select products, update newcomer prices and export all items', async ({page})=>{
+  await ready(page);
+  await page.locator('.support-merch-link').click();
+  await expect(page.locator('#acrylic-preview-status')).toBeHidden();
+  await page.locator('[data-bundle="shikishi"]').click();
+  await expect(page.locator('#buy-shikishi')).toBeChecked();
+  await expect(page.locator('#buy-acrylic')).not.toBeChecked();
+  await expect(page.locator('#acrylic-total')).toHaveText('¥19.99');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','shikishi');
+  await page.locator('#acrylic-newcomer').check();
+  await expect(page.locator('#acrylic-total')).toHaveText('¥16.99');
+  await expect(page.locator('#purchase-message')).toContainText('运费待确认');
+  await page.locator('[data-bundle="complete"]').click();
+  await expect(page.locator('#acrylic-total')).toHaveText('¥72.97');
+  await expect(page.locator('#acrylic-accessory')).toHaveValue('clearStand');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','acrylic');
+  await page.locator('#custom-order').screenshot({path:'output/playwright/purchase-desktop.png'});
+  const download=page.waitForEvent('download');await page.locator('#acrylic-export').click();
+  const draft=JSON.parse(await readFile(await(await download).path(),'utf8'));
+  expect(draft.items.map(item=>item.type)).toEqual(['acrylic-brick','clear-stand','holographic-card','shikishi']);
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('#custom-order').screenshot({path:'output/playwright/purchase-mobile.png'});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+  for(const id of ['buy-acrylic','buy-card','buy-shikishi'])await page.locator('#'+id).uncheck();
+  await expect(page.locator('#acrylic-export')).toBeDisabled();
+  await expect(page.locator('#purchase-message')).toContainText('至少选择一件商品');
+});
+
 test('direct order-page visit asks for a design instead of showing someone else’s default', async ({ page }) => {
   await page.goto('/custom-order.html');
   await expect(page.locator('#design-status')).toContainText('还没有可用的上屏设计');
