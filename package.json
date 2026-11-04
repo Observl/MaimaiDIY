@@ -21,5 +21,6 @@
     "@pmndrs/vanilla": "1.25.0",
     "three": "^0.180.0",
     "three-custom-shader-material": "6.4.0"
-  }
+  },
+  "version": "1.2.2"
 }
