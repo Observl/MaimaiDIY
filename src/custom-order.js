@@ -46,7 +46,7 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
     ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + (cardQuantity > 0 ? COMBO_DISCOUNTS.cardFen : 0)
     : 0;
   const shippingPending=false;
-  const shippingFen = CARD_ONLY_SHIPPING_FEN; // One fee per order, including mixed bundles.
+  const shippingFen = quantity>0 || cardQuantity+shikishiQuantity>=2 ? 0 : CARD_ONLY_SHIPPING_FEN;
   return Object.freeze({
     variant, quantity, accessory, cardQuantity, shikishiQuantity, newCustomer: Boolean(newCustomer),
     bodyOriginalFen, bodyFen, extrasFen, shikishiOriginalFen, shikishiFen, comboDiscountFen, shippingFen, shippingPending,
