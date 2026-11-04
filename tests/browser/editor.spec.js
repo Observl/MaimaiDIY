@@ -324,6 +324,21 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'basic');
+  const maskStats=await page.evaluate(() => {
+    const canvas=document.querySelector('#uv-mask-preview');
+    const ctx=canvas.getContext('2d');
+    const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let active=0; for(let i=0;i<pixels.length;i+=4) if(pixels[i]>0) active++;
+    const read=(x,y)=>ctx.getImageData(x,y,1,1).data[0];
+    return { active, fraction: active/(canvas.width*canvas.height),
+      protected: [[80,80],[366,86],[366,40],[600,80],[800,300]].map(([x,y])=>read(x,y)) };
+  });
+  expect(maskStats.active).toBeGreaterThan(0);
+  expect(maskStats.fraction).toBeLessThan(0.08);
+  expect(maskStats.protected).toEqual([0,0,0,0,0]);
+  await page.locator('.finish-mask-inspector summary').click();
+  await page.locator('.finish-mask-inspector').screenshot({ path: 'output/playwright/collectible-mask-regions.png' });
+  await page.locator('.finish-mask-inspector summary').click();
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-basic.png' });
   const basicSurface = await page.locator('#acrylic-viewport').screenshot();
   await page.getByRole('button', { name: '轻量特效款', exact: true }).click();

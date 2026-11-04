@@ -47,7 +47,9 @@ for (const file of files) {
     const source = await readFile(destination, 'utf8');
     await writeFile(
       destination,
-      source.replace(/(from\s+['"])(\.[^'"]+\.js)(?:\?[^'"]*)?(['"])/g, `$1$2?v=${revision}$3`)
+      source
+        .replace(/(from\s+['"])(\.[^'"]+\.js)(?:\?[^'"]*)?(['"])/g, `$1$2?v=${revision}$3`)
+        .replace(/(\bimport\(\s*['"])(\.[^'"]+\.js)(?:\?[^'"]*)?(['"]\s*\))/g, `$1$2?v=${revision}$3`)
     );
   } else if (file.endsWith('.html')) {
     const source = await readFile(destination, 'utf8');

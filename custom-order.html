@@ -59,6 +59,10 @@
       <div id="acrylic-viewport" class="acrylic-viewport"></div>
       <label class="acrylic-light-control" for="acrylic-light-angle">光照角度<input id="acrylic-light-angle" type="range" min="-150" max="150" step="1" value="0" aria-label="调整光照角度，观察局部 UV 和闪粉反光"></label>
       <p id="acrylic-preview-status" role="status">等待上屏设计</p>
+      <details class="finish-mask-inspector"><summary>查看特效区域</summary><div class="finish-mask-grid">
+        <figure><figcaption>UV 高光区域</figcaption><canvas id="uv-mask-preview" width="1080" height="452" aria-label="白色区域为局部 UV，黑色区域无特效"></canvas></figure>
+        <figure><figcaption>闪粉区域</figcaption><canvas id="glitter-mask-preview" width="1080" height="452" aria-label="白色区域为闪粉，黑色区域无闪粉"></canvas></figure>
+      </div></details>
       <p class="acrylic-preview-detail"><span id="acrylic-material-detail">背面彩印 · 白墨</span><span>120 × 50 × 15 mm · 材质示意</span></p>
     </section>
   </main>

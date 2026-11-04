@@ -1,0 +1,62 @@
+import { CANVAS, slots } from './config.js';
+import { createRenderer } from './renderer.js';
+import { collectibleFinish, paintFinishShapes, finishDetailCoverage } from './collectible-finishes.js';
+
+function canvas(width, height) {
+  const value = document.createElement('canvas'); value.width = width; value.height = height; return value;
+}
+
+export async function createCollectibleMasks(state) {
+  const scale = 2, width = CANVAS.width * scale, height = CANVAS.height * scale;
+  const packed = canvas(width,height), tint = canvas(width,height);
+  const pctx = packed.getContext('2d'), tctx = tint.getContext('2d');
+  const data = pctx.createImageData(width,height), colors = tctx.createImageData(width,height);
+  const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
+  const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
+  const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
+  const ordered = Object.keys(slots).filter(id => !['rank','friendBattle'].includes(id)).sort((a,b)=>slots[a].z-slots[b].z);
+  ordered.push('rank','friendBattle');
+  for (const id of ordered) {
+    if (!state.visible[id]) continue;
+    const visible = Object.fromEntries(Object.keys(slots).map(key => [key, key === id]));
+    await isolated.render({ ...state, visible }, { strict: true });
+    layerContext.clearRect(0,0,width,height);
+    layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
+    const layer = layerContext.getImageData(0,0,width,height).data;
+    const profile = collectibleFinish(state,id);
+    let shape;
+    if (profile) {
+      regionContext.clearRect(0,0,width,height);
+      const slot = slots[id];
+      regionContext.save(); regionContext.translate(slot.x*scale,slot.y*scale);
+      paintFinishShapes(regionContext,profile.shape,slot.width*scale,slot.height*scale);
+      regionContext.restore();
+      shape = regionContext.getImageData(0,0,width,height).data;
+    }
+    for (let i=0;i<layer.length;i+=4) {
+      const alpha=layer[i+3]/255;
+      if (!alpha) continue;
+      // Every real layer erases covered effects, including exact text glyphs.
+      for(let c=0;c<3;c++) { data.data[i+c]*=1-alpha; colors.data[i+c]*=1-alpha; }
+      if (!profile || !shape[i+3]) continue;
+      const strength=shape[i+3]/255*alpha*finishDetailCoverage(profile,layer[i],layer[i+1],layer[i+2]);
+      data.data[i]=255*profile.uv*strength;
+      data.data[i+1]=255*profile.glitter*strength;
+      data.data[i+2]=255*profile.rainbow*strength;
+      for(let c=0;c<3;c++) colors.data[i+c]=profile.tint[c]*strength;
+    }
+  }
+  for(let i=3;i<data.data.length;i+=4) { data.data[i]=255; colors.data[i]=255; }
+  pctx.putImageData(data,0,0); tctx.putImageData(colors,0,0);
+  const uv = canvas(width,height), glitter = canvas(width,height);
+  for(const [target,channel] of [[uv,0],[glitter,1]]) {
+    const ctx=target.getContext('2d'), pixels=ctx.createImageData(width,height);
+    for(let i=0;i<pixels.data.length;i+=4) {
+      pixels.data[i]=pixels.data[i+1]=pixels.data[i+2]=data.data[i+channel]; pixels.data[i+3]=255;
+    }
+    ctx.putImageData(pixels,0,0);
+  }
+  // Release the temporary 4x renderer buffers after composing the masks.
+  isolated.renderCanvas.width=1; layerCanvas.width=1; region.width=1;
+  return { packed,tint,uv,glitter };
+}
