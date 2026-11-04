@@ -326,6 +326,8 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'premium');
   await expect(page.locator('#acrylic-variant')).toHaveValue('premium');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-layers','1');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-placement','innermost');
+  expect(Number(await page.locator('#acrylic-viewport').getAttribute('data-print-plane-z'))).toBeLessThan(-0.74);
   await expect(page.locator('#finish-inspector')).toHaveCount(0);
   await page.getByRole('button',{name:'收藏品近景'}).click();
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/acrylic-actual-detail.png'});
@@ -419,11 +421,14 @@ test('merch opens separately with the latest design and returns to the same edit
   await page.getByRole('button',{name:'复位视角'}).click();
   const cdp=await page.context().newCDPSession(page);
   await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true});
+  await sceneCanvas.scrollIntoViewIfNeeded();
   const box=await sceneCanvas.boundingBox();
   const cx=box.x+box.width/2,cy=box.y+box.height/2;
   const beforePinch=Number(await page.locator('#acrylic-viewport').getAttribute('data-camera-distance'));
   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:cx-40,y:cy,id:1},{x:cx+40,y:cy,id:2}]});
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(resolve)));
   await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:cx-85,y:cy,id:1},{x:cx+85,y:cy,id:2}]});
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(resolve)));
   await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
   await expect.poll(async()=>Number(await page.locator('#acrylic-viewport').getAttribute('data-camera-distance'))).toBeLessThan(beforePinch);
   await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false});
