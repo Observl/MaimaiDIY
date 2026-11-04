@@ -2,8 +2,8 @@ import { initializePurchaseUI } from './purchase-ui.js';
 // Commercial-order foundation. No checkout or manufacture is enabled for unlicensed assets.
 export const ACRYLIC_PRODUCTS = Object.freeze({
   basic: Object.freeze({ label: '基础款', priceFen: 2999, newcomerPriceFen: 2699, effects: ['uv-color', 'white-ink'] }),
-  light: Object.freeze({ label: '轻量特效款', priceFen: 3499, newcomerPriceFen: 2999, effects: ['uv-color', 'white-ink', 'ai-spot-uv', 'background-glitter', 'layered-print'] }),
-  premium: Object.freeze({ label: '高配特效款', priceFen: 4499, newcomerPriceFen: 3999, effects: ['uv-color', 'white-ink', 'double-sided-print', 'ai-spot-uv', 'ai-glitter', 'background-glitter', 'layered-print'] }),
+  light: Object.freeze({ label: '轻量特效款', priceFen: 3499, newcomerPriceFen: 2999, effects: ['uv-color', 'white-ink', 'ai-spot-uv', 'background-glitter', 'single-plane-print'] }),
+  premium: Object.freeze({ label: '高配特效款', priceFen: 4499, newcomerPriceFen: 3999, effects: ['uv-color', 'white-ink', 'double-sided-print', 'ai-spot-uv', 'ai-glitter', 'background-glitter', 'single-plane-print'] }),
 });
 
 export const ACCESSORIES = Object.freeze({

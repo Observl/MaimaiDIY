@@ -2,6 +2,7 @@ import * as THREE from '../vendor/three.module.js';
 import { OrbitControls } from '../vendor/OrbitControls.js';
 import { RoundedBoxGeometry } from '../vendor/RoundedBoxGeometry.js';
 import { applyPrintOptics } from './acrylic-optics.js';
+import { createPaperTexture } from './paper-texture.js';
 
 export function createAcrylicPreview(host) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -84,7 +85,8 @@ export function createAcrylicPreview(host) {
   let designTexture;
   let spotTexture;
   let glitterTintTexture;
-  let layerTextures=[];
+  let componentTexture;
+  const paperSurface=createPaperTexture(),cardSurface=createPaperTexture(true);
   const windowPosition = new THREE.Vector3(-8, 7, 6);
   let selection = { variant: 'premium', cardOnly: false, accessory: 'none' };
   let disposed = false;
@@ -139,7 +141,7 @@ export function createAcrylicPreview(host) {
     }
     brick.position.y = 2.5;
     object.add(brick);
-    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, layers:layerTextures, depth, variant, keyPosition: key.position, windowPosition });
+    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, components:componentTexture, depth, variant, keyPosition: key.position, windowPosition });
     const print = new THREE.MeshPhysicalMaterial({ map: designTexture, roughness: 0.38,
       clearcoat: 0,
       clearcoatMap: null,
@@ -151,25 +153,20 @@ export function createAcrylicPreview(host) {
     const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
     art.position.set(0, 2.5, cardOnly||shikishi ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
-    if(!cardOnly&&!shikishi&&variant!=='basic'&&layerTextures.length===2) {
-      for(const [i,z] of [-0.43,0.36].entries()) {
-        const pigment=new THREE.MeshPhysicalMaterial({map:layerTextures[i],transparent:i>0,alphaTest:0.015,depthWrite:true,roughness:0.48,metalness:0,side:THREE.DoubleSide});
-        const layer=new THREE.Mesh(new THREE.PlaneGeometry(11.91,4.91),pigment);
-        layer.position.set(0,2.5,z*depth);layer.renderOrder=i;object.add(layer);
-      }
-      art.geometry.dispose();print.dispose();
-    } else object.add(art);
-    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,layers:layerTextures,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
+    print.side=THREE.DoubleSide;
+    object.add(art);
+    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,components:componentTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
     if(shikishi) {
       // Folded paper binding, matching the uncoated warm-white reverse.
-      const borderMaterial=new THREE.MeshStandardMaterial({color:'#e8dfce',metalness:0,roughness:0.95});
+      const borderMaterial=new THREE.MeshStandardMaterial({color:'#e8dfce',metalness:0,roughness:0.95,map:paperSurface.color,bumpMap:paperSurface.bump,bumpScale:0.045,roughnessMap:paperSurface.roughness});
       for(const [w,h,x,y] of [[12.12,0.075,0,0.015],[12.12,0.075,0,4.985],[0.075,5.0,-6.02,2.5],[0.075,5.0,6.02,2.5]]) {
         const edge=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.17),borderMaterial.clone());edge.position.set(x,y,0);object.add(edge);
       }
       borderMaterial.dispose();
     }
     const reverseMaterial = cardOnly||shikishi
-      ? new THREE.MeshStandardMaterial({color:cardOnly?'#080808':'#f3eee4',roughness:0.95,metalness:0,envMapIntensity:0.1})
+      ? new THREE.MeshStandardMaterial({color:cardOnly?'#080808':'#f3eee4',roughness:cardOnly?0.85:0.96,metalness:0,envMapIntensity:cardOnly?0.2:0.1,
+        map:cardOnly?cardSurface.color:paperSurface.color,bumpMap:cardOnly?cardSurface.bump:paperSurface.bump,bumpScale:cardOnly?0.018:0.07,roughnessMap:cardOnly?cardSurface.roughness:paperSurface.roughness})
       : variant==='premium'?print.clone():new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
     const reverse = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), reverseMaterial);
     reverse.rotation.y = Math.PI;
@@ -185,11 +182,12 @@ export function createAcrylicPreview(host) {
     }
     host.dataset.variant = cardOnly ? 'card' : shikishi?'shikishi':variant;
     host.dataset.product = cardOnly ? 'card' : shikishi?'shikishi':'acrylic';
-    host.dataset.printLayers=!cardOnly&&!shikishi&&variant!=='basic'?'2':'1';
+    host.dataset.printLayers='1';
+    host.dataset.reverseTexture=cardOnly?'fine-card-grain':shikishi?'paper-fibers':'none';
     draw();
   }
   function setDesign(source, finishMaps) {
-    designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();layerTextures.forEach(texture=>texture.dispose());
+    designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();componentTexture?.dispose();
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
     const scale = Math.min(1, limit / source.width, limit / source.height);
@@ -203,10 +201,8 @@ export function createAcrylicPreview(host) {
     designTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
     designTexture.minFilter = THREE.LinearMipmapLinearFilter;
     designTexture.magFilter = THREE.LinearFilter;
-    layerTextures=(finishMaps.layers||[]).map(source=>{
-      const texture=new THREE.CanvasTexture(source);texture.colorSpace=THREE.SRGBColorSpace;
-      texture.anisotropy=renderer.capabilities.getMaxAnisotropy();return texture;
-    });
+    componentTexture=new THREE.CanvasTexture(finishMaps.componentCoverage);
+    componentTexture.anisotropy=renderer.capabilities.getMaxAnisotropy();
     // Only authored collectible shapes receive a finish. Ordinary artwork stays matte.
     spotTexture = new THREE.CanvasTexture(finishMaps.packed);
     glitterTintTexture = new THREE.CanvasTexture(finishMaps.tint);
@@ -251,7 +247,7 @@ export function createAcrylicPreview(host) {
     },
     dispose() {
       disposed = true; observer.disconnect(); controls.dispose(); clearObject();
-      designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();layerTextures.forEach(texture=>texture.dispose());
+      designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();componentTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
       renderer.dispose(); renderer.domElement.remove();
