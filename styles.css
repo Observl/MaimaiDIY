@@ -1231,25 +1231,8 @@ canvas {
 }
 
 .acrylic-preview-card { margin-top: 18px; }
-.finish-inspector { margin-top: 18px; }
-.finish-inspector-tools { display:flex; flex-wrap:wrap; gap:12px 24px; margin:16px 0; }
-.finish-inspector-tools label { display:flex; align-items:center; gap:8px; min-height:44px; cursor:pointer; }
-.finish-swatch { width:16px; height:16px; border-radius:3px; border:1px solid #171821; }
-.uv-swatch { background:#ff6800; } .glitter-swatch { background:#00dcff; }
-.finish-zoom-control { flex:1; min-width:200px; }
-.finish-zoom-control input { flex:1; min-width:80px; }
-.finish-overlay-scroll { overflow:auto; max-height:520px; border-radius:12px; background:#eee; }
-#finish-overlay { display:block; width:100%; max-width:none; height:auto; }
-#finish-enabled-state { margin:16px 0; line-height:1.6; }
-.finish-collectibles { list-style:none; padding:0; margin:12px 0 0; }
-.finish-collectibles li { display:grid; gap:6px; padding:12px 0; border-bottom:1px solid var(--line); }
-.finish-collectibles span { color:#545661; line-height:1.6; }
-.finish-mask-inspector { margin-top: 14px; }
-.finish-mask-inspector summary { cursor: pointer; padding: 12px 0; font-weight: 700; }
-.finish-mask-grid { display: grid; gap: 16px; }
-.finish-mask-grid figure { margin: 0; }
-.finish-mask-grid figcaption { margin-bottom: 8px; }
-.finish-mask-grid canvas { display: block; width: 100%; height: auto; background: #000; border-radius: 8px; }
+.acrylic-view-tools { display:flex; gap:8px; flex-wrap:wrap; }
+.acrylic-view-tools .button { flex:0 0 auto; width:auto; min-height:36px; white-space:nowrap; }
 .acrylic-light-control { display: flex; align-items: center; gap: 16px; margin-top: 14px; font-size: 14px; }
 .acrylic-light-control input { flex: 1; min-width: 0; min-height: 44px; accent-color: #171821; cursor: pointer; }
 .acrylic-preview-card #acrylic-view-reset { flex: 0 0 auto; width: auto; min-height: 36px; }

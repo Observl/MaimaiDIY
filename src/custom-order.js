@@ -101,7 +101,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       <label>工艺款式<select id="acrylic-variant">
         <option value="basic">基础款 · ¥29.99</option>
         <option value="light">轻量特效款 · ¥34.99（AI局部UV）</option>
-        <option value="premium">高配特效款 · ¥44.99（双面印刷＋局部UV＋闪粉）</option>
+        <option value="premium" selected>高配特效款 · ¥44.99（双面印刷＋局部UV＋闪粉）</option>
       </select></label>
       <label class="custom-order-check"><input id="acrylic-card-only" type="checkbox"> 仅购买镭射收藏卡（运费另计）</label>
       <label>购买数量<input id="acrylic-quantity" type="number" inputmode="numeric" min="1" max="99" step="1" value="1"></label>

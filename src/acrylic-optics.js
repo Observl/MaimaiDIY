@@ -55,31 +55,32 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
           vec3 sunLight = normalize(printSun - pos);
           vec3 halfWindow = normalize(v + windowLight);
           vec3 halfSun = normalize(v + sunLight);
-          float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), 90.0)
-            + pow(max(dot(raisedNormal, halfSun), 0.0), 110.0);
+          float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), 28.0)
+            + pow(max(dot(raisedNormal, halfSun), 0.0), 42.0);
           // A varnish lobe over the selected artwork, never a white paint overlay.
-          totalSpecular += vec3(1.0, 0.96, 0.87) * highlight * spot * 1.6;
+          vec3 foilTint=texture2D(printGlitterTint, printUV).rgb;
+          totalSpecular += mix(vec3(1.0),foilTint,0.35) * highlight * spot * 3.0;
 
           if (printFinish > 1.5) {
-            vec2 cells = printUV * vec2(380.0, 158.0);
+            vec2 cells = printUV * vec2(640.0, 267.0);
             vec2 cell = floor(cells);
             float seed = printHash(cell);
             vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
             float distanceToFlake = length(fract(cells) - center);
-            float footprint = max(length(fwidth(cells)), 0.06);
-            float flake = (1.0 - smoothstep(0.08, 0.08 + footprint, distanceToFlake)) * step(0.64, seed) * finish.g;
+            float footprint = max(length(fwidth(cells)), 0.04);
+            float flake = (1.0 - smoothstep(0.16, 0.16 + min(footprint,0.5), distanceToFlake)) * step(0.32, seed) * finish.g;
             vec3 flakeNormal = normalize(n + vec3(
               (printHash(cell + 19.0) - 0.5) * 1.5,
               (printHash(cell + 53.0) - 0.5) * 1.5, 0.0));
-            float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 150.0)
-              + pow(max(dot(flakeNormal, halfSun), 0.0), 150.0);
+            float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 42.0)
+              + pow(max(dot(flakeNormal, halfSun), 0.0), 65.0);
             vec3 filmColor = 0.65 + 0.35 * cos(vec3(0.0, 2.1, 4.2) + seed * 6.28 + dot(flakeNormal, v) * 12.0);
             vec3 collectibleTint = texture2D(printGlitterTint, printUV).rgb;
-            totalSpecular += mix(collectibleTint, filmColor, finish.b) * sparkle * flake * 12.0;
+            totalSpecular += mix(collectibleTint, filmColor, finish.b) * sparkle * flake * 18.0;
           }
         }
       #endif
     `);
   };
-  material.customProgramCacheKey = () => 'acrylic-collectible-masks-v3';
+  material.customProgramCacheKey = () => 'acrylic-independent-masks-v4';
 }

@@ -1,6 +1,8 @@
 import { CANVAS, slots } from './config.js';
 import { createRenderer } from './renderer.js';
-import { collectibleFinish, paintFinishShapes, finishDetailCoverage } from './collectible-finishes.js';
+import { collectibleFinish } from './collectible-finishes.js';
+import { COLLECTIBLE_MASK_FILES } from './collectible-mask-files.js';
+import { loadImage } from './assets.js';
 
 function canvas(width, height) {
   const value = document.createElement('canvas'); value.width = width; value.height = height; return value;
@@ -26,14 +28,22 @@ export async function createCollectibleMasks(state) {
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
     const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0 }) : 0;
-    let shape;
+    let uvShape, glitterShape;
     if (profile) {
-      regionContext.clearRect(0,0,width,height);
-      const slot = id==='titleText' ? slots.titleBase : slots[id];
-      regionContext.save(); regionContext.translate(slot.x*scale,slot.y*scale);
-      paintFinishShapes(regionContext,profile.shape,slot.width*scale,slot.height*scale);
-      regionContext.restore();
-      shape = regionContext.getImageData(0,0,width,height).data;
+      if(id!=='titleText') {
+        const key=id+'|'+state.files[id].split(/[?#]/)[0].split('/').pop();
+        const files=COLLECTIBLE_MASK_FILES[key];
+        if(!files) throw Error('Missing independent mask: '+key);
+        const images=await Promise.all([loadImage(files.uv),loadImage(files.glitter)]);
+        const slot=slots[id];
+        const masks=images.map(image=>{
+          regionContext.clearRect(0,0,width,height);
+          if(id==='titleBase') regionContext.drawImage(image,0,5,image.naturalWidth,25,slot.x*scale,slot.y*scale,slot.width*scale,slot.height*scale);
+          else regionContext.drawImage(image,slot.x*scale,slot.y*scale,slot.width*scale,slot.height*scale);
+          return regionContext.getImageData(0,0,width,height).data;
+        });
+        [uvShape,glitterShape]=masks;
+      }
     }
     for (let i=0;i<layer.length;i+=4) {
       const alpha=layer[i+3]/255;
@@ -41,13 +51,15 @@ export async function createCollectibleMasks(state) {
       if(alpha>0.5) owners[i/4]=0;
       // Every real layer erases covered effects, including exact text glyphs.
       for(let c=0;c<3;c++) { data.data[i+c]*=1-alpha; colors.data[i+c]*=1-alpha; }
-      if (!profile || !shape[i+3]) continue;
-      const strength=shape[i+3]/255*alpha*finishDetailCoverage(profile,layer[i],layer[i+1],layer[i+2],shape[i]<200);
-      if(strength>0) owners[i/4]=entryId;
-      data.data[i]=255*profile.uv*strength;
-      data.data[i+1]=255*profile.glitter*strength;
-      data.data[i+2]=255*profile.rainbow*strength;
-      for(let c=0;c<3;c++) colors.data[i+c]=profile.tint[c]*strength;
+      if (!profile) continue;
+      // User-selected title text is dynamic; use its rendered glyph alpha, never a template.
+      const u=id==='titleText' ? (Math.min(layer[i],layer[i+1],layer[i+2])>160 ? alpha : 0) : uvShape[i]/255*alpha;
+      const g=id==='titleText' ? 0 : glitterShape[i]/255*alpha;
+      if(u>0||g>0) owners[i/4]=entryId;
+      data.data[i]=255*profile.uv*u;
+      data.data[i+1]=255*profile.glitter*g;
+      data.data[i+2]=255*profile.rainbow*g;
+      for(let c=0;c<3;c++) colors.data[i+c]=profile.tint[c]*Math.max(u,g);
     }
   }
   for(let i=3;i<data.data.length;i+=4) { data.data[i]=255; colors.data[i]=255; }
