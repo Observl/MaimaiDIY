@@ -301,6 +301,10 @@ test('template storage failure is atomic', async ({ page }) => {
 });
 
 test('merch opens separately with the latest design and returns to the same edits', async ({ page }) => {
+  const shaderErrors = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error' && /THREE.WebGLProgram|Shader Error|VALIDATE_STATUS/.test(message.text())) shaderErrors.push(message.text());
+  });
   await ready(page);
   await name(page).fill('最新设计');
   await rating(page).fill('12345');
@@ -321,12 +325,21 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'basic');
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-basic.png' });
+  const basicSurface = await page.locator('#acrylic-viewport').screenshot();
   await page.getByRole('button', { name: '轻量特效款', exact: true }).click();
   await expect(page.locator('#acrylic-variant')).toHaveValue('light');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'light');
+  const uvSurface = await page.locator('#acrylic-viewport').screenshot();
+  expect(basicSurface.equals(uvSurface)).toBe(false);
   await page.getByRole('button', { name: '高配特效款', exact: true }).click();
   await expect(page.locator('#acrylic-variant')).toHaveValue('premium');
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-premium.png' });
+  const originalLight = await page.locator('#acrylic-viewport').screenshot();
+  await page.locator('#acrylic-light-angle').fill('100');
+  const movedLight = await page.locator('#acrylic-viewport').screenshot();
+  expect(originalLight.equals(movedLight)).toBe(false);
+  await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-light-moved.png' });
+  expect(shaderErrors).toEqual([]);
   const sceneCanvas = page.locator('#acrylic-viewport canvas');
   await sceneCanvas.focus();
   for (let i = 0; i < 24; i++) await page.keyboard.press('ArrowDown');

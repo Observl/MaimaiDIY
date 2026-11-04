@@ -1,10 +1,11 @@
 import * as THREE from '../vendor/three.module.js';
 import { OrbitControls } from '../vendor/OrbitControls.js';
 import { RoundedBoxGeometry } from '../vendor/RoundedBoxGeometry.js';
+import { applyPrintOptics } from './acrylic-optics.js';
 
 export function createAcrylicPreview(host) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -78,7 +79,7 @@ export function createAcrylicPreview(host) {
   scene.add(contact);
   let designTexture;
   let spotTexture;
-  let glitterTexture;
+  const windowPosition = new THREE.Vector3(-8, 7, 6);
   let selection = { variant: 'basic', cardOnly: false, accessory: 'none' };
   let disposed = false;
   const draw = () => { if (!disposed && host.clientWidth) renderer.render(scene, camera); };
@@ -123,6 +124,7 @@ export function createAcrylicPreview(host) {
     const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : 0.065), acrylic);
     brick.position.y = 2.5;
     object.add(brick);
+    if (!cardOnly) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, depth, variant, keyPosition: key.position, windowPosition });
     const print = new THREE.MeshPhysicalMaterial({ map: designTexture, roughness: 0.38,
       clearcoat: variant === 'basic' ? 0.15 : 1,
       clearcoatMap: variant === 'basic' ? null : spotTexture,
@@ -140,22 +142,6 @@ export function createAcrylicPreview(host) {
     reverse.rotation.y = Math.PI;
     reverse.position.set(0, 2.5, -depth / 2 - 0.004);
     object.add(reverse);
-    if (variant !== 'basic' && !cardOnly) {
-      const varnish = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91),
-        new THREE.MeshPhysicalMaterial({ color: '#ffffff', transparent: true, opacity: 0.13,
-          alphaMap: spotTexture, metalness: 0, roughness: 0.1, clearcoat: 1,
-          clearcoatRoughness: 0.025, depthWrite: false }));
-      varnish.position.set(0, 2.5, depth / 2 + 0.003);
-      object.add(varnish);
-    }
-    if (variant === 'premium' && !cardOnly) {
-      const glitter = new THREE.Mesh(new THREE.PlaneGeometry(11.9, 4.9),
-        new THREE.MeshPhysicalMaterial({ map: glitterTexture, alphaMap: glitterTexture,
-          transparent: true, opacity: 0.6, metalness: 0.85, roughness: 0.2,
-          iridescence: 0.8, iridescenceThicknessRange: [180, 450], depthWrite: false }));
-      glitter.position.set(0, 2.5, -depth / 2 + 0.012);
-      object.add(glitter);
-    }
     if (accessory === 'clearStand' && !cardOnly) {
       const stand = new THREE.Mesh(new RoundedBoxGeometry(8, 0.25, 4, 3, 0.07), acrylic.clone());
       stand.position.set(0, 0.13, 0);
@@ -167,40 +153,33 @@ export function createAcrylicPreview(host) {
     draw();
   }
   function setDesign(source) {
-    designTexture?.dispose(); spotTexture?.dispose(); glitterTexture?.dispose();
+    designTexture?.dispose(); spotTexture?.dispose();
     const image = document.createElement('canvas');
-    image.width = 2160; image.height = 904;
+    const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
+    const scale = Math.min(1, limit / source.width, limit / source.height);
+    image.width = Math.round(source.width * scale);
+    image.height = Math.round(source.height * scale);
     const context = image.getContext('2d');
     context.fillStyle = '#fff'; context.fillRect(0, 0, image.width, image.height);
     context.drawImage(source, 0, 0, image.width, image.height);
     designTexture = new THREE.CanvasTexture(image);
     designTexture.colorSpace = THREE.SRGBColorSpace;
-    designTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    designTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    designTexture.minFilter = THREE.LinearMipmapLinearFilter;
+    designTexture.magFilter = THREE.LinearFilter;
     const mask = document.createElement('canvas');
-    mask.width = 540; mask.height = 226;
+    mask.width = 1080; mask.height = 452;
     const ctx = mask.getContext('2d');
     ctx.drawImage(image, 0, 0, mask.width, mask.height);
     const pixels = ctx.getImageData(0, 0, mask.width, mask.height);
     for (let i = 0; i < pixels.data.length; i += 4) {
       const r = pixels.data[i], g = pixels.data[i + 1], b = pixels.data[i + 2];
       const saturation = Math.max(r, g, b) - Math.min(r, g, b);
-      const value = saturation > 55 && (r + g + b) / 3 > 75 ? 220 : 0;
+      const value = saturation > 35 && (r + g + b) / 3 > 75 ? 220 : 0;
       pixels.data[i] = pixels.data[i + 1] = pixels.data[i + 2] = value;
     }
     ctx.putImageData(pixels, 0, 0);
     spotTexture = new THREE.CanvasTexture(mask);
-    const flecks = document.createElement('canvas');
-    flecks.width = 1024; flecks.height = 428;
-    const f = flecks.getContext('2d');
-    f.fillStyle = '#000'; f.fillRect(0, 0, 1024, 428);
-    let seed = 37;
-    const random = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    for (let i = 0; i < 1800; i++) {
-      f.fillStyle = i % 3 ? '#909080' : '#fff4cf';
-      f.fillRect(random() * 1024, random() * 428, 0.5 + random(), 0.5 + random());
-    }
-    glitterTexture = new THREE.CanvasTexture(flecks);
-    glitterTexture.colorSpace = THREE.SRGBColorSpace;
     rebuild();
   }
   renderer.domElement.addEventListener('keydown', (event) => {
@@ -222,9 +201,16 @@ export function createAcrylicPreview(host) {
     setDesign,
     setSelection(next) { selection = next; rebuild(); },
     reset,
+    setLightAngle(degrees) {
+      const angle = THREE.MathUtils.degToRad(degrees);
+      key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+      windowPosition.set(-8, 7, 6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+      scene.environmentRotation.set(0, angle, 0);
+      draw();
+    },
     dispose() {
       disposed = true; observer.disconnect(); controls.dispose(); clearObject();
-      designTexture?.dispose(); spotTexture?.dispose(); glitterTexture?.dispose();
+      designTexture?.dispose(); spotTexture?.dispose();
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
       renderer.dispose(); renderer.domElement.remove();
