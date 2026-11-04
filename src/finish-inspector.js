@@ -1,7 +1,7 @@
 const regions = {
-  'rank-border': '段位外框亮边', 'rank-emblems': '段位亮边与装饰徽记',
-  'battle-emblems': '皇冠与外围装饰', 'title-rails': '称号上下边轨与端部',
-  'plate-wings': '外框亮边与两侧羽饰', 'plate-mirror': '金属边框与星形装饰', 'plate-border': '外框金属亮边',
+  'rank-border': '段位文字与外框亮边', 'rank-emblems': '段位文字、亮边与装饰徽记',
+  'battle-emblems': '段位文字、皇冠与外围装饰', 'title-rails': '称号上下边轨与端部', 'title-lettering': '称号文字',
+  'plate-wings': '主体字样、外框亮边与两侧羽饰', 'plate-mirror': '主体字样、金属边框与星形装饰', 'plate-border': '主体字样与外框金属亮边',
 };
 export function initializeFinishInspector() {
   const root=document.querySelector('#finish-inspector');
@@ -38,7 +38,7 @@ export function initializeFinishInspector() {
       const text=document.createElement('span');
       const configured=[item.uvPixels ? 'UV 高光' : '',item.glitterPixels ? `${item.rainbow>0.5?'虹彩':item.tint[0]>item.tint[2]?'金色':'银色'}闪粉` : ''].filter(Boolean);
       const enabled=[!cardOnly && variant!=='basic' && item.uvPixels ? 'UV' : '', !cardOnly && variant==='premium' && item.glitterPixels ? '闪粉' : ''].filter(Boolean);
-      text.textContent=`${regions[item.shape]} · ${configured.join('、') || '当前没有可见蒙版'} · ${enabled.length ? '已启用 '+enabled.join('、') : '当前未启用'}`;
+      text.textContent=`${item.regions.join('、')} · ${configured.join('、') || '当前没有可见蒙版'} · ${enabled.length ? '已启用 '+enabled.join('、') : '当前未启用'}`;
       row.append(name,text); container.append(row);
     }
   }
@@ -51,7 +51,15 @@ export function initializeFinishInspector() {
     update(source, maps) {
       ctx.drawImage(source,0,0,canvas.width,canvas.height); base=ctx.getImageData(0,0,canvas.width,canvas.height);
       const packed=maps.packed.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
-      masks=packed.data; entries=maps.entries;
+      masks=packed.data;
+      const groups=new Map();
+      for(const item of maps.entries) {
+        const key=item.slot.startsWith('title') ? 'title' : item.slot;
+        const existing=groups.get(key);
+        if(existing) { existing.regions.push(regions[item.shape]); existing.uvPixels+=item.uvPixels; existing.glitterPixels+=item.glitterPixels; }
+        else groups.set(key,{ ...item, regions:[regions[item.shape]] });
+      }
+      entries=[...groups.values()];
       root.hidden=false; paint(); list();
     },
     select(nextVariant,nextCardOnly) { variant=nextVariant; cardOnly=nextCardOnly; list(); },

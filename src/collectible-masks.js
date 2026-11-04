@@ -25,11 +25,11 @@ export async function createCollectibleMasks(state) {
     layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
-    const entryId=profile ? entries.push({ ...profile, slot:id, name: id==='titleBase' ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0 }) : 0;
+    const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0 }) : 0;
     let shape;
     if (profile) {
       regionContext.clearRect(0,0,width,height);
-      const slot = slots[id];
+      const slot = id==='titleText' ? slots.titleBase : slots[id];
       regionContext.save(); regionContext.translate(slot.x*scale,slot.y*scale);
       paintFinishShapes(regionContext,profile.shape,slot.width*scale,slot.height*scale);
       regionContext.restore();
@@ -42,7 +42,7 @@ export async function createCollectibleMasks(state) {
       // Every real layer erases covered effects, including exact text glyphs.
       for(let c=0;c<3;c++) { data.data[i+c]*=1-alpha; colors.data[i+c]*=1-alpha; }
       if (!profile || !shape[i+3]) continue;
-      const strength=shape[i+3]/255*alpha*finishDetailCoverage(profile,layer[i],layer[i+1],layer[i+2]);
+      const strength=shape[i+3]/255*alpha*finishDetailCoverage(profile,layer[i],layer[i+1],layer[i+2],shape[i]<200);
       if(strength>0) owners[i/4]=entryId;
       data.data[i]=255*profile.uv*strength;
       data.data[i+1]=255*profile.glitter*strength;

@@ -330,12 +330,15 @@ test('merch opens separately with the latest design and returns to the same edit
     const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
     let active=0; for(let i=0;i<pixels.length;i+=4) if(pixels[i]>0) active++;
     const read=(x,y)=>ctx.getImageData(x,y,1,1).data[0];
+    const rankLetters=ctx.getImageData(340,78,52,15).data;
+    let letterPixels=0; for(let i=0;i<rankLetters.length;i+=4) if(rankLetters[i]>12) letterPixels++;
     return { active, fraction: active/(canvas.width*canvas.height),
-      protected: [[80,80],[366,86],[366,40],[600,80],[800,300]].map(([x,y])=>read(x,y)) };
+      letterPixels, protected: [[80,80],[200,85],[800,300]].map(([x,y])=>read(x,y)) };
   });
   expect(maskStats.active).toBeGreaterThan(0);
   expect(maskStats.fraction).toBeLessThan(0.08);
-  expect(maskStats.protected).toEqual([0,0,0,0,0]);
+  expect(maskStats.protected).toEqual([0,0,0]);
+  expect(maskStats.letterPixels).toBeGreaterThan(20);
   await expect(page.locator('#finish-inspector')).toBeVisible();
   await expect(page.locator('#finish-collectibles')).toContainText('舞将');
   await expect(page.locator('#finish-collectibles')).toContainText('真七段');
