@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { readFile } from 'node:fs/promises';
+import { readFile,writeFile } from 'node:fs/promises';
 
 // COS allows the real site and the user's local port 4173. The isolated test
 // server uses 4174: retain actual response bytes, adapting only its CORS header.
@@ -610,4 +610,65 @@ test('component powder and reflection masks follow source pixels with reflection
     expect(item.coloredReflection,item.id).toBe(0);
   }
   expect(results.reduce((total,item)=>total+item.whiteReflection,0)).toBeGreaterThan(50);
+});
+
+test('generated finishes remain visible in the final acrylic and paper render',async({page})=>{
+  await ready(page);
+  const output=await page.evaluate(async()=>{
+    const {createDefaultState}=await import('/src/model.js');
+    const {createRenderer}=await import('/src/renderer.js');
+    const {createCollectibleMasks}=await import('/src/collectible-masks.js');
+    const {createAcrylicPreview}=await import('/src/acrylic-preview.js');
+    const state=createDefaultState(),art=createRenderer(document.createElement('canvas'));
+    await art.render(state,{strict:true});
+    const maps=await createCollectibleMasks(state);
+    const host=document.createElement('div');Object.assign(host.style,{width:'1000px',height:'600px',position:'fixed',left:'-1100px'});document.body.append(host);
+    const viewer=createAcrylicPreview(host,{snapshot:true});
+    const original=maps.packed.getContext('2d').getImageData(0,0,maps.packed.width,maps.packed.height);
+    const packed=(red,green)=>{
+      const c=document.createElement('canvas');c.width=maps.packed.width;c.height=maps.packed.height;
+      const ctx=c.getContext('2d'),data=ctx.createImageData(c.width,c.height);data.data.set(original.data);
+      for(let i=0;i<data.data.length;i+=4){if(!red)data.data[i]=0;if(!green)data.data[i+1]=0;}
+      ctx.putImageData(data,0,0);return c;
+    };
+    const decode=async src=>{const image=new Image();image.src=src;await image.decode();const c=document.createElement('canvas');c.width=image.width;c.height=image.height;const ctx=c.getContext('2d');ctx.drawImage(image,0,0);return ctx.getImageData(0,0,c.width,c.height).data;};
+    const metrics=[],images=[];
+    for(const width of [1000,360]) {
+    host.style.width=width+'px';host.style.height=(width===1000?600:300)+'px';
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    for(const product of ['acrylic','paper']) {
+      const config={variant:'premium',quantity:product==='acrylic'?1:0,shikishiQuantity:product==='paper'?1:0,cardQuantity:0,accessory:'none'};
+      for(const angle of [0,75]) {
+        viewer.setLightAngle(angle);
+        const frames={};
+        for(const [mode,channels] of Object.entries({none:[false,false],powder:[false,true],uv:[true,false]})) {
+          viewer.setDesign(art.renderCanvas,{...maps,packed:packed(...channels)});
+          frames[mode]=viewer.captureConfiguration(config);
+        }
+        const reference=await decode(frames.none);
+        for(const mode of ['powder','uv']) {
+          const pixels=await decode(frames[mode]);let visible=0,total=0;
+          for(let i=0;i<pixels.length;i+=4){const delta=Math.abs(pixels[i]-reference[i])+Math.abs(pixels[i+1]-reference[i+1])+Math.abs(pixels[i+2]-reference[i+2]);if(delta>12)visible++;total+=delta;}
+          metrics.push({width,product,angle,mode,visible,total});
+        }
+        const noBackground=document.createElement('canvas');noBackground.width=maps.componentCoverage.width;noBackground.height=maps.componentCoverage.height;
+        const noBackgroundContext=noBackground.getContext('2d');noBackgroundContext.fillStyle='#fff';noBackgroundContext.fillRect(0,0,noBackground.width,noBackground.height);
+        viewer.setDesign(art.renderCanvas,{...maps,packed:packed(false,false),componentCoverage:noBackground});
+        const noGlitter=await decode(viewer.captureConfiguration(config));let glitterVisible=0;
+        for(let i=0;i<noGlitter.length;i+=4)if(Math.abs(noGlitter[i]-reference[i])+Math.abs(noGlitter[i+1]-reference[i+1])+Math.abs(noGlitter[i+2]-reference[i+2])>12)glitterVisible++;
+        metrics.push({width,product,angle,mode:'glitter',visible:glitterVisible});
+        if(angle===0)images.push({product:product+'-'+width,none:frames.none,powder:frames.powder,uv:frames.uv});
+      }
+    }
+    }
+    viewer.dispose();host.remove();art.renderCanvas.width=1;
+    return {metrics,images};
+  });
+  await test.info().attach('finish-render-metrics',{body:JSON.stringify(output.metrics,null,2),contentType:'application/json'});
+  for(const image of output.images)for(const mode of ['none','powder','uv'])await writeFile(`output/playwright/${image.product}-${mode}.png`,Buffer.from(image[mode].split(',')[1],'base64'));
+  for(const width of [1000,360])for(const product of ['acrylic','paper'])for(const mode of ['powder','uv','glitter']) {
+    const views=output.metrics.filter(item=>item.width===width&&item.product===product&&item.mode===mode);
+    expect(Math.max(...views.map(item=>item.visible)),`${width} ${product} ${mode}`).toBeGreaterThan(width===1000?200:25);
+    if(mode==='uv')expect(Math.abs(views[0].total-views[1].total),`${width} ${product} lighting response`).toBeGreaterThan(50);
+  }
 });
