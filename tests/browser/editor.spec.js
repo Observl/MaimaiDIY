@@ -581,6 +581,22 @@ test('direct order-page visit asks for a design instead of showing someone elseâ
   await expect(page.locator('#acrylic-export')).toBeDisabled();
 });
 
+test('order preview continues when the optional display font is rejected', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = window.FontFaceSet.prototype.load;
+    window.FontFaceSet.prototype.load = function (font, ...rest) {
+      if (String(font).includes('SEGA Maru Gothic DB'))
+        return Promise.reject(new window.DOMException('font decode failed', 'NetworkError'));
+      return original.call(this, font, ...rest);
+    };
+  });
+  await page.goto('/');
+  await expect(page.locator('#loading')).toBeHidden();
+  await page.locator('.support-merch-link').click();
+  await expect(page.locator('#design-status')).toBeHidden();
+  await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
+});
+
 test('component powder and reflection masks follow source pixels with reflection only on white',async({page})=>{
   await ready(page);await page.locator('.support-merch-link').click();
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();

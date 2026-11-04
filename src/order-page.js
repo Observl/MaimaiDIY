@@ -99,7 +99,12 @@ async function refreshDesign() {
   }
   status.textContent = '正在合成最新设计…';
   try {
-    await document.fonts.load(`18px ${DISPLAY_FONT}`);
+    // The remote display font improves fidelity but must not gate the design.
+    // Mobile Safari can reject a cross-origin font because of decoding, CORS or
+    // an old cached response while the PNG artwork remains completely usable.
+    await document.fonts.load(`18px ${DISPLAY_FONT}`).catch((error) => {
+      console.warn('展示字体加载失败，使用系统字体继续合成', error);
+    });
     const rendered = await renderer.render(latest, { strict: true });
     if (request !== version || !rendered) return;
     state = latest;
@@ -109,9 +114,17 @@ async function refreshDesign() {
     status.hidden = true;
     document.querySelector('#acrylic-export').disabled = false;
     updatePhysicalPreview(request);
-  } catch {
+  } catch (error) {
     if (request !== version) return;
-    status.textContent = '设计素材暂时加载失败，请检查网络后重试。';
+    console.warn('上屏设计合成失败', error);
+    const slot = /素材未加载完成：([\w-]+)/.exec(error?.message || '')?.[1];
+    const labels = {
+      background: '背景板', nameplate: '姓名框', avatar: '头像', titleBase: '称号',
+      rank: '段位', friendBattle: '友人对战', nameBase: '名称底板', ratingFrame: 'Rating 框',
+    };
+    status.textContent = slot
+      ? `设计素材“${labels[slot] || slot}”加载失败，请检查网络后重试。`
+      : `设计素材加载失败：${error?.message || '当前浏览器无法完成合成'}`;
     const retry = document.createElement('button');
     retry.type = 'button';
     retry.className = 'button secondary';
