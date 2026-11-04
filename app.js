@@ -11,7 +11,7 @@ import { createRenderer } from './src/renderer.js';
 import { initializePicker } from './src/picker.js';
 import { initializeTemplates } from './src/templates.js';
 import { initializeRecommendations } from './author-recommendations.js';
-import { initializeCustomOrder } from './src/custom-order.js';
+import { readCurrentDesign, saveCurrentDesign } from './src/current-design.js';
 const canvas = document.querySelector('#preview');
 const renderer = createRenderer(canvas);
 const renderCanvas = renderer.renderCanvas;
@@ -319,6 +319,8 @@ async function initialize() {
       });
   }
   resetState();
+  const savedDesign = readCurrentDesign();
+  if (savedDesign) Object.assign(state, savedDesign);
   buildControls();
   syncControlsFromState();
   templates.refresh();
@@ -337,6 +339,7 @@ async function initialize() {
 
 let pendingRender = 0;
 async function render(options) {
+  saveCurrentDesign(snapshotState());
   const version = ++pendingRender;
   loading.hidden = false;
   try {
@@ -374,7 +377,13 @@ const templates = initializeTemplates({
   syncControlsFromState,
   render,
 });
-initializeCustomOrder({ snapshotState, renderCanvas });
+document.querySelector('.support-merch-link').addEventListener('click', (event) => {
+  if (!saveCurrentDesign(snapshotState())) {
+    event.preventDefault();
+    alert('无法保存当前设计，请允许浏览器使用本地存储或清理空间后重试。');
+  }
+});
+if (location.hash === '#custom-order') location.replace('./custom-order.html');
 initializeRecommendations({
   state,
   snapshotState,

@@ -31,7 +31,7 @@ const rating = (page) => page.locator('[data-control="rating"] .rating-input');
 const library = (page, control = 'background') =>
   page.locator(`[data-control="${control}"] .library-button`);
 async function ready(page) {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loading')).toBeHidden();
   await page.evaluate(() => document.fonts.ready);
 }
@@ -243,7 +243,7 @@ test('mobile layout, motion preference and avatar upload constraints', async ({ 
   await ready(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('#background-motion').click();
-  await page.reload();
+  await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#background-motion')).toHaveText('开启动效');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.locator('#author-recommendations').click();
@@ -298,4 +298,38 @@ test('template storage failure is atomic', async ({ page }) => {
   });
   await expect(page.locator('#template-status')).toContainText('导入失败');
   await expect(name(page)).toHaveValue('Observ.L');
+});
+
+test('merch opens separately with the latest design and returns to the same edits', async ({ page }) => {
+  await ready(page);
+  await name(page).fill('最新设计');
+  await rating(page).fill('12345');
+  await expect(page.locator('#custom-order')).toHaveCount(0);
+  const entry = page.locator('.support-merch-link');
+  await expect(entry).toHaveAttribute('href', 'custom-order.html');
+  const sizes = await entry.evaluate((element) => ({
+    button: element.getBoundingClientRect().width,
+    parent: element.parentElement.clientWidth,
+    padding: parseFloat(getComputedStyle(element.parentElement).paddingLeft) * 2,
+  }));
+  expect(Math.abs(sizes.button - (sizes.parent - sizes.padding))).toBeLessThan(2);
+  await entry.click();
+  await expect(page).toHaveURL(/custom-order\.html$/);
+  await expect(page.locator('#design-status')).toHaveText('已自动载入你最近编辑的上屏设计。');
+  await expect(page.locator('#order-preview-shell')).toBeVisible();
+  await expect(page.locator('.bg.circle')).toHaveCount(1);
+  const download = page.waitForEvent('download');
+  await page.locator('#acrylic-export').click();
+  const draft = JSON.parse(await readFile(await (await download).path(), 'utf8'));
+  expect(draft.design.playerName).toBe('最新设计');
+  expect(draft.design.ratingValue).toBe(12345);
+  await page.getByRole('link', { name: '返回编辑器' }).click();
+  await expect(name(page)).toHaveValue('最新设计');
+  await expect(rating(page)).toHaveValue('12345');
+});
+test('direct order-page visit asks for a design instead of showing someone else’s default', async ({ page }) => {
+  await page.goto('/custom-order.html');
+  await expect(page.locator('#design-status')).toContainText('还没有可用的上屏设计');
+  await expect(page.locator('#order-preview-shell')).toBeHidden();
+  await expect(page.locator('#acrylic-export')).toBeDisabled();
 });
