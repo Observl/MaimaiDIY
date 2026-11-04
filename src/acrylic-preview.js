@@ -93,6 +93,7 @@ export function createAcrylicPreview(host) {
   let disposed = false;
   let pendingFrame=0;
   const draw = () => {
+    host.dataset.cameraDistance=controls.getDistance().toFixed(3);
     if(disposed||pendingFrame)return;
     pendingFrame=window.requestAnimationFrame(()=>{
       pendingFrame=0;
@@ -157,6 +158,7 @@ export function createAcrylicPreview(host) {
     });
     if(cardOnly||shikishi) { print.clearcoat=0;print.clearcoatMap=null;print.metalness=0;print.roughness=shikishi?0.62:0.42;print.envMapIntensity=0;print.specularIntensity=0; }
     const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
+    art.name='single-composited-design';
     art.position.set(0, 2.5, cardOnly||shikishi ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
     print.side=THREE.DoubleSide;
@@ -170,14 +172,16 @@ export function createAcrylicPreview(host) {
       }
       borderMaterial.dispose();
     }
+    if(cardOnly||shikishi||variant!=='premium') {
     const reverseMaterial = cardOnly||shikishi
       ? new THREE.MeshStandardMaterial({color:cardOnly?'#080808':'#f3eee4',roughness:cardOnly?0.85:0.96,metalness:0,envMapIntensity:cardOnly?0.2:0.1,
         map:cardOnly?cardSurface.color:paperSurface.color,bumpMap:cardOnly?cardSurface.bump:paperSurface.bump,bumpScale:cardOnly?0.018:0.07,roughnessMap:cardOnly?cardSurface.roughness:paperSurface.roughness})
-      : variant==='premium'?print.clone():new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
+      : new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
     const reverse = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), reverseMaterial);
     reverse.rotation.y = Math.PI;
     reverse.position.set(0, 2.5, -depth / 2 - 0.004);
     object.add(reverse);
+    }
     host.dataset.reverseMaterial=cardOnly?'black-cardstock':shikishi?'ivory-paper':'print';
     if (accessory === 'clearStand' && !cardOnly&&!shikishi) {
       const stand = new THREE.Mesh(new RoundedBoxGeometry(8, 0.25, 4, 3, 0.07), acrylic.clone());
@@ -189,6 +193,8 @@ export function createAcrylicPreview(host) {
     host.dataset.variant = cardOnly ? 'card' : shikishi?'shikishi':variant;
     host.dataset.product = cardOnly ? 'card' : shikishi?'shikishi':'acrylic';
     host.dataset.printLayers='1';
+    host.dataset.printPlacement=cardOnly||shikishi?'surface':'innermost';
+    host.dataset.printPlaneZ=String(art.position.z);
     host.dataset.reverseTexture=cardOnly?'fine-card-grain':shikishi?'paper-fibers':'none';
     renderer.shadowMap.needsUpdate=true;
     draw();
