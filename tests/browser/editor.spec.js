@@ -534,6 +534,23 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('#acrylic-export')).toBeEnabled();
 });
 
+test('special plate lettering masks emphasize all four collectible families',async({page})=>{
+  await ready(page);await page.locator('.support-merch-link').click();
+  await expect(page.locator('#acrylic-preview-status')).toBeHidden();
+  const counts=await page.evaluate(async()=>{
+    const {readCurrentDesign}=await import('/src/current-design.js');
+    const {createCollectibleMasks}=await import('/src/collectible-masks.js');
+    const result=[];
+    for(const id of ['559101','559102','559103','559104']) {
+      const state=readCurrentDesign();state.files.nameplate=`assets/nameplates/UI_Plate_${id}.png`;
+      const maps=await createCollectibleMasks(state);
+      result.push(maps.entries.find(entry=>entry.slot==='nameplate').letteringPixels);
+    }
+    return result;
+  });
+  for(const count of counts)expect(count).toBeGreaterThan(50);
+});
+
 test('direct order-page visit asks for a design instead of showing someone else’s default', async ({ page }) => {
   await page.goto('/custom-order.html');
   await expect(page.locator('#design-status')).toContainText('还没有可用的上屏设计');
