@@ -122,23 +122,23 @@ export function createAcrylicPreview(host) {
   function rebuild() {
     clearObject();
     if (!designTexture) return;
-    const { cardOnly, accessory } = selection;
-    const variant=cardOnly?'premium':selection.variant;
-    contact.scale.set(1,cardOnly?0.3:1,1);
-    const depth = cardOnly ? 0.035 : 1.5;
+    const { cardOnly, accessory, shikishi=false } = selection;
+    const variant=cardOnly?'premium':shikishi?'basic':selection.variant;
+    contact.scale.set(1,cardOnly?0.3:shikishi?0.5:1,1);
+    const depth = cardOnly ? 0.035 : shikishi ? 0.12 : 1.5;
     const acrylic = new THREE.MeshPhysicalMaterial({
       color: '#ffffff', metalness: 0, roughness: 0.018,
       transmission: 1, thickness: depth, ior: 1.49,
       attenuationColor: new THREE.Color('#e3f5f5'), attenuationDistance: 55,
       clearcoat: 1, clearcoatRoughness: 0.025, envMapIntensity: 1.2,
     });
-    const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : 0.065), acrylic);
-    if(cardOnly) {
-      acrylic.transmission=0; acrylic.color.set('#d5d2ca'); acrylic.metalness=0.25; acrylic.roughness=0.32;
+    const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : shikishi?0.035:0.065), acrylic);
+    if(cardOnly||shikishi) {
+      acrylic.transmission=0; acrylic.color.set(shikishi?'#f5f0e5':'#d5d2ca'); acrylic.metalness=0; acrylic.roughness=0.95; acrylic.clearcoat=0; acrylic.envMapIntensity=0.1;
     }
     brick.position.y = 2.5;
     object.add(brick);
-    if (!cardOnly) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, depth, variant, keyPosition: key.position, windowPosition });
+    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, depth, variant, keyPosition: key.position, windowPosition });
     const print = new THREE.MeshPhysicalMaterial({ map: designTexture, roughness: 0.38,
       clearcoat: variant === 'basic' ? 0.15 : 1,
       clearcoatMap: variant === 'basic' ? null : spotTexture,
@@ -146,8 +146,9 @@ export function createAcrylicPreview(host) {
       iridescence: 0, iridescenceIOR: 1.45,
       iridescenceThicknessRange: [180, 500], metalness: cardOnly ? 0.2 : 0,
     });
+    if(cardOnly||shikishi) { print.clearcoat=0;print.clearcoatMap=null;print.metalness=0;print.roughness=1;print.envMapIntensity=0;print.specularIntensity=0; }
     const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
-    art.position.set(0, 2.5, cardOnly ? depth/2+0.004 : -depth / 2 + 0.004);
+    art.position.set(0, 2.5, cardOnly||shikishi ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
     object.add(art);
     if(cardOnly)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:true});
@@ -158,15 +159,15 @@ export function createAcrylicPreview(host) {
     reverse.position.set(0, 2.5, -depth / 2 - 0.004);
     object.add(reverse);
     if(cardOnly)applyPrintOptics(reverseMaterial,reverse,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:true});
-    if (accessory === 'clearStand' && !cardOnly) {
+    if (accessory === 'clearStand' && !cardOnly&&!shikishi) {
       const stand = new THREE.Mesh(new RoundedBoxGeometry(8, 0.25, 4, 3, 0.07), acrylic.clone());
       stand.position.set(0, 0.13, 0);
       object.add(stand);
       // Lift the brick onto the clear base.
       for (const item of object.children) if (item !== stand) item.position.y += 0.25;
     }
-    host.dataset.variant = cardOnly ? 'card' : variant;
-    host.dataset.product = cardOnly ? 'card' : 'acrylic';
+    host.dataset.variant = cardOnly ? 'card' : shikishi?'shikishi':variant;
+    host.dataset.product = cardOnly ? 'card' : shikishi?'shikishi':'acrylic';
     draw();
   }
   function setDesign(source, finishMaps) {

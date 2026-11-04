@@ -1,3 +1,4 @@
+import { initializePurchaseUI } from './purchase-ui.js';
 // Commercial-order foundation. No checkout or manufacture is enabled for unlicensed assets.
 export const ACRYLIC_PRODUCTS = Object.freeze({
   basic: Object.freeze({ label: '基础款', priceFen: 2999, newcomerPriceFen: 2699, effects: ['uv-color', 'white-ink'] }),
@@ -10,30 +11,44 @@ export const ACCESSORIES = Object.freeze({
   clearStand: Object.freeze({ label: '透明托架', priceFen: 400 }),
 });
 export const COLLECTIBLE_CARD = Object.freeze({ label: '镭射收藏卡', priceFen: 1499 });
+export const SHIKISHI_PRODUCT = Object.freeze({ label: '色纸', priceFen: 1999, newcomerPriceFen: 1699 });
+export const SHIKISHI_SHIPPING_POLICY = 'pending';
+export const BUNDLE_PRESETS = Object.freeze({
+  shikishi: Object.freeze({ label:'色纸单品', description:'1 张色纸', quantity:0, cardQuantity:0, shikishiQuantity:1, accessory:'none' }),
+  card: Object.freeze({ label:'镭射票单品', description:'1 张镭射票', quantity:0, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
+  display: Object.freeze({ label:'桌面展示', description:'亚克力砖＋透明托架', quantity:1, cardQuantity:0, shikishiQuantity:0, accessory:'clearStand' }),
+  duo: Object.freeze({ label:'双品收藏', description:'亚克力砖＋镭射票', quantity:1, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
+  complete: Object.freeze({ label:'全收藏套餐', description:'砖＋托架＋镭射票＋色纸', quantity:1, cardQuantity:1, shikishiQuantity:1, accessory:'clearStand' }),
+});
 // Configurable sales prices; these are test prices, not manufacturer quotations.
 export const CARD_ONLY_SHIPPING_FEN = 400; // configurable domestic shipping estimate
 export const COMBO_DISCOUNTS = Object.freeze({ standFen: 100, cardFen: 200 });
 
-export function quoteProductBundle({ variant, quantity, accessory = 'none', cardQuantity = 0, newCustomer = false }) {
+export function quoteProductBundle({ variant, quantity, accessory = 'none', cardQuantity = 0, shikishiQuantity = 0, newCustomer = false }) {
   if (!Object.hasOwn(ACRYLIC_PRODUCTS, variant)) throw new RangeError('未知主体款式');
   if (!Object.hasOwn(ACCESSORIES, accessory)) throw new RangeError('未知配件');
   if (!Number.isSafeInteger(quantity) || quantity < 0 || quantity > 99) throw new RangeError('主体数量须为0～99');
   if (!Number.isSafeInteger(cardQuantity) || cardQuantity < 0 || cardQuantity > 99) throw new RangeError('收藏卡数量须为0～99');
-  if (quantity === 0 && cardQuantity === 0) throw new RangeError('请至少购买一件商品');
+  if (!Number.isSafeInteger(shikishiQuantity) || shikishiQuantity < 0 || shikishiQuantity > 99) throw new RangeError('色纸数量须为0～99');
+  if (quantity === 0 && cardQuantity === 0 && shikishiQuantity === 0) throw new RangeError('请至少选择一件商品');
   if (quantity === 0 && accessory !== 'none') throw new RangeError('托架或底座不可单独购买');
   const bodyOriginalFen = ACRYLIC_PRODUCTS[variant].priceFen * quantity;
-  const discounted = Boolean(newCustomer) && quantity > 0;
+  const discounted = Boolean(newCustomer) && (quantity > 0 || shikishiQuantity > 0);
   const bodyFen = (discounted ? ACRYLIC_PRODUCTS[variant].newcomerPriceFen : ACRYLIC_PRODUCTS[variant].priceFen) * quantity;
-  // Discounts apply only to the acrylic bodies, never to add-ons.
+  // Newcomer prices apply to acrylic and shikishi; cards and accessories keep their prices.
   const extrasFen = ACCESSORIES[accessory].priceFen * quantity + COLLECTIBLE_CARD.priceFen * cardQuantity;
+  const shikishiOriginalFen=SHIKISHI_PRODUCT.priceFen*shikishiQuantity;
+  const shikishiFen=(newCustomer ? SHIKISHI_PRODUCT.newcomerPriceFen : SHIKISHI_PRODUCT.priceFen)*shikishiQuantity;
   const comboDiscountFen = quantity > 0
     ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + (cardQuantity > 0 ? COMBO_DISCOUNTS.cardFen : 0)
     : 0;
-  const shippingFen = quantity === 0 ? CARD_ONLY_SHIPPING_FEN : 0;
+  const shippingPending=quantity===0 && shikishiQuantity>0 && cardQuantity===0 && SHIKISHI_SHIPPING_POLICY==='pending';
+  const shippingFen = quantity===0 && (cardQuantity>0 || (shikishiQuantity>0 && SHIKISHI_SHIPPING_POLICY==='shared')) ? CARD_ONLY_SHIPPING_FEN : 0;
   return Object.freeze({
-    variant, quantity, accessory, cardQuantity, newCustomer: Boolean(newCustomer),
-    bodyOriginalFen, bodyFen, extrasFen, comboDiscountFen, shippingFen, totalFen: bodyFen + extrasFen - comboDiscountFen + shippingFen,
-    discountApplied: discounted, discountFen: bodyOriginalFen - bodyFen,
+    variant, quantity, accessory, cardQuantity, shikishiQuantity, newCustomer: Boolean(newCustomer),
+    bodyOriginalFen, bodyFen, extrasFen, shikishiOriginalFen, shikishiFen, comboDiscountFen, shippingFen, shippingPending,
+    totalFen: bodyFen + extrasFen + shikishiFen - comboDiscountFen + shippingFen,
+    discountApplied: discounted, discountFen: bodyOriginalFen - bodyFen + shikishiOriginalFen - shikishiFen,
     discountReason: discounted ? 'new-customer' : null,
     currency: 'CNY',
   });
@@ -55,8 +70,8 @@ export function quoteAcrylicOrder({ variant, quantity, newCustomer = false }) {
   });
 }
 
-export function buildAcrylicDesignDraft({ state, variant, quantity, newCustomer = false, accessory = 'none', cardQuantity = 0 }) {
-  const quote = quoteProductBundle({ variant, quantity, newCustomer, accessory, cardQuantity });
+export function buildAcrylicDesignDraft({ state, variant, quantity, newCustomer = false, accessory = 'none', cardQuantity = 0, shikishiQuantity = 0 }) {
+  const quote = quoteProductBundle({ variant, quantity, newCustomer, accessory, cardQuantity, shikishiQuantity });
   if (!state || typeof state !== 'object' || Array.isArray(state)) {
     throw new TypeError('无效的设计状态');
   }
@@ -66,11 +81,12 @@ export function buildAcrylicDesignDraft({ state, variant, quantity, newCustomer 
     version: 1,
     status: 'not-for-production-or-payment',
     product: {
-      type: quantity === 0 ? 'holographic-card' : 'acrylic-brick',
+      type: quantity === 0 ? (cardQuantity>0 ? 'holographic-card' : 'shikishi') : 'acrylic-brick',
       variant: quantity === 0 ? null : variant,
       quantity,
       accessory,
       cardQuantity,
+      shikishiQuantity,
       ...(quantity > 0 ? {
         widthMm: 120,
         heightMm: 50,
@@ -79,6 +95,12 @@ export function buildAcrylicDesignDraft({ state, variant, quantity, newCustomer 
       } : {}),
     },
     quote,
+    items: [
+      ...(quantity>0 ? [{type:'acrylic-brick',variant,quantity,totalFen:quote.bodyFen}] : []),
+      ...(quantity>0 && accessory!=='none' ? [{type:'clear-stand',quantity,totalFen:ACCESSORIES[accessory].priceFen*quantity}] : []),
+      ...(cardQuantity>0 ? [{type:'holographic-card',quantity:cardQuantity,totalFen:COLLECTIBLE_CARD.priceFen*cardQuantity}] : []),
+      ...(shikishiQuantity>0 ? [{type:'shikishi',quantity:shikishiQuantity,totalFen:quote.shikishiFen}] : []),
+    ],
     design: JSON.parse(JSON.stringify(state)),
     rightsReview: 'required',
   };
@@ -88,105 +110,6 @@ function yuan(fen) {
   return (fen / 100).toFixed(2);
 }
 
-export function initializeCustomOrder({ snapshotState, renderCanvas }) {
-  const anchor = document.querySelector('#acrylic-preview-card') || document.querySelector('.preview-card');
-  if (!anchor) return;
-  const section = document.createElement('section');
-  section.className = 'card custom-order-card';
-  section.id = 'custom-order';
-  section.tabIndex = -1;
-  section.innerHTML = `
-    <div class="section-head"><h2>定制选配</h2></div>
-    <div class="custom-order-grid">
-      <label>亚克力砖工艺<select id="acrylic-variant">
-        <option value="basic">基础款 · ¥29.99</option>
-        <option value="light">轻量特效款 · ¥34.99（AI局部UV）</option>
-        <option value="premium" selected>高配特效款 · ¥44.99（双面印刷＋局部UV＋闪粉）</option>
-      </select></label>
-      <label class="custom-order-check"><input id="acrylic-card-only" type="checkbox"> 仅购买镭射收藏卡（运费另计）</label>
-      <label>购买数量<input id="acrylic-quantity" type="number" inputmode="numeric" min="1" max="99" step="1" value="1"></label>
-      <label>展示配件<select id="acrylic-accessory">
-        <option value="none">不加配件</option>
-        <option value="clearStand">透明托架 · +¥4/件</option>
-      </select></label>
-      <label>镭射收藏卡数量（¥14.99/张）<input id="acrylic-cards" type="number" min="0" max="99" step="1" value="0"></label>
-      <label class="custom-order-check"><input id="acrylic-newcomer" type="checkbox"> 模拟新人专属价</label>
-    </div>
-    <div class="custom-order-summary" aria-live="polite">
-      <span id="acrylic-discount"></span>
-      <strong id="acrylic-total"></strong>
-    </div>
-    <div class="custom-order-actions">
-      <button id="acrylic-export" class="button secondary" type="button">导出定制方案草稿</button>
-      <button class="button primary" type="button" disabled title="商业授权、订单后端及支付尚未接入">在线下单（尚未开放）</button>
-    </div>
-  `;
-  anchor.insertAdjacentElement('afterend', section);
-  const variant = section.querySelector('#acrylic-variant');
-  const quantity = section.querySelector('#acrylic-quantity');
-  const newcomer = section.querySelector('#acrylic-newcomer');
-  const cardOnly = section.querySelector('#acrylic-card-only');
-  const accessory = section.querySelector('#acrylic-accessory');
-  const cards = section.querySelector('#acrylic-cards');
-  const total = section.querySelector('#acrylic-total');
-  const discount = section.querySelector('#acrylic-discount');
-  function readQuote() {
-    return quoteProductBundle({
-      variant: variant.value, quantity: cardOnly.checked ? 0 : Number(quantity.value),
-      accessory: cardOnly.checked ? 'none' : accessory.value, cardQuantity: Number(cards.value),
-      newCustomer: newcomer.checked,
-    });
-  }
-  function refresh() {
-    quantity.disabled = cardOnly.checked;
-    accessory.disabled = cardOnly.checked;
-    variant.disabled = cardOnly.checked;
-    variant.closest('label').hidden=cardOnly.checked;
-    newcomer.disabled = cardOnly.checked;
-    if (cardOnly.checked && Number(cards.value) < 1) cards.value = '1';
-    try {
-      const quote = readQuote();
-      total.textContent = `参考价 ¥${yuan(quote.totalFen)}`;
-      discount.textContent = [
-        quote.discountApplied ? `新人优惠 -¥${yuan(quote.discountFen)}` : '',
-        quote.comboDiscountFen ? `组合优惠 -¥${yuan(quote.comboDiscountFen)}` : '',
-        quote.shippingFen ? `镭射卡单买运费 ¥${yuan(quote.shippingFen)}` : (quote.cardQuantity > 0 && quote.quantity > 0 ? '镭射卡随砖免单独运费' : ''),
-      ].filter(Boolean).join(' · ');
-      section.querySelector('#acrylic-export').disabled = false;
-    } catch {
-      total.textContent = '请输入1～99的整数数量';
-      discount.textContent = '';
-      section.querySelector('#acrylic-export').disabled = true;
-    }
-  }
-  [variant, quantity, accessory, cards, newcomer, cardOnly].forEach((control) => {
-    control.addEventListener('input', refresh);
-    control.addEventListener('change', refresh);
-  });
-  section.querySelector('#acrylic-export').addEventListener('click', () => {
-    try {
-      const draft = buildAcrylicDesignDraft({
-        state: snapshotState(),
-        variant: variant.value,
-        quantity: cardOnly.checked ? 0 : Number(quantity.value),
-        newCustomer: cardOnly.checked ? false : newcomer.checked,
-        accessory: cardOnly.checked ? 'none' : accessory.value,
-        cardQuantity: Number(cards.value),
-      });
-      // The current renderer preview is not a manufacturing-ready print/white-ink/cut file.
-      // It is intentionally not packaged as one.
-      const previewAvailable = Boolean(renderCanvas);
-      draft.previewAvailableInEditor = previewAvailable;
-      const file = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(file);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'maimaidiy-acrylic-draft.json';
-      link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 0);
-    } catch (error) {
-      alert(error.message || '无法导出定制方案');
-    }
-  });
-  refresh();
+export function initializeCustomOrder(options) {
+  return initializePurchaseUI(options,{ACRYLIC_PRODUCTS,ACCESSORIES,COLLECTIBLE_CARD,SHIKISHI_PRODUCT,BUNDLE_PRESETS,quoteProductBundle,buildAcrylicDesignDraft,formatYuan:yuan});
 }

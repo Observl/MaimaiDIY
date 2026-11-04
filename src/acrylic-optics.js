@@ -64,8 +64,17 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
         #else
         totalDiffuse=mix(totalDiffuse,artwork*0.9,insidePrint);
         #endif
+        if(printCard>0.5) {
+          // Diffractive color modulation without a white mirror/varnish highlight.
+          totalSpecular=vec3(0.0);
+          vec3 laserLight=normalize(printWindow-pPos);
+          float phase=printUV.x*14.0+printUV.y*3.0+dot(pN,pV)*24.0+dot(pN,laserLight)*12.0;
+          vec3 spectral=0.5+0.5*cos(vec3(0.0,2.1,4.2)+phase);
+          float band=pow(0.5+0.5*sin(phase*0.65),2.0);
+          totalDiffuse=mix(totalDiffuse,artwork*mix(vec3(0.92),vec3(0.65)+spectral*0.5,0.35+band*0.4),insidePrint);
+        }
 
-        if (printFinish > 0.5 && insidePrint > 0.5) {
+        if (printCard<0.5 && printFinish > 0.5 && insidePrint > 0.5) {
           vec3 finish = texture2D(printMask, printUV).rgb;
           float spot = finish.r;
           vec2 texel = 1.0 / vec2(textureSize(printMask, 0));
@@ -109,5 +118,5 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
         }
     `);
   };
-  material.customProgramCacheKey = () => 'collectible-angle-color-v5-'+Number(card);
+  material.customProgramCacheKey = () => 'collectible-diffraction-no-glare-v6-'+Number(card);
 }

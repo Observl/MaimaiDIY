@@ -20,16 +20,17 @@ const details = { basic: '背面彩印 · 白墨', light: '背面彩印 · 局�
 function syncPhysicalSelection() {
   const variant = document.querySelector('#acrylic-variant').value;
   const cardOnly = previewProduct==='card';
+  const shikishi = previewProduct==='shikishi';
   const accessory = document.querySelector('#acrylic-accessory').value;
   document.querySelectorAll('[data-preview-variant]').forEach((button) => {
     button.setAttribute('aria-pressed', String(!cardOnly && button.dataset.previewVariant === variant));
   });
   document.querySelectorAll('[data-preview-product]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.previewProduct===previewProduct)));
-  document.querySelector('.acrylic-variants').hidden=cardOnly;
-  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射卡 · UV 高光与同色闪粉' : details[variant];
+  document.querySelector('.acrylic-variants').hidden=cardOnly||shikishi;
+  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射票 · 彩色镭射覆膜' : shikishi?'色纸 · 纸质哑光展示':details[variant];
   document.querySelector('.acrylic-preview-detail > span:last-child').textContent = cardOnly
-    ? '统一特效工艺 · 薄片示意' : '120 × 50 × 15 mm · 材质示意';
-  physicalPreview?.setSelection({ variant:cardOnly?'premium':variant, cardOnly, accessory });
+    ? '随角度变色 · 无镜面高光' : shikishi?'图案展示':'120 × 50 × 15 mm · 材质示意';
+  physicalPreview?.setSelection({ variant:cardOnly?'premium':variant, cardOnly, shikishi, accessory });
 }
 async function updatePhysicalPreview(request) {
   physicalStatus.hidden = false;
@@ -63,12 +64,14 @@ document.querySelectorAll('[data-preview-product]').forEach(button=>button.addEv
 }));
 document.querySelectorAll('[data-preview-variant]').forEach((button) => button.addEventListener('click', () => {
   document.querySelector('#acrylic-variant').value = button.dataset.previewVariant;
-  document.querySelector('#acrylic-card-only').checked = false;
   document.querySelector('#acrylic-variant').dispatchEvent(new window.Event('change', { bubbles: true }));
 }));
 document.addEventListener('change', (event) => {
-  if(event.target.id==='acrylic-card-only')previewProduct=event.target.checked?'card':'acrylic';
   if (event.target.closest('#custom-order')) syncPhysicalSelection();
+});
+document.addEventListener('order-selection',(event)=>{
+  previewProduct=event.detail.product;
+  syncPhysicalSelection();
 });
 
 initializeCustomOrder({
