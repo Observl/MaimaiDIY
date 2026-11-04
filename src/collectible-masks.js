@@ -17,6 +17,7 @@ export async function createCollectibleMasks(state) {
   const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
   const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
   const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
+  const layers=Array.from({length:4},()=>canvas(width,height));
   const ordered = COMPOSITION_ORDER;
   for (const id of ordered) {
     if (!state.visible[id]) continue;
@@ -24,12 +25,14 @@ export async function createCollectibleMasks(state) {
     await isolated.render({ ...state, visible }, { strict: true });
     layerContext.clearRect(0,0,width,height);
     layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
+    const group=id==='background'?0:['nameplate','nameBase','playerName'].includes(id)?1:id==='friendBattle'?3:2;
+    layers[group].getContext('2d').drawImage(layerCanvas,0,0);
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
     const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0 }) : 0;
     let uvShape, glitterShape;
     if (profile) {
-      if(id!=='titleText') {
+      if(!['titleBase','ratingFrame'].includes(id)) {
         const key=id+'|'+state.files[id].split(/[?#]/)[0].split('/').pop();
         const files=COLLECTIBLE_MASK_FILES[key];
         if(!files) throw Error('Missing independent mask: '+key);
@@ -50,14 +53,14 @@ export async function createCollectibleMasks(state) {
       if(alpha>0.5) owners[i/4]=0;
       // Every real layer erases covered effects, including exact text glyphs.
       for(let c=0;c<3;c++) { data.data[i+c]*=1-alpha; colors.data[i+c]*=1-alpha; }
+      if(id==='titleText') data.data[i+2]=255*alpha;
       if (!profile) continue;
       // User-selected title text is dynamic; use its rendered glyph alpha, never a template.
-      const u=id==='titleText' ? (Math.min(layer[i],layer[i+1],layer[i+2])>160 ? alpha : 0) : uvShape[i]/255*alpha;
-      const g=id==='titleText' ? 0 : glitterShape[i]/255*alpha;
+      const u=['titleBase','ratingFrame'].includes(id)?alpha:uvShape[i]/255*alpha;
+      const g=id==='ratingFrame'?alpha:id==='titleBase'?0:glitterShape[i]/255*alpha;
       if(u>0||g>0) owners[i/4]=entryId;
       data.data[i]=255*profile.uv*u;
       data.data[i+1]=255*profile.glitter*g;
-      data.data[i+2]=255*profile.rainbow*g;
       for(let c=0;c<3;c++) colors.data[i+c]=profile.tint[c]*Math.max(u,g);
     }
   }
@@ -78,5 +81,5 @@ export async function createCollectibleMasks(state) {
   }
   // Release the temporary 4x renderer buffers after composing the masks.
   isolated.renderCanvas.width=1; layerCanvas.width=1; region.width=1;
-  return { packed,tint,uv,glitter,entries };
+  return { packed,tint,uv,glitter,entries,layers };
 }

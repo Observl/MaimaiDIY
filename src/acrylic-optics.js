@@ -2,7 +2,7 @@ import * as THREE from '../vendor/three.module.js';
 
 // Ray/print-plane intersection preserves the source resolution rather than
 // resampling the design through Three's screen-space transmission buffer.
-export function applyPrintOptics(material, mesh, { design, mask, glitterTint, depth, variant, keyPosition, windowPosition, card=false }) {
+export function applyPrintOptics(material, mesh, { design, mask, glitterTint, depth, variant, keyPosition, windowPosition, card=false, paper=false, layers=[] }) {
   const inverse = new THREE.Matrix4();
   mesh.onBeforeRender = () => inverse.copy(mesh.matrixWorld).invert();
   material.onBeforeCompile = (shader) => {
@@ -10,6 +10,8 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
       printArtwork: { value: design }, printMask: { value: mask },
       printGlitterTint: { value: glitterTint },
       printCard: { value: card ? 1 : 0 },
+      printPaper: { value: paper ? 1 : 0 },
+      ...Object.fromEntries([0,1,2,3].map(i=>['printLayer'+i,{value:layers[i]||design}])),
       printInverse: { value: inverse }, printDepth: { value: depth },
       printFinish: { value: variant === 'premium' ? 2 : variant === 'light' ? 1 : 0 },
       printSun: { value: keyPosition },
@@ -30,12 +32,26 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
       uniform sampler2D printMask;
       uniform sampler2D printGlitterTint;
       uniform float printCard;
+      uniform float printPaper;
+      uniform sampler2D printLayer0;
+      uniform sampler2D printLayer1;
+      uniform sampler2D printLayer2;
+      uniform sampler2D printLayer3;
       uniform mat4 printInverse;
       uniform float printDepth;
       uniform float printFinish;
       uniform vec3 printSun;
       uniform vec3 printWindow;
       float printHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    `).replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
+      // Pigment and foil microrelief change the lighting, rather than painting highlights into an image.
+      vec2 pigmentUV=vPrintLocalPosition.xy/vec2(11.91,4.91)+0.5;
+      vec2 pigmentTexel=1.0/vec2(textureSize(printArtwork,0));
+      vec3 lum=vec3(0.2126,0.7152,0.0722);
+      float pigmentX=dot(texture2D(printArtwork,pigmentUV+vec2(pigmentTexel.x,0.0)).rgb-texture2D(printArtwork,pigmentUV-vec2(pigmentTexel.x,0.0)).rgb,lum);
+      float pigmentY=dot(texture2D(printArtwork,pigmentUV+vec2(0.0,pigmentTexel.y)).rgb-texture2D(printArtwork,pigmentUV-vec2(0.0,pigmentTexel.y)).rgb,lum);
+      float grain=printHash(floor(pigmentUV*vec2(1800.0,750.0)))-0.5;
+      normal=normalize(normal+vec3(pigmentX,pigmentY,0.0)*(printCard>0.5?0.3:0.12)+vec3(grain,-grain,0.0)*0.035);
     `).replace('#include <transmission_fragment>', `
       #include <transmission_fragment>
         vec3 pPos=vPrintWorldPosition;
@@ -57,25 +73,46 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
           * step(0.001, printUV.y) * step(printUV.y, 0.999)
           * step(0.0, rayDistance) * (printCard>0.5 ? 1.0 : smoothstep(0.3, 0.9, localNormal.z));
         vec3 artwork = texture2D(printArtwork, printUV).rgb;
+        float componentPrint=max(texture2D(printLayer1,printUV).a,max(texture2D(printLayer2,printUV).a,texture2D(printLayer3,printUV).a));
+        #ifdef USE_TRANSMISSION
+        if(printFinish>0.5) {
+          // Four physical print depths: background, identity, badges, friend battle.
+          vec2 uv0=(localPosition+localRay*((-printDepth*0.43-localPosition.z)/safeRayZ)).xy/vec2(11.91,4.91)+0.5;
+          vec2 uv1=(localPosition+localRay*((-printDepth*0.15-localPosition.z)/safeRayZ)).xy/vec2(11.91,4.91)+0.5;
+          vec2 uv2=(localPosition+localRay*((printDepth*0.15-localPosition.z)/safeRayZ)).xy/vec2(11.91,4.91)+0.5;
+          vec2 uv3=(localPosition+localRay*((printDepth*0.36-localPosition.z)/safeRayZ)).xy/vec2(11.91,4.91)+0.5;
+          vec4 l0=texture2D(printLayer0,uv0),l1=texture2D(printLayer1,uv1),l2=texture2D(printLayer2,uv2),l3=texture2D(printLayer3,uv3);
+          artwork=mix(vec3(1.0),l0.rgb,l0.a);
+          artwork=mix(artwork,l1.rgb,l1.a);artwork=mix(artwork,l2.rgb,l2.a);artwork=mix(artwork,l3.rgb,l3.a);
+          componentPrint=max(l1.a,max(l2.a,l3.a));
+          // Finish maps belong to their own print plane, so they follow the same parallax.
+          printUV=l3.a>0.5?uv3:l2.a>0.5?uv2:l1.a>0.5?uv1:uv0;
+        }
+        #endif
+        vec3 finish = texture2D(printMask, printUV).rgb;
+        vec3 imageTint=artwork;
+        // Bound the colored response: large HDR values tone-map saturated inks to white.
+        totalSpecular=mix(totalSpecular,min(totalSpecular,vec3(0.12))*imageTint,insidePrint)*(1.0-finish.b*insidePrint);
         #ifdef USE_TRANSMISSION
         float fresnel = 0.04 + 0.96 * pow(1.0 - max(dot(pN, pV), 0.0), 5.0);
         vec3 transmissionTint = volumeAttenuation(max(rayDistance, 0.0), material.attenuationColor, material.attenuationDistance);
         totalDiffuse = mix(totalDiffuse, artwork * transmissionTint * (1.0 - fresnel), insidePrint);
         #else
-        totalDiffuse=mix(totalDiffuse,artwork*0.9,insidePrint);
+          float pigmentLight=0.72+0.28*max(dot(pN,normalize(printWindow-pPos)),0.0);
+          totalDiffuse=mix(totalDiffuse,artwork*pigmentLight,insidePrint);
         #endif
         if(printCard>0.5) {
           // Diffractive color modulation without a white mirror/varnish highlight.
           totalSpecular=vec3(0.0);
           vec3 laserLight=normalize(printWindow-pPos);
-          float phase=printUV.x*14.0+printUV.y*3.0+dot(pN,pV)*24.0+dot(pN,laserLight)*12.0;
+          float grooves=sin(printUV.x*1100.0+printUV.y*180.0)*0.12;
+          float phase=printUV.x*14.0+printUV.y*3.0+dot(pN,pV)*24.0+dot(pN,laserLight)*12.0+grooves;
           vec3 spectral=0.5+0.5*cos(vec3(0.0,2.1,4.2)+phase);
           float band=pow(0.5+0.5*sin(phase*0.65),2.0);
           totalDiffuse=mix(totalDiffuse,artwork*mix(vec3(0.92),vec3(0.65)+spectral*0.5,0.35+band*0.4),insidePrint);
         }
 
         if (printCard<0.5 && printFinish > 0.5 && insidePrint > 0.5) {
-          vec3 finish = texture2D(printMask, printUV).rgb;
           float spot = finish.r;
           vec2 texel = 1.0 / vec2(textureSize(printMask, 0));
           vec2 gradient = vec2(
@@ -89,34 +126,30 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
           float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), 105.0)
             + pow(max(dot(raisedNormal, halfSun), 0.0), 140.0);
           // A varnish lobe over the selected artwork, never a white paint overlay.
-          vec3 foilTint=texture2D(printGlitterTint, printUV).rgb;
-          totalSpecular += mix(vec3(1.0),foilTint,0.2) * highlight * spot * 4.5;
-          if(printCard>0.5) {
-            float laserPeak=pow(max(dot(pN,halfWindow),0.0),85.0)+pow(max(dot(pN,halfSun),0.0),120.0);
-            vec3 laserColor=0.5+0.5*cos(vec3(0.0,2.1,4.2)+printUV.x*11.0+dot(pN,pV)*22.0);
-            totalSpecular+=laserColor*laserPeak*0.9;
-          }
+          float uvResponse=min(highlight*spot*0.65,0.3)*(1.0-finish.b);
+          totalSpecular += imageTint * uvResponse;
 
-          if (printFinish > 1.5) {
-            vec2 cells = printUV * vec2(720.0, 300.0);
+          {
+            vec2 cells = printUV * vec2(560.0, 234.0);
             vec2 cell = floor(cells);
             float seed = printHash(cell);
             vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
             float distanceToFlake = length(fract(cells) - center);
             float footprint = max(length(fwidth(cells)), 0.04);
-            float flake = (1.0 - smoothstep(0.34, 0.34 + min(footprint,0.4), distanceToFlake)) * step(0.01, seed) * finish.g;
+            // Glitter belongs exclusively to the background. Every overlying print occludes it.
+            float density=printFinish>1.5?1.0:0.7;
+            float flake = (1.0 - smoothstep(0.29, 0.29 + min(footprint,0.3), distanceToFlake)) * step(0.08, seed) * density * (1.0-finish.b) * (1.0-componentPrint);
             vec3 flakeNormal = normalize(pN + vec3(
               (printHash(cell + 19.0) - 0.5) * 0.65,
               (printHash(cell + 53.0) - 0.5) * 0.65, 0.0));
             float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 125.0)
               + pow(max(dot(flakeNormal, halfSun), 0.0), 170.0);
-            float angularGate=pow(max(dot(pN,halfWindow),0.0),55.0)+pow(max(dot(pN,halfSun),0.0),70.0);
-            float strongest=max(max(artwork.r,artwork.g),max(artwork.b,0.04));
-            vec3 imageTint=mix(artwork,artwork/strongest,0.7);
-            totalSpecular += imageTint * sparkle * angularGate * flake * 55.0;
+            float angularGate=0.16+pow(max(dot(pN,halfWindow),0.0),24.0)+pow(max(dot(pN,halfSun),0.0),36.0);
+            float glitterResponse=min((sparkle*angularGate*0.9+0.005)*flake,0.22);
+            totalSpecular += imageTint * glitterResponse;
           }
         }
     `);
   };
-  material.customProgramCacheKey = () => 'collectible-diffraction-no-glare-v6-'+Number(card);
+  material.customProgramCacheKey = () => 'pigment-layered-global-glitter-v7-'+Number(card)+'-'+Number(paper);
 }

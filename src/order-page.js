@@ -16,7 +16,7 @@ let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
 const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
-const details = { basic: '背面彩印 · 白墨', light: '背面彩印 · 局部 UV 示意', premium: '双面印刷 · 局部 UV · 闪粉示意' };
+const details = { basic: '背面彩印 · 白墨', light: '分层彩印 · 局部 UV · 背景闪粉', premium: '分层双面印刷 · 彩色 UV · 加密背景闪粉' };
 function syncPhysicalSelection() {
   const variant = document.querySelector('#acrylic-variant').value;
   const cardOnly = previewProduct==='card';
@@ -27,7 +27,7 @@ function syncPhysicalSelection() {
   });
   document.querySelectorAll('[data-preview-product]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.previewProduct===previewProduct)));
   document.querySelector('.acrylic-variants').hidden=cardOnly||shikishi;
-  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射票 · 彩色镭射覆膜' : shikishi?'色纸 · 纸质哑光展示':details[variant];
+  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射票 · 彩色镭射覆膜' : shikishi?'色纸 · 金色包边 · 背景闪粉与局部 UV':details[variant];
   document.querySelector('.acrylic-preview-detail > span:last-child').textContent = cardOnly
     ? '随角度变色 · 无镜面高光' : shikishi?'图案展示':'120 × 50 × 15 mm · 材质示意';
   physicalPreview?.setSelection({ variant:cardOnly?'premium':variant, cardOnly, shikishi, accessory });
