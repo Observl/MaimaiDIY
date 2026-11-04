@@ -5,7 +5,8 @@ import { applyPrintOptics } from './acrylic-optics.js';
 import { createPaperTexture } from './paper-texture.js';
 
 export function createAcrylicPreview(host,{snapshot=false}={}) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: snapshot });
+  if(snapshot)renderer.setClearColor(0xffffff,0);
   renderer.setPixelRatio(snapshot?1:Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -17,8 +18,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   renderer.domElement.setAttribute('aria-label', '3D 产品预览，拖动旋转，滚轮或双指缩放，方向键调整视角');
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#f3eee4');
-  scene.fog = new THREE.Fog('#f3eee4', 55, 110);
+  scene.background = snapshot?null:new THREE.Color('#f3eee4');
+  scene.fog = snapshot?null:new THREE.Fog('#f3eee4', 55, 110);
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 120);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enablePan = false;
@@ -67,7 +68,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = -0.06;
   floor.receiveShadow = true;
-  scene.add(floor);
+  if(!snapshot)scene.add(floor);
   // Soft contact shadow under clear material, which shadow maps cannot transmit accurately.
   const shadowCanvas = document.createElement('canvas');
   shadowCanvas.width = shadowCanvas.height = 128;
@@ -258,10 +259,11 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
         const group=new THREE.Group();group.add(...[...object.children]);
         if(items.length>1) {
           group.scale.setScalar(0.82);
-          group.position.x=(index-(items.length-1)/2)*(items.length===2?3.4:2.6);
-          group.position.y=index*0.4;
-          group.position.z=-index*0.5;
-          group.rotation.y=(index-(items.length-1)/2)*0.08;
+          group.position.x=items.length===2?[-2.2,2.3][index]:[-3.2,0,3.3][index];
+          group.position.y=items.length===2?[0,0.7][index]:[0,0.8,0.2][index];
+          group.position.z=items.length===2?[0.25,-0.35][index]:[0,-0.65,0.5][index];
+          group.rotation.y=items.length===2?[-0.12,0.14][index]:[-0.13,0.07,0.16][index];
+          group.rotation.z=items.length===2?[-0.04,0.06][index]:[-0.045,0.045,-0.03][index];
         }
         groups.push(group);
       }

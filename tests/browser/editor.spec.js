@@ -455,9 +455,25 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('.support-merch-link').click();
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('.configuration-panel img')).toHaveCount(0);
+  await expect(page.locator('#bundle-presets')).toHaveCount(0);
+  await expect(page.locator('.configuration-image')).toHaveCount(8);
+  const glitterSlots=await page.evaluate(async()=>{
+    const {readCurrentDesign}=await import('/src/current-design.js');
+    const {createCollectibleMasks}=await import('/src/collectible-masks.js');
+    const maps=await createCollectibleMasks(readCurrentDesign());
+    return maps.entries.filter(entry=>entry.glitterPixels>0).map(entry=>entry.slot);
+  });
+  for(const slot of ['nameplate','playerName','rank','friendBattle'])expect(glitterSlots).toContain(slot);
   await expect(page.locator('[data-config-image="acrylic"]').first()).toHaveAttribute('src',/^data:image\/png/);
   await expect(page.locator('[data-config-image="complete"]').first()).toHaveAttribute('data-products','acrylic,card,shikishi');
   await expect(page.locator('[data-config-image="shikishi"]').first()).toHaveAttribute('data-products','shikishi');
+  const transparentProduct=await page.locator('[data-config-image="complete"]').evaluate(async image=>{
+    await image.decode();const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+    const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let visible=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>128)visible++;
+    return pixels[3]===0&&visible>500;
+  });
+  expect(transparentProduct).toBe(true);
   await expect(page.locator('.configuration-choice')).toHaveCount(8);
   await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
   await expect(page.locator('.purchase-product-caption')).toHaveCount(0);
@@ -466,7 +482,7 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('#acrylic-variant')).toHaveValue('basic');
   await expect(page.locator('[data-finish="basic"]')).toHaveAttribute('aria-pressed','true');
   await page.locator('[data-finish="premium"]').click();
-  await page.locator('[data-bundle="shikishi"]').click();
+  await page.locator('[data-config="shikishi"]').click();
   await expect(page.locator('#buy-shikishi')).toBeChecked();
   await expect(page.locator('#buy-acrylic')).not.toBeChecked();
   await expect(page.locator('.purchase-options')).toBeHidden();
@@ -496,7 +512,7 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('#acrylic-newcomer').check();
   await expect(page.locator('#acrylic-total')).toHaveText('¥21.99');
   await expect(page.locator('#purchase-lines')).toContainText('¥5.00');
-  await page.locator('[data-bundle="complete"]').click();
+  await page.locator('[data-config="complete"]').click();
   await expect(page.locator('#acrylic-total')).toHaveText('¥72.97');
   await expect(page.locator('#acrylic-accessory')).toHaveValue('clearStand');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','acrylic');

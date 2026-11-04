@@ -29,13 +29,13 @@ export async function createCollectibleMasks(state) {
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
     const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0 }) : 0;
-    let uvShape, glitterShape;
+    let uvShape;
     if (profile) {
-      if(!['titleBase','ratingFrame'].includes(id)) {
+      if(!['titleBase','ratingFrame','playerName','rank','friendBattle'].includes(id)) {
         const key=id+'|'+state.files[id].split(/[?#]/)[0].split('/').pop();
         const files=COLLECTIBLE_MASK_FILES[key];
-        if(!files) throw Error('Missing independent mask: '+key);
-        const images=await Promise.all([loadImage(files.uv),loadImage(files.glitter)]);
+        if(files) {
+        const images=[await loadImage(files.uv)];
         const slot=slots[id];
         const masks=images.map(image=>{
           regionContext.clearRect(0,0,width,height);
@@ -43,7 +43,8 @@ export async function createCollectibleMasks(state) {
           else regionContext.drawImage(image,slot.x*scale,slot.y*scale,slot.width*scale,slot.height*scale);
           return regionContext.getImageData(0,0,width,height).data;
         });
-        [uvShape,glitterShape]=masks;
+        [uvShape]=masks;
+        }
       }
     }
     for (let i=0;i<layer.length;i+=4) {
@@ -55,8 +56,8 @@ export async function createCollectibleMasks(state) {
       if(id==='titleText') data.data[i+2]=255*alpha;
       if (!profile) continue;
       // User-selected title text is dynamic; use its rendered glyph alpha, never a template.
-      const u=['titleBase','ratingFrame'].includes(id)?alpha:uvShape[i]/255*alpha;
-      const g=id==='ratingFrame'?alpha:id==='titleBase'?0:glitterShape[i]/255*alpha;
+      const u=uvShape?uvShape[i]/255*alpha:alpha;
+      const g=id==='titleBase'?0:alpha;
       if(u>0||g>0) owners[i/4]=entryId;
       data.data[i]=255*profile.uv*u;
       data.data[i+1]=255*profile.glitter*g;

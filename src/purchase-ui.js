@@ -5,7 +5,6 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
   const section=document.createElement('section');section.className='card custom-order-card';section.id='custom-order';
   section.innerHTML=`
     <header class="purchase-intro"><h2>选购定制周边</h2><label class="newcomer-choice"><input id="acrylic-newcomer" type="checkbox"><span>使用新人价</span><span class="newcomer-switch" aria-hidden="true"></span></label></header>
-    <div id="bundle-presets" class="bundle-presets" role="group" aria-label="快捷套餐"></div>
     <div class="purchase-layout"><div class="purchase-products">
       <article class="purchase-product" data-product="acrylic">
         <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-acrylic" type="checkbox" checked><span><strong>亚克力砖</strong><span id="acrylic-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"></label></div>
@@ -28,7 +27,6 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
   const get=id=>section.querySelector('#'+id);
   const variant=get('acrylic-variant'),accessory=get('acrylic-accessory'),newcomer=get('acrylic-newcomer');
   const products=[{key:'acrylic',check:get('buy-acrylic'),input:get('acrylic-quantity')},{key:'card',check:get('buy-card'),input:get('acrylic-cards')},{key:'shikishi',check:get('buy-shikishi'),input:get('shikishi-quantity')}];
-  const presetButtons=new Map();
   const configHeaders=new Map(),configPanels=new Map(),configSelections=new Map();
   let activeId='acrylic';
   const editor=section.querySelector('.purchase-products');
@@ -70,11 +68,6 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
   });
   let lastPreviewProduct;
   for(const [id,preset] of Object.entries(BUNDLE_PRESETS)) {
-    const button=document.createElement('button');button.type='button';button.dataset.bundle=id;button.setAttribute('aria-pressed','false');
-    const title=document.createElement('strong');title.textContent=preset.label;
-    const price=document.createElement('span');price.className='bundle-price';
-    const image=document.createElement('img');image.className='configuration-image';image.dataset.configImage=id;image.alt=preset.label+'商品渲染图';image.width=560;image.height=340;image.hidden=true;
-    button.append(image,title,price);get('bundle-presets').append(button);presetButtons.set(id,button);
     const row=document.createElement('article');row.className='configuration-row';
     const header=document.createElement('button');header.type='button';header.className='configuration-choice';header.dataset.config=id;
     header.id='config-choice-'+id;header.setAttribute('aria-expanded','false');header.setAttribute('aria-controls','config-panel-'+id);
@@ -82,7 +75,6 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     const panel=document.createElement('div');panel.className='configuration-panel';panel.id='config-panel-'+id;panel.hidden=true;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby',header.id);
     row.append(header,panel);configList.append(row);configHeaders.set(id,header);configPanels.set(id,panel);
     header.addEventListener('click',()=>activate(id,true));
-    button.addEventListener('click',()=>activate(id));
   }
   function activate(id,toggle=false) {
     const same=activeId===id;
@@ -100,16 +92,8 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       configHeaders.get(key).closest('.configuration-row').classList.toggle('is-active',key===id);
     }
     configPanels.get(id).append(editor);
-    revealActiveCard();
     refresh();section.dispatchEvent(new window.Event('change',{bubbles:true}));
   }
-  function revealActiveCard() {
-    const strip=get('bundle-presets'),button=presetButtons.get(activeId);
-    if(!button)return;
-    const left=strip.scrollLeft+button.getBoundingClientRect().left-strip.getBoundingClientRect().left-(strip.clientWidth-button.clientWidth)/2;
-    strip.scrollTo({left,behavior:'auto'});
-  }
-  new window.ResizeObserver(revealActiveCard).observe(get('bundle-presets'));
   function selection() {
     return {variant:variant.value,quantity:products[0].check.checked?Number(products[0].input.value):0,
       accessory:products[0].check.checked?accessory.value:'none',
@@ -140,12 +124,10 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       lastPreviewProduct=selectedPreview;
       section.dispatchEvent(new window.CustomEvent('order-selection',{bubbles:true,detail:{product:selectedPreview}}));
     }
-    for(const [id,button] of presetButtons) {
-      button.setAttribute('aria-pressed',String(id===activeId));
+    for(const [id,header] of configHeaders) {
       let price='—';
       try {price='¥'+yuan(quoteProductBundle({...BUNDLE_PRESETS[id],variant:variant.value,...configSelections.get(id),newCustomer:newcomer.checked}).totalFen);} catch { /* The active quantity error is shown in the receipt. */ }
-      button.querySelector('.bundle-price').textContent=price;
-      configHeaders.get(id).querySelector('.config-price').textContent=price;
+      header.querySelector('.config-price').textContent=price;
     }
     get('purchase-lines').replaceChildren();
     try {
