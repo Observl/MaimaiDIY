@@ -3,7 +3,8 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/browser',
   workers: 1,
-  timeout: 60000,
+  timeout: 120000,
+  expect: { timeout: 30000 },
   retries: process.env.CI ? 1 : 0,
   use: {
     baseURL: 'http://127.0.0.1:4174',

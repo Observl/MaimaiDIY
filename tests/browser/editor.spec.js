@@ -31,7 +31,7 @@ const rating = (page) => page.locator('[data-control="rating"] .rating-input');
 const library = (page, control = 'background') =>
   page.locator(`[data-control="${control}"] .library-button`);
 async function ready(page) {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loading')).toBeHidden();
   await page.evaluate(() => document.fonts.ready);
 }
@@ -243,7 +243,7 @@ test('mobile layout, motion preference and avatar upload constraints', async ({ 
   await ready(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('#background-motion').click();
-  await page.reload();
+  await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#background-motion')).toHaveText('开启动效');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.locator('#author-recommendations').click();
