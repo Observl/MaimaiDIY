@@ -2,6 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ACRYLIC_PRODUCTS, BUNDLE_PRESETS, quoteAcrylicOrder, quoteProductBundle, buildAcrylicDesignDraft } from '../../src/custom-order.js';
 
+test('presets cover every nonempty product combination with one shipping fee',()=>{
+  const combinations=new Set();
+  for(const preset of Object.values(BUNDLE_PRESETS)) {
+    combinations.add([preset.quantity,preset.cardQuantity,preset.shikishiQuantity].map(value=>Number(value>0)).join(''));
+    assert.equal(quoteProductBundle({...preset,variant:'premium'}).shippingFen,500);
+  }
+  assert.deepEqual([...combinations].sort(),['001','010','011','100','101','110','111']);
+});
+
 test('shikishi has fixed retail and newcomer prices and one fixed shipping fee', () => {
   const selection={variant:'premium',quantity:0,shikishiQuantity:1};
   assert.equal(quoteProductBundle(selection).totalFen,2499);
