@@ -2,6 +2,7 @@ import { DISPLAY_FONT } from './config.js';
 import { readCurrentDesign } from './current-design.js';
 import { createRenderer } from './renderer.js';
 import { initializeCustomOrder } from './custom-order.js';
+import { createCollectibleMasks } from './collectible-masks.js';
 
 const status = document.querySelector('#design-status');
 const preview = document.querySelector('#order-preview-shell');
@@ -33,7 +34,13 @@ async function updatePhysicalPreview(request) {
     const viewer = await previewLoading;
     if (request !== version) return;
     physicalPreview = viewer;
-    viewer.setDesign(renderer.renderCanvas);
+    const finishMaps = await createCollectibleMasks(structuredClone(state));
+    if (request !== version) return;
+    viewer.setDesign(renderer.renderCanvas, finishMaps);
+    for (const [id, source] of [['uv-mask-preview', finishMaps.uv], ['glitter-mask-preview', finishMaps.glitter]]) {
+      const canvas = document.querySelector('#' + id);
+      canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height);
+    }
     syncPhysicalSelection();
     viewport.hidden = false;
     physicalStatus.hidden = true;

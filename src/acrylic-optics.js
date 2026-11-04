@@ -2,12 +2,13 @@ import * as THREE from '../vendor/three.module.js';
 
 // Ray/print-plane intersection preserves the source resolution rather than
 // resampling the design through Three's screen-space transmission buffer.
-export function applyPrintOptics(material, mesh, { design, mask, depth, variant, keyPosition, windowPosition }) {
+export function applyPrintOptics(material, mesh, { design, mask, glitterTint, depth, variant, keyPosition, windowPosition }) {
   const inverse = new THREE.Matrix4();
   mesh.onBeforeRender = () => inverse.copy(mesh.matrixWorld).invert();
   material.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, {
       printArtwork: { value: design }, printMask: { value: mask },
+      printGlitterTint: { value: glitterTint },
       printInverse: { value: inverse }, printDepth: { value: depth },
       printFinish: { value: variant === 'premium' ? 2 : variant === 'light' ? 1 : 0 },
       printSun: { value: keyPosition },
@@ -17,6 +18,7 @@ export function applyPrintOptics(material, mesh, { design, mask, depth, variant,
       #include <common>
       uniform sampler2D printArtwork;
       uniform sampler2D printMask;
+      uniform sampler2D printGlitterTint;
       uniform mat4 printInverse;
       uniform float printDepth;
       uniform float printFinish;
@@ -42,7 +44,8 @@ export function applyPrintOptics(material, mesh, { design, mask, depth, variant,
         totalDiffuse = mix(totalDiffuse, artwork * transmissionTint * (1.0 - fresnel), insidePrint);
 
         if (printFinish > 0.5 && insidePrint > 0.5) {
-          float spot = texture2D(printMask, printUV).r;
+          vec3 finish = texture2D(printMask, printUV).rgb;
+          float spot = finish.r;
           vec2 texel = 1.0 / vec2(textureSize(printMask, 0));
           vec2 gradient = vec2(
             texture2D(printMask, printUV + vec2(texel.x, 0.0)).r - texture2D(printMask, printUV - vec2(texel.x, 0.0)).r,
@@ -64,18 +67,19 @@ export function applyPrintOptics(material, mesh, { design, mask, depth, variant,
             vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
             float distanceToFlake = length(fract(cells) - center);
             float footprint = max(length(fwidth(cells)), 0.06);
-            float flake = (1.0 - smoothstep(0.08, 0.08 + footprint, distanceToFlake)) * step(0.64, seed);
+            float flake = (1.0 - smoothstep(0.08, 0.08 + footprint, distanceToFlake)) * step(0.64, seed) * finish.g;
             vec3 flakeNormal = normalize(n + vec3(
               (printHash(cell + 19.0) - 0.5) * 1.5,
               (printHash(cell + 53.0) - 0.5) * 1.5, 0.0));
             float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 150.0)
               + pow(max(dot(flakeNormal, halfSun), 0.0), 150.0);
             vec3 filmColor = 0.65 + 0.35 * cos(vec3(0.0, 2.1, 4.2) + seed * 6.28 + dot(flakeNormal, v) * 12.0);
-            totalSpecular += filmColor * sparkle * flake * 12.0;
+            vec3 collectibleTint = texture2D(printGlitterTint, printUV).rgb;
+            totalSpecular += mix(collectibleTint, filmColor, finish.b) * sparkle * flake * 12.0;
           }
         }
       #endif
     `);
   };
-  material.customProgramCacheKey = () => 'acrylic-direct-print-v2';
+  material.customProgramCacheKey = () => 'acrylic-collectible-masks-v3';
 }

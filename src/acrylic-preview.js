@@ -79,6 +79,7 @@ export function createAcrylicPreview(host) {
   scene.add(contact);
   let designTexture;
   let spotTexture;
+  let glitterTintTexture;
   const windowPosition = new THREE.Vector3(-8, 7, 6);
   let selection = { variant: 'basic', cardOnly: false, accessory: 'none' };
   let disposed = false;
@@ -124,7 +125,7 @@ export function createAcrylicPreview(host) {
     const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : 0.065), acrylic);
     brick.position.y = 2.5;
     object.add(brick);
-    if (!cardOnly) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, depth, variant, keyPosition: key.position, windowPosition });
+    if (!cardOnly) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, depth, variant, keyPosition: key.position, windowPosition });
     const print = new THREE.MeshPhysicalMaterial({ map: designTexture, roughness: 0.38,
       clearcoat: variant === 'basic' ? 0.15 : 1,
       clearcoatMap: variant === 'basic' ? null : spotTexture,
@@ -152,8 +153,8 @@ export function createAcrylicPreview(host) {
     host.dataset.variant = cardOnly ? 'card' : variant;
     draw();
   }
-  function setDesign(source) {
-    designTexture?.dispose(); spotTexture?.dispose();
+  function setDesign(source, finishMaps) {
+    designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
     const scale = Math.min(1, limit / source.width, limit / source.height);
@@ -167,19 +168,14 @@ export function createAcrylicPreview(host) {
     designTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
     designTexture.minFilter = THREE.LinearMipmapLinearFilter;
     designTexture.magFilter = THREE.LinearFilter;
-    const mask = document.createElement('canvas');
-    mask.width = 1080; mask.height = 452;
-    const ctx = mask.getContext('2d');
-    ctx.drawImage(image, 0, 0, mask.width, mask.height);
-    const pixels = ctx.getImageData(0, 0, mask.width, mask.height);
-    for (let i = 0; i < pixels.data.length; i += 4) {
-      const r = pixels.data[i], g = pixels.data[i + 1], b = pixels.data[i + 2];
-      const saturation = Math.max(r, g, b) - Math.min(r, g, b);
-      const value = saturation > 35 && (r + g + b) / 3 > 75 ? 220 : 0;
-      pixels.data[i] = pixels.data[i + 1] = pixels.data[i + 2] = value;
+    // Only authored collectible shapes receive a finish. Ordinary artwork stays matte.
+    spotTexture = new THREE.CanvasTexture(finishMaps.packed);
+    glitterTintTexture = new THREE.CanvasTexture(finishMaps.tint);
+    glitterTintTexture.colorSpace = THREE.SRGBColorSpace;
+    for (const texture of [spotTexture, glitterTintTexture]) {
+      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      texture.magFilter = THREE.LinearFilter;
     }
-    ctx.putImageData(pixels, 0, 0);
-    spotTexture = new THREE.CanvasTexture(mask);
     rebuild();
   }
   renderer.domElement.addEventListener('keydown', (event) => {
@@ -210,7 +206,7 @@ export function createAcrylicPreview(host) {
     },
     dispose() {
       disposed = true; observer.disconnect(); controls.dispose(); clearObject();
-      designTexture?.dispose(); spotTexture?.dispose();
+      designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
       renderer.dispose(); renderer.domElement.remove();

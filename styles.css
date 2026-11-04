@@ -1231,6 +1231,12 @@ canvas {
 }
 
 .acrylic-preview-card { margin-top: 18px; }
+.finish-mask-inspector { margin-top: 14px; }
+.finish-mask-inspector summary { cursor: pointer; padding: 12px 0; font-weight: 700; }
+.finish-mask-grid { display: grid; gap: 16px; }
+.finish-mask-grid figure { margin: 0; }
+.finish-mask-grid figcaption { margin-bottom: 8px; }
+.finish-mask-grid canvas { display: block; width: 100%; height: auto; background: #000; border-radius: 8px; }
 .acrylic-light-control { display: flex; align-items: center; gap: 16px; margin-top: 14px; font-size: 14px; }
 .acrylic-light-control input { flex: 1; min-width: 0; min-height: 44px; accent-color: #171821; cursor: pointer; }
 .acrylic-preview-card #acrylic-view-reset { flex: 0 0 auto; width: auto; min-height: 36px; }
