@@ -4,10 +4,19 @@ import * as THREE from '../vendor/three.module.js';
 // resampling the design through Three's screen-space transmission buffer.
 export function applyPrintOptics(material, mesh, { design, mask, components, depth, variant, keyPosition, windowPosition, card=false, paper=false }) {
   const inverse = new THREE.Matrix4();
-  mesh.onBeforeRender = () => inverse.copy(mesh.matrixWorld).invert();
+  let compiledShader;
+  mesh.onBeforeRender = () => {
+    inverse.copy(mesh.matrixWorld).invert();
+    if(compiledShader) {
+      compiledShader.uniforms.printSun.value.copy(keyPosition);
+      compiledShader.uniforms.printWindow.value.copy(windowPosition);
+      // Keep live light values synchronized without rebuilding geometry or materials.
+    }
+  };
   const previousCompile=material.onBeforeCompile.bind(material);
   const previousCacheKey=material.customProgramCacheKey.bind(material);
   material.onBeforeCompile = (shader,renderer) => {
+    compiledShader=shader;
     Object.assign(shader.uniforms, {
       printArtwork: { value: design }, printMask: { value: mask },
       printCard: { value: card ? 1 : 0 },
@@ -16,8 +25,8 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
       printInverse: { value: inverse }, printDepth: { value: depth },
       printWorld: { value:mesh.matrixWorld },
       printFinish: { value: variant === 'premium' ? 2 : variant === 'light' ? 1 : 0 },
-      printSun: { value: keyPosition },
-      printWindow: { value: windowPosition },
+      printSun: { value: keyPosition.clone() },
+      printWindow: { value: windowPosition.clone() },
     });
     shader.vertexShader=shader.vertexShader.replace('#include <common>',`#include <common>
       varying vec3 vPrintWorldPosition;
@@ -41,7 +50,11 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
       uniform float printFinish;
       uniform vec3 printSun;
       uniform vec3 printWindow;
-      float printHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float printHash(vec2 p) {
+        vec3 h=fract(vec3(p.xyx)*0.1031);
+        h+=dot(h,h.yzx+33.33);
+        return fract((h.x+h.y)*h.z);
+      }
       // Nearest fully-jittered particle: distance, brightness seed, and two facet seeds.
       vec4 printParticle(vec2 p) {
         vec2 base=floor(p),local=fract(p),chosen=base;
@@ -137,7 +150,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           float powderGrain=mix(fineCoverage,aggregateCoverage,grainLOD);
           vec4 facet=mix(fineParticle,aggregateParticle,grainLOD);
           vec3 colorGrain=vec3(facet.z,facet.w,facet.y)-0.5;
-          vec3 powderModulation=vec3(0.72+powderGrain*0.72+facet.y*0.12)+colorGrain*0.06;
+          vec3 powderModulation=vec3(0.80+powderGrain*0.38+facet.y*0.06)+colorGrain*0.04;
           float powderAmount=finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
           totalDiffuse*=mix(vec3(1.0),powderModulation,powderAmount);
           // Grain facets are attached to the print plane, rather than camera-space noise.
@@ -150,7 +163,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
             +pow(max(dot(powderNormal,halfSun),0.0),40.0)*0.2;
           float powderIllumination=max(dot(powderNormal,windowLight),0.0)*0.7
             +max(dot(powderNormal,sunLight),0.0)*0.3;
-          float powderSheen=powderAmount*(0.15+0.85*powderGrain)*min(0.42,powderLobe*powderIllumination*1.1);
+          float powderSheen=powderAmount*(0.15+0.85*powderGrain)*min(0.65,powderLobe*powderIllumination*2.8);
           totalSpecular+=imageTint*powderSheen;
         }
         if(printCard>0.5) {
@@ -167,6 +180,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
 
         if (printCard<0.5 && printFinish > 0.5 && insidePrint > 0.5) {
           float spot = finish.r;
+          if(spot>0.005 && finish.b<0.995) {
           vec2 texel = 1.0 / vec2(textureSize(printMask, 0));
           vec2 gradient = vec2(
             texture2D(printMask, printUV + vec2(texel.x, 0.0)).r - texture2D(printMask, printUV - vec2(texel.x, 0.0)).r,
@@ -177,6 +191,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           // A varnish lobe over the selected artwork, never a white paint overlay.
           float uvResponse=(1.0-exp(-highlight*spot*3.0))*0.72*(1.0-finish.b);
           totalSpecular += imageTint * uvResponse;
+          }
 
           {
             // Existing background glitter stays separate from diffuse component powder.
@@ -192,7 +207,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
                 vec4 particle=printParticle(cells);
                 float radius=layer==0?mix(0.25,0.45,particle.y):mix(0.18,0.34,particle.y);
                 float edge=clamp(length(fwidth(cells))*0.15,0.03,0.16);
-                float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(0.07,particle.y)*density;
+                float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(0.22,particle.y)*density;
                 vec3 flakeNormal=normalize(finishNormal+tangent*(particle.z-0.5)*1.5+bitangent*(particle.w-0.5)*1.5);
                 float sparkle=pow(max(dot(flakeNormal,halfWindow),0.0),32.0)
                   +pow(max(dot(flakeNormal,halfSun),0.0),50.0);
@@ -207,5 +222,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'snell-rear-ink-irregular-particles-v16-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'snell-rear-ink-live-light-v17-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }
