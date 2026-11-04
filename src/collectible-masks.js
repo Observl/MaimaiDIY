@@ -11,6 +11,7 @@ export async function createCollectibleMasks(state) {
   const packed = canvas(width,height), tint = canvas(width,height);
   const pctx = packed.getContext('2d'), tctx = tint.getContext('2d');
   const data = pctx.createImageData(width,height), colors = tctx.createImageData(width,height);
+  const owners=new Uint8Array(width*height), entries=[];
   const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
   const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
   const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
@@ -24,6 +25,7 @@ export async function createCollectibleMasks(state) {
     layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
+    const entryId=profile ? entries.push({ ...profile, slot:id, name: id==='titleBase' ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0 }) : 0;
     let shape;
     if (profile) {
       regionContext.clearRect(0,0,width,height);
@@ -36,10 +38,12 @@ export async function createCollectibleMasks(state) {
     for (let i=0;i<layer.length;i+=4) {
       const alpha=layer[i+3]/255;
       if (!alpha) continue;
+      if(alpha>0.5) owners[i/4]=0;
       // Every real layer erases covered effects, including exact text glyphs.
       for(let c=0;c<3;c++) { data.data[i+c]*=1-alpha; colors.data[i+c]*=1-alpha; }
       if (!profile || !shape[i+3]) continue;
       const strength=shape[i+3]/255*alpha*finishDetailCoverage(profile,layer[i],layer[i+1],layer[i+2]);
+      if(strength>0) owners[i/4]=entryId;
       data.data[i]=255*profile.uv*strength;
       data.data[i+1]=255*profile.glitter*strength;
       data.data[i+2]=255*profile.rainbow*strength;
@@ -47,6 +51,11 @@ export async function createCollectibleMasks(state) {
     }
   }
   for(let i=3;i<data.data.length;i+=4) { data.data[i]=255; colors.data[i]=255; }
+  for(let pixel=0;pixel<owners.length;pixel++) {
+    const entry=entries[owners[pixel]-1]; if(!entry) continue;
+    if(data.data[pixel*4]>12) entry.uvPixels++;
+    if(data.data[pixel*4+1]>12) entry.glitterPixels++;
+  }
   pctx.putImageData(data,0,0); tctx.putImageData(colors,0,0);
   const uv = canvas(width,height), glitter = canvas(width,height);
   for(const [target,channel] of [[uv,0],[glitter,1]]) {
@@ -58,5 +67,5 @@ export async function createCollectibleMasks(state) {
   }
   // Release the temporary 4x renderer buffers after composing the masks.
   isolated.renderCanvas.width=1; layerCanvas.width=1; region.width=1;
-  return { packed,tint,uv,glitter };
+  return { packed,tint,uv,glitter,entries };
 }
