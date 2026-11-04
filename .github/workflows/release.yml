@@ -1,0 +1,50 @@
+name: Publish version announcement
+
+on:
+  push:
+    branches: [main]
+    paths: [package.json]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'Observl/MaimaiDIY' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish the version PR announcement without a changelog file
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { data: file } = await github.rest.repos.getContent({
+              owner, repo, path: 'package.json', ref: context.sha
+            });
+            const { version } = JSON.parse(Buffer.from(file.content, 'base64').toString('utf8'));
+            if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error('Expected a stable semantic version');
+            const tag = 'v' + version;
+            try {
+              await github.rest.repos.getReleaseByTag({ owner, repo, tag });
+              core.info(tag + ' is already published; leaving it unchanged.');
+              return;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            const { data: pulls } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner, repo, commit_sha: context.sha
+            });
+            const announcement = pulls.find(pr => pr.merged_at && pr.base.ref === 'main' && pr.title.includes(tag));
+            if (!announcement?.body?.trim()) throw new Error('The version PR must contain the release announcement');
+            const { data: release } = await github.rest.repos.createRelease({
+              owner, repo, tag_name: tag, target_commitish: context.sha,
+              name: announcement.title.replace(/^Release\s+/i, ''),
+              body: announcement.body, draft: false, prerelease: false,
+              generate_release_notes: false, make_latest: 'true'
+            });
+            core.notice('Published ' + release.html_url);
