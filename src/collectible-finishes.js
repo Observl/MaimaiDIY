@@ -19,8 +19,8 @@ export function collectibleFinish(state, slot) {
     return { shape: 'battle-emblems', uv: 0.8, glitter: level < 15 ? 0 : level < 20 ? 0.4 : 0.8,
       rainbow: level === 25 ? 1 : 0.1, tint: level === 25 ? prism : level < 20 ? silver : gold };
   }
-  if (slot === 'titleBase' && ['Gold', 'Silver'].includes(state.titleColor)) {
-    return { shape: 'title-rails', metal: state.titleColor, uv: 1, glitter: 0, rainbow: 0, tint: state.titleColor === 'Gold' ? gold : silver };
+  if (['titleBase','titleText'].includes(slot) && ['Gold', 'Silver'].includes(state.titleColor)) {
+    return { shape: slot==='titleText' ? 'title-lettering' : 'title-rails', metal: state.titleColor, uv: 1, glitter: 0, rainbow: 0, tint: state.titleColor === 'Gold' ? gold : silver };
   }
   if (slot === 'nameplate') {
     const id = file.match(/UI_Plate_\d+\.png/)?.[0];
@@ -36,11 +36,13 @@ export function collectibleFinish(state, slot) {
 
 // Refine the authored region to the actual bright metal/feather pixels inside it.
 // A filled polygon is only a search boundary, never the final effect silhouette.
-export function finishDetailCoverage(profile, r, g, b) {
+export function finishDetailCoverage(profile, r, g, b, lettering = false) {
   const bright = (r+g+b)/3;
   const spread = Math.max(r,g,b)-Math.min(r,g,b);
   const warmMetal = r>155 && g>105 && b<170 && r>b*1.12;
   const paleMetal = bright>180 && spread<65;
+  if(lettering && profile.shape.startsWith('rank')) return r>180 && g>180 && b>180 && spread<70 ? 1 : 0;
+  if(profile.shape==='title-lettering') return paleMetal ? 1 : 0;
   if(profile.metal==='Gold') return warmMetal ? 1 : 0;
   if(profile.metal==='Silver') return paleMetal ? 1 : 0;
   if(profile.shape==='plate-wings') {
@@ -52,10 +54,10 @@ export function finishDetailCoverage(profile, r, g, b) {
 }
 
 // Deliberately narrow, authored shapes in original sprite coordinates.
-// The central lettering and illustration are excluded rather than selected by color.
+// Letter faces have a separate region marker so their backing is not selected.
 export function paintFinishShapes(ctx, shape, width, height) {
   const plate = shape.startsWith('plate');
-  const title = shape === 'title-rails';
+  const title = shape.startsWith('title-');
   ctx.save();
   ctx.scale(width / (plate ? 717 : title ? 276 : shape.startsWith('rank') ? 380 : 140),
     height / (plate ? 116 : title ? 25 : shape.startsWith('rank') ? 160 : 84));
@@ -77,12 +79,14 @@ export function paintFinishShapes(ctx, shape, width, height) {
         ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
       }
     }
-    // Protect all large rank glyphs, including their white and purple outlines.
-    ctx.clearRect(49,35,287,91);
+    // The source-pixel refinement selects the actual bright letter faces.
+    ctx.fillStyle='#808080'; ctx.fillRect(49,35,287,91);
   } else if (shape === 'battle-emblems') {
     polygon([[27,20],[30,8],[46,16],[52,3],[65,11],[70,0],[79,10],[92,3],[100,17],[115,8],[113,21]]);
     line([[20,25],[11,39],[16,57],[31,70],[52,77],[90,77],[112,66],[126,48],[120,26]], 7);
-    ctx.clearRect(9,22,123,42);
+    ctx.fillRect(9,22,123,42);
+  } else if(shape==='title-lettering') {
+    ctx.fillRect(0,0,276,25);
   } else if (title) {
     line([[14,3],[261,3]], 3); line([[13,17],[262,17]], 2);
     line([[9,4],[5,8],[7,14],[12,17]], 2); line([[265,4],[271,8],[269,14],[264,17]], 2);
@@ -94,12 +98,14 @@ export function paintFinishShapes(ctx, shape, width, height) {
       polygon([[421,62],[448,50],[460,66],[441,85],[417,88]]);
       polygon([[668,25],[693,16],[685,42],[664,50]]);
       polygon([[666,62],[691,53],[703,81],[675,91]]);
-      ctx.clearRect(465,10,192,99);
+      ctx.fillRect(465,10,192,99);
     } else if (shape === 'plate-mirror') {
       line([[9,9],[101,9],[110,17],[109,101],[101,108],[10,108],[5,99],[5,17],[9,9]], 6);
       polygon([[143,52],[155,37],[166,53],[188,57],[169,69],[165,86],[151,71],[134,68]]);
       polygon([[323,24],[339,11],[347,30],[366,39],[344,46],[332,62],[328,42],[311,35]]);
-      ctx.clearRect(395,0,322,116);
+      ctx.fillRect(395,0,322,116);
+    } else {
+      ctx.fillRect(410,5,297,105);
     }
   }
   ctx.restore();
