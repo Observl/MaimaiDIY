@@ -96,8 +96,7 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
   section.id = 'custom-order';
   section.tabIndex = -1;
   section.innerHTML = `
-    <div class="section-head"><div><h2>亚克力实体定制 · 方案预览</h2>
-    <p>当前仅可计算报价并导出方案；未开放购买和商业生产。</p></div></div>
+    <div class="section-head"><h2>定制选配</h2></div>
     <div class="custom-order-grid">
       <label>工艺款式<select id="acrylic-variant">
         <option value="basic">基础款 · ¥29.99</option>
@@ -121,7 +120,6 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
       <button id="acrylic-export" class="button secondary" type="button">导出定制方案草稿</button>
       <button class="button primary" type="button" disabled title="商业授权、订单后端及支付尚未接入">在线下单（尚未开放）</button>
     </div>
-    <p class="custom-order-warning">现有舞萌素材为非商业用途。导出方案不代表获得版权许可，不可用于商业印刷、销售或直接推送工厂。</p>
   `;
   anchor.insertAdjacentElement('afterend', section);
   const variant = section.querySelector('#acrylic-variant');

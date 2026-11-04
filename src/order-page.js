@@ -20,6 +20,7 @@ initializeCustomOrder({
 async function refreshDesign() {
   const request = ++version;
   state = null;
+  status.hidden = false;
   preview.hidden = true;
   document.querySelector('#acrylic-export').disabled = true;
   const latest = readCurrentDesign();
@@ -35,6 +36,7 @@ async function refreshDesign() {
     state = latest;
     preview.hidden = false;
     status.textContent = '已自动载入你最近编辑的上屏设计。';
+    status.hidden = true;
     document.querySelector('#acrylic-export').disabled = false;
   } catch {
     if (request !== version) return;
