@@ -89,7 +89,7 @@ function yuan(fen) {
 }
 
 export function initializeCustomOrder({ snapshotState, renderCanvas }) {
-  const anchor = document.querySelector('.preview-card');
+  const anchor = document.querySelector('#acrylic-preview-card') || document.querySelector('.preview-card');
   if (!anchor) return;
   const section = document.createElement('section');
   section.className = 'card custom-order-card';
@@ -189,3 +189,4 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
   });
   refresh();
 }
+

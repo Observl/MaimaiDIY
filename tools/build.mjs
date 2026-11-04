@@ -60,6 +60,18 @@ for (const file of files) {
     );
   }
 }
+// Ship the pinned 3D runtime on our own origin.
+await mkdir(resolve(dist, 'vendor'), { recursive: true });
+for (const [source, target] of [
+  ['build/three.module.js', 'three.module.js'],
+  ['build/three.core.js', 'three.core.js'],
+  ['examples/jsm/controls/OrbitControls.js', 'OrbitControls.js'],
+  ['examples/jsm/geometries/RoundedBoxGeometry.js', 'RoundedBoxGeometry.js'],
+]) {
+  const code = await readFile(resolve(root, 'node_modules/three', source), 'utf8');
+  await writeFile(resolve(dist, 'vendor', target), code.replace(/from 'three'/g, "from './three.module.js'"));
+}
+await cp(resolve(root, 'node_modules/three/LICENSE'), resolve(dist, 'vendor/three-LICENSE.txt'));
 await writeFile(resolve(dist, '.nojekyll'), '');
 const html = await readFile(resolve(dist, 'index.html'), 'utf8');
 for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
@@ -71,3 +83,4 @@ for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
 console.log(
   `Built ${files.size} public files. Source tools, tests, raw captures and archived backgrounds stay out of the site.`
 );
+
