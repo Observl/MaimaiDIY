@@ -73,7 +73,7 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
           * step(0.001, printUV.y) * step(printUV.y, 0.999)
           * step(0.0, rayDistance) * (printCard>0.5 ? 1.0 : smoothstep(0.3, 0.9, localNormal.z));
         vec3 artwork = texture2D(printArtwork, printUV).rgb;
-        float componentPrint=0.0;
+        float componentPrint=max(texture2D(printLayer1,printUV).a,max(texture2D(printLayer2,printUV).a,texture2D(printLayer3,printUV).a));
         #ifdef USE_TRANSMISSION
         if(printFinish>0.5) {
           // Four physical print depths: background, identity, badges, friend battle.
@@ -136,17 +136,16 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, de
             vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
             float distanceToFlake = length(fract(cells) - center);
             float footprint = max(length(fwidth(cells)), 0.04);
-            // Global glitter on effect products; authored masks only boost special collectibles.
+            // Glitter belongs exclusively to the background. Every overlying print occludes it.
             float density=printFinish>1.5?1.0:0.7;
-            float flake = (1.0 - smoothstep(0.29, 0.29 + min(footprint,0.3), distanceToFlake)) * step(0.08, seed) * density * (1.0-finish.b);
+            float flake = (1.0 - smoothstep(0.29, 0.29 + min(footprint,0.3), distanceToFlake)) * step(0.08, seed) * density * (1.0-finish.b) * (1.0-componentPrint);
             vec3 flakeNormal = normalize(pN + vec3(
               (printHash(cell + 19.0) - 0.5) * 0.65,
               (printHash(cell + 53.0) - 0.5) * 0.65, 0.0));
             float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 125.0)
               + pow(max(dot(flakeNormal, halfSun), 0.0), 170.0);
             float angularGate=0.16+pow(max(dot(pN,halfWindow),0.0),24.0)+pow(max(dot(pN,halfSun),0.0),36.0);
-            float componentBoost=1.0+componentPrint*0.6;
-            float glitterResponse=min((sparkle*angularGate*0.9+0.005)*flake*(1.0+finish.g*1.3)*componentBoost,0.22);
+            float glitterResponse=min((sparkle*angularGate*0.9+0.005)*flake,0.22);
             totalSpecular += imageTint * glitterResponse;
           }
         }

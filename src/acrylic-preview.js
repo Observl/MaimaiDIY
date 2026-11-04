@@ -159,7 +159,7 @@ export function createAcrylicPreview(host) {
       }
       art.geometry.dispose();print.dispose();
     } else object.add(art);
-    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
+    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,layers:layerTextures,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
     if(shikishi) {
       // A raised warm-metal paper binding, visible from both face and side.
       const borderMaterial=new THREE.MeshStandardMaterial({color:'#c3a66d',metalness:0.55,roughness:0.38});
