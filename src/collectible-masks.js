@@ -17,7 +17,7 @@ export async function createCollectibleMasks(state) {
   const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
   const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
   const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
-  const layers=Array.from({length:4},()=>canvas(width,height));
+  const layers=Array.from({length:2},()=>canvas(width,height));
   const ordered = COMPOSITION_ORDER;
   for (const id of ordered) {
     if (!state.visible[id]) continue;
@@ -25,7 +25,7 @@ export async function createCollectibleMasks(state) {
     await isolated.render({ ...state, visible }, { strict: true });
     layerContext.clearRect(0,0,width,height);
     layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
-    const group=id==='background'?0:['nameplate','nameBase','playerName'].includes(id)?1:id==='friendBattle'?3:2;
+    const group=id==='background'?0:1;
     layers[group].getContext('2d').drawImage(layerCanvas,0,0);
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);

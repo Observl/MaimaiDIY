@@ -27,7 +27,7 @@ function syncPhysicalSelection() {
   });
   document.querySelectorAll('[data-preview-product]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.previewProduct===previewProduct)));
   document.querySelector('.acrylic-variants').hidden=cardOnly||shikishi;
-  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射票 · 彩色镭射覆膜' : shikishi?'色纸 · 金色包边 · 背景闪粉与局部 UV':details[variant];
+  document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射票 · 彩色镭射覆膜' : shikishi?'色纸 · 纸质包边 · 背景闪粉与局部 UV':details[variant];
   document.querySelector('.acrylic-preview-detail > span:last-child').textContent = cardOnly
     ? '随角度变色 · 无镜面高光' : shikishi?'图案展示':'120 × 50 × 15 mm · 材质示意';
   physicalPreview?.setSelection({ variant:cardOnly?'premium':variant, cardOnly, shikishi, accessory });

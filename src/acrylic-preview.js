@@ -135,7 +135,7 @@ export function createAcrylicPreview(host) {
     });
     const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : shikishi?0.035:0.065), acrylic);
     if(cardOnly||shikishi) {
-      acrylic.transmission=0; acrylic.color.set(shikishi?'#f5f0e5':'#d5d2ca'); acrylic.metalness=0; acrylic.roughness=0.95; acrylic.clearcoat=0; acrylic.envMapIntensity=0.1;
+      acrylic.transmission=0; acrylic.color.set(shikishi?'#f3eee4':'#171717'); acrylic.metalness=0; acrylic.roughness=0.95; acrylic.clearcoat=0; acrylic.envMapIntensity=0.1;
     }
     brick.position.y = 2.5;
     object.add(brick);
@@ -151,9 +151,9 @@ export function createAcrylicPreview(host) {
     const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
     art.position.set(0, 2.5, cardOnly||shikishi ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
-    if(!cardOnly&&!shikishi&&variant!=='basic'&&layerTextures.length===4) {
-      for(const [i,z] of [-0.43,-0.15,0.15,0.36].entries()) {
-        const pigment=new THREE.MeshPhysicalMaterial({map:layerTextures[i],transparent:i>0,alphaTest:0.015,depthWrite:true,roughness:0.48,metalness:0.08,side:THREE.BackSide});
+    if(!cardOnly&&!shikishi&&variant!=='basic'&&layerTextures.length===2) {
+      for(const [i,z] of [-0.43,0.36].entries()) {
+        const pigment=new THREE.MeshPhysicalMaterial({map:layerTextures[i],transparent:i>0,alphaTest:0.015,depthWrite:true,roughness:0.48,metalness:0,side:THREE.DoubleSide});
         const layer=new THREE.Mesh(new THREE.PlaneGeometry(11.91,4.91),pigment);
         layer.position.set(0,2.5,z*depth);layer.renderOrder=i;object.add(layer);
       }
@@ -161,20 +161,21 @@ export function createAcrylicPreview(host) {
     } else object.add(art);
     if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,layers:layerTextures,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
     if(shikishi) {
-      // A raised warm-metal paper binding, visible from both face and side.
-      const borderMaterial=new THREE.MeshStandardMaterial({color:'#c3a66d',metalness:0.55,roughness:0.38});
+      // Folded paper binding, matching the uncoated warm-white reverse.
+      const borderMaterial=new THREE.MeshStandardMaterial({color:'#e8dfce',metalness:0,roughness:0.95});
       for(const [w,h,x,y] of [[12.12,0.075,0,0.015],[12.12,0.075,0,4.985],[0.075,5.0,-6.02,2.5],[0.075,5.0,6.02,2.5]]) {
         const edge=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.17),borderMaterial.clone());edge.position.set(x,y,0);object.add(edge);
       }
       borderMaterial.dispose();
     }
-    const reverseMaterial = variant === 'premium' || cardOnly
-      ? print.clone() : new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
+    const reverseMaterial = cardOnly||shikishi
+      ? new THREE.MeshStandardMaterial({color:cardOnly?'#080808':'#f3eee4',roughness:0.95,metalness:0,envMapIntensity:0.1})
+      : variant==='premium'?print.clone():new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
     const reverse = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), reverseMaterial);
     reverse.rotation.y = Math.PI;
     reverse.position.set(0, 2.5, -depth / 2 - 0.004);
     object.add(reverse);
-    if(cardOnly)applyPrintOptics(reverseMaterial,reverse,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:true});
+    host.dataset.reverseMaterial=cardOnly?'black-cardstock':shikishi?'ivory-paper':'print';
     if (accessory === 'clearStand' && !cardOnly&&!shikishi) {
       const stand = new THREE.Mesh(new RoundedBoxGeometry(8, 0.25, 4, 3, 0.07), acrylic.clone());
       stand.position.set(0, 0.13, 0);
@@ -184,7 +185,7 @@ export function createAcrylicPreview(host) {
     }
     host.dataset.variant = cardOnly ? 'card' : shikishi?'shikishi':variant;
     host.dataset.product = cardOnly ? 'card' : shikishi?'shikishi':'acrylic';
-    host.dataset.printLayers=!cardOnly&&!shikishi&&variant!=='basic'?'4':'1';
+    host.dataset.printLayers=!cardOnly&&!shikishi&&variant!=='basic'?'2':'1';
     draw();
   }
   function setDesign(source, finishMaps) {
