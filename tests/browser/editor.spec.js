@@ -302,6 +302,7 @@ test('template storage failure is atomic', async ({ page }) => {
 
 test('merch opens separately with the latest design and returns to the same edits', async ({ page }) => {
   const shaderErrors = [];
+  page.on('pageerror',error=>shaderErrors.push(error.message));
   page.on('console', (message) => {
     if (message.type() === 'error' && /THREE.WebGLProgram|Shader Error|VALIDATE_STATUS/.test(message.text())) shaderErrors.push(message.text());
   });
@@ -324,6 +325,8 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'premium');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-material-engine','custom-shader-material+mesh-transmission');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-quality',/balanced|high|ultra/);
   await expect(page.locator('#acrylic-variant')).toHaveValue('premium');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-layers','1');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-placement','innermost');
@@ -402,6 +405,14 @@ test('merch opens separately with the latest design and returns to the same edit
   for(let i=0;i<26;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/card-black-reverse.png'});
   await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'色纸',exact:true}).click();
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','shikishi');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-texture','paper-fibers');
+  await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-material.png'});
+  const paperBefore=await page.locator('#acrylic-viewport').screenshot();
+  await dial.focus();await page.keyboard.press('Home');
+  await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-light-angle.png'});
+  expect(paperBefore.equals(await page.locator('#acrylic-viewport').screenshot())).toBe(false);
   await page.locator('[data-finish="premium"]').click();
   await page.getByRole('button',{name:'亚克力砖',exact:true}).click();
   await expect(page.locator('.acrylic-variants')).toBeVisible();

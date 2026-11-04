@@ -3,11 +3,15 @@ import { OrbitControls } from '../vendor/OrbitControls.js';
 import { RoundedBoxGeometry } from '../vendor/RoundedBoxGeometry.js';
 import { applyPrintOptics } from './acrylic-optics.js';
 import { createPaperTexture } from './paper-texture.js';
+import { MeshTransmissionMaterial, getGPUTier } from '../vendor/render-extensions.js';
+import { createFinishMaterial } from './finish-material.js';
+import { previewQuality } from './preview-quality.js';
 
 export function createAcrylicPreview(host,{snapshot=false}={}) {
+  let quality=previewQuality({isMobile:window.matchMedia('(pointer: coarse)').matches},snapshot);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: snapshot });
   if(snapshot)renderer.setClearColor(0xffffff,0);
-  renderer.setPixelRatio(snapshot?1:Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1,quality.pixelRatio));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -57,7 +61,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   const key = new THREE.DirectionalLight(0xfff6e5, 3.2);
   key.position.set(-8, 12, -6);
   key.castShadow = true;
-  key.shadow.mapSize.set(snapshot?512:2048,snapshot?512:2048);
+  key.shadow.mapSize.set(quality.shadowSize,quality.shadowSize);
   Object.assign(key.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12 });
   key.shadow.bias = -0.0005;
   key.shadow.normalBias = 0.03;
@@ -86,7 +90,6 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   scene.add(contact);
   let designTexture;
   let spotTexture;
-  let glitterTintTexture;
   let componentTexture;
   const paperSurface=createPaperTexture(),cardSurface=createPaperTexture(true);
   const windowPosition = new THREE.Vector3(-8, 7, 6);
@@ -139,7 +142,11 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     const variant=cardOnly||shikishi?'premium':selection.variant;
     contact.scale.set(1,cardOnly?0.3:shikishi?0.5:1,1);
     const depth = cardOnly ? 0.035 : shikishi ? 0.12 : 1.5;
-    const acrylic = new THREE.MeshPhysicalMaterial({
+    const acrylic = cardOnly||shikishi?new THREE.MeshPhysicalMaterial():new MeshTransmissionMaterial({
+      samples:quality.samples,transmissionSampler:true,transmission:1,
+      chromaticAberration:0,anisotropicBlur:0,distortion:0,temporalDistortion:0,
+    });
+    acrylic.setValues({
       color: '#ffffff', metalness: 0, roughness: 0.018,
       transmission: 1, thickness: depth, ior: 1.49,
       attenuationColor: new THREE.Color('#e3f5f5'), attenuationDistance: 55,
@@ -151,14 +158,14 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     }
     brick.position.y = 2.5;
     object.add(brick);
-    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, glitterTint: glitterTintTexture, components:componentTexture, depth, variant, keyPosition: key.position, windowPosition });
-    const print = new THREE.MeshPhysicalMaterial({ map: designTexture, roughness: 0.38,
+    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, components:componentTexture, depth, variant, keyPosition: key.position, windowPosition });
+    const print = createFinishMaterial({ map: designTexture, roughness: shikishi?0.62:cardOnly?0.42:0.38,
       clearcoat: 0,
       clearcoatMap: null,
       clearcoatRoughness: 0.06,
       iridescence: 0, iridescenceIOR: 1.45,
       iridescenceThicknessRange: [180, 500], metalness: cardOnly ? 0.2 : 0,
-    });
+    },spotTexture,{paper:shikishi});
     if(cardOnly||shikishi) { print.clearcoat=0;print.clearcoatMap=null;print.metalness=0;print.roughness=shikishi?0.62:0.42;print.envMapIntensity=0;print.specularIntensity=0; }
     const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
     art.name='single-composited-design';
@@ -166,7 +173,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     art.castShadow = true;
     print.side=THREE.DoubleSide;
     object.add(art);
-    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,glitterTint:glitterTintTexture,components:componentTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
+    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,components:componentTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
     if(shikishi) {
       // Folded paper binding, matching the uncoated warm-white reverse.
       const borderMaterial=new THREE.MeshStandardMaterial({color:'#e8dfce',metalness:0,roughness:0.95,map:paperSurface.color,bumpMap:paperSurface.bump,bumpScale:0.045,roughnessMap:paperSurface.roughness});
@@ -187,7 +194,11 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     }
     host.dataset.reverseMaterial=cardOnly?'black-cardstock':shikishi?'ivory-paper':'print';
     if (accessory === 'clearStand' && !cardOnly&&!shikishi) {
-      const stand = new THREE.Mesh(new RoundedBoxGeometry(8, 0.25, 4, 3, 0.07), acrylic.clone());
+      // Helper material clones lose constructor-only sampler options; construct explicitly.
+      const standMaterial=new MeshTransmissionMaterial({samples:quality.samples,transmissionSampler:true,transmission:1,
+        thickness:0.25,roughness:0.018,chromaticAberration:0,anisotropicBlur:0});
+      standMaterial.ior=1.49;standMaterial.envMapIntensity=0.65;
+      const stand = new THREE.Mesh(new RoundedBoxGeometry(8, 0.25, 4, 3, 0.07), standMaterial);
       stand.position.set(0, 0.13, 0);
       object.add(stand);
       // Lift the brick onto the clear base.
@@ -203,7 +214,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     draw();
   }
   function setDesign(source, finishMaps) {
-    designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();componentTexture?.dispose();
+    designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, snapshot?2048:4096);
     const scale = Math.min(1, limit / source.width, limit / source.height);
@@ -214,17 +225,15 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     context.drawImage(source, 0, 0, image.width, image.height);
     designTexture = new THREE.CanvasTexture(image);
     designTexture.colorSpace = THREE.SRGBColorSpace;
-    designTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    designTexture.anisotropy = Math.min(quality.anisotropy,renderer.capabilities.getMaxAnisotropy());
     designTexture.minFilter = THREE.LinearMipmapLinearFilter;
     designTexture.magFilter = THREE.LinearFilter;
     componentTexture=new THREE.CanvasTexture(finishMaps.componentCoverage);
-    componentTexture.anisotropy=renderer.capabilities.getMaxAnisotropy();
+    componentTexture.anisotropy=designTexture.anisotropy;
     // Only authored collectible shapes receive a finish. Ordinary artwork stays matte.
     spotTexture = new THREE.CanvasTexture(finishMaps.packed);
-    glitterTintTexture = new THREE.CanvasTexture(finishMaps.tint);
-    glitterTintTexture.colorSpace = THREE.SRGBColorSpace;
-    for (const texture of [spotTexture, glitterTintTexture]) {
-      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    for (const texture of [spotTexture]) {
+      texture.anisotropy = designTexture.anisotropy;
       texture.magFilter = THREE.LinearFilter;
     }
     rebuild();
@@ -244,9 +253,34 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     host.dispatchEvent(new window.Event('preview-unavailable'));
   });
   reset(); resize();
+  host.dataset.quality=quality.name;
+  host.dataset.materialEngine='custom-shader-material+mesh-transmission';
+  if(!snapshot) {
+    // Local benchmark data; detection does not contact an external analytics service.
+    getGPUTier({glContext:renderer.getContext(),benchmarksURL:new URL('../vendor/gpu-benchmarks',import.meta.url).href}).then(result=>{
+      if(disposed)return;
+      // Apple detection may issue its own GL commands on the shared context.
+      renderer.resetState();
+      const next=previewQuality(result);
+      host.dataset.gpuTier=String(result.tier);
+      host.dataset.quality=next.name;
+      if(next.name===quality.name)return;
+      quality=next;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,quality.pixelRatio));
+      key.shadow.mapSize.set(quality.shadowSize,quality.shadowSize);
+      key.shadow.map?.dispose();key.shadow.map=null;
+      for(const texture of [designTexture,spotTexture,componentTexture])if(texture){
+        texture.anisotropy=Math.min(quality.anisotropy,renderer.capabilities.getMaxAnisotropy());texture.needsUpdate=true;
+      }
+      resize();rebuild();
+    }).catch(()=>{if(!disposed){renderer.resetState();host.dataset.gpuTier='fallback';draw();}});
+  }
   return {
     setDesign,
-    setSelection(next) { selection = next; rebuild(); },
+    setSelection(next) {
+      const same=['variant','cardOnly','shikishi','accessory'].every(key=>(selection[key]??false)===(next[key]??false));
+      selection=next;if(!same)rebuild();
+    },
     captureConfiguration(config) {
       // Render the actual configured product meshes together, then freeze the frame as a PNG.
       const items=[...(config.quantity>0?[{cardOnly:false,shikishi:false,accessory:config.accessory}]:[]),
@@ -293,7 +327,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     },
     dispose() {
       disposed = true;window.cancelAnimationFrame(pendingFrame);observer.disconnect(); controls.dispose(); clearObject();
-      designTexture?.dispose(); spotTexture?.dispose(); glitterTintTexture?.dispose();componentTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
+      designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
       renderer.dispose(); renderer.domElement.remove();

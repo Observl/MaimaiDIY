@@ -2,13 +2,14 @@ import * as THREE from '../vendor/three.module.js';
 
 // Ray/print-plane intersection preserves the source resolution rather than
 // resampling the design through Three's screen-space transmission buffer.
-export function applyPrintOptics(material, mesh, { design, mask, glitterTint, components, depth, variant, keyPosition, windowPosition, card=false, paper=false }) {
+export function applyPrintOptics(material, mesh, { design, mask, components, depth, variant, keyPosition, windowPosition, card=false, paper=false }) {
   const inverse = new THREE.Matrix4();
   mesh.onBeforeRender = () => inverse.copy(mesh.matrixWorld).invert();
-  material.onBeforeCompile = (shader) => {
+  const previousCompile=material.onBeforeCompile.bind(material);
+  const previousCacheKey=material.customProgramCacheKey.bind(material);
+  material.onBeforeCompile = (shader,renderer) => {
     Object.assign(shader.uniforms, {
       printArtwork: { value: design }, printMask: { value: mask },
-      printGlitterTint: { value: glitterTint },
       printCard: { value: card ? 1 : 0 },
       printPaper: { value: paper ? 1 : 0 },
       printComponents: { value:components },
@@ -31,7 +32,6 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
       varying vec3 vPrintLocalPosition;
       uniform sampler2D printArtwork;
       uniform sampler2D printMask;
-      uniform sampler2D printGlitterTint;
       uniform float printCard;
       uniform float printPaper;
       uniform sampler2D printComponents;
@@ -95,7 +95,7 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
         #ifdef USE_TRANSMISSION
         float f0=pow((material.ior-1.0)/(material.ior+1.0),2.0);
         float fresnel = f0 + (1.0-f0) * pow(1.0 - max(dot(pN, pV), 0.0), 5.0);
-        vec3 transmissionTint = volumeAttenuation(max(rayDistance, 0.0), material.attenuationColor, material.attenuationDistance);
+        vec3 transmissionTint = pow(max(material.attenuationColor,vec3(0.0001)),vec3(max(rayDistance,0.0)/max(material.attenuationDistance,0.0001)));
         totalDiffuse = mix(totalDiffuse, artwork * transmissionTint * (1.0 - fresnel), insidePrint);
         #else
           float pigmentLight=0.72+0.28*max(dot(pN,normalize(printWindow-pPos)),0.0);
@@ -135,7 +135,7 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
           totalSpecular += imageTint * uvResponse;
 
           {
-            vec2 cells = printUV * vec2(390.0, 163.0);
+            vec2 cells = printUV * vec2(620.0, 259.0);
             vec2 cell = floor(cells);
             float seed = printHash(cell);
             vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
@@ -144,18 +144,20 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
             // Background glitter plus explicit nameplate, lettering and badge finishes.
             float density=printFinish>1.5?1.0:0.7;
             float finishCoverage=max(1.0-componentPrint,finish.g);
-            float flake = (1.0 - smoothstep(0.18, 0.18 + min(footprint,0.16), distanceToFlake)) * step(0.35, seed) * density * (1.0-finish.b) * finishCoverage;
+            float flake = (1.0 - smoothstep(0.14, 0.14 + min(footprint,0.14), distanceToFlake)) * step(0.22, seed) * density * (1.0-finish.b) * finishCoverage;
             vec3 flakeNormal = normalize(finishNormal + vec3(
               (printHash(cell + 19.0) - 0.5) * 1.4,
               (printHash(cell + 53.0) - 0.5) * 1.4, 0.0));
             float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 48.0)
               + pow(max(dot(flakeNormal, halfSun), 0.0), 70.0);
-            float angularGate=0.16+pow(max(dot(finishNormal,halfWindow),0.0),12.0)+pow(max(dot(finishNormal,halfSun),0.0),18.0);
-            float glitterResponse=min((sparkle*angularGate*2.4+0.025)*flake,0.6);
+            float angularGate=0.025+pow(max(dot(finishNormal,halfWindow),0.0),12.0)+pow(max(dot(finishNormal,halfSun),0.0),18.0);
+            float glitterResponse=min(sparkle*angularGate*2.1*flake,0.48);
             totalSpecular += imageTint * glitterResponse;
           }
         }
     `);
+    // Run helper patches last, after preserving the physical shader's include hooks.
+    previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'snell-rear-ink-collectible-finishes-v11-'+Number(card)+'-'+Number(paper);
+  material.customProgramCacheKey = () => 'snell-rear-ink-collectible-finishes-v12-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }
