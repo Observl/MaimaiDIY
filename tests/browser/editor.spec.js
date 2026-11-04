@@ -544,11 +544,16 @@ test('special plate lettering masks emphasize all four collectible families',asy
     for(const id of ['559101','559102','559103','559104']) {
       const state=readCurrentDesign();state.files.nameplate=`assets/nameplates/UI_Plate_${id}.png`;
       const maps=await createCollectibleMasks(state);
-      result.push(maps.entries.find(entry=>entry.slot==='nameplate').letteringPixels);
+      const entry=maps.entries.find(entry=>entry.slot==='nameplate');
+      result.push({lettering:entry.letteringPixels,glitter:entry.glitterPixels});
     }
     return result;
   });
-  for(const count of counts)expect(count).toBeGreaterThan(50);
+  for(const count of counts) {
+    expect(count.lettering).toBeGreaterThan(50);
+    expect(count.glitter).toBeGreaterThan(50);
+    expect(count.glitter).toBeLessThan(717*116*4*0.14+1);
+  }
 });
 
 test('direct order-page visit asks for a design instead of showing someone else’s default', async ({ page }) => {
