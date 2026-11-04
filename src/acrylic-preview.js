@@ -310,6 +310,11 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera);
       return renderer.domElement.toDataURL('image/png');
     },
+    captureFrame() {
+      window.cancelAnimationFrame(pendingFrame);pendingFrame=0;
+      renderer.render(scene,camera);
+      return renderer.domElement.toDataURL('image/png');
+    },
     reset,
     focusCollectibles() {
       controls.minDistance=9;

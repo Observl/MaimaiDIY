@@ -688,6 +688,19 @@ test('generated finishes remain visible in the final acrylic and paper render',a
         for(const [mode,channels] of Object.entries({none:[false,false],powder:[false,true],uv:[true,false]})) {
           viewer.setDesign(art.renderCanvas,{...maps,packed:packed(...channels)});
           frames[mode]=viewer.captureConfiguration(config);
+          if(angle===75) {
+            // Keep geometry/material/program alive: this matches dragging the light dial.
+            viewer.setLightAngle(0);
+            const before=await decode(viewer.captureFrame());
+            viewer.setLightAngle(75);
+            const after=await decode(viewer.captureFrame());
+            frames[mode]=viewer.captureFrame();
+            if(mode==='powder') {
+              let changed=0;
+              for(let i=0;i<before.length;i+=4)if(Math.abs(before[i]-after[i])+Math.abs(before[i+1]-after[i+1])+Math.abs(before[i+2]-after[i+2])>18)changed++;
+              metrics.push({width,product,angle,mode:'live-light-update',visible:changed});
+            }
+          }
         }
         const reference=await decode(frames.none);
         for(const mode of ['powder','uv']) {
@@ -721,9 +734,9 @@ test('generated finishes remain visible in the final acrylic and paper render',a
   await test.info().attach('finish-render-metrics',{body:JSON.stringify(output.metrics,null,2),contentType:'application/json'});
   await writeFile('output/playwright/finish-render-metrics.json',JSON.stringify(output.metrics,null,2));
   for(const image of output.images)for(const mode of ['none','powder','uv'])await writeFile(`output/playwright/${image.product}-${mode}.png`,Buffer.from(image[mode].split(',')[1],'base64'));
-  for(const width of [1000,360])for(const product of ['acrylic','paper'])for(const mode of ['powder','uv','glitter','powder-light-response']) {
+  for(const width of [1000,360])for(const product of ['acrylic','paper'])for(const mode of ['powder','uv','glitter','powder-light-response','live-light-update']) {
     const views=output.metrics.filter(item=>item.width===width&&item.product===product&&item.mode===mode);
-    const minimum=mode==='powder'?(width===1000?5000:850):mode==='glitter'?(width===1000?10000:1400):mode==='powder-light-response'?(width===1000?500:80):(width===1000?200:25);
+    const minimum=mode==='powder'?(width===1000?5000:850):mode==='glitter'?(width===1000?10000:1400):(mode==='powder-light-response'||mode==='live-light-update')?(width===1000?1500:180):(width===1000?200:25);
     expect(Math.max(...views.map(item=>item.visible)),`${width} ${product} ${mode}`).toBeGreaterThan(minimum);
     if(mode==='uv')expect(Math.abs(views[0].total-views[1].total),`${width} ${product} lighting response`).toBeGreaterThan(50);
   }
