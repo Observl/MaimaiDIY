@@ -1,11 +1,24 @@
 import { CANVAS, DISPLAY_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots, COMPOSITION_ORDER } from './config.js';
 import { nameCharacterCount } from './model.js';
 import { loadImage } from './assets.js';
-export function createRenderer(canvas) {
+
+export function preferredRenderScale({
+  coarsePointer = globalThis.matchMedia?.('(pointer: coarse)').matches ?? false,
+  maxTouchPoints = globalThis.navigator?.maxTouchPoints ?? 0,
+  screenWidth = Math.min(globalThis.screen?.width ?? Infinity, globalThis.screen?.height ?? Infinity),
+} = {}) {
+  // A 4x composition is 4320 x 1808 (7.8 MP). That exceeds the reliable
+  // per-canvas area/memory budget of several iOS Safari and Android WebView
+  // versions, especially while the product preview creates its mask canvases.
+  const mobile = coarsePointer || (maxTouchPoints > 0 && screenWidth <= 1024);
+  return mobile ? Math.min(2, RENDER_SCALE) : RENDER_SCALE;
+}
+
+export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) {
   const previewCtx = canvas.getContext('2d');
   const renderCanvas = document.createElement('canvas');
-  renderCanvas.width = CANVAS.width * RENDER_SCALE;
-  renderCanvas.height = CANVAS.height * RENDER_SCALE;
+  renderCanvas.width = CANVAS.width * scale;
+  renderCanvas.height = CANVAS.height * scale;
   const ctx = renderCanvas.getContext('2d');
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
@@ -137,7 +150,7 @@ export function createRenderer(canvas) {
     state = snapshot;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
-    ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0);
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
     for (const { id, slot, image } of drawable) {
       if (id === 'ratingDigits') {
         drawRatingValue();

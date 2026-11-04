@@ -18,7 +18,9 @@ export async function createCollectibleMasks(state) {
   const letteringOwners=new Uint8Array(width*height);
   const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
   const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
-  const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
+  // The masks are 2x, so a 4x intermediate only increases mobile canvas
+  // memory pressure and is immediately downsampled again.
+  const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height), { scale });
   const componentCoverage=canvas(width,height);
   const ordered = COMPOSITION_ORDER;
   for (const id of ordered) {

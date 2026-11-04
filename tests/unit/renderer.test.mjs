@@ -55,3 +55,20 @@ test('late image loads cannot overwrite a newer render; strict previews reject m
     globalThis.Image = oldImage;
   }
 });
+
+test('mobile and touch-sized devices use a canvas size safe for mobile browsers', async () => {
+  const { preferredRenderScale } = await import('../../src/renderer.js');
+  assert.equal(preferredRenderScale({ coarsePointer: true }), 2);
+  assert.equal(
+    preferredRenderScale({ coarsePointer: false, maxTouchPoints: 5, screenWidth: 390 }),
+    2
+  );
+});
+
+test('desktop rendering keeps the existing high-resolution composition', async () => {
+  const { preferredRenderScale } = await import('../../src/renderer.js');
+  assert.equal(
+    preferredRenderScale({ coarsePointer: false, maxTouchPoints: 0, screenWidth: 1440 }),
+    4
+  );
+});
