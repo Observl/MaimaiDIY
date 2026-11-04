@@ -49,6 +49,17 @@
         <canvas id="preview" width="1080" height="452" aria-label="用于定制周边的最新上屏设计"></canvas>
       </div>
     </section>
+    <section id="acrylic-preview-card" class="card acrylic-preview-card" aria-labelledby="acrylic-preview-title">
+      <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2><button id="acrylic-view-reset" class="button secondary" type="button">复位视角</button></div>
+      <div class="acrylic-variants" role="group" aria-label="预览款式">
+        <button type="button" data-preview-variant="basic" aria-pressed="true">基础款</button>
+        <button type="button" data-preview-variant="light" aria-pressed="false">轻量特效款</button>
+        <button type="button" data-preview-variant="premium" aria-pressed="false">高配特效款</button>
+      </div>
+      <div id="acrylic-viewport" class="acrylic-viewport"></div>
+      <p id="acrylic-preview-status" role="status">等待上屏设计</p>
+      <p class="acrylic-preview-detail"><span id="acrylic-material-detail">背面彩印 · 白墨</span><span>120 × 50 × 15 mm · 材质示意</span></p>
+    </section>
   </main>
   <script type="module" src="src/order-page.js"></script>
 </body>

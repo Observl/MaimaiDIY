@@ -1229,3 +1229,16 @@ canvas {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
+
+.acrylic-preview-card { margin-top: 18px; }
+.acrylic-preview-card #acrylic-view-reset { flex: 0 0 auto; width: auto; min-height: 36px; }
+.acrylic-variants { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.acrylic-variants button { flex: 1; min-height: 44px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font: inherit; cursor: pointer; }
+.acrylic-variants button[aria-pressed="true"] { background: #171821; color: #fff; border-color: #171821; }
+.acrylic-viewport { width: 100%; height: clamp(300px, 44vw, 520px); border-radius: 16px; overflow: hidden; background: #f3eee4; }
+.acrylic-viewport canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+.acrylic-viewport canvas:active { cursor: grabbing; }
+.acrylic-viewport canvas:focus-visible { outline: 3px solid var(--accent); outline-offset: -4px; }
+.acrylic-preview-detail { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; font-size: 14px; color: #545661; }
+#acrylic-preview-status { margin: 12px 0 0; }
+@media (max-width: 540px) { .acrylic-variants button { padding: 10px 6px; font-size: 13px; } .acrylic-preview-detail { font-size: 12px; } }
