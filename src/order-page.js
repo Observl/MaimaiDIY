@@ -47,6 +47,9 @@ viewport.addEventListener('preview-unavailable', () => {
   physicalStatus.textContent = '3D 画面已暂停，请刷新页面重试。';
 });
 document.querySelector('#acrylic-view-reset').addEventListener('click', () => physicalPreview?.reset());
+document.querySelector('#acrylic-light-angle').addEventListener('input', (event) => {
+  physicalPreview?.setLightAngle(Number(event.target.value));
+});
 document.querySelectorAll('[data-preview-variant]').forEach((button) => button.addEventListener('click', () => {
   document.querySelector('#acrylic-variant').value = button.dataset.previewVariant;
   document.querySelector('#acrylic-card-only').checked = false;

@@ -1231,6 +1231,8 @@ canvas {
 }
 
 .acrylic-preview-card { margin-top: 18px; }
+.acrylic-light-control { display: flex; align-items: center; gap: 16px; margin-top: 14px; font-size: 14px; }
+.acrylic-light-control input { flex: 1; min-width: 0; min-height: 44px; accent-color: #171821; cursor: pointer; }
 .acrylic-preview-card #acrylic-view-reset { flex: 0 0 auto; width: auto; min-height: 36px; }
 .acrylic-variants { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .acrylic-variants button { flex: 1; min-height: 44px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font: inherit; cursor: pointer; }
