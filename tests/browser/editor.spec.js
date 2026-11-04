@@ -570,7 +570,7 @@ test('special plate lettering masks emphasize all four collectible families',asy
   for(const count of counts) {
     expect(count.lettering).toBeGreaterThan(50);
     expect(count.powder).toBeGreaterThan(50);
-    expect(count.powder).toBeLessThan(717*116*4*0.14+1);
+    expect(count.powder).toBeLessThan(717*116*4*0.24+1);
   }
 });
 
@@ -598,16 +598,22 @@ test('component powder and reflection masks follow source pixels with reflection
       const context=canvas.getContext('2d');context.drawImage(original.renderCanvas,0,0,canvas.width,canvas.height);
       const art=context.getImageData(0,0,canvas.width,canvas.height).data;
       const mask=maps.packed.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
-      let coloredReflection=0,powder=0,whiteReflection=0;
+      let coloredReflection=0,powder=0,whiteReflection=0,titleCoverageErrors=0,badgeCoverageErrors=0;
+      const density=maps.entries.find(entry=>entry.slot===id)?.powder;
       for(let i=0;i<mask.length;i+=4) {
         if(mask[i+1]>12)powder++;
+        if(id==='titleBase'&&Math.abs(mask[i+1]-art[i+3])>1)titleCoverageErrors++;
+        if(['rank','friendBattle'].includes(id)&&art[i+3]>250) {
+          const expected=mask[i]>12?0:Math.round(art[i+3]*density);
+          if(Math.abs(mask[i+1]-expected)>1)badgeCoverageErrors++;
+        }
         if(mask[i]>12) {
           whiteReflection++;
           const r=art[i],g=art[i+1],b=art[i+2];
           if(Math.min(r,g,b)<215||Math.max(r,g,b)-Math.min(r,g,b)>22)coloredReflection++;
         }
       }
-      results.push({id,powder,whiteReflection,coloredReflection});
+      results.push({id,powder,whiteReflection,coloredReflection,titleCoverageErrors,badgeCoverageErrors});
       original.renderCanvas.width=1;
     }
     return results;
@@ -615,8 +621,38 @@ test('component powder and reflection masks follow source pixels with reflection
   for(const item of results) {
     expect(item.powder,item.id).toBeGreaterThan(0);
     expect(item.coloredReflection,item.id).toBe(0);
+    expect(item.titleCoverageErrors,item.id+' full-board powder').toBe(0);
+    expect(item.badgeCoverageErrors,item.id+' powder except white strokes').toBe(0);
   }
   expect(results.reduce((total,item)=>total+item.whiteReflection,0)).toBeGreaterThan(50);
+});
+
+test('title lettering stays matte above the fully powdered title board',async({page})=>{
+  await ready(page);
+  const result=await page.evaluate(async()=>{
+    const {createDefaultState}=await import('/src/model.js');
+    const {createCollectibleMasks}=await import('/src/collectible-masks.js');
+    const {createRenderer}=await import('/src/renderer.js');
+    const {slots}=await import('/src/config.js');
+    const state=createDefaultState();
+    state.visible=Object.fromEntries(Object.keys(slots).map(id=>[id,['titleBase','titleText'].includes(id)]));
+    const maps=await createCollectibleMasks(state);
+    state.visible.titleBase=false;
+    const renderer=createRenderer(document.createElement('canvas'));await renderer.render(state,{strict:true});
+    const glyphs=document.createElement('canvas');glyphs.width=maps.packed.width;glyphs.height=maps.packed.height;
+    const ctx=glyphs.getContext('2d');ctx.drawImage(renderer.renderCanvas,0,0,glyphs.width,glyphs.height);
+    const letters=ctx.getImageData(0,0,glyphs.width,glyphs.height).data;
+    const mask=maps.packed.getContext('2d').getImageData(0,0,glyphs.width,glyphs.height).data;
+    let glyphPixels=0,coatedGlyphs=0,boardPixels=0;
+    for(let i=0;i<mask.length;i+=4) {
+      if(letters[i+3]>250){glyphPixels++;if(mask[i]>5||mask[i+1]>5||mask[i+2]<250)coatedGlyphs++;}
+      else if(mask[i+1]>200)boardPixels++;
+    }
+    return {glyphPixels,coatedGlyphs,boardPixels};
+  });
+  expect(result.glyphPixels).toBeGreaterThan(100);
+  expect(result.coatedGlyphs).toBe(0);
+  expect(result.boardPixels).toBeGreaterThan(1000);
 });
 
 test('generated finishes remain visible in the final acrylic and paper render',async({page})=>{
@@ -645,6 +681,7 @@ test('generated finishes remain visible in the final acrylic and paper render',a
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     for(const product of ['acrylic','paper']) {
       const config={variant:'premium',quantity:product==='acrylic'?1:0,shikishiQuantity:product==='paper'?1:0,cardQuantity:0,accessory:'none'};
+      let firstPowderDifference;
       for(const angle of [0,75]) {
         viewer.setLightAngle(angle);
         const frames={};
@@ -657,6 +694,16 @@ test('generated finishes remain visible in the final acrylic and paper render',a
           const pixels=await decode(frames[mode]);let visible=0,total=0;
           for(let i=0;i<pixels.length;i+=4){const delta=Math.abs(pixels[i]-reference[i])+Math.abs(pixels[i+1]-reference[i+1])+Math.abs(pixels[i+2]-reference[i+2]);if(delta>12)visible++;total+=delta;}
           metrics.push({width,product,angle,mode,visible,total});
+          if(mode==='powder') {
+            const difference=new Int16Array(pixels.length);
+            for(let i=0;i<pixels.length;i+=4)for(let c=0;c<3;c++)difference[i+c]=pixels[i+c]-reference[i+c];
+            if(!firstPowderDifference)firstPowderDifference=difference;
+            else {
+              let lightResponsive=0;
+              for(let i=0;i<difference.length;i+=4)if(Math.abs(difference[i]-firstPowderDifference[i])+Math.abs(difference[i+1]-firstPowderDifference[i+1])+Math.abs(difference[i+2]-firstPowderDifference[i+2])>6)lightResponsive++;
+              metrics.push({width,product,angle,mode:'powder-light-response',visible:lightResponsive});
+            }
+          }
         }
         const noBackground=document.createElement('canvas');noBackground.width=maps.componentCoverage.width;noBackground.height=maps.componentCoverage.height;
         const noBackgroundContext=noBackground.getContext('2d');noBackgroundContext.fillStyle='#fff';noBackgroundContext.fillRect(0,0,noBackground.width,noBackground.height);
@@ -673,9 +720,10 @@ test('generated finishes remain visible in the final acrylic and paper render',a
   });
   await test.info().attach('finish-render-metrics',{body:JSON.stringify(output.metrics,null,2),contentType:'application/json'});
   for(const image of output.images)for(const mode of ['none','powder','uv'])await writeFile(`output/playwright/${image.product}-${mode}.png`,Buffer.from(image[mode].split(',')[1],'base64'));
-  for(const width of [1000,360])for(const product of ['acrylic','paper'])for(const mode of ['powder','uv','glitter']) {
+  for(const width of [1000,360])for(const product of ['acrylic','paper'])for(const mode of ['powder','uv','glitter','powder-light-response']) {
     const views=output.metrics.filter(item=>item.width===width&&item.product===product&&item.mode===mode);
-    expect(Math.max(...views.map(item=>item.visible)),`${width} ${product} ${mode}`).toBeGreaterThan(width===1000?200:25);
+    const minimum=mode==='powder'?(width===1000?5000:850):(width===1000?200:25);
+    expect(Math.max(...views.map(item=>item.visible)),`${width} ${product} ${mode}`).toBeGreaterThan(minimum);
     if(mode==='uv')expect(Math.abs(views[0].total-views[1].total),`${width} ${product} lighting response`).toBeGreaterThan(50);
   }
 });

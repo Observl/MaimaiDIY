@@ -54,3 +54,13 @@ test('each source creates its own bounded white contours without modifying artwo
   assert.ok(first.powder.filter(Boolean).length<=width*height*0.14);
   assert.ok(first.powder.every(value=>value===0||value===255));
 });
+
+test('denser plate powder remains bounded by the source-derived selection',()=>{
+  const width=40,height=20,pixels=new Uint8ClampedArray(width*height*4);
+  for(let p=0;p<width*height;p++)pixels.set(p%2?[245,150,20,255]:[20,50,230,255],p*4);
+  const standard=createSourceFinishMask(pixels,width,height);
+  const denser=createSourceFinishMask(pixels,width,height,{powderFraction:0.24});
+  assert.ok(denser.powder.filter(Boolean).length>standard.powder.filter(Boolean).length);
+  assert.ok(denser.powder.filter(Boolean).length<=width*height*0.24);
+  assert.ok(denser.powder.some(value=>value===0));
+});

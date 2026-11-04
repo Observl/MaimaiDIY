@@ -101,8 +101,16 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           float pigmentLight=0.72+0.28*max(dot(pN,normalize(printWindow-pPos)),0.0);
           totalDiffuse=mix(totalDiffuse,artwork*pigmentLight,insidePrint);
         #endif
+        vec3 windowLight = normalize(printWindow - finishPosition);
+        vec3 sunLight = normalize(printSun - finishPosition);
+        #ifdef USE_TRANSMISSION
+        if(dot(finishNormal,windowLight)>0.0)windowLight=-refract(-windowLight,finishNormal,1.0/material.ior);
+        if(dot(finishNormal,sunLight)>0.0)sunLight=-refract(-sunLight,finishNormal,1.0/material.ior);
+        #endif
+        vec3 halfWindow = normalize(finishView + windowLight);
+        vec3 halfSun = normalize(finishView + sunLight);
         if(printCard<0.5 && printFinish>0.5 && insidePrint>0.5) {
-          // Colored powder is a diffuse pigment texture, without sparkle or white emission.
+          // Dense colored pigment grains with soft light-dependent metallic luster.
           vec2 powderCells=printUV*vec2(1050.0,439.0);
           vec2 powderCell=floor(powderCells);
           float fineGrain=printHash(powderCell);
@@ -113,9 +121,21 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           float powderFootprint=max(fwidth(powderCells.x),fwidth(powderCells.y));
           float powderGrain=mix(fineGrain,aggregateGrain,smoothstep(0.8,2.0,powderFootprint));
           vec3 colorGrain=vec3(printHash(aggregateCell+17.0),printHash(aggregateCell+43.0),printHash(aggregateCell+91.0))-0.5;
-          vec3 powderModulation=vec3(0.65+powderGrain*0.70)+colorGrain*0.06;
+          vec3 powderModulation=vec3(0.46+powderGrain*1.08)+colorGrain*0.10;
           float powderAmount=finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
           totalDiffuse*=mix(vec3(1.0),powderModulation,powderAmount);
+          // Grain facets are attached to the print plane, rather than camera-space noise.
+          vec3 powderTangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
+          vec3 powderBitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
+          vec3 powderNormal=normalize(finishNormal
+            +powderTangent*(printHash(aggregateCell+19.0)-0.5)*1.1
+            +powderBitangent*(printHash(aggregateCell+53.0)-0.5)*1.1);
+          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),14.0)*0.7
+            +pow(max(dot(powderNormal,halfSun),0.0),20.0)*0.3;
+          float powderIllumination=max(dot(powderNormal,windowLight),0.0)*0.7
+            +max(dot(powderNormal,sunLight),0.0)*0.3;
+          float powderSheen=powderAmount*min(0.24,powderLobe*powderIllumination*0.30);
+          totalSpecular+=imageTint*powderSheen;
         }
         if(printCard>0.5) {
           // Diffractive color modulation without a white mirror/varnish highlight.
@@ -136,14 +156,6 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
             texture2D(printMask, printUV + vec2(texel.x, 0.0)).r - texture2D(printMask, printUV - vec2(texel.x, 0.0)).r,
             texture2D(printMask, printUV + vec2(0.0, texel.y)).r - texture2D(printMask, printUV - vec2(0.0, texel.y)).r);
           vec3 raisedNormal = normalize(finishNormal + vec3(-gradient.x, 0.14-gradient.y, 0.0) * 0.2);
-          vec3 windowLight = normalize(printWindow - finishPosition);
-          vec3 sunLight = normalize(printSun - finishPosition);
-          #ifdef USE_TRANSMISSION
-          if(dot(finishNormal,windowLight)>0.0)windowLight=-refract(-windowLight,finishNormal,1.0/material.ior);
-          if(dot(finishNormal,sunLight)>0.0)sunLight=-refract(-sunLight,finishNormal,1.0/material.ior);
-          #endif
-          vec3 halfWindow = normalize(finishView + windowLight);
-          vec3 halfSun = normalize(finishView + sunLight);
           float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), printPaper>0.5?12.0:18.0)
             + pow(max(dot(raisedNormal, halfSun), 0.0), printPaper>0.5?20.0:30.0);
           // A varnish lobe over the selected artwork, never a white paint overlay.
@@ -175,5 +187,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'snell-rear-ink-resolved-powder-white-outlines-v14-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'snell-rear-ink-light-responsive-powder-v15-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }

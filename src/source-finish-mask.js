@@ -32,7 +32,7 @@ export function createWhiteOutlineMask(data,width,height) {
 }
 
 // Independent powder and white-outline masks, generated in memory from each source.
-export function createSourceFinishMask(data,width,height) {
+export function createSourceFinishMask(data,width,height,{powderFraction=0.14}={}) {
   const count=width*height;
   const candidate=new Uint8Array(count), luma=new Float32Array(count), contrast=new Float32Array(count);
   for(let p=0;p<count;p++) {
@@ -73,7 +73,7 @@ export function createSourceFinishMask(data,width,height) {
     }
   }
   // Per-source contrast ranking keeps flat backing colors out of the selected foil.
-  for(const [mask,maxFraction] of [[powder,0.14]]) {
+  for(const [mask,maxFraction] of [[powder,powderFraction]]) {
     const selected=[];for(let p=0;p<count;p++)if(mask[p])selected.push(p);
     const limit=Math.floor(count*maxFraction);
     if(selected.length>limit) {

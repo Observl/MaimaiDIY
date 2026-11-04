@@ -22,7 +22,7 @@ test('title, rating and collectible profiles use colored powder', () => {
     state.titleColor=color;
     assert.equal(collectibleFinish(state,'titleBase').shape,'title-board');
     assert.ok(collectibleFinish(state,'titleBase').powder>0);
-    assert.ok(collectibleFinish(state,'titleText').powder>0);
+    assert.equal(collectibleFinish(state,'titleText'),null);
   }
   state.titleColor='Normal'; assert.equal(collectibleFinish(state,'titleBase').uv,1);
   assert.ok(collectibleFinish(state,'ratingFrame').powder>0);
