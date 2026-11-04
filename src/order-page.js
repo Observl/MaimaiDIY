@@ -102,6 +102,7 @@ async function refreshDesign() {
     const rendered = await renderer.render(latest, { strict: true });
     if (request !== version || !rendered) return;
     state = latest;
+    document.dispatchEvent(new window.Event('order-design-ready'));
     preview.hidden = false;
     status.textContent = '已自动载入你最近编辑的上屏设计。';
     status.hidden = true;
