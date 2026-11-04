@@ -16,7 +16,7 @@ let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
 const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
-const details = { basic: '背面彩印 · 白墨', light: '分层彩印 · 局部 UV · 背景闪粉', premium: '分层双面印刷 · 彩色 UV · 加密背景闪粉' };
+const details = { basic: '背面彩印 · 白墨', light: '单层彩印 · 局部 UV · 背景闪粉', premium: '单层双面印刷 · 彩色 UV · 加密背景闪粉' };
 function syncPhysicalSelection() {
   const variant = document.querySelector('#acrylic-variant').value;
   const cardOnly = previewProduct==='card';

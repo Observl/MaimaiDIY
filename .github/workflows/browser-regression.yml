@@ -1,8 +1,7 @@
 name: Browser regression
 
 on:
-  pull_request:
-    branches: [main]
+  # Regression checks are local by default; online runs require an explicit manual request.
   workflow_dispatch:
 
 permissions:

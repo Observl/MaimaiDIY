@@ -325,7 +325,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'premium');
   await expect(page.locator('#acrylic-variant')).toHaveValue('premium');
-  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-layers','2');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-layers','1');
   await expect(page.locator('#finish-inspector')).toHaveCount(0);
   await page.getByRole('button',{name:'收藏品近景'}).click();
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/acrylic-actual-detail.png'});
@@ -395,6 +395,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/laser-card-45.png'});
   expect(cardDark.equals(await page.locator('#acrylic-viewport').screenshot())).toBe(false);
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-material','black-cardstock');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-texture','fine-card-grain');
   await page.locator('#acrylic-viewport canvas').focus();
   for(let i=0;i<26;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/card-black-reverse.png'});
@@ -406,7 +407,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await page.getByRole('button',{name:'复位视角'}).click();
   await page.locator('#acrylic-viewport canvas').focus();
   for(let i=0;i<8;i++)await page.keyboard.press('ArrowLeft');
-  await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/acrylic-side-two-layers.png'});
+  await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/acrylic-side-single-layer.png'});
   await page.getByRole('button',{name:'复位视角'}).click();
   expect(shaderErrors).toEqual([]);
   const sceneCanvas = page.locator('#acrylic-viewport canvas');
@@ -479,6 +480,7 @@ test('purchase presets select products, update newcomer prices and export all it
   expect(paperAfter.equals(paperBefore)).toBe(false);
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-light-angle.png'});
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-material','ivory-paper');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-texture','paper-fibers');
   await page.locator('#acrylic-viewport canvas').focus();
   for(let i=0;i<26;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-paper-reverse.png'});

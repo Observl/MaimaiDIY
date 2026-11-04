@@ -17,7 +17,7 @@ export async function createCollectibleMasks(state) {
   const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
   const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
   const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
-  const layers=Array.from({length:2},()=>canvas(width,height));
+  const componentCoverage=canvas(width,height);
   const ordered = COMPOSITION_ORDER;
   for (const id of ordered) {
     if (!state.visible[id]) continue;
@@ -25,8 +25,7 @@ export async function createCollectibleMasks(state) {
     await isolated.render({ ...state, visible }, { strict: true });
     layerContext.clearRect(0,0,width,height);
     layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
-    const group=id==='background'?0:1;
-    layers[group].getContext('2d').drawImage(layerCanvas,0,0);
+    if(id!=='background')componentCoverage.getContext('2d').drawImage(layerCanvas,0,0);
     const layer = layerContext.getImageData(0,0,width,height).data;
     const profile = collectibleFinish(state,id);
     const entryId=profile ? entries.push({ ...profile, slot:id, name: id.startsWith('title') ? `${state.titleColor==='Gold'?'金色':'银色'}称号「${state.titleName}」` : state.labels[id] || id, uvPixels:0, glitterPixels:0 }) : 0;
@@ -81,5 +80,5 @@ export async function createCollectibleMasks(state) {
   }
   // Release the temporary 4x renderer buffers after composing the masks.
   isolated.renderCanvas.width=1; layerCanvas.width=1; region.width=1;
-  return { packed,tint,uv,glitter,entries,layers };
+  return { packed,tint,uv,glitter,entries,componentCoverage };
 }

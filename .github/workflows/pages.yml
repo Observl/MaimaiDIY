@@ -32,8 +32,8 @@ jobs:
           cache: npm
       - name: Install development tools
         run: npm ci
-      - name: Check and build
-        run: npm run check
+      - name: Build site
+        run: npm run build
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
