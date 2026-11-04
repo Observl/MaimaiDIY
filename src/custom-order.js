@@ -189,4 +189,3 @@ export function initializeCustomOrder({ snapshotState, renderCanvas }) {
   });
   refresh();
 }
-

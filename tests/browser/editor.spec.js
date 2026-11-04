@@ -350,4 +350,3 @@ test('direct order-page visit asks for a design instead of showing someone elseâ
   await expect(page.locator('#order-preview-shell')).toBeHidden();
   await expect(page.locator('#acrylic-export')).toBeDisabled();
 });
-

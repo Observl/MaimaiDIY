@@ -83,4 +83,3 @@ for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
 console.log(
   `Built ${files.size} public files. Source tools, tests, raw captures and archived backgrounds stay out of the site.`
 );
-

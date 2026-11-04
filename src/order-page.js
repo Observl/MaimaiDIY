@@ -105,4 +105,3 @@ window.addEventListener('storage', refreshDesign);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) refreshDesign();
 });
-

@@ -1242,4 +1242,3 @@ canvas {
 .acrylic-preview-detail { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; font-size: 14px; color: #545661; }
 #acrylic-preview-status { margin: 12px 0 0; }
 @media (max-width: 540px) { .acrylic-variants button { padding: 10px 6px; font-size: 13px; } .acrylic-preview-detail { font-size: 12px; } }
-
