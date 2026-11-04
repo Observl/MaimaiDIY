@@ -42,6 +42,19 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
       uniform vec3 printSun;
       uniform vec3 printWindow;
       float printHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      // Nearest fully-jittered particle: distance, brightness seed, and two facet seeds.
+      vec4 printParticle(vec2 p) {
+        vec2 base=floor(p),local=fract(p),chosen=base;
+        float nearest=10.0;
+        for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++) {
+          vec2 offset=vec2(float(x),float(y)),id=base+offset;
+          vec2 center=vec2(printHash(id+7.0),printHash(id+31.0));
+          vec2 delta=offset+center-local;
+          float distanceSquared=dot(delta,delta);
+          if(distanceSquared<nearest){nearest=distanceSquared;chosen=id;}
+        }
+        return vec4(sqrt(nearest),printHash(chosen+73.0),printHash(chosen+19.0),printHash(chosen+53.0));
+      }
     `).replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
       // Printed pigment has microrelief; the clear acrylic surface stays optically smooth.
       #ifndef USE_TRANSMISSION
@@ -109,32 +122,35 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
         #endif
         vec3 halfWindow = normalize(finishView + windowLight);
         vec3 halfSun = normalize(finishView + sunLight);
-        if(printCard<0.5 && printFinish>0.5 && insidePrint>0.5) {
+        if(printCard<0.5 && printFinish>0.5 && insidePrint>0.5 && finish.g>0.005) {
           // Dense colored pigment grains with soft light-dependent metallic luster.
-          vec2 powderCells=printUV*vec2(1050.0,439.0);
-          vec2 powderCell=floor(powderCells);
-          float fineGrain=printHash(powderCell);
+          vec2 powderUV=mat2(0.932,-0.362,0.362,0.932)*printUV;
+          vec2 powderCells=powderUV*vec2(980.0,409.0);
+          vec4 fineParticle=printParticle(powderCells);
           // Preserve a stable pigment-grain signal when individual grains are subpixel.
           // Averaging everything to 0.5 erased the visible effect at normal zoom.
-          vec2 aggregateCell=floor(printUV*vec2(460.0,192.0));
-          float aggregateGrain=printHash(aggregateCell+73.0);
+          vec4 aggregateParticle=printParticle(powderUV*vec2(390.0,163.0)+vec2(41.7,19.2));
           float powderFootprint=max(fwidth(powderCells.x),fwidth(powderCells.y));
-          float powderGrain=mix(fineGrain,aggregateGrain,smoothstep(0.8,2.0,powderFootprint));
-          vec3 colorGrain=vec3(printHash(aggregateCell+17.0),printHash(aggregateCell+43.0),printHash(aggregateCell+91.0))-0.5;
-          vec3 powderModulation=vec3(0.46+powderGrain*1.08)+colorGrain*0.10;
+          float grainLOD=smoothstep(0.8,2.0,powderFootprint);
+          float fineCoverage=1.0-smoothstep(0.16+fineParticle.y*0.12,0.38+fineParticle.y*0.18,fineParticle.x);
+          float aggregateCoverage=1.0-smoothstep(0.16+aggregateParticle.y*0.12,0.38+aggregateParticle.y*0.18,aggregateParticle.x);
+          float powderGrain=mix(fineCoverage,aggregateCoverage,grainLOD);
+          vec4 facet=mix(fineParticle,aggregateParticle,grainLOD);
+          vec3 colorGrain=vec3(facet.z,facet.w,facet.y)-0.5;
+          vec3 powderModulation=vec3(0.72+powderGrain*0.72+facet.y*0.12)+colorGrain*0.06;
           float powderAmount=finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
           totalDiffuse*=mix(vec3(1.0),powderModulation,powderAmount);
           // Grain facets are attached to the print plane, rather than camera-space noise.
           vec3 powderTangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
           vec3 powderBitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
           vec3 powderNormal=normalize(finishNormal
-            +powderTangent*(printHash(aggregateCell+19.0)-0.5)*1.1
-            +powderBitangent*(printHash(aggregateCell+53.0)-0.5)*1.1);
-          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),14.0)*0.7
-            +pow(max(dot(powderNormal,halfSun),0.0),20.0)*0.3;
+            +powderTangent*(facet.z-0.5)*(0.9+facet.y*0.9)
+            +powderBitangent*(facet.w-0.5)*(0.9+facet.y*0.9));
+          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),28.0)*0.8
+            +pow(max(dot(powderNormal,halfSun),0.0),40.0)*0.2;
           float powderIllumination=max(dot(powderNormal,windowLight),0.0)*0.7
             +max(dot(powderNormal,sunLight),0.0)*0.3;
-          float powderSheen=powderAmount*min(0.24,powderLobe*powderIllumination*0.30);
+          float powderSheen=powderAmount*(0.15+0.85*powderGrain)*min(0.42,powderLobe*powderIllumination*1.1);
           totalSpecular+=imageTint*powderSheen;
         }
         if(printCard>0.5) {
@@ -163,29 +179,33 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           totalSpecular += imageTint * uvResponse;
 
           {
-            vec2 cells = printUV * vec2(620.0, 259.0);
-            vec2 cell = floor(cells);
-            float seed = printHash(cell);
-            vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
-            float distanceToFlake = length(fract(cells) - center);
-            float footprint = max(length(fwidth(cells)), 0.04);
             // Existing background glitter stays separate from diffuse component powder.
             float density=printFinish>1.5?1.0:0.7;
             float finishCoverage=1.0-componentPrint;
-            float flake = (1.0 - smoothstep(0.14, 0.14 + min(footprint,0.14), distanceToFlake)) * step(0.22, seed) * density * (1.0-finish.b) * finishCoverage;
-            vec3 flakeNormal = normalize(finishNormal + vec3(
-              (printHash(cell + 19.0) - 0.5) * 1.4,
-              (printHash(cell + 53.0) - 0.5) * 1.4, 0.0));
-            float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 48.0)
-              + pow(max(dot(flakeNormal, halfSun), 0.0), 70.0);
-            float angularGate=0.025+pow(max(dot(finishNormal,halfWindow),0.0),12.0)+pow(max(dot(finishNormal,halfSun),0.0),18.0);
-            float glitterResponse=min(sparkle*angularGate*2.1*flake,0.48);
-            totalSpecular += imageTint * glitterResponse;
+            if(finishCoverage>0.005) {
+              vec3 tangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
+              vec3 bitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
+              float glitterResponse=0.0;
+              for(int layer=0;layer<2;layer++) {
+                vec2 cells=layer==0?mat2(0.956,-0.292,0.292,0.956)*printUV*vec2(520.0,217.0)
+                  :mat2(0.819,0.574,-0.574,0.819)*printUV*vec2(770.0,322.0)+vec2(23.1,67.3);
+                vec4 particle=printParticle(cells);
+                float radius=layer==0?mix(0.25,0.45,particle.y):mix(0.18,0.34,particle.y);
+                float edge=clamp(length(fwidth(cells))*0.15,0.03,0.16);
+                float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(0.07,particle.y)*density;
+                vec3 flakeNormal=normalize(finishNormal+tangent*(particle.z-0.5)*1.5+bitangent*(particle.w-0.5)*1.5);
+                float sparkle=pow(max(dot(flakeNormal,halfWindow),0.0),32.0)
+                  +pow(max(dot(flakeNormal,halfSun),0.0),50.0);
+                float angularGate=0.05+pow(max(dot(finishNormal,halfWindow),0.0),8.0)+pow(max(dot(finishNormal,halfSun),0.0),12.0);
+                glitterResponse+=min(sparkle*angularGate*1.7*flake,0.4);
+              }
+              totalSpecular+=imageTint*min(glitterResponse,0.5)*(1.0-finish.b)*finishCoverage;
+            }
           }
         }
     `);
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'snell-rear-ink-light-responsive-powder-v15-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'snell-rear-ink-irregular-particles-v16-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }

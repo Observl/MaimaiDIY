@@ -700,7 +700,7 @@ test('generated finishes remain visible in the final acrylic and paper render',a
             if(!firstPowderDifference)firstPowderDifference=difference;
             else {
               let lightResponsive=0;
-              for(let i=0;i<difference.length;i+=4)if(Math.abs(difference[i]-firstPowderDifference[i])+Math.abs(difference[i+1]-firstPowderDifference[i+1])+Math.abs(difference[i+2]-firstPowderDifference[i+2])>6)lightResponsive++;
+              for(let i=0;i<difference.length;i+=4)if(Math.abs(difference[i]-firstPowderDifference[i])+Math.abs(difference[i+1]-firstPowderDifference[i+1])+Math.abs(difference[i+2]-firstPowderDifference[i+2])>18)lightResponsive++;
               metrics.push({width,product,angle,mode:'powder-light-response',visible:lightResponsive});
             }
           }
@@ -719,10 +719,11 @@ test('generated finishes remain visible in the final acrylic and paper render',a
     return {metrics,images};
   });
   await test.info().attach('finish-render-metrics',{body:JSON.stringify(output.metrics,null,2),contentType:'application/json'});
+  await writeFile('output/playwright/finish-render-metrics.json',JSON.stringify(output.metrics,null,2));
   for(const image of output.images)for(const mode of ['none','powder','uv'])await writeFile(`output/playwright/${image.product}-${mode}.png`,Buffer.from(image[mode].split(',')[1],'base64'));
   for(const width of [1000,360])for(const product of ['acrylic','paper'])for(const mode of ['powder','uv','glitter','powder-light-response']) {
     const views=output.metrics.filter(item=>item.width===width&&item.product===product&&item.mode===mode);
-    const minimum=mode==='powder'?(width===1000?5000:850):(width===1000?200:25);
+    const minimum=mode==='powder'?(width===1000?5000:850):mode==='glitter'?(width===1000?10000:1400):mode==='powder-light-response'?(width===1000?500:80):(width===1000?200:25);
     expect(Math.max(...views.map(item=>item.visible)),`${width} ${product} ${mode}`).toBeGreaterThan(minimum);
     if(mode==='uv')expect(Math.abs(views[0].total-views[1].total),`${width} ${product} lighting response`).toBeGreaterThan(50);
   }
