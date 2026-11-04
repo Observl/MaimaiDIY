@@ -57,7 +57,7 @@
         <button type="button" data-preview-variant="premium" aria-pressed="true">高配特效款</button>
       </div>
       <div id="acrylic-viewport" class="acrylic-viewport"></div>
-      <label class="acrylic-light-control" for="acrylic-light-angle">光照角度<input id="acrylic-light-angle" type="range" min="-150" max="150" step="1" value="0" aria-label="调整光照角度，观察局部 UV 和闪粉反光"></label>
+      <div class="acrylic-light-control"><span id="acrylic-light-label">光照角度</span><div id="acrylic-light-angle" class="light-angle-dial" role="slider" tabindex="0" aria-labelledby="acrylic-light-label" aria-orientation="horizontal" aria-valuemin="-150" aria-valuemax="150" aria-valuenow="0"><span class="light-angle-ticks" aria-hidden="true"></span><span class="light-angle-indicator" aria-hidden="true"></span></div><output id="acrylic-light-value">0°</output></div>
       <p id="acrylic-preview-status" role="status">等待上屏设计</p>
       <p class="acrylic-preview-detail"><span id="acrylic-material-detail">背面彩印 · 白墨</span><span>120 × 50 × 15 mm · 材质示意</span></p>
     </section>

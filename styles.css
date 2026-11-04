@@ -1234,6 +1234,13 @@ canvas {
 .acrylic-view-tools { display:flex; gap:8px; flex-wrap:wrap; }
 .acrylic-view-tools .button { flex:0 0 auto; width:auto; min-height:36px; white-space:nowrap; }
 .acrylic-light-control { display: flex; align-items: center; gap: 16px; margin-top: 14px; font-size: 14px; }
+.light-angle-dial { --tick-offset:0px; flex:1; min-width:0; position:relative; height:48px; overflow:hidden; border:1px solid #dedfe3; border-radius:12px; background:#f3f3f5; cursor:ew-resize; touch-action:none; user-select:none; }
+.light-angle-dial[data-dragging] { background:#ebebee; }
+.light-angle-dial:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+.light-angle-ticks { pointer-events:none; position:absolute; inset:17px 0; background:repeating-linear-gradient(to right,#afb1b8 0 2px,transparent 2px 10px); background-position-x:var(--tick-offset); }
+.light-angle-ticks::after { content:''; position:absolute; inset:-6px 0; background:repeating-linear-gradient(to right,#858892 0 2px,transparent 2px 50px); background-position-x:var(--tick-offset); }
+.light-angle-indicator { pointer-events:none; position:absolute; left:50%; top:8px; bottom:8px; width:2px; background:#30323a; box-shadow:0 0 0 2px #f3f3f5; }
+#acrylic-light-value { min-width:46px; text-align:right; font-variant-numeric:tabular-nums; }
 .acrylic-light-control input { flex: 1; min-width: 0; min-height: 44px; accent-color: #171821; cursor: pointer; }
 .acrylic-preview-card #acrylic-view-reset { flex: 0 0 auto; width: auto; min-height: 36px; }
 .acrylic-variants { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }

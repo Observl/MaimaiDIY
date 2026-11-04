@@ -12,7 +12,7 @@ export function createAcrylicPreview(host) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.tabIndex = 0;
-  renderer.domElement.setAttribute('aria-label', '3D 亚克力预览，可拖动旋转，方向键调整视角');
+  renderer.domElement.setAttribute('aria-label', '3D 亚克力预览，拖动旋转，滚轮或双指缩放，方向键调整视角');
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#f3eee4');
@@ -20,12 +20,16 @@ export function createAcrylicPreview(host) {
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 120);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enablePan = false;
-  controls.enableZoom = false;
+  controls.enableZoom = true;
+  controls.zoomSpeed = 0.7;
+  controls.minDistance = 7;
+  controls.maxDistance = 24;
+  controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   controls.minPolarAngle = Math.PI * 0.16;
   controls.maxPolarAngle = Math.PI * 0.46;
   controls.target.set(0, 2.65, 0);
-  // Horizontal drag rotates; vertical gestures remain available for page scrolling.
-  renderer.domElement.style.touchAction = 'pan-y';
+  // Own gestures inside the model viewport so browser pinch-zoom cannot steal them.
+  renderer.domElement.style.touchAction = 'none';
   const object = new THREE.Group();
   scene.add(object);
   const environment = new THREE.Scene();
@@ -83,9 +87,13 @@ export function createAcrylicPreview(host) {
   const windowPosition = new THREE.Vector3(-8, 7, 6);
   let selection = { variant: 'premium', cardOnly: false, accessory: 'none' };
   let disposed = false;
-  const draw = () => { if (!disposed && host.clientWidth) renderer.render(scene, camera); };
+  const draw = () => {
+    host.dataset.cameraDistance=controls.getDistance().toFixed(3);
+    if (!disposed && host.clientWidth) renderer.render(scene, camera);
+  };
   controls.addEventListener('change', draw);
   function reset() {
+    controls.minDistance=7;
     camera.position.set(6, 5.4, 12.5);
     controls.target.set(0, 2.65, 0);
     controls.update();
@@ -198,6 +206,7 @@ export function createAcrylicPreview(host) {
     setSelection(next) { selection = next; rebuild(); },
     reset,
     focusCollectibles() {
+      controls.minDistance=9;
       controls.target.set(host.clientWidth<500 ? -0.5 : -1.8,4.1,0);
       camera.position.copy(controls.target).add(new THREE.Vector3(2.5,1.2,6.8));
       controls.update(); draw();

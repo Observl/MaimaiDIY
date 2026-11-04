@@ -1,4 +1,4 @@
-import { CANVAS, DISPLAY_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots } from './config.js';
+import { CANVAS, DISPLAY_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots, COMPOSITION_ORDER } from './config.js';
 import { nameCharacterCount } from './model.js';
 import { loadImage } from './assets.js';
 export function createRenderer(canvas) {
@@ -111,11 +111,7 @@ export function createRenderer(canvas) {
     }
     const version = ++renderVersion;
     const snapshot = structuredClone(composition);
-    const ordered = Object.entries(slots)
-      .filter(([id]) => !['rank', 'friendBattle'].includes(id))
-      .sort((a, b) => a[1].z - b[1].z);
-    ordered.push(['rank', slots.rank]);
-    ordered.push(['friendBattle', slots.friendBattle]);
+    const ordered = COMPOSITION_ORDER.map(id => [id,slots[id]]);
     const drawable = [];
     const prepared = ordered.map(async ([id, slot]) => {
       if (!snapshot.visible[id]) return null;
