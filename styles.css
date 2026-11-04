@@ -1355,6 +1355,27 @@ canvas {
   #custom-order .configuration-panel .purchase-art { height:86px; }
   #custom-order .configuration-list>h3 { font-size:22px; }
 }
+/* One full-width list, with transparent product thumbnails inside each choice. */
+#custom-order .purchase-layout { grid-template-columns:minmax(0,1fr); gap:32px; }
+#custom-order .configuration-choice { grid-template-columns:100px minmax(0,1fr) auto 22px; padding:20px 24px; }
+#custom-order .configuration-image { background:transparent; border-radius:0; width:100px; max-height:70px; }
+#custom-order .purchase-receipt { position:static; display:grid; grid-template-columns:minmax(0,1fr) 280px; column-gap:56px; row-gap:10px; }
+#custom-order .purchase-receipt h3 { grid-column:1; grid-row:1; }
+#custom-order .purchase-item-count { grid-column:1; grid-row:2; margin-bottom:8px; }
+#custom-order #purchase-lines { grid-column:1; grid-row:3/7; }
+#custom-order .purchase-savings { grid-column:2; grid-row:1; margin:0; }
+#custom-order .purchase-total { grid-column:2; grid-row:2/4; margin:0; padding:0; border:0; align-content:start; }
+#custom-order .purchase-message { grid-column:2; grid-row:4; margin:0; }
+#custom-order .custom-order-actions { grid-column:2; grid-row:5/7; align-content:start; margin-top:8px; }
+@media(max-width:760px) {
+  #custom-order .configuration-choice { grid-template-columns:72px minmax(0,1fr) auto 18px; padding:18px 14px; gap:8px; }
+  #custom-order .configuration-choice .configuration-image { grid-column:auto; width:72px; max-height:52px; margin:0; }
+  #custom-order .configuration-choice strong { font-size:15px; }
+  #custom-order .config-price { font-size:14px; }
+  #custom-order .purchase-receipt { display:block; }
+  #custom-order .purchase-total { margin-top:22px; padding-top:18px; border-top:1px solid var(--store-line); }
+  #custom-order .custom-order-actions { margin-top:20px; }
+}
 .custom-order-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 16px 0; }
 .custom-order-grid label { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
 .custom-order-grid input[type="number"], .custom-order-grid select {

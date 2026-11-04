@@ -7,16 +7,16 @@ export function collectibleFinish(state, slot) {
   if (slot === 'rank') {
     const match = file.match(/(?:^|\/)ranks\/(\d{2})\.png(?:[?#]|$)/);
     const level = match ? Number(match[1]) : -1;
-    if (level < 12 || level > 23) return null;
+    if (level < 0 || level > 23) return null;
     return { shape: level >= 22 ? 'rank-emblems' : 'rank-border', uv: 0.8,
-      glitter: level < 16 ? 0.4 : level < 19 ? 0.6 : 0.85,
+      glitter: level < 16 ? 0.7 : level < 19 ? 0.8 : 0.95,
       rainbow: level >= 19 ? 0.8 : 0.05, tint: level < 16 ? silver : level < 19 ? gold : prism };
   }
   if (slot === 'friendBattle') {
     const match = file.match(/(?:^|\/)friend-battles\/(\d{2})\.png(?:[?#]|$)/);
     const level = match ? Number(match[1]) : -1;
-    if (level < 10 || level > 25) return null;
-    return { shape: 'battle-emblems', uv: 0.8, glitter: level < 15 ? 0 : level < 20 ? 0.4 : 0.8,
+    if (level < 0 || level > 25) return null;
+    return { shape: 'battle-emblems', uv: 0.9, glitter: level < 20 ? 0.75 : 0.95,
       rainbow: level === 25 ? 1 : 0.1, tint: level === 25 ? prism : level < 20 ? silver : gold };
   }
   if (slot === 'titleBase') {
@@ -25,10 +25,11 @@ export function collectibleFinish(state, slot) {
   if (slot === 'ratingFrame') {
     return { shape:'rating-frame', uv:1, glitter:0.9, rainbow:0, tint:gold };
   }
+  if(slot==='playerName')return {shape:'name-lettering',uv:0.8,glitter:0.9,rainbow:0,tint:silver};
   if (slot === 'nameplate') {
     const id = file.match(/UI_Plate_\d+\.png/)?.[0];
     const plate = COLLECTIBLE_PLATES[id];
-    if (!plate) return null;
+    if (!plate) return {shape:'plate-print',uv:0.85,glitter:0.85,rainbow:0,tint:prism};
     return { shape: id === 'UI_Plate_006150.png' ? 'plate-wings' : plate.name.startsWith('鏡') ? 'plate-mirror' : 'plate-border',
       uv: 0.9, glitter: plate.kind === 'kiwami' ? 0.4 : plate.kind === 'shogun' ? 0.6 : 0.85,
       rainbow: ['god', 'maimai'].includes(plate.kind) ? 0.9 : 0.05,

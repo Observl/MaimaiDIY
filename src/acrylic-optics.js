@@ -60,8 +60,9 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
         vec3 pN=inverseTransformDirection(normal,viewMatrix);
         vec3 localPosition = vPrintLocalPosition;
         #ifdef USE_TRANSMISSION
-        vec3 localRay = mat3(printInverse) * refract(-pV, pN, 1.0 / material.ior);
-        float safeRayZ = abs(localRay.z) < 0.00001 ? -0.00001 : localRay.z;
+        vec3 internalRay=refract(-pV,pN,1.0/material.ior);
+        vec3 localRay = mat3(printInverse) * internalRay;
+        float safeRayZ = (localRay.z<0.0?-1.0:1.0)*max(abs(localRay.z),0.00001);
         float rayDistance = (-printDepth * 0.5 + 0.004 - localPosition.z) / safeRayZ;
         vec3 printHit = localPosition + localRay * rayDistance;
         vec2 printUV = printHit.xy / vec2(11.91, 4.91) + 0.5;
@@ -78,15 +79,22 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
         // All UV and glitter live on the same innermost plane as the flattened artwork.
         finishPosition=(printWorld*vec4(printHit,1.0)).xyz;
         finishNormal=normalize(mat3(printWorld)*vec3(0.0,0.0,1.0));
-        finishView=normalize(cameraPosition-finishPosition);
+        finishView=normalize(-internalRay);
         #endif
         float componentPrint=texture2D(printComponents,printUV).a;
         vec3 finish = texture2D(printMask, printUV).rgb;
-        vec3 imageTint=artwork;
+        float inkPeak=max(max(artwork.r,artwork.g),artwork.b);
+        vec3 imageTint=max(artwork/max(inkPeak,0.12)*(0.45+0.4*inkPeak),vec3(0.09));
         // Bound the colored response: large HDR values tone-map saturated inks to white.
-        totalSpecular=mix(totalSpecular,min(totalSpecular,vec3(0.12))*imageTint,insidePrint)*(1.0-finish.b*insidePrint);
         #ifdef USE_TRANSMISSION
-        float fresnel = 0.04 + 0.96 * pow(1.0 - max(dot(pN, pV), 0.0), 5.0);
+        // Clear surface reflections are neutral; colored finish reflections belong to the rear ink plane.
+        totalSpecular=min(totalSpecular,vec3(0.22));
+        #else
+        totalSpecular=mix(totalSpecular,min(totalSpecular,vec3(0.12))*imageTint,insidePrint)*(1.0-finish.b*insidePrint);
+        #endif
+        #ifdef USE_TRANSMISSION
+        float f0=pow((material.ior-1.0)/(material.ior+1.0),2.0);
+        float fresnel = f0 + (1.0-f0) * pow(1.0 - max(dot(pN, pV), 0.0), 5.0);
         vec3 transmissionTint = volumeAttenuation(max(rayDistance, 0.0), material.attenuationColor, material.attenuationDistance);
         totalDiffuse = mix(totalDiffuse, artwork * transmissionTint * (1.0 - fresnel), insidePrint);
         #else
@@ -114,12 +122,16 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
           vec3 raisedNormal = normalize(finishNormal + vec3(-gradient.x, 0.14-gradient.y, 0.0) * 0.2);
           vec3 windowLight = normalize(printWindow - finishPosition);
           vec3 sunLight = normalize(printSun - finishPosition);
+          #ifdef USE_TRANSMISSION
+          if(dot(finishNormal,windowLight)>0.0)windowLight=-refract(-windowLight,finishNormal,1.0/material.ior);
+          if(dot(finishNormal,sunLight)>0.0)sunLight=-refract(-sunLight,finishNormal,1.0/material.ior);
+          #endif
           vec3 halfWindow = normalize(finishView + windowLight);
           vec3 halfSun = normalize(finishView + sunLight);
-          float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), printPaper>0.5?16.0:40.0)
-            + pow(max(dot(raisedNormal, halfSun), 0.0), printPaper>0.5?26.0:64.0);
+          float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), printPaper>0.5?12.0:18.0)
+            + pow(max(dot(raisedNormal, halfSun), 0.0), printPaper>0.5?20.0:30.0);
           // A varnish lobe over the selected artwork, never a white paint overlay.
-          float uvResponse=min(highlight*spot*(printPaper>0.5?1.4:0.9),printPaper>0.5?0.55:0.4)*(1.0-finish.b);
+          float uvResponse=(1.0-exp(-highlight*spot*2.0))*0.48*(1.0-finish.b);
           totalSpecular += imageTint * uvResponse;
 
           {
@@ -129,20 +141,21 @@ export function applyPrintOptics(material, mesh, { design, mask, glitterTint, co
             vec2 center = vec2(printHash(cell + 7.0), printHash(cell + 31.0)) * 0.6 + 0.2;
             float distanceToFlake = length(fract(cells) - center);
             float footprint = max(length(fwidth(cells)), 0.04);
-            // Glitter belongs exclusively to the background. Every overlying print occludes it.
+            // Background glitter plus explicit nameplate, lettering and badge finishes.
             float density=printFinish>1.5?1.0:0.7;
-            float flake = (1.0 - smoothstep(0.29, 0.29 + min(footprint,0.3), distanceToFlake)) * step(0.08, seed) * density * (1.0-finish.b) * (1.0-componentPrint);
+            float finishCoverage=max(1.0-componentPrint,finish.g);
+            float flake = (1.0 - smoothstep(0.18, 0.18 + min(footprint,0.16), distanceToFlake)) * step(0.35, seed) * density * (1.0-finish.b) * finishCoverage;
             vec3 flakeNormal = normalize(finishNormal + vec3(
-              (printHash(cell + 19.0) - 0.5) * 0.65,
-              (printHash(cell + 53.0) - 0.5) * 0.65, 0.0));
-            float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), printPaper>0.5?18.0:42.0)
-              + pow(max(dot(flakeNormal, halfSun), 0.0), printPaper>0.5?28.0:65.0);
+              (printHash(cell + 19.0) - 0.5) * 1.4,
+              (printHash(cell + 53.0) - 0.5) * 1.4, 0.0));
+            float sparkle = pow(max(dot(flakeNormal, halfWindow), 0.0), 48.0)
+              + pow(max(dot(flakeNormal, halfSun), 0.0), 70.0);
             float angularGate=0.16+pow(max(dot(finishNormal,halfWindow),0.0),12.0)+pow(max(dot(finishNormal,halfSun),0.0),18.0);
-            float glitterResponse=min((sparkle*angularGate*(printPaper>0.5?2.0:1.2)+(printPaper>0.5?0.04:0.012))*flake,printPaper>0.5?0.45:0.35);
+            float glitterResponse=min((sparkle*angularGate*2.4+0.025)*flake,0.6);
             totalSpecular += imageTint * glitterResponse;
           }
         }
     `);
   };
-  material.customProgramCacheKey = () => 'all-ink-innermost-plane-v10-'+Number(card)+'-'+Number(paper);
+  material.customProgramCacheKey = () => 'snell-rear-ink-collectible-finishes-v11-'+Number(card)+'-'+Number(paper);
 }
