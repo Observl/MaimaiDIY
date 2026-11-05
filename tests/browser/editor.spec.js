@@ -829,3 +829,31 @@ test('approved pearl settings affect all five regions without background leakage
   expect(result.componentLeaks).toBe(0);
   for(const count of Object.values(result.regions))expect(count).toBeGreaterThan(20);
 });
+
+test('acrylic reverse is opaque beige and shikishi has a paper easel',async({page})=>{
+  await ready(page);
+  const result=await page.evaluate(async()=>{
+    const {createAcrylicPreview}=await import('/src/acrylic-preview.js');
+    const host=document.createElement('div');host.id='reverse-test';Object.assign(host.style,{width:'1000px',height:'600px',position:'fixed',left:'-1100px'});document.body.append(host);
+    const source=document.createElement('canvas');source.width=2160;source.height=904;
+    const packed=document.createElement('canvas');packed.width=2160;packed.height=904;
+    const componentCoverage=document.createElement('canvas');componentCoverage.width=2160;componentCoverage.height=904;
+    const badgeCoverage=document.createElement('canvas');badgeCoverage.width=2160;badgeCoverage.height=904;
+    const maps={packed,componentCoverage,badgeCoverage};
+    const viewer=createAcrylicPreview(host,{snapshot:true});
+    const images=[];
+    for(const color of ['#ff0000','#0000ff']){
+      source.getContext('2d').fillStyle=color;source.getContext('2d').fillRect(0,0,source.width,source.height);viewer.setDesign(source,maps);
+      if(!images.length)for(let i=0;i<26;i++)host.querySelector('canvas').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));
+      images.push(viewer.captureFrame());
+    }
+    const decode=async src=>{const img=new Image();img.src=src;await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);return ctx.getImageData(0,0,c.width,c.height).data;};
+    const a=await decode(images[0]),b=await decode(images[1]);let changed=0;for(let i=0;i<a.length;i+=4)if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>9)changed++;
+    const reverse=host.dataset.reverseMaterial;
+    viewer.setSelection({variant:'effect',cardOnly:false,shikishi:true,accessory:'none'});const paperStand=host.dataset.paperStand,paperImage=viewer.captureFrame();
+    viewer.dispose();host.remove();return {changed,reverse,paperStand,reverseImage:images[0],paperImage};
+  });
+  expect(result.reverse).toBe('opaque-ivory');expect(result.changed).toBeLessThan(60);expect(result.paperStand).toBe('folded-cardstock');
+  await writeFile('output/playwright/opaque-acrylic-back.png',Buffer.from(result.reverseImage.split(',')[1],'base64'));
+  await writeFile('output/playwright/shikishi-paper-easel.png',Buffer.from(result.paperImage.split(',')[1],'base64'));
+});
