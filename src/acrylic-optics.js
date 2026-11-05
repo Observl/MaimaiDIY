@@ -1,8 +1,9 @@
+import { uniforms as labUniforms } from './finish-settings.js';
 import * as THREE from '../vendor/three.module.js';
 
 // Ray/print-plane intersection preserves the source resolution rather than
 // resampling the design through Three's screen-space transmission buffer.
-export function applyPrintOptics(material, mesh, { design, mask, components, depth, variant, keyPosition, windowPosition, card=false, paper=false }) {
+export function applyPrintOptics(material, mesh, { design, mask, components, badges, depth, variant, keyPosition, windowPosition, card=false, paper=false }) {
   const inverse = new THREE.Matrix4();
   let compiledShader;
   mesh.onBeforeRender = () => {
@@ -17,14 +18,16 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
   const previousCacheKey=material.customProgramCacheKey.bind(material);
   material.onBeforeCompile = (shader,renderer) => {
     compiledShader=shader;
+    Object.assign(shader.uniforms,labUniforms);
     Object.assign(shader.uniforms, {
       printArtwork: { value: design }, printMask: { value: mask },
       printCard: { value: card ? 1 : 0 },
       printPaper: { value: paper ? 1 : 0 },
       printComponents: { value:components },
+      printBadgePearl: { value:badges },
       printInverse: { value: inverse }, printDepth: { value: depth },
       printWorld: { value:mesh.matrixWorld },
-      printFinish: { value: variant === 'premium' ? 2 : variant === 'light' ? 1 : 0 },
+      printFinish: { value: variant === 'basic' ? 0 : 2 },
       printSun: { value: keyPosition.clone() },
       printWindow: { value: windowPosition.clone() },
     });
@@ -39,11 +42,33 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
       #include <common>
       varying vec3 vPrintWorldPosition;
       varying vec3 vPrintLocalPosition;
+      uniform float lab_enabled;
+      uniform float lab_powderDensity;
+      uniform float lab_powderSize;
+      uniform float lab_powderStrength;
+      uniform float lab_powderSlope;
+      uniform float lab_powderSharpness;
+      uniform float lab_powderContrast;
+      uniform float lab_glitterDensity;
+      uniform float lab_glitterSize;
+      uniform float lab_glitterStrength;
+      uniform float lab_pearlStrength;
+      uniform float lab_titlePearlStrength;
+      uniform float lab_avatarPearlStrength;
+      uniform float lab_rankPearlStrength;
+      uniform float lab_battlePearlStrength;
+      uniform float lab_pearlSpread;
+      uniform float lab_uvStrength;
+      uniform float lab_uvSharpness;
+      uniform float lab_laserStrength;
+      uniform float lab_randomness;
+      uniform float lab_seed;
       uniform sampler2D printArtwork;
       uniform sampler2D printMask;
       uniform float printCard;
       uniform float printPaper;
       uniform sampler2D printComponents;
+      uniform sampler2D printBadgePearl;
       uniform mat4 printInverse;
       uniform mat4 printWorld;
       uniform float printDepth;
@@ -51,7 +76,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
       uniform vec3 printSun;
       uniform vec3 printWindow;
       float printHash(vec2 p) {
-        vec3 h=fract(vec3(p.xyx)*0.1031);
+        vec3 h=fract(vec3((p+lab_seed*17.13).xyx)*0.1031);
         h+=dot(h,h.yzx+33.33);
         return fract((h.x+h.y)*h.z);
       }
@@ -61,7 +86,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
         float nearest=10.0;
         for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++) {
           vec2 offset=vec2(float(x),float(y)),id=base+offset;
-          vec2 center=vec2(printHash(id+7.0),printHash(id+31.0));
+          vec2 center=mix(vec2(0.5),vec2(printHash(id+7.0),printHash(id+31.0)),lab_randomness);
           vec2 delta=offset+center-local;
           float distanceSquared=dot(delta,delta);
           if(distanceSquared<nearest){nearest=distanceSquared;chosen=id;}
@@ -107,7 +132,8 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
         finishNormal=normalize(mat3(printWorld)*vec3(0.0,0.0,1.0));
         finishView=normalize(-internalRay);
         #endif
-        float componentPrint=texture2D(printComponents,printUV).a;
+        vec4 componentRegions=texture2D(printComponents,printUV);
+        float componentPrint=componentRegions.a;
         vec3 finish = texture2D(printMask, printUV).rgb;
         float inkPeak=max(max(artwork.r,artwork.g),artwork.b);
         vec3 imageTint=max(artwork/max(inkPeak,0.12)*(0.45+0.4*inkPeak),vec3(0.09));
@@ -135,7 +161,22 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
         #endif
         vec3 halfWindow = normalize(finishView + windowLight);
         vec3 halfSun = normalize(finishView + sunLight);
-        if(printCard<0.5 && printFinish>0.5 && insidePrint>0.5 && finish.g>0.005) {
+        // A broad, source-colored pigment luster on the rear background print.
+        // It does not add a clearcoat or a white reflection to the acrylic surface.
+        if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && (lab_pearlStrength+lab_titlePearlStrength+lab_avatarPearlStrength+lab_rankPearlStrength+lab_battlePearlStrength)>0.001) {
+          vec4 badgeRegions=texture2D(printBadgePearl,printUV);
+          float pearlAmount=(lab_pearlStrength*(1.0-componentPrint)
+            +lab_titlePearlStrength*componentRegions.r*componentPrint
+            +lab_avatarPearlStrength*componentRegions.g*componentPrint
+            +lab_rankPearlStrength*badgeRegions.r*badgeRegions.a
+            +lab_battlePearlStrength*badgeRegions.g*badgeRegions.a)*(1.0-finish.b);
+          float pearlWindow=pow(max(dot(finishNormal,halfWindow),0.0),8.0/lab_pearlSpread);
+          float pearlSun=pow(max(dot(finishNormal,halfSun),0.0),14.0/lab_pearlSpread);
+          float pearlLighting=max(dot(finishNormal,windowLight),0.0)*0.75+max(dot(finishNormal,sunLight),0.0)*0.25;
+          float pearlResponse=min(0.22,pearlAmount*(pearlWindow*0.8+pearlSun*0.2)*pearlLighting*0.3);
+          totalSpecular+=imageTint*pearlResponse;
+        }
+        if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && finish.g>0.005 && lab_powderDensity>0.001) {
           // Dense colored pigment grains with soft light-dependent metallic luster.
           vec2 powderUV=mat2(0.932,-0.362,0.362,0.932)*printUV;
           vec2 powderCells=powderUV*vec2(980.0,409.0);
@@ -145,26 +186,26 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           vec4 aggregateParticle=printParticle(powderUV*vec2(390.0,163.0)+vec2(41.7,19.2));
           float powderFootprint=max(fwidth(powderCells.x),fwidth(powderCells.y));
           float grainLOD=smoothstep(0.8,2.0,powderFootprint);
-          float fineCoverage=1.0-smoothstep(0.16+fineParticle.y*0.12,0.38+fineParticle.y*0.18,fineParticle.x);
-          float aggregateCoverage=1.0-smoothstep(0.16+aggregateParticle.y*0.12,0.38+aggregateParticle.y*0.18,aggregateParticle.x);
+          float fineCoverage=1.0-smoothstep(0.16+fineParticle.y*0.12,0.38+fineParticle.y*0.18,fineParticle.x/max(lab_powderSize,0.01));
+          float aggregateCoverage=1.0-smoothstep(0.16+aggregateParticle.y*0.12,0.38+aggregateParticle.y*0.18,aggregateParticle.x/max(lab_powderSize,0.01));
           float powderGrain=mix(fineCoverage,aggregateCoverage,grainLOD);
           vec4 facet=mix(fineParticle,aggregateParticle,grainLOD);
           vec3 colorGrain=vec3(facet.z,facet.w,facet.y)-0.5;
           vec3 powderModulation=vec3(0.80+powderGrain*0.38+facet.y*0.06)+colorGrain*0.04;
-          float powderAmount=finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
-          totalDiffuse*=mix(vec3(1.0),powderModulation,powderAmount);
+          float powderAmount=step(1.0-lab_powderDensity,facet.y)*finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
+          totalDiffuse*=mix(vec3(1.0),mix(vec3(1.0),powderModulation,lab_powderContrast),powderAmount);
           // Grain facets are attached to the print plane, rather than camera-space noise.
           vec3 powderTangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
           vec3 powderBitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
           vec3 powderNormal=normalize(finishNormal
-            +powderTangent*(facet.z-0.5)*(0.9+facet.y*0.9)
-            +powderBitangent*(facet.w-0.5)*(0.9+facet.y*0.9));
-          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),28.0)*0.8
-            +pow(max(dot(powderNormal,halfSun),0.0),40.0)*0.2;
+            +powderTangent*(facet.z-0.5)*(0.9+facet.y*0.9)*lab_powderSlope
+            +powderBitangent*(facet.w-0.5)*(0.9+facet.y*0.9)*lab_powderSlope);
+          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),28.0*lab_powderSharpness)*0.8
+            +pow(max(dot(powderNormal,halfSun),0.0),40.0*lab_powderSharpness)*0.2;
           float powderIllumination=max(dot(powderNormal,windowLight),0.0)*0.7
             +max(dot(powderNormal,sunLight),0.0)*0.3;
           float powderSheen=powderAmount*(0.15+0.85*powderGrain)*min(0.65,powderLobe*powderIllumination*2.8);
-          totalSpecular+=imageTint*powderSheen;
+          totalSpecular+=imageTint*powderSheen*lab_powderStrength;
         }
         if(printCard>0.5) {
           // Diffractive color modulation without a white mirror/varnish highlight.
@@ -175,19 +216,19 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
           vec3 spectral=0.5+0.5*cos(vec3(0.0,2.1,4.2)+phase);
           float band=pow(0.5+0.5*sin(phase*0.65),2.0);
           vec3 hologram=artwork*(vec3(0.55)+spectral*0.9)+spectral*0.08;
-          totalDiffuse=mix(totalDiffuse,hologram,insidePrint*(0.55+band*0.35));
+          totalDiffuse=mix(totalDiffuse,hologram,insidePrint*clamp((0.55+band*0.35)*lab_laserStrength*lab_enabled,0.0,1.0));
         }
 
-        if (printCard<0.5 && printFinish > 0.5 && insidePrint > 0.5) {
-          float spot = finish.r;
+        if (printCard<0.5 && printFinish > 0.5 && lab_enabled>0.5 && insidePrint > 0.5) {
+          float spot = finish.r*lab_uvStrength;
           if(spot>0.005 && finish.b<0.995) {
           vec2 texel = 1.0 / vec2(textureSize(printMask, 0));
           vec2 gradient = vec2(
             texture2D(printMask, printUV + vec2(texel.x, 0.0)).r - texture2D(printMask, printUV - vec2(texel.x, 0.0)).r,
             texture2D(printMask, printUV + vec2(0.0, texel.y)).r - texture2D(printMask, printUV - vec2(0.0, texel.y)).r);
           vec3 raisedNormal = normalize(finishNormal + vec3(-gradient.x, 0.14-gradient.y, 0.0) * 0.2);
-          float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), printPaper>0.5?12.0:18.0)
-            + pow(max(dot(raisedNormal, halfSun), 0.0), printPaper>0.5?20.0:30.0);
+          float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), (printPaper>0.5?12.0:18.0)*lab_uvSharpness)
+            + pow(max(dot(raisedNormal, halfSun), 0.0), (printPaper>0.5?20.0:30.0)*lab_uvSharpness);
           // A varnish lobe over the selected artwork, never a white paint overlay.
           float uvResponse=(1.0-exp(-highlight*spot*3.0))*0.72*(1.0-finish.b);
           totalSpecular += imageTint * uvResponse;
@@ -197,7 +238,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
             // Existing background glitter stays separate from diffuse component powder.
             float density=printFinish>1.5?1.0:0.7;
             float finishCoverage=1.0-componentPrint;
-            if(finishCoverage>0.005) {
+            if(finishCoverage>0.005 && lab_glitterDensity>0.001 && lab_glitterStrength>0.001) {
               vec3 tangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
               vec3 bitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
               float glitterResponse=0.0;
@@ -206,15 +247,16 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
                   :mat2(0.819,0.574,-0.574,0.819)*printUV*vec2(770.0,322.0)+vec2(23.1,67.3);
                 vec4 particle=printParticle(cells);
                 float radius=layer==0?mix(0.25,0.45,particle.y):mix(0.18,0.34,particle.y);
+                radius*=lab_glitterSize;
                 float edge=clamp(length(fwidth(cells))*0.15,0.03,0.16);
-                float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(0.22,particle.y)*density;
+                float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(1.0-lab_glitterDensity,particle.y)*density;
                 vec3 flakeNormal=normalize(finishNormal+tangent*(particle.z-0.5)*1.5+bitangent*(particle.w-0.5)*1.5);
                 float sparkle=pow(max(dot(flakeNormal,halfWindow),0.0),32.0)
                   +pow(max(dot(flakeNormal,halfSun),0.0),50.0);
                 float angularGate=0.05+pow(max(dot(finishNormal,halfWindow),0.0),8.0)+pow(max(dot(finishNormal,halfSun),0.0),12.0);
                 glitterResponse+=min(sparkle*angularGate*1.7*flake,0.4);
               }
-              totalSpecular+=imageTint*min(glitterResponse,0.5)*(1.0-finish.b)*finishCoverage;
+              totalSpecular+=imageTint*min(glitterResponse*lab_glitterStrength,0.8)*(1.0-finish.b)*finishCoverage;
             }
           }
         }
@@ -222,5 +264,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, dep
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'snell-rear-ink-live-light-v17-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'local-effect-studio-badge-pearl-v4-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }

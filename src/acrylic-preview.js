@@ -30,13 +30,16 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   controls.enableZoom = true;
   controls.zoomSpeed = 0.7;
   controls.minDistance = 7;
-  controls.maxDistance = 24;
+  controls.maxDistance = 70;
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   controls.minPolarAngle = Math.PI * 0.16;
   controls.maxPolarAngle = Math.PI * 0.46;
   controls.target.set(0, 2.65, 0);
   // Own gestures inside the model viewport so browser pinch-zoom cannot steal them.
   renderer.domElement.style.touchAction = 'none';
+  // Drawing-buffer pixels must not become CSS pixels on high-DPI displays.
+  renderer.domElement.style.width = '100%';
+  renderer.domElement.style.height = '100%';
   const object = new THREE.Group();
   scene.add(object);
   const environment = new THREE.Scene();
@@ -91,13 +94,15 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   let designTexture;
   let spotTexture;
   let componentTexture;
+  let badgeTexture;
   const paperSurface=createPaperTexture(),cardSurface=createPaperTexture(true);
   const windowPosition = new THREE.Vector3(-8, 7, 6);
-  let selection = { variant: 'premium', cardOnly: false, accessory: 'none' };
+  let selection = { variant: 'effect', cardOnly: false, accessory: 'none' };
   let disposed = false;
   let pendingFrame=0;
   const draw = () => {
     host.dataset.cameraDistance=controls.getDistance().toFixed(3);
+    host.dataset.orbitTarget=controls.target.toArray().map(value=>value.toFixed(3)).join(',');
     if(disposed||pendingFrame)return;
     pendingFrame=window.requestAnimationFrame(()=>{
       pendingFrame=0;
@@ -106,13 +111,30 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     });
   };
   controls.addEventListener('change', draw);
-  function reset() {
+  let compactView=host.clientWidth<500;
+  let nearView=false;
+  function frameView(close) {
+    nearView=close;
     controls.minDistance=7;
-    camera.position.set(6, 5.4, 12.5);
-    controls.target.set(0, 2.65, 0);
+    if(close) {
+      camera.position.set(6, 5.4, 12.5);
+      controls.target.set(0, 2.65, 0);
+      if(compactView)camera.position.sub(controls.target).multiplyScalar(1.45).add(controls.target);
+    } else {
+      // Orbit the product's geometry, excluding the floor and contact shadow.
+      const bounds=new THREE.Box3().setFromObject(object);
+      const center=bounds.isEmpty()?new THREE.Vector3(0,2.5,0):bounds.getCenter(new THREE.Vector3());
+      const radius=bounds.isEmpty()?6.6:bounds.getBoundingSphere(new THREE.Sphere()).radius;
+      const halfFov=THREE.MathUtils.degToRad(camera.fov/2);
+      const limitingHalfFov=Math.min(halfFov,Math.atan(Math.tan(halfFov)*camera.aspect));
+      const distance=Math.max(33,radius/Math.sin(limitingHalfFov)*1.35);
+      controls.target.copy(center);
+      camera.position.copy(center).add(new THREE.Vector3(6,2.75,12.5).normalize().multiplyScalar(Math.min(distance,65)));
+    }
     controls.update();
     draw();
   }
+  function reset(){frameView(false);}
   function resize() {
     const width = host.clientWidth;
     if (!width) return;
@@ -121,6 +143,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     camera.aspect = width / height;
     // Keep the brick within the viewport on narrow screens.
     camera.fov = width < 500 ? 48 : 34;
+    if(compactView!==(width<500)){compactView=width<500;frameView(nearView);}
     camera.updateProjectionMatrix();
     draw();
   }
@@ -139,7 +162,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     clearObject();
     if (!designTexture) return;
     const { cardOnly, accessory, shikishi=false } = selection;
-    const variant=cardOnly||shikishi?'premium':selection.variant;
+    const variant=cardOnly||shikishi?'effect':selection.variant==='basic'?'basic':'effect';
     contact.scale.set(1,cardOnly?0.3:shikishi?0.5:1,1);
     const depth = cardOnly ? 0.035 : shikishi ? 0.12 : 1.5;
     const acrylic = cardOnly||shikishi?new THREE.MeshPhysicalMaterial():new MeshTransmissionMaterial({
@@ -158,7 +181,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     }
     brick.position.y = 2.5;
     object.add(brick);
-    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, components:componentTexture, depth, variant, keyPosition: key.position, windowPosition });
+    if (!cardOnly&&!shikishi) applyPrintOptics(acrylic, brick, { design: designTexture, mask: spotTexture, components:componentTexture,badges:badgeTexture, depth, variant, keyPosition: key.position, windowPosition });
     const print = createFinishMaterial({ map: designTexture, roughness: shikishi?0.62:cardOnly?0.42:0.38,
       clearcoat: 0,
       clearcoatMap: null,
@@ -173,7 +196,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     art.castShadow = true;
     print.side=THREE.DoubleSide;
     object.add(art);
-    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,components:componentTexture,depth,variant:'premium',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
+    if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,components:componentTexture,badges:badgeTexture,depth,variant:'effect',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
     if(shikishi) {
       // Folded paper binding, matching the uncoated warm-white reverse.
       const borderMaterial=new THREE.MeshStandardMaterial({color:'#e8dfce',metalness:0,roughness:0.95,map:paperSurface.color,bumpMap:paperSurface.bump,bumpScale:0.045,roughnessMap:paperSurface.roughness});
@@ -182,7 +205,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       }
       borderMaterial.dispose();
     }
-    if(cardOnly||shikishi||variant!=='premium') {
+    if(cardOnly||shikishi||variant!=='effect') {
     const reverseMaterial = cardOnly||shikishi
       ? new THREE.MeshStandardMaterial({color:cardOnly?'#080808':'#f3eee4',roughness:cardOnly?0.85:0.96,metalness:0,envMapIntensity:cardOnly?0.2:0.1,
         map:cardOnly?cardSurface.color:paperSurface.color,bumpMap:cardOnly?cardSurface.bump:paperSurface.bump,bumpScale:cardOnly?0.018:0.07,roughnessMap:cardOnly?cardSurface.roughness:paperSurface.roughness})
@@ -210,11 +233,16 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     host.dataset.printPlacement=cardOnly||shikishi?'surface':'innermost';
     host.dataset.printPlaneZ=String(art.position.z);
     host.dataset.reverseTexture=cardOnly?'fine-card-grain':shikishi?'paper-fibers':'none';
+    if(!nearView) {
+      const center=new THREE.Box3().setFromObject(object).getCenter(new THREE.Vector3());
+      camera.position.add(center.clone().sub(controls.target));
+      controls.target.copy(center);controls.update();
+    }
     renderer.shadowMap.needsUpdate=true;
     draw();
   }
   function setDesign(source, finishMaps) {
-    designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();
+    designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, snapshot?2048:4096);
     const scale = Math.min(1, limit / source.width, limit / source.height);
@@ -230,6 +258,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     designTexture.magFilter = THREE.LinearFilter;
     componentTexture=new THREE.CanvasTexture(finishMaps.componentCoverage);
     componentTexture.anisotropy=designTexture.anisotropy;
+    badgeTexture=new THREE.CanvasTexture(finishMaps.badgeCoverage||document.createElement('canvas'));
+    badgeTexture.anisotropy=designTexture.anisotropy;
     // Only authored collectible shapes receive a finish. Ordinary artwork stays matte.
     spotTexture = new THREE.CanvasTexture(finishMaps.packed);
     for (const texture of [spotTexture]) {
@@ -269,7 +299,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,quality.pixelRatio));
       key.shadow.mapSize.set(quality.shadowSize,quality.shadowSize);
       key.shadow.map?.dispose();key.shadow.map=null;
-      for(const texture of [designTexture,spotTexture,componentTexture])if(texture){
+      for(const texture of [designTexture,spotTexture,componentTexture,badgeTexture])if(texture){
         texture.anisotropy=Math.min(quality.anisotropy,renderer.capabilities.getMaxAnisotropy());texture.needsUpdate=true;
       }
       resize();rebuild();
@@ -277,6 +307,14 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   }
   return {
     setDesign,
+    setFinishMaps(maps) {
+      if(!spotTexture||!componentTexture)return;
+      spotTexture.image=maps.packed;spotTexture.needsUpdate=true;
+      componentTexture.image=maps.componentCoverage;componentTexture.needsUpdate=true;
+      badgeTexture.image=maps.badgeCoverage||document.createElement('canvas');badgeTexture.needsUpdate=true;
+      draw();
+    },
+    redraw:draw,
     setSelection(next) {
       const same=['variant','cardOnly','shikishi','accessory'].every(key=>(selection[key]??false)===(next[key]??false));
       selection=next;if(!same)rebuild();
@@ -316,12 +354,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       return renderer.domElement.toDataURL('image/png');
     },
     reset,
-    focusCollectibles() {
-      controls.minDistance=9;
-      controls.target.set(host.clientWidth<500 ? -0.5 : -1.8,4.1,0);
-      camera.position.copy(controls.target).add(new THREE.Vector3(2.5,1.2,6.8));
-      controls.update(); draw();
-    },
+    focusCollectibles() {frameView(true);},
     setLightAngle(degrees) {
       const angle = THREE.MathUtils.degToRad(degrees);
       key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
@@ -332,7 +365,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     },
     dispose() {
       disposed = true;window.cancelAnimationFrame(pendingFrame);observer.disconnect(); controls.dispose(); clearObject();
-      designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
+      designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
       renderer.dispose(); renderer.domElement.remove();

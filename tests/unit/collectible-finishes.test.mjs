@@ -1,50 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createDefaultState } from '../../src/model.js';
-import { collectibleFinish } from '../../src/collectible-finishes.js';
-
-test('all rank assets receive powder with tier-dependent finish colors', () => {
-  const state=createDefaultState();
-  const types=new Set();
-  for(let n=0;n<24;n++) {
-    state.files.rank=`assets/ranks/${String(n).padStart(2,'0')}.png`;
-    const finish=collectibleFinish(state,'rank');
-    assert.ok(finish.powder>0);
-    if(finish) types.add(JSON.stringify([finish.powder,finish.tint,finish.rainbow]));
+import {collectibleFinish} from '../../src/collectible-finishes.js';
+import {COLLECTIBLE_PLATES} from '../../src/collectible-catalog.js';
+const state=(slot,file,extra={})=>({visible:{[slot]:true},files:{[slot]:file},...extra});
+test('rating has no powder at any value while white varnish remains available',()=>{
+  for(const ratingValue of [0,10000,13999,14000,14500,16411]){
+    const profile=collectibleFinish(state('ratingFrame','/materials/ratings/UI_CMN_DXRating_S_11.png',{ratingValue}),'ratingFrame');
+    assert.equal(profile.powder,0);assert.equal(profile.uv,1);
   }
-  assert.ok(types.size>=3);
-  state.visible.rank=false;
-  assert.equal(collectibleFinish(state,'rank'),null);
 });
-test('title, rating and collectible profiles use colored powder', () => {
-  const state=createDefaultState();
-  for(const color of ['Gold','Silver']) {
-    state.titleColor=color;
-    assert.equal(collectibleFinish(state,'titleBase').shape,'title-board');
-    assert.ok(collectibleFinish(state,'titleBase').powder>0);
-    assert.equal(collectibleFinish(state,'titleText'),null);
+test('only the four special plate families receive plate powder and white varnish',()=>{
+  for(const kind of ['shogun','kiwami','maimai','god']){
+    const id=Object.keys(COLLECTIBLE_PLATES).find(id=>COLLECTIBLE_PLATES[id].kind===kind);
+    assert.ok(collectibleFinish(state('nameplate','/cos/materials/nameplates/'+id),'nameplate').powder>0);
   }
-  state.titleColor='Normal'; assert.equal(collectibleFinish(state,'titleBase').uv,1);
-  assert.ok(collectibleFinish(state,'ratingFrame').powder>0);
-  assert.equal(collectibleFinish(state,'playerName'),null);
+  assert.equal(collectibleFinish(state('nameplate','/cos/materials/nameplates/UI_Plate_000000.png'),'nameplate'),null);
+  assert.equal(collectibleFinish(state('nameplate','/materials/nameplates/UI_Plate_999999.png',{labels:{nameplate:'神'}}),'nameplate'),null);
 });
-test('all nameplates receive powder while special plates retain their profiles', () => {
-  const state=createDefaultState();
-  for(const id of ['006149','006150','006151','006152','559104']) {
-    state.files.nameplate=`assets/nameplates/UI_Plate_${id}.png`;
-    assert.ok(collectibleFinish(state,'nameplate').powder>0);
+test('all title colors have no powder and preserve white varnish',()=>{
+  for(const color of ['Normal','Bronze','Gold','Silver','Rainbow']){
+    const profile=collectibleFinish(state('titleBase','unused',{titleColor:color}),'titleBase');
+    assert.equal(profile.powder,0);assert.equal(profile.uv,1);
   }
-  state.labels.nameplate='舞神'; state.files.nameplate='assets/nameplates/UI_Plate_555201.png';
-  assert.equal(collectibleFinish(state,'nameplate').shape,'plate-print');
-  assert.ok(collectibleFinish(state,'nameplate').powder>0);
-  assert.equal(collectibleFinish(state,'background'),null);
 });
-test('every friend-battle badge receives powder including lower ranks', () => {
-  const state=createDefaultState();
-  for(let n=0;n<=25;n++) {
-    state.files.friendBattle=`assets/friend-battles/${String(n).padStart(2,'0')}.png`;
-    const finish=collectibleFinish(state,'friendBattle');
-    assert.ok(finish.powder>0);
-    if(n===25) assert.equal(finish.rainbow,1);
+test('beginner rank and A/B battles have no powder while other ranks retain it',()=>{
+  for(let level=0;level<=23;level++){
+    const profile=collectibleFinish(state('rank','/cos/materials/ranks/'+String(level).padStart(2,'0')+'.png'),'rank');
+    assert.equal(profile.powder>0,level!==0);
+  }
+  for(let level=0;level<=25;level++){
+    const profile=collectibleFinish(state('friendBattle','/cos/materials/friend-battles/'+String(level).padStart(2,'0')+'.png'),'friendBattle');
+    assert.equal(profile.powder>0,level>=10);assert.equal(profile.uv,0.9);
   }
 });

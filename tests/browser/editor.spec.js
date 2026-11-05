@@ -331,17 +331,17 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect(page.locator('#order-preview-shell')).toBeVisible();
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
-  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'premium');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'effect');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-material-engine','custom-shader-material+mesh-transmission');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-quality',/balanced|high|ultra/);
-  await expect(page.locator('#acrylic-variant')).toHaveValue('premium');
+  await expect(page.locator('#acrylic-variant')).toHaveValue('effect');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-layers','1');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-print-placement','innermost');
   expect(Number(await page.locator('#acrylic-viewport').getAttribute('data-print-plane-z'))).toBeLessThan(-0.74);
   await expect(page.locator('#finish-inspector')).toHaveCount(0);
-  await page.getByRole('button',{name:'收藏品近景'}).click();
+  await page.getByRole('button',{name:'近景'}).click();
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/acrylic-actual-detail.png'});
-  await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'全景'}).click();
   const premiumSurface=await page.locator('#acrylic-viewport').screenshot();
   await page.getByRole('button', { name: '基础款', exact: true }).click();
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-basic.png' });
@@ -357,13 +357,13 @@ test('merch opens separately with the latest design and returns to the same edit
     return visiblyChanged;
   },{first:'data:image/png;base64,'+premiumSurface.toString('base64'),second:'data:image/png;base64,'+basicSurface.toString('base64')});
   expect(difference).toBeGreaterThan(250);
-  await page.getByRole('button', { name: '轻量特效款', exact: true }).click();
-  await expect(page.locator('#acrylic-variant')).toHaveValue('light');
-  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'light');
+  await page.getByRole('button', { name: '特效档', exact: true }).click();
+  await expect(page.locator('#acrylic-variant')).toHaveValue('effect');
+  await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'effect');
   const uvSurface = await page.locator('#acrylic-viewport').screenshot();
   expect(basicSurface.equals(uvSurface)).toBe(false);
-  await page.getByRole('button', { name: '高配特效款', exact: true }).click();
-  await expect(page.locator('#acrylic-variant')).toHaveValue('premium');
+  await page.getByRole('button', { name: '特效档', exact: true }).click();
+  await expect(page.locator('#acrylic-variant')).toHaveValue('effect');
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-premium.png' });
   const originalLight = await page.locator('#acrylic-viewport').screenshot();
   const dial=page.locator('#acrylic-light-angle');
@@ -373,8 +373,8 @@ test('merch opens separately with the latest design and returns to the same edit
   await page.mouse.down();
   await page.mouse.move(dialBox.x+dialBox.width/2+100,dialBox.y+dialBox.height/2,{steps:12});
   await page.mouse.up();
-  await expect(dial).toHaveAttribute('aria-valuenow','60');
-  await expect(page.locator('#acrylic-light-value')).toHaveText('60°');
+  await expect(dial).toHaveAttribute('aria-valuenow','15');
+  await expect(page.locator('#acrylic-light-value')).toHaveText('15°');
   const movedLight = await page.locator('#acrylic-viewport').screenshot();
   expect(originalLight.equals(movedLight)).toBe(false);
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-light-moved.png' });
@@ -397,7 +397,7 @@ test('merch opens separately with the latest design and returns to the same edit
     return delta/(a.width*a.height*3);
   },{before:'data:image/png;base64,'+cardStyle.toString('base64'),after:'data:image/png;base64,'+cardAfter.toString('base64')});
   expect(cardStyleError).toBeLessThan(1);
-  await page.getByRole('button',{name:'收藏品近景'}).click();
+  await page.getByRole('button',{name:'近景'}).click();
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/laser-card-60.png'});
   await dial.focus();
   await page.keyboard.press('Home');
@@ -411,7 +411,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await page.locator('#acrylic-viewport canvas').focus();
   for(let i=0;i<26;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/card-black-reverse.png'});
-  await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'全景'}).click();
   await page.getByRole('button',{name:'色纸',exact:true}).click();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','shikishi');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-texture','paper-fibers');
@@ -420,15 +420,15 @@ test('merch opens separately with the latest design and returns to the same edit
   await dial.focus();await page.keyboard.press('Home');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-light-angle.png'});
   expect(paperBefore.equals(await page.locator('#acrylic-viewport').screenshot())).toBe(false);
-  await page.locator('[data-finish="premium"]').click();
+  await page.locator('[data-finish="effect"]').click();
   await page.getByRole('button',{name:'亚克力砖',exact:true}).click();
   await expect(page.locator('.acrylic-variants')).toBeVisible();
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','acrylic');
-  await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'全景'}).click();
   await page.locator('#acrylic-viewport canvas').focus();
   for(let i=0;i<8;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/acrylic-side-single-layer.png'});
-  await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'全景'}).click();
   expect(shaderErrors).toEqual([]);
   const sceneCanvas = page.locator('#acrylic-viewport canvas');
   await sceneCanvas.scrollIntoViewIfNeeded();
@@ -436,7 +436,7 @@ test('merch opens separately with the latest design and returns to the same edit
   await sceneCanvas.hover();
   await page.mouse.wheel(0,-400);
   await expect.poll(async()=>Number(await page.locator('#acrylic-viewport').getAttribute('data-camera-distance'))).toBeLessThan(beforeZoom);
-  await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'全景'}).click();
   const cdp=await page.context().newCDPSession(page);
   await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true});
   await sceneCanvas.scrollIntoViewIfNeeded();
@@ -451,11 +451,11 @@ test('merch opens separately with the latest design and returns to the same edit
   await expect.poll(async()=>Number(await page.locator('#acrylic-viewport').getAttribute('data-camera-distance'))).toBeLessThan(beforePinch);
   await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false});
   await cdp.detach();
-  await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'全景'}).click();
   await sceneCanvas.focus();
   for (let i = 0; i < 24; i++) await page.keyboard.press('ArrowDown');
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-lowest-angle.png' });
-  await page.getByRole('button', { name: '复位视角' }).click();
+  await page.getByRole('button', { name: '全景' }).click();
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-mobile.png' });
   await expect(page.locator('.bg.circle')).toHaveCount(1);
@@ -481,7 +481,8 @@ test('purchase presets select products, update newcomer prices and export all it
     const maps=await createCollectibleMasks(readCurrentDesign());
     return maps.entries.filter(entry=>entry.powderPixels>0).map(entry=>entry.slot);
   });
-  for(const slot of ['nameplate','titleBase','ratingFrame','rank','friendBattle'])expect(powderSlots).toContain(slot);
+  for(const slot of ['nameplate','rank','friendBattle'])expect(powderSlots).toContain(slot);
+  for(const slot of ['titleBase','ratingFrame'])expect(powderSlots).not.toContain(slot);
   await expect(page.locator('[data-config-image="acrylic"]').first()).toHaveAttribute('src',/^data:image\/png/);
   await expect(page.locator('[data-config-image="complete"]').first()).toHaveAttribute('data-products','acrylic,card,shikishi');
   await expect(page.locator('[data-config-image="shikishi"]').first()).toHaveAttribute('data-products','shikishi');
@@ -499,16 +500,16 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.keyboard.press('Space');
   await expect(page.locator('#acrylic-variant')).toHaveValue('basic');
   await expect(page.locator('[data-finish="basic"]')).toHaveAttribute('aria-pressed','true');
-  await page.locator('[data-finish="premium"]').click();
+  await page.locator('[data-finish="effect"]').click();
   await page.locator('[data-config="shikishi"]').click();
   await expect(page.locator('#buy-shikishi')).toBeChecked();
   await expect(page.locator('#buy-acrylic')).not.toBeChecked();
   await expect(page.locator('.purchase-options')).toBeHidden();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥24.99');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥24.90');
   await page.locator('#shikishi-quantity').fill('2');
-  await expect(page.locator('#acrylic-total')).toHaveText('¥39.98');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥39.80');
   await page.locator('[data-config="cardPaper"]').click();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥34.98');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥34.80');
   await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
   await page.locator('[data-config="shikishi"]').click();
   await expect(page.locator('#shikishi-quantity')).toHaveValue('2');
@@ -526,12 +527,12 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('#acrylic-viewport canvas').focus();
   for(let i=0;i<26;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-paper-reverse.png'});
-  await page.getByRole('button',{name:'复位视角'}).click();
+  await page.getByRole('button',{name:'全景'}).click();
   await page.locator('#acrylic-newcomer').check();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥21.99');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥21.90');
   await expect(page.locator('#purchase-lines')).toContainText('¥5.00');
   await page.locator('[data-config="complete"]').click();
-  await expect(page.locator('#acrylic-total')).toHaveText('¥72.97');
+  await expect(page.locator('#acrylic-total')).toHaveText('¥72.70');
   await expect(page.locator('#acrylic-accessory')).toHaveValue('clearStand');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-product','acrylic');
   await page.locator('#custom-order').screenshot({path:'output/playwright/purchase-desktop.png'});
@@ -618,9 +619,9 @@ test('component powder and reflection masks follow source pixels with reflection
       const density=maps.entries.find(entry=>entry.slot===id)?.powder;
       for(let i=0;i<mask.length;i+=4) {
         if(mask[i+1]>12)powder++;
-        if(id==='titleBase'&&Math.abs(mask[i+1]-art[i+3])>1)titleCoverageErrors++;
+        if(id==='titleBase'&&mask[i+1]>0)titleCoverageErrors++;
         if(['rank','friendBattle'].includes(id)&&art[i+3]>250) {
-          const expected=mask[i]>12?0:Math.round(art[i+3]*density);
+          const expected=mask[i]>0?0:Math.round(art[i+3]*density);
           if(Math.abs(mask[i+1]-expected)>1)badgeCoverageErrors++;
         }
         if(mask[i]>12) {
@@ -635,7 +636,7 @@ test('component powder and reflection masks follow source pixels with reflection
     return results;
   });
   for(const item of results) {
-    expect(item.powder,item.id).toBeGreaterThan(0);
+    if(['titleBase','ratingFrame'].includes(item.id))expect(item.powder,item.id).toBe(0);else expect(item.powder,item.id).toBeGreaterThan(0);
     expect(item.coloredReflection,item.id).toBe(0);
     expect(item.titleCoverageErrors,item.id+' full-board powder').toBe(0);
     expect(item.badgeCoverageErrors,item.id+' powder except white strokes').toBe(0);
@@ -643,7 +644,7 @@ test('component powder and reflection masks follow source pixels with reflection
   expect(results.reduce((total,item)=>total+item.whiteReflection,0)).toBeGreaterThan(50);
 });
 
-test('title lettering stays matte above the fully powdered title board',async({page})=>{
+test('title white lettering reflects without powder or title-board pearl',async({page})=>{
   await ready(page);
   const result=await page.evaluate(async()=>{
     const {createDefaultState}=await import('/src/model.js');
@@ -659,15 +660,18 @@ test('title lettering stays matte above the fully powdered title board',async({p
     const ctx=glyphs.getContext('2d');ctx.drawImage(renderer.renderCanvas,0,0,glyphs.width,glyphs.height);
     const letters=ctx.getImageData(0,0,glyphs.width,glyphs.height).data;
     const mask=maps.packed.getContext('2d').getImageData(0,0,glyphs.width,glyphs.height).data;
-    let glyphPixels=0,coatedGlyphs=0,boardPixels=0;
+    const pearl=maps.componentCoverage.getContext('2d').getImageData(0,0,glyphs.width,glyphs.height).data;
+    let glyphPixels=0,coatedGlyphs=0,boardPixels=0,whiteReflection=0,pearlLeaks=0;
     for(let i=0;i<mask.length;i+=4) {
-      if(letters[i+3]>250){glyphPixels++;if(mask[i]>5||mask[i+1]>5||mask[i+2]<250)coatedGlyphs++;}
-      else if(mask[i+1]>200)boardPixels++;
+      if(letters[i+3]>250){glyphPixels++;if(mask[i+1]>0)coatedGlyphs++;if(mask[i]>12)whiteReflection++;if(pearl[i]>5)pearlLeaks++;}
+      else if(pearl[i]>200)boardPixels++;
     }
-    return {glyphPixels,coatedGlyphs,boardPixels};
+    return {glyphPixels,coatedGlyphs,boardPixels,whiteReflection,pearlLeaks};
   });
   expect(result.glyphPixels).toBeGreaterThan(100);
   expect(result.coatedGlyphs).toBe(0);
+  expect(result.whiteReflection).toBeGreaterThan(100);
+  expect(result.pearlLeaks).toBe(0);
   expect(result.boardPixels).toBeGreaterThan(1000);
 });
 
@@ -678,6 +682,9 @@ test('generated finishes remain visible in the final acrylic and paper render',a
     const {createRenderer}=await import('/src/renderer.js');
     const {createCollectibleMasks}=await import('/src/collectible-masks.js');
     const {createAcrylicPreview}=await import('/src/acrylic-preview.js');
+    const finishUrl=new URL('/src/finish-settings.js',location.origin);finishUrl.search=new URL(document.querySelector('script[src*="app.js"]').src).search;
+    const {uniforms}=await import(finishUrl.href);
+    for(const key of ['pearlStrength','titlePearlStrength','avatarPearlStrength','rankPearlStrength','battlePearlStrength'])uniforms['lab_'+key].value=0;
     const state=createDefaultState(),art=createRenderer(document.createElement('canvas'));
     await art.render(state,{strict:true});
     const maps=await createCollectibleMasks(state);
@@ -696,7 +703,7 @@ test('generated finishes remain visible in the final acrylic and paper render',a
     host.style.width=width+'px';host.style.height=(width===1000?600:300)+'px';
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     for(const product of ['acrylic','paper']) {
-      const config={variant:'premium',quantity:product==='acrylic'?1:0,shikishiQuantity:product==='paper'?1:0,cardQuantity:0,accessory:'none'};
+      const config={variant:'effect',quantity:product==='acrylic'?1:0,shikishiQuantity:product==='paper'?1:0,cardQuantity:0,accessory:'none'};
       let firstPowderDifference;
       for(const angle of [0,75]) {
         viewer.setLightAngle(angle);
@@ -752,7 +759,8 @@ test('generated finishes remain visible in the final acrylic and paper render',a
   for(const image of output.images)for(const mode of ['none','powder','uv'])await writeFile(`output/playwright/${image.product}-${mode}.png`,Buffer.from(image[mode].split(',')[1],'base64'));
   for(const width of [1000,360])for(const product of ['acrylic','paper'])for(const mode of ['powder','uv','glitter','powder-light-response','live-light-update']) {
     const views=output.metrics.filter(item=>item.width===width&&item.product===product&&item.mode===mode);
-    const minimum=mode==='powder'?(width===1000?5000:850):mode==='glitter'?(width===1000?10000:1400):(mode==='powder-light-response'||mode==='live-light-update')?(width===1000?1500:180):(width===1000?200:25);
+    // Approved density is 61%; title/rating powder is intentionally absent.
+    const minimum=mode==='powder'?(width===1000?2500:350):mode==='glitter'?(width===1000?2500:350):mode==='live-light-update'?(width===1000?1500:180):mode==='powder-light-response'?Math.max(...output.metrics.filter(item=>item.width===width&&item.product===product&&item.mode==='powder').map(item=>item.visible))*0.15:(width===1000?200:25);
     expect(Math.max(...views.map(item=>item.visible)),`${width} ${product} ${mode}`).toBeGreaterThan(minimum);
     if(mode==='uv')expect(Math.abs(views[0].total-views[1].total),`${width} ${product} lighting response`).toBeGreaterThan(50);
   }
@@ -769,4 +777,55 @@ test('editor and product preview work without a local assets directory',async({p
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   expect(localRequests).toEqual([]);
+});
+
+
+test('approved pearl settings affect all five regions without background leakage',async({page})=>{
+  await ready(page);
+  const result=await page.evaluate(async()=>{
+    const {createAcrylicPreview}=await import('/src/acrylic-preview.js');
+    const {createDefaultState}=await import('/src/model.js');
+    const {createRenderer}=await import('/src/renderer.js');
+    const {createCollectibleMasks}=await import('/src/collectible-masks.js');
+    const finishUrl=new URL('/src/finish-settings.js',location.origin);finishUrl.search=new URL(document.querySelector('script[src*="app.js"]').src).search;
+    const {FINISH_PARAMETERS,uniforms}=await import(finishUrl.href);
+    const settings={values:{...FINISH_PARAMETERS},applyParameters(input){Object.assign(this.values,input);for(const [key,value]of Object.entries(input))uniforms['lab_'+key].value=value;}};
+    const saved={...settings.values};
+    const host=document.createElement('div');Object.assign(host.style,{width:'1000px',height:'600px',position:'fixed',left:'-1200px'});document.body.append(host);
+    const art=createRenderer(document.createElement('canvas'));const state=createDefaultState();await art.render(state,{strict:true});
+    const maps=await createCollectibleMasks(state);const viewer=createAcrylicPreview(host,{snapshot:true});
+    const decode=async src=>{const image=new Image();image.src=src;await image.decode();const c=document.createElement('canvas');c.width=image.width;c.height=image.height;const ctx=c.getContext('2d');ctx.drawImage(image,0,0);return ctx.getImageData(0,0,c.width,c.height).data;};
+    const diffs=[];
+    try{
+      settings.applyParameters({...saved,powderStrength:0,powderContrast:0,glitterStrength:0,uvStrength:0,titlePearlStrength:0,avatarPearlStrength:0,rankPearlStrength:0,battlePearlStrength:0});
+      viewer.setDesign(art.renderCanvas,maps);
+      for(const angle of [0,75]){
+        viewer.setLightAngle(angle);const images=[];
+        for(const strength of [0,saved.pearlStrength]){settings.applyParameters({...settings.values,pearlStrength:strength});images.push(await decode(viewer.captureConfiguration({variant:'effect',quantity:1,cardQuantity:0,shikishiQuantity:0,accessory:'none'})));}
+        const diff=new Int16Array(images[0].length);let visible=0;
+        for(let i=0;i<diff.length;i+=4){let delta=0;for(let c=0;c<3;c++){diff[i+c]=images[1][i+c]-images[0][i+c];delta+=Math.abs(diff[i+c]);}if(delta>3)visible++;}
+        diffs.push({diff,visible});
+      }
+      let angular=0;for(let i=0;i<diffs[0].diff.length;i+=4)if(Math.abs(diffs[0].diff[i]-diffs[1].diff[i])+Math.abs(diffs[0].diff[i+1]-diffs[1].diff[i+1])+Math.abs(diffs[0].diff[i+2]-diffs[1].diff[i+2])>3)angular++;
+      const regions={};
+      for(const key of ['titlePearlStrength','avatarPearlStrength','rankPearlStrength','battlePearlStrength']) {
+        const images=[];
+        for(const strength of [0,saved[key]]){
+          settings.applyParameters({...settings.values,pearlStrength:0,titlePearlStrength:0,avatarPearlStrength:0,rankPearlStrength:0,battlePearlStrength:0,[key]:strength});
+          images.push(await decode(viewer.captureConfiguration({variant:'effect',quantity:1,cardQuantity:0,shikishiQuantity:0,accessory:'none'})));
+        }
+        let visible=0;for(let i=0;i<images[0].length;i+=4)if(Math.abs(images[0][i]-images[1][i])+Math.abs(images[0][i+1]-images[1][i+1])+Math.abs(images[0][i+2]-images[1][i+2])>3)visible++;
+        if(visible<20)throw Error(key+' has no visible effect');regions[key]=visible;
+      }
+      settings.applyParameters({...settings.values,titlePearlStrength:0,avatarPearlStrength:0,rankPearlStrength:0,battlePearlStrength:0});
+      const coverage=document.createElement('canvas');coverage.width=maps.packed.width;coverage.height=maps.packed.height;const ctx=coverage.getContext('2d');ctx.fillStyle='#000';ctx.fillRect(0,0,coverage.width,coverage.height);
+      viewer.setDesign(art.renderCanvas,{...maps,componentCoverage:coverage});const covered=[];
+      for(const strength of [0,1]){settings.applyParameters({...settings.values,pearlStrength:strength});covered.push(await decode(viewer.captureConfiguration({variant:'effect',quantity:1,cardQuantity:0,shikishiQuantity:0,accessory:'none'})));}
+      let leaks=0;for(let i=0;i<covered[0].length;i++)if(covered[0][i]!==covered[1][i])leaks++;
+      if(Math.max(...diffs.map(d=>d.visible))<1000||angular<300||leaks)throw Error(JSON.stringify({visible:diffs.map(d=>d.visible),angular,leaks}));
+      return {visible:diffs.map(d=>d.visible),angular,regions,componentLeaks:leaks};
+    }finally{settings.applyParameters(saved);viewer.dispose();host.remove();art.renderCanvas.width=1;}
+  });
+  expect(result.componentLeaks).toBe(0);
+  for(const count of Object.values(result.regions))expect(count).toBeGreaterThan(20);
 });
