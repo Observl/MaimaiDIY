@@ -124,6 +124,10 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         float insidePrint = step(0.001, printUV.x) * step(printUV.x, 0.999)
           * step(0.001, printUV.y) * step(printUV.y, 0.999)
           * step(0.0, rayDistance);
+        #ifdef USE_TRANSMISSION
+        // Rear-facing rays see the opaque beige backing, never a mirrored design.
+        insidePrint*=step(localRay.z,-0.00001);
+        #endif
         vec3 artwork = texture2D(printArtwork, printUV).rgb;
         vec3 finishPosition=pPos,finishNormal=pN,finishView=pV;
         #ifdef USE_TRANSMISSION

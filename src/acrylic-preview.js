@@ -194,7 +194,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     art.name='single-composited-design';
     art.position.set(0, 2.5, cardOnly||shikishi ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
-    print.side=THREE.DoubleSide;
+    print.side=cardOnly||shikishi?THREE.DoubleSide:THREE.FrontSide;
     object.add(art);
     if(cardOnly||shikishi)applyPrintOptics(print,art,{design:designTexture,mask:spotTexture,components:componentTexture,badges:badgeTexture,depth,variant:'effect',keyPosition:key.position,windowPosition,card:cardOnly,paper:shikishi});
     if(shikishi) {
@@ -205,17 +205,29 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       }
       borderMaterial.dispose();
     }
-    if(cardOnly||shikishi||variant!=='effect') {
+    {
     const reverseMaterial = cardOnly||shikishi
       ? new THREE.MeshStandardMaterial({color:cardOnly?'#080808':'#f3eee4',roughness:cardOnly?0.85:0.96,metalness:0,envMapIntensity:cardOnly?0.2:0.1,
         map:cardOnly?cardSurface.color:paperSurface.color,bumpMap:cardOnly?cardSurface.bump:paperSurface.bump,bumpScale:cardOnly?0.018:0.07,roughnessMap:cardOnly?cardSurface.roughness:paperSurface.roughness})
-      : new THREE.MeshStandardMaterial({ color: '#fafafa', roughness: 0.5 });
+      : new THREE.MeshStandardMaterial({ color: '#e8ddc5', roughness: 0.88, metalness:0, transparent:false });
     const reverse = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), reverseMaterial);
     reverse.rotation.y = Math.PI;
     reverse.position.set(0, 2.5, -depth / 2 - 0.004);
+    reverse.name=cardOnly?'card-reverse':shikishi?'paper-reverse':'opaque-ivory-acrylic-reverse';
     object.add(reverse);
     }
-    host.dataset.reverseMaterial=cardOnly?'black-cardstock':shikishi?'ivory-paper':'print';
+    if(shikishi) {
+      const stand=new THREE.Group();stand.name='shikishi-paper-stand';
+      const material=new THREE.MeshStandardMaterial({color:'#e6ddcb',roughness:0.98,metalness:0,
+        map:paperSurface.color,bumpMap:paperSurface.bump,bumpScale:0.045,roughnessMap:paperSurface.roughness});
+      const support=new THREE.Mesh(new THREE.BoxGeometry(2.4,Math.hypot(3.2,1.95),0.045),material);
+      support.position.set(0,1.64,-1.045);support.rotation.x=Math.atan2(1.95,3.2);stand.add(support);
+      const foot=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.045,1.98),material.clone());foot.position.set(0,0.045,-1.06);stand.add(foot);
+      const hinge=new THREE.Mesh(new THREE.BoxGeometry(2.45,0.13,0.065),material.clone());hinge.position.set(0,3.24,-0.085);stand.add(hinge);
+      stand.traverse(item=>{if(item.isMesh)item.castShadow=true;});object.add(stand);
+    }
+    host.dataset.paperStand=shikishi?'folded-cardstock':'none';
+    host.dataset.reverseMaterial=cardOnly?'black-cardstock':shikishi?'ivory-paper':'opaque-ivory';
     if (accessory === 'clearStand' && !cardOnly&&!shikishi) {
       // Helper material clones lose constructor-only sampler options; construct explicitly.
       const standMaterial=new MeshTransmissionMaterial({samples:quality.samples,transmissionSampler:true,transmission:1,
