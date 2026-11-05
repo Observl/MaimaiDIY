@@ -4,8 +4,8 @@ import { createCollectibleMasks } from './collectible-masks.js';
 import { FINISH_PARAMETERS, MASK_PARAMETERS } from './finish-settings.js';
 
 const $=id=>document.getElementById(id),storage=window.sessionStorage;
-const labels={pending_payment:'待模拟付款',paid_review:'待审核设计',approved:'设计已审核',producing:'模拟生产中',shipped:'已模拟发货',completed:'订单已完成',cancelled:'已取消'};
-const next={pending_payment:['pay','模拟付款'],paid_review:['approve','模拟审核通过'],approved:['produce','模拟交付厂家并开始生产'],producing:['ship','模拟发货'],shipped:['complete','确认收货（模拟）']};
+const labels={pending_payment:'待模拟付款',paid_review:'待审核设计',approved:'已审核，等待凑批',producing:'生产中（本地演示）',shipped:'已发货（本地演示）',completed:'订单已完成',cancelled:'已取消'};
+const next={pending_payment:['pay','模拟付款'],shipped:['complete','确认收货（模拟）']};
 const money=fen=>'¥'+(fen/100).toFixed(2);
 let draft,order,credentials,previewVersion=0,busy=false;
 const renderer=createRenderer($('design'));
@@ -20,7 +20,7 @@ async function renderDesign(state){const version=++previewVersion;try{await rend
 function displayDraft(value) {
   draft=value;$('items').replaceChildren();
   const names={'acrylic-brick':'亚克力砖','clear-stand':'透明底座','holographic-card':'镭射票',shikishi:'色纸'};
-  for(const item of draft.items){const row=document.createElement('div');row.className='item';const name=document.createElement('span'),price=document.createElement('span');name.textContent=`${names[item.type]}${item.variant==='effect'?' · 特效档':item.variant==='basic'?' · 基础款':''} × ${item.quantity}`;price.textContent=money(item.totalFen);row.append(name,price);$('items').append(row);}
+  for(const item of draft.items){const row=document.createElement('div');row.className='item';const name=document.createElement('span'),price=document.createElement('span');name.textContent=`${names[item.type]}${item.variant==='effect'?' · 特效款':item.variant==='basic'?' · 基础款':''} × ${item.quantity}`;price.textContent=money(item.totalFen);row.append(name,price);$('items').append(row);}
   const row=document.createElement('div');row.className='item';row.textContent='运费 '+money(draft.quote.shippingFen);$('items').append(row);
   if(draft.quote.comboDiscountFen){const discount=document.createElement('p');discount.textContent='组合优惠 −'+money(draft.quote.comboDiscountFen);$('items').append(discount);}
   $('total').textContent=money(draft.quote.totalFen);renderDesign(draft.design);
@@ -51,6 +51,7 @@ function displayOrder(value){
   if(order.payment){const li=document.createElement('li');li.textContent='模拟交易号 '+order.payment.transactionId;$('timeline').append(li);}
   if(order.tracking){const li=document.createElement('li');li.textContent='模拟运单 '+order.tracking.number;$('timeline').append(li);}
   $('actions').replaceChildren();
+  $('actions').append(button('刷新订单状态',async()=>displayOrder(await request(`/api/orders/${order.id}`))));
   if(next[order.status]){const [action,label]=next[order.status];$('actions').append(button(label,async()=>displayOrder(await request(`/api/orders/${order.id}/actions`,'POST',{action,...(action==='ship'?{tracking:'DEMO-'+order.id.slice(0,8)}:{})}))));}
   if(order.status==='pending_payment')$('actions').append(button('取消订单',async()=>displayOrder(await request(`/api/orders/${order.id}/actions`,'POST',{action:'cancel'}))));
   if(['approved','producing','shipped','completed'].includes(order.status))$('actions').append(button('生成设计稿和工艺蒙版',productionPack));

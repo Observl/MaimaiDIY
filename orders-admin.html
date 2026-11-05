@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>订单运营 · MaimaiDIY</title><link rel="stylesheet" href="checkout.css"></head><body><main>
+<header><span>订单运营</span><span class="tag">本地演示 · 未接入真实支付或厂家</span></header><h1>审核、凑批与交付。</h1><p id="admin-message" role="status" aria-live="polite">输入本机运营凭据。</p>
+<form id="admin-login" class="panel"><label>运营凭据<input id="admin-token" type="password" autocomplete="off" required></label><button>进入后台</button></form>
+<div id="admin-content" hidden><div class="admin-toolbar"><button id="admin-refresh" type="button">刷新订单</button><button id="admin-logout" type="button" class="secondary">退出后台</button></div>
+<section class="panel admin-section"><h2>按规格凑批</h2><p>每种规格至少 10 件。数量不足时可填写原因提前排产；套餐所有商品都排产后才进入生产中。</p><div id="batch-queue"></div></section>
+<section class="panel admin-section"><h2>订单</h2><div id="admin-orders"></div></section>
+<section class="panel admin-section"><h2>厂家交付批次</h2><p>交付清单含图稿配置及收货信息。仅供授权厂家使用，下载后仍需生成和核验实际印刷文件。</p><div id="admin-batches"></div></section></div>
+</main><script type="module" src="src/order-admin.js"></script></body></html>

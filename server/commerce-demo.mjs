@@ -1,13 +1,20 @@
 import { createServer } from 'node:http';
-import { readFile, mkdir } from 'node:fs/promises';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { randomBytes,createHash,timingSafeEqual } from 'node:crypto';
 import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createOrderStore } from './order-store.mjs';
 import { COS } from '../src/config.js';
 
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)),'dist');
-const data=resolve(root,'../output/commerce-data');await mkdir(data,{recursive:true});
+const output=resolve(root,'../output'),data=resolve(output,process.env.ORDER_DATA_SUBDIR||'commerce-data');
+if(!data.startsWith(output+sep))throw Error('订单数据目录须位于 output 内');await mkdir(data,{recursive:true});
 const store=createOrderStore(resolve(data,'orders.sqlite'));
+const tokenPath=resolve(data,'admin-token.txt');
+let adminToken=process.env.ORDER_ADMIN_TOKEN;
+if(!adminToken){try{adminToken=(await readFile(tokenPath,'utf8')).trim();}catch(error){if(error.code!=='ENOENT')throw error;adminToken=randomBytes(32).toString('hex');await writeFile(tokenPath,adminToken,{flag:'wx',mode:0o600});}}
+const digest=value=>createHash('sha256').update(String(value)).digest();
+const adminDigest=digest(adminToken);
 const port=Number(process.env.ORDER_PORT||9425),origin=`http://127.0.0.1:${port}`;
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.png':'image/png','.woff2':'font/woff2','.ttf':'font/ttf','.svg':'image/svg+xml'};
 function reply(res,status,value) {res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(value));}
@@ -28,6 +35,16 @@ const server=createServer(async(req,res)=>{
       }
       if(req.method==='POST'&&req.headers.origin!==origin)return reply(res,403,{error:'拒绝跨站提交'});
       if(req.method==='GET'&&url.pathname==='/api/health')return reply(res,200,{mode:'demo'});
+      if(url.pathname.startsWith('/api/admin/')){
+        if(!timingSafeEqual(digest(token),adminDigest))return reply(res,401,{error:'运营凭据无效'});
+        if(req.method==='GET'&&url.pathname==='/api/admin/orders')return reply(res,200,{orders:store.list(),queue:store.queue(),batches:store.batches()});
+        if(req.method==='POST'&&url.pathname==='/api/admin/batches')return reply(res,201,store.createBatch(await body(req)));
+        const action=url.pathname.match(/^\/api\/admin\/orders\/([a-f0-9-]{36})\/actions$/);
+        if(req.method==='POST'&&action){const input=await body(req);return reply(res,200,store.adminAct(action[1],input.action,input));}
+        const pack=url.pathname.match(/^\/api\/admin\/batches\/([a-f0-9-]{36})\/pack$/);
+        if(req.method==='GET'&&pack)return reply(res,200,store.batchPack(pack[1]));
+        return reply(res,404,{error:'运营接口不存在'});
+      }
       if(req.method==='POST'&&url.pathname==='/api/orders')return reply(res,201,store.create(await body(req),token));
       const match=url.pathname.match(/^\/api\/orders\/([a-f0-9-]{36})(?:\/(actions|pack))?$/);
       if(match) {

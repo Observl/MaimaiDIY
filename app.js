@@ -378,12 +378,6 @@ const templates = initializeTemplates({
   syncControlsFromState,
   render,
 });
-document.querySelector('.support-merch-link').addEventListener('click', (event) => {
-  if (!saveCurrentDesign(snapshotState())) {
-    event.preventDefault();
-    alert('无法保存当前设计，请允许浏览器使用本地存储或清理空间后重试。');
-  }
-});
 if (location.hash === '#custom-order') location.replace('./custom-order.html');
 initializeRecommendations({
   state,

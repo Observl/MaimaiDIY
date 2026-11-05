@@ -317,15 +317,8 @@ test('merch opens separately with the latest design and returns to the same edit
   await name(page).fill('最新设计');
   await rating(page).fill('12345');
   await expect(page.locator('#custom-order')).toHaveCount(0);
-  const entry = page.locator('.support-merch-link');
-  await expect(entry).toHaveAttribute('href', 'custom-order.html');
-  const sizes = await entry.evaluate((element) => ({
-    button: element.getBoundingClientRect().width,
-    parent: element.parentElement.clientWidth,
-    padding: parseFloat(getComputedStyle(element.parentElement).paddingLeft) * 2,
-  }));
-  expect(Math.abs(sizes.button - (sizes.parent - sizes.padding))).toBeLessThan(2);
-  await entry.click();
+  await expect(page.locator('.support-merch-link')).toHaveCount(0);
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page).toHaveURL(/custom-order\.html$/);
   await expect(page.locator('#design-status')).toHaveText('已自动载入你最近编辑的上屏设计。');
   await expect(page.locator('#order-preview-shell')).toBeVisible();
@@ -357,12 +350,12 @@ test('merch opens separately with the latest design and returns to the same edit
     return visiblyChanged;
   },{first:'data:image/png;base64,'+premiumSurface.toString('base64'),second:'data:image/png;base64,'+basicSurface.toString('base64')});
   expect(difference).toBeGreaterThan(250);
-  await page.getByRole('button', { name: '特效档', exact: true }).click();
+  await page.getByRole('button', { name: '特效款', exact: true }).click();
   await expect(page.locator('#acrylic-variant')).toHaveValue('effect');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'effect');
   const uvSurface = await page.locator('#acrylic-viewport').screenshot();
   expect(basicSurface.equals(uvSurface)).toBe(false);
-  await page.getByRole('button', { name: '特效档', exact: true }).click();
+  await page.getByRole('button', { name: '特效款', exact: true }).click();
   await expect(page.locator('#acrylic-variant')).toHaveValue('effect');
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-premium.png' });
   const originalLight = await page.locator('#acrylic-viewport').screenshot();
@@ -470,7 +463,7 @@ test('merch opens separately with the latest design and returns to the same edit
 });
 test('purchase presets select products, update newcomer prices and export all items', async ({page})=>{
   await ready(page);
-  await page.locator('.support-merch-link').click();
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('.configuration-panel img')).toHaveCount(0);
   await expect(page.locator('#bundle-presets')).toHaveCount(0);
@@ -510,7 +503,7 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('#shikishi-quantity').fill('2');
   await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥49.80');
   await page.locator('[data-config="cardPaper"]').click();
-  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥39.80');
+  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥39.90');
   await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
   await page.locator('[data-config="shikishi"]').click();
   await expect(page.locator('#shikishi-quantity')).toHaveValue('2');
@@ -536,16 +529,24 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('[data-config="shikishi"] .price-shipping')).toHaveText('运费 ¥5.00');
   await expect(page.locator('#shikishi-product-price del')).toHaveCount(0);
   await expect(page.locator('#purchase-lines')).toContainText('¥5.00');
+  for(const [id,basic,effect] of [['duo','49.90','59.90'],['acrylicPaper','59.90','69.90']]){
+    await page.locator(`[data-config="${id}"]`).click();
+    await expect(page.locator('[data-finish="basic"] .price-current')).toHaveText(`¥${basic} / 份`);
+    await expect(page.locator('[data-finish="effect"] strong')).toHaveText('特效款');
+    await expect(page.locator('[data-finish="effect"] .price-current')).toHaveText(`¥${effect} / 份`);
+  }
   await page.locator('[data-config="complete"]').click();
-  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥90.70');
+  await expect(page.locator('[data-finish="basic"] .price-current')).toHaveText('¥74.90 / 份');
+  await expect(page.locator('[data-finish="effect"] .price-current')).toHaveText('¥84.90 / 份');
+  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥84.90');
   await expect(page.locator('[data-config="complete"] .config-price')).toHaveClass(/is-offer/);
   await expect(page.locator('[data-config="complete"] del')).toHaveText('¥83.70');
-  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥80.70 起 / 份');
+  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥74.90 起 / 份');
   await expect(page.locator('#bundle-quantity')).toBeVisible();
   for(const id of ['acrylic-quantity','acrylic-cards','shikishi-quantity']){await expect(page.locator('#'+id)).toBeHidden();await expect(page.locator('#'+id)).toBeDisabled();}
   await page.locator('#bundle-quantity').fill('2');
-  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥181.40');
-  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥80.70 起 / 份');
+  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥169.80');
+  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥74.90 起 / 份');
   for(const id of ['acrylic-quantity','acrylic-cards','shikishi-quantity'])await expect(page.locator('#'+id)).toHaveValue('2');
   await page.locator('[data-config="cardPaper"]').click();await expect(page.locator('#bundle-quantity')).toHaveValue('1');
   await page.locator('[data-config="complete"]').click();await expect(page.locator('#bundle-quantity')).toHaveValue('2');
@@ -571,7 +572,7 @@ test('purchase presets select products, update newcomer prices and export all it
 });
 
 test('special plate lettering masks emphasize all four collectible families',async({page})=>{
-  await ready(page);await page.locator('.support-merch-link').click();
+  await ready(page);await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   const counts=await page.evaluate(async()=>{
     const {readCurrentDesign}=await import('/src/current-design.js');
@@ -610,13 +611,13 @@ test('order preview continues when the optional display font is rejected', async
   });
   await page.goto('/');
   await expect(page.locator('#loading')).toBeHidden();
-  await page.locator('.support-merch-link').click();
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#design-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
 });
 
 test('component powder and reflection masks follow source pixels with reflection only on white',async({page})=>{
-  await ready(page);await page.locator('.support-merch-link').click();
+  await ready(page);await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   const results=await page.evaluate(async()=>{
     const {readCurrentDesign}=await import('/src/current-design.js');
@@ -790,7 +791,7 @@ test('editor and product preview work without a local assets directory',async({p
   expect(await page.evaluate(()=>[...document.fonts].some(font=>font.family.includes('SEGA Maru Gothic DB')&&font.status==='loaded'))).toBe(true);
   const defaults=await exportState(page);
   for(const url of Object.values(defaults.state.files))expect(url).toMatch(/^https:\/\/maimai-diy-assets-1517578456\.cos\.ap-shanghai\.myqcloud\.com\/materials\//);
-  await page.locator('.support-merch-link').click();
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   expect(localRequests).toEqual([]);

@@ -23,6 +23,7 @@ for (const file of [
   'support.html',
   'custom-order.html',
   'checkout.html',
+  'orders-admin.html',
   'checkout.css',
   'styles.css',
   'ui-motion.css',

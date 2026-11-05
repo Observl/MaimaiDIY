@@ -2,7 +2,7 @@ import { initializePurchaseUI } from './purchase-ui.js';
 // Commercial-order foundation. No checkout or manufacture is enabled for unlicensed assets.
 export const ACRYLIC_PRODUCTS = Object.freeze({
   basic: Object.freeze({label:'基础款',priceFen:3990,effects:['uv-color','white-ink']}),
-  effect: Object.freeze({label:'特效档',priceFen:4990,effects:['white-ink','double-sided-print','white-outline-uv','background-glitter','colored-fine-powder','background-pearl','title-pearl','avatar-pearl','rank-pearl','battle-pearl','single-plane-print']}),
+  effect: Object.freeze({label:'特效款',priceFen:4990,effects:['white-ink','double-sided-print','white-outline-uv','background-glitter','colored-fine-powder','background-pearl','title-pearl','avatar-pearl','rank-pearl','battle-pearl','single-plane-print']}),
 });
 // Older saved configurations map to the single current effect option.
 export function normalizeProductVariant(value){return value==='light'||value==='premium'?'effect':value;}
@@ -26,6 +26,13 @@ export const BUNDLE_PRESETS = Object.freeze({
 // Configurable sales prices; these are test prices, not manufacturer quotations.
 export const CARD_ONLY_SHIPPING_FEN = 500;
 export const COMBO_DISCOUNTS = Object.freeze({ standFen: 100, cardFen: 200 });
+// Fixed per-set merchandise prices from the user's latest price list.
+const BUNDLE_PRICES = Object.freeze({
+  duo: {basic:4990,effect:5990},
+  acrylicPaper: {basic:5990,effect:6990},
+  cardPaper: {basic:3490,effect:3490},
+  complete: {basic:7490,effect:8490},
+});
 
 export function quoteProductBundle({ variant, quantity, accessory = 'none', cardQuantity = 0, shikishiQuantity = 0 }) {
   variant=normalizeProductVariant(variant);
@@ -42,11 +49,22 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
   const extrasFen = ACCESSORIES[accessory].priceFen * quantity + COLLECTIBLE_CARD.priceFen * cardQuantity;
   const shikishiOriginalFen=SHIKISHI_PRODUCT.priceFen*shikishiQuantity;
   const shikishiFen=SHIKISHI_PRODUCT.priceFen*shikishiQuantity;
-  const comboDiscountFen = quantity > 0
+  let comboDiscountFen = quantity > 0
     ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + COMBO_DISCOUNTS.cardFen * Math.min(quantity,cardQuantity)
     : 0;
   const shippingPending=false;
-  const shippingFen = quantity>0 || cardQuantity+shikishiQuantity>=2 ? 0 : CARD_ONLY_SHIPPING_FEN;
+  let shippingFen = quantity>0 || cardQuantity+shikishiQuantity>=2 ? 0 : CARD_ONLY_SHIPPING_FEN;
+  for(const [id,prices] of Object.entries(BUNDLE_PRICES)) {
+    const preset=BUNDLE_PRESETS[id];
+    const sets=(quantity+cardQuantity+shikishiQuantity)/(preset.quantity+preset.cardQuantity+preset.shikishiQuantity);
+    if(Number.isInteger(sets)&&sets>0&&accessory===preset.accessory
+      &&quantity===preset.quantity*sets&&cardQuantity===preset.cardQuantity*sets&&shikishiQuantity===preset.shikishiQuantity*sets) {
+      // Replace the old combination discount, rather than stacking both offers.
+      comboDiscountFen=bodyFen+extrasFen+shikishiFen-prices[variant]*sets;
+      shippingFen=id==='cardPaper'?CARD_ONLY_SHIPPING_FEN:0;
+      break;
+    }
+  }
   return Object.freeze({
     variant, quantity, accessory, cardQuantity, shikishiQuantity, newCustomer: false,
     bodyOriginalFen, bodyFen, extrasFen, shikishiOriginalFen, shikishiFen, comboDiscountFen, shippingFen, shippingPending,
