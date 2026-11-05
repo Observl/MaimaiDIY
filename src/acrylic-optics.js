@@ -5,20 +5,21 @@ import * as THREE from '../vendor/three.module.js';
 // resampling the design through Three's screen-space transmission buffer.
 export function applyPrintOptics(material, mesh, { design, mask, components, badges, depth, variant, keyPosition, windowPosition, card=false, paper=false }) {
   const inverse = new THREE.Matrix4();
-  let compiledShader;
-  mesh.onBeforeRender = () => {
+  const eye=new THREE.Vector3();
+  const liveUniforms={printEye:{value:eye},printSun:{value:keyPosition.clone()},printWindow:{value:windowPosition.clone()}};
+  const previousRender=mesh.onBeforeRender;
+  mesh.onBeforeRender = (renderer,scene,camera,...args) => {
+    previousRender.call(mesh,renderer,scene,camera,...args);
     inverse.copy(mesh.matrixWorld).invert();
-    if(compiledShader) {
-      compiledShader.uniforms.printSun.value.copy(keyPosition);
-      compiledShader.uniforms.printWindow.value.copy(windowPosition);
-      // Keep live light values synchronized without rebuilding geometry or materials.
-    }
+    camera.getWorldPosition(eye);
+    liveUniforms.printSun.value.copy(keyPosition);
+    liveUniforms.printWindow.value.copy(windowPosition);
   };
   const previousCompile=material.onBeforeCompile.bind(material);
   const previousCacheKey=material.customProgramCacheKey.bind(material);
   material.onBeforeCompile = (shader,renderer) => {
-    compiledShader=shader;
     Object.assign(shader.uniforms,labUniforms);
+    Object.assign(shader.uniforms,liveUniforms);
     Object.assign(shader.uniforms, {
       printArtwork: { value: design }, printMask: { value: mask },
       printCard: { value: card ? 1 : 0 },
@@ -28,8 +29,6 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
       printInverse: { value: inverse }, printDepth: { value: depth },
       printWorld: { value:mesh.matrixWorld },
       printFinish: { value: variant === 'basic' ? 0 : 2 },
-      printSun: { value: keyPosition.clone() },
-      printWindow: { value: windowPosition.clone() },
     });
     shader.vertexShader=shader.vertexShader.replace('#include <common>',`#include <common>
       varying vec3 vPrintWorldPosition;
@@ -75,6 +74,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
       uniform float printFinish;
       uniform vec3 printSun;
       uniform vec3 printWindow;
+      uniform vec3 printEye;
       float printHash(vec2 p) {
         vec3 h=fract(vec3((p+lab_seed*17.13).xyx)*0.1031);
         h+=dot(h,h.yzx+33.33);
@@ -107,7 +107,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     `).replace('#include <transmission_fragment>', `
       #include <transmission_fragment>
         vec3 pPos=vPrintWorldPosition;
-        vec3 pV=normalize(cameraPosition-pPos);
+        vec3 pV=normalize(printEye-pPos);
         vec3 pN=inverseTransformDirection(normal,viewMatrix);
         vec3 localPosition = vPrintLocalPosition;
         #ifdef USE_TRANSMISSION
@@ -165,6 +165,9 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         #endif
         vec3 halfWindow = normalize(finishView + windowLight);
         vec3 halfSun = normalize(finishView + sunLight);
+        vec3 finishTangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
+        vec3 finishBitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
+        float viewFacing=clamp(dot(finishNormal,finishView),0.0,1.0);
         // A broad, source-colored pigment luster on the rear background print.
         // It does not add a clearcoat or a white reflection to the acrylic surface.
         if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && (lab_pearlStrength+lab_titlePearlStrength+lab_avatarPearlStrength+lab_rankPearlStrength+lab_battlePearlStrength)>0.001) {
@@ -177,8 +180,11 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           float pearlWindow=pow(max(dot(finishNormal,halfWindow),0.0),8.0/lab_pearlSpread);
           float pearlSun=pow(max(dot(finishNormal,halfSun),0.0),14.0/lab_pearlSpread);
           float pearlLighting=max(dot(finishNormal,windowLight),0.0)*0.75+max(dot(finishNormal,sunLight),0.0)*0.25;
-          float pearlResponse=min(0.22,pearlAmount*(pearlWindow*0.8+pearlSun*0.2)*pearlLighting*0.3);
-          totalSpecular+=imageTint*pearlResponse;
+          // Pigment platelets have a directional luster, not a clipped constant sheen.
+          float pearlResponse=0.22*(1.0-exp(-pearlAmount*(pearlWindow*0.8+pearlSun*0.2)*pearlLighting*1.4));
+          float pearlPhase=(1.0-viewFacing)*15.0+dot(finishTangent,halfWindow)*3.0;
+          vec3 pearlTint=imageTint*(0.82+0.18*cos(pearlPhase+vec3(0.0,2.1,4.2)));
+          totalSpecular+=pearlTint*pearlResponse;
         }
         if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && finish.g>0.005 && lab_powderDensity>0.001) {
           // Dense colored pigment grains with soft light-dependent metallic luster.
@@ -208,7 +214,9 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
             +pow(max(dot(powderNormal,halfSun),0.0),40.0*lab_powderSharpness)*0.2;
           float powderIllumination=max(dot(powderNormal,windowLight),0.0)*0.7
             +max(dot(powderNormal,sunLight),0.0)*0.3;
-          float powderSheen=powderAmount*(0.15+0.85*powderGrain)*min(0.65,powderLobe*powderIllumination*2.8);
+          float facetVisibility=max(dot(powderNormal,finishView),0.0);
+          float powderSheen=powderAmount*(0.15+0.85*powderGrain)*0.65
+            *(1.0-exp(-powderLobe*powderIllumination*4.3))*facetVisibility;
           totalSpecular+=imageTint*powderSheen*lab_powderStrength;
         }
         if(printCard>0.5) {
@@ -230,7 +238,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           vec2 gradient = vec2(
             texture2D(printMask, printUV + vec2(texel.x, 0.0)).r - texture2D(printMask, printUV - vec2(texel.x, 0.0)).r,
             texture2D(printMask, printUV + vec2(0.0, texel.y)).r - texture2D(printMask, printUV - vec2(0.0, texel.y)).r);
-          vec3 raisedNormal = normalize(finishNormal + vec3(-gradient.x, 0.14-gradient.y, 0.0) * 0.2);
+          vec3 raisedNormal = normalize(finishNormal + (finishTangent*(-gradient.x)+finishBitangent*(0.14-gradient.y)) * 0.2);
           float highlight = pow(max(dot(raisedNormal, halfWindow), 0.0), (printPaper>0.5?12.0:18.0)*lab_uvSharpness)
             + pow(max(dot(raisedNormal, halfSun), 0.0), (printPaper>0.5?20.0:30.0)*lab_uvSharpness);
           // A varnish lobe over the selected artwork, never a white paint overlay.
@@ -268,5 +276,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'local-effect-studio-badge-pearl-v4-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'view-responsive-finishes-v5-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }
