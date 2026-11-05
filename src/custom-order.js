@@ -45,7 +45,7 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
   const shikishiOriginalFen=SHIKISHI_PRODUCT.priceFen*shikishiQuantity;
   const shikishiFen=(newCustomer ? SHIKISHI_PRODUCT.newcomerPriceFen : SHIKISHI_PRODUCT.priceFen)*shikishiQuantity;
   const comboDiscountFen = quantity > 0
-    ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + (cardQuantity > 0 ? COMBO_DISCOUNTS.cardFen : 0)
+    ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + COMBO_DISCOUNTS.cardFen * Math.min(quantity,cardQuantity)
     : 0;
   const shippingPending=false;
   const shippingFen = quantity>0 || cardQuantity+shikishiQuantity>=2 ? 0 : CARD_ONLY_SHIPPING_FEN;
