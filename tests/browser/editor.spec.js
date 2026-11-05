@@ -317,15 +317,8 @@ test('merch opens separately with the latest design and returns to the same edit
   await name(page).fill('最新设计');
   await rating(page).fill('12345');
   await expect(page.locator('#custom-order')).toHaveCount(0);
-  const entry = page.locator('.support-merch-link');
-  await expect(entry).toHaveAttribute('href', 'custom-order.html');
-  const sizes = await entry.evaluate((element) => ({
-    button: element.getBoundingClientRect().width,
-    parent: element.parentElement.clientWidth,
-    padding: parseFloat(getComputedStyle(element.parentElement).paddingLeft) * 2,
-  }));
-  expect(Math.abs(sizes.button - (sizes.parent - sizes.padding))).toBeLessThan(2);
-  await entry.click();
+  await expect(page.locator('.support-merch-link')).toHaveCount(0);
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page).toHaveURL(/custom-order\.html$/);
   await expect(page.locator('#design-status')).toHaveText('已自动载入你最近编辑的上屏设计。');
   await expect(page.locator('#order-preview-shell')).toBeVisible();
@@ -470,7 +463,7 @@ test('merch opens separately with the latest design and returns to the same edit
 });
 test('purchase presets select products, update newcomer prices and export all items', async ({page})=>{
   await ready(page);
-  await page.locator('.support-merch-link').click();
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('.configuration-panel img')).toHaveCount(0);
   await expect(page.locator('#bundle-presets')).toHaveCount(0);
@@ -579,7 +572,7 @@ test('purchase presets select products, update newcomer prices and export all it
 });
 
 test('special plate lettering masks emphasize all four collectible families',async({page})=>{
-  await ready(page);await page.locator('.support-merch-link').click();
+  await ready(page);await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   const counts=await page.evaluate(async()=>{
     const {readCurrentDesign}=await import('/src/current-design.js');
@@ -618,13 +611,13 @@ test('order preview continues when the optional display font is rejected', async
   });
   await page.goto('/');
   await expect(page.locator('#loading')).toBeHidden();
-  await page.locator('.support-merch-link').click();
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#design-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
 });
 
 test('component powder and reflection masks follow source pixels with reflection only on white',async({page})=>{
-  await ready(page);await page.locator('.support-merch-link').click();
+  await ready(page);await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   const results=await page.evaluate(async()=>{
     const {readCurrentDesign}=await import('/src/current-design.js');
@@ -798,7 +791,7 @@ test('editor and product preview work without a local assets directory',async({p
   expect(await page.evaluate(()=>[...document.fonts].some(font=>font.family.includes('SEGA Maru Gothic DB')&&font.status==='loaded'))).toBe(true);
   const defaults=await exportState(page);
   for(const url of Object.values(defaults.state.files))expect(url).toMatch(/^https:\/\/maimai-diy-assets-1517578456\.cos\.ap-shanghai\.myqcloud\.com\/materials\//);
-  await page.locator('.support-merch-link').click();
+  await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('#acrylic-viewport canvas')).toBeVisible();
   expect(localRequests).toEqual([]);
