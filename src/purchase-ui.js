@@ -4,7 +4,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
   if(!anchor)return;
   const section=document.createElement('section');section.className='card custom-order-card';section.id='custom-order';
   section.innerHTML=`
-    <header class="purchase-intro"><h2>选购定制周边</h2><label class="newcomer-choice"><input id="acrylic-newcomer" type="checkbox"><span>使用新人价</span><span class="newcomer-switch" aria-hidden="true"></span></label></header>
+    <header class="purchase-intro"><h2>选购定制周边</h2></header>
     <div class="purchase-layout"><div class="purchase-products">
       <article class="purchase-product" data-product="acrylic">
         <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-acrylic" type="checkbox" checked><span><strong>亚克力砖</strong><span id="acrylic-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"></label></div>
@@ -14,7 +14,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
         <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-card" type="checkbox"><span><strong>镭射票</strong><span id="card-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-cards" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
       </article>
       <article class="purchase-product" data-product="shikishi">
-        <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-shikishi" type="checkbox"><span><strong>色纸</strong><span id="shikishi-product-price" class="purchase-unit-price">¥19.90 / 张 · 新人 ¥16.90</span></span></label><label class="purchase-quantity">数量<input id="shikishi-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
+        <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-shikishi" type="checkbox"><span><strong>色纸</strong><span id="shikishi-product-price" class="purchase-unit-price">¥24.90 / 张</span></span></label><label class="purchase-quantity">数量<input id="shikishi-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
       </article>
     </div><aside class="purchase-receipt" aria-label="费用明细">
       <h3>你的定制方案</h3><p id="purchase-item-count" class="purchase-item-count"></p><div id="purchase-lines"></div>
@@ -25,7 +25,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     </aside></div>`;
   anchor.insertAdjacentElement('afterend',section);
   const get=id=>section.querySelector('#'+id);
-  const variant=get('acrylic-variant'),accessory=get('acrylic-accessory'),newcomer=get('acrylic-newcomer');
+  const variant=get('acrylic-variant'),accessory=get('acrylic-accessory');
   const products=[{key:'acrylic',check:get('buy-acrylic'),input:get('acrylic-quantity')},{key:'card',check:get('buy-card'),input:get('acrylic-cards')},{key:'shikishi',check:get('buy-shikishi'),input:get('shikishi-quantity')}];
   const configHeaders=new Map(),configPanels=new Map(),configSelections=new Map();
   let activeId='acrylic';
@@ -111,7 +111,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     return {variant:variant.value,quantity:products[0].check.checked?Number(products[0].input.value):0,
       accessory:products[0].check.checked?accessory.value:'none',
       cardQuantity:products[1].check.checked?Number(products[1].input.value):0,
-      shikishiQuantity:products[2].check.checked?Number(products[2].input.value):0,newCustomer:newcomer.checked};
+      shikishiQuantity:products[2].check.checked?Number(products[2].input.value):0,newCustomer:false};
   }
   function addLine(label,fen,discount=false,valueText=null,original=fen) {
     const row=document.createElement('div');row.className='purchase-line'+(discount?' is-discount':'');
@@ -130,11 +130,11 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     for(const button of section.querySelectorAll('[data-finish]')) {
       const product=ACRYLIC_PRODUCTS[button.dataset.finish];button.disabled=variant.disabled;
       button.setAttribute('aria-pressed',String(button.dataset.finish===variant.value));
-      showPrice(button.querySelector('.finish-price'),newcomer.checked?product.newcomerPriceFen:product.priceFen,product.priceFen);
+      showPrice(button.querySelector('.finish-price'),product.priceFen,product.priceFen);
     }
-    showPrice(get('acrylic-product-price'),newcomer.checked?ACRYLIC_PRODUCTS[variant.value].newcomerPriceFen:ACRYLIC_PRODUCTS[variant.value].priceFen,ACRYLIC_PRODUCTS[variant.value].priceFen,{unit:' / 块'});
+    showPrice(get('acrylic-product-price'),ACRYLIC_PRODUCTS[variant.value].priceFen,ACRYLIC_PRODUCTS[variant.value].priceFen,{unit:' / 块'});
     get('card-product-price').textContent=`¥${yuan(COLLECTIBLE_CARD.priceFen)} / 张`;
-    showPrice(get('shikishi-product-price'),newcomer.checked?SHIKISHI_PRODUCT.newcomerPriceFen:SHIKISHI_PRODUCT.priceFen,SHIKISHI_PRODUCT.priceFen,{unit:' / 张'});
+    showPrice(get('shikishi-product-price'),SHIKISHI_PRODUCT.priceFen,SHIKISHI_PRODUCT.priceFen,{unit:' / 张'});
     const selected=selection();
     configSelections.set(activeId,{...selected,bundleQuantity:sets});
     const selectedPreview=selected.quantity>0?'acrylic':selected.cardQuantity>0?'card':selected.shikishiQuantity>0?'shikishi':null;
@@ -147,7 +147,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       try {
         const bundled=isBundle(id);
         const config=bundled?{...BUNDLE_PRESETS[id],variant:'basic'}:{...BUNDLE_PRESETS[id],variant:variant.value,...configSelections.get(id)};
-        const quote=quoteProductBundle({...config,newCustomer:newcomer.checked});
+        const quote=quoteProductBundle({...config,newCustomer:false});
         showPrice(price,quote.totalFen-quote.shippingFen,merchandiseOriginal(quote),{shipping:quote.shippingFen,offer:quote.comboDiscountFen>0,unit:bundled?' 起 / 份':'',fromBasic:bundled&&quote.quantity>0});
       } catch {price.textContent='—';}
     }
@@ -165,7 +165,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       else addLine('运费',0,false,'免运费');
       showPrice(get('acrylic-total'),quote.totalFen,merchandiseOriginal(quote)+quote.shippingFen,{offer:quote.comboDiscountFen>0});
       get('purchase-total-label').textContent='合计（含运费）';
-      get('acrylic-discount').textContent=quote.discountFen?`新人已省 ¥${yuan(quote.discountFen)}`:'';
+      get('acrylic-discount').textContent='';
       get('purchase-message').textContent=quote.shippingPending?'色纸单独寄送的运费待确认，以上为商品金额。':'';
       get('acrylic-export').disabled=false;get('order-checkout').disabled=false;
     } catch(error) {
