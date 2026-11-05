@@ -2,7 +2,7 @@ import { initializePurchaseUI } from './purchase-ui.js';
 // Commercial-order foundation. No checkout or manufacture is enabled for unlicensed assets.
 export const ACRYLIC_PRODUCTS = Object.freeze({
   basic: Object.freeze({label:'基础款',priceFen:3990,effects:['uv-color','white-ink']}),
-  effect: Object.freeze({label:'特效档',priceFen:4990,effects:['white-ink','double-sided-print','white-outline-uv','background-glitter','colored-fine-powder','background-pearl','title-pearl','avatar-pearl','rank-pearl','battle-pearl','single-plane-print']}),
+  effect: Object.freeze({label:'特效款',priceFen:4990,effects:['white-ink','double-sided-print','white-outline-uv','background-glitter','colored-fine-powder','background-pearl','title-pearl','avatar-pearl','rank-pearl','battle-pearl','single-plane-print']}),
 });
 // Older saved configurations map to the single current effect option.
 export function normalizeProductVariant(value){return value==='light'||value==='premium'?'effect':value;}

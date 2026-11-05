@@ -8,7 +8,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     <div class="purchase-layout"><div class="purchase-products">
       <article class="purchase-product" data-product="acrylic">
         <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-acrylic" type="checkbox" checked><span><strong>亚克力砖</strong><span id="acrylic-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"></label></div>
-        <div class="purchase-options"><div><p class="finish-label">选择你的工艺。</p><select id="acrylic-variant" aria-label="亚克力砖工艺" hidden><option value="basic">基础款</option><option value="effect" selected>特效档</option></select><div class="finish-options" role="group" aria-label="亚克力砖工艺"></div></div><label class="accessory-choice">搭配配件<select id="acrylic-accessory"><option value="none">不加配件</option><option value="clearStand">透明托架 · +¥4/件</option></select></label></div>
+        <div class="purchase-options"><div><p class="finish-label">选择你的工艺。</p><select id="acrylic-variant" aria-label="亚克力砖工艺" hidden><option value="basic">基础款</option><option value="effect" selected>特效款</option></select><div class="finish-options" role="group" aria-label="亚克力砖工艺"></div></div><label class="accessory-choice">搭配配件<select id="acrylic-accessory"><option value="none">不加配件</option><option value="clearStand">透明托架 · +¥4/件</option></select></label></div>
       </article>
       <article class="purchase-product" data-product="card">
         <div class="purchase-product-head"><label class="purchase-toggle"><input id="buy-card" type="checkbox"><span><strong>镭射票</strong><span id="card-product-price" class="purchase-unit-price"></span></span></label><label class="purchase-quantity">数量<input id="acrylic-cards" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" disabled></label></div>
@@ -130,7 +130,10 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     for(const button of section.querySelectorAll('[data-finish]')) {
       const product=ACRYLIC_PRODUCTS[button.dataset.finish];button.disabled=variant.disabled;
       button.setAttribute('aria-pressed',String(button.dataset.finish===variant.value));
-      showPrice(button.querySelector('.finish-price'),product.priceFen,product.priceFen);
+      if(bundled&&preset.quantity>0) {
+        const quote=quoteProductBundle({...preset,variant:button.dataset.finish});
+        showPrice(button.querySelector('.finish-price'),quote.totalFen-quote.shippingFen,merchandiseOriginal(quote),{unit:' / 份',offer:quote.comboDiscountFen>0});
+      } else showPrice(button.querySelector('.finish-price'),product.priceFen,product.priceFen);
     }
     showPrice(get('acrylic-product-price'),ACRYLIC_PRODUCTS[variant.value].priceFen,ACRYLIC_PRODUCTS[variant.value].priceFen,{unit:' / 块'});
     get('card-product-price').textContent=`¥${yuan(COLLECTIBLE_CARD.priceFen)} / 张`;

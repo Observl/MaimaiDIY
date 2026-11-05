@@ -357,12 +357,12 @@ test('merch opens separately with the latest design and returns to the same edit
     return visiblyChanged;
   },{first:'data:image/png;base64,'+premiumSurface.toString('base64'),second:'data:image/png;base64,'+basicSurface.toString('base64')});
   expect(difference).toBeGreaterThan(250);
-  await page.getByRole('button', { name: '特效档', exact: true }).click();
+  await page.getByRole('button', { name: '特效款', exact: true }).click();
   await expect(page.locator('#acrylic-variant')).toHaveValue('effect');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-variant', 'effect');
   const uvSurface = await page.locator('#acrylic-viewport').screenshot();
   expect(basicSurface.equals(uvSurface)).toBe(false);
-  await page.getByRole('button', { name: '特效档', exact: true }).click();
+  await page.getByRole('button', { name: '特效款', exact: true }).click();
   await expect(page.locator('#acrylic-variant')).toHaveValue('effect');
   await page.locator('#acrylic-preview-card').screenshot({ path: 'output/playwright/acrylic-premium.png' });
   const originalLight = await page.locator('#acrylic-viewport').screenshot();
@@ -536,7 +536,15 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('[data-config="shikishi"] .price-shipping')).toHaveText('运费 ¥5.00');
   await expect(page.locator('#shikishi-product-price del')).toHaveCount(0);
   await expect(page.locator('#purchase-lines')).toContainText('¥5.00');
+  for(const [id,basic,effect] of [['duo','49.90','59.90'],['acrylicPaper','59.90','69.90']]){
+    await page.locator(`[data-config="${id}"]`).click();
+    await expect(page.locator('[data-finish="basic"] .price-current')).toHaveText(`¥${basic} / 份`);
+    await expect(page.locator('[data-finish="effect"] strong')).toHaveText('特效款');
+    await expect(page.locator('[data-finish="effect"] .price-current')).toHaveText(`¥${effect} / 份`);
+  }
   await page.locator('[data-config="complete"]').click();
+  await expect(page.locator('[data-finish="basic"] .price-current')).toHaveText('¥74.90 / 份');
+  await expect(page.locator('[data-finish="effect"] .price-current')).toHaveText('¥84.90 / 份');
   await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥84.90');
   await expect(page.locator('[data-config="complete"] .config-price')).toHaveClass(/is-offer/);
   await expect(page.locator('[data-config="complete"] del')).toHaveText('¥83.70');
