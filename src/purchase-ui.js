@@ -21,7 +21,7 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       <p id="acrylic-discount" class="purchase-savings"></p>
       <div class="purchase-total"><span id="purchase-total-label">参考合计</span><strong id="acrylic-total" aria-live="polite"></strong></div>
       <p id="purchase-message" class="purchase-message" role="status"></p>
-      <div class="custom-order-actions"><button id="acrylic-export" class="button primary" type="button">保存定制方案</button><button class="button secondary" type="button" disabled>在线下单尚未开放</button></div>
+      <div class="custom-order-actions"><button id="acrylic-export" class="button primary" type="button">保存定制方案</button><button id="order-checkout" class="button secondary" type="button">体验订单流程</button></div>
     </aside></div>`;
   anchor.insertAdjacentElement('afterend',section);
   const get=id=>section.querySelector('#'+id);
@@ -170,10 +170,10 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       get('purchase-total-label').textContent='合计（含运费）';
       get('acrylic-discount').textContent='';
       get('purchase-message').textContent=quote.shippingPending?'色纸单独寄送的运费待确认，以上为商品金额。':'';
-      get('acrylic-export').disabled=false;
+      get('acrylic-export').disabled=false;get('order-checkout').disabled=false;
     } catch(error) {
       get('purchase-item-count').textContent='尚未选择商品';get('acrylic-total').textContent='—';get('acrylic-discount').textContent='';get('purchase-message').textContent=error.message;
-      get('acrylic-export').disabled=true;
+      get('acrylic-export').disabled=true;get('order-checkout').disabled=true;
     }
     requestImages();
   }
@@ -186,6 +186,10 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       const link=document.createElement('a');link.href=url;link.download='maimaidiy-custom-draft.json';link.click();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
     }catch(error){get('purchase-message').textContent=error.message||'无法保存定制方案';}
+  });
+  get('order-checkout').addEventListener('click',()=>{
+    try {const draft=buildAcrylicDesignDraft({state:snapshotState(),...selection()});window.sessionStorage.setItem('maimai-order-pending',JSON.stringify(draft));window.sessionStorage.removeItem('maimai-order-access');location.assign('checkout.html');}
+    catch(error){get('purchase-message').textContent=error.message;}
   });
   activate('acrylic');
 }

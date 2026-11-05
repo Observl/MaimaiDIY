@@ -4,6 +4,12 @@ const imageCache = new Map();
 let titleManifest;
 let badgeManifest;
 let manifestRequest;
+function requestAssetUrl(value) {
+  // Only the loopback demo server inserts this marker. Saved designs retain COS URLs.
+  if(typeof document!=='undefined'&&document.querySelector?.('meta[name="maimai-order-demo"]')&&typeof value==='string'&&value.startsWith(COS.baseUrl+'/materials/'))
+    return '/api/cos-asset?path='+encodeURIComponent(value.slice(COS.baseUrl.length));
+  return value;
+}
 export function loadImage(src) {
   src=resolveAssetUrl(src);
   if (imageCache.has(src)) return imageCache.get(src);
@@ -26,7 +32,7 @@ export function loadImage(src) {
       clearTimeout(timer);
       reject(error);
     };
-    image.src = src;
+    image.src = requestAssetUrl(src);
   });
   imageCache.set(src, request);
   request.catch(() => imageCache.delete(src));
@@ -46,7 +52,7 @@ export async function fetchJson(url, forceFresh = false) {
       const requestUrl = forceFresh
         ? `${url}${url.includes('?') ? '&' : '?'}refresh=${Date.now()}`
         : url;
-      const response = await fetch(requestUrl, {
+      const response = await fetch(requestAssetUrl(requestUrl), {
         signal: controller.signal,
         cache: forceFresh ? 'reload' : 'default',
       });
