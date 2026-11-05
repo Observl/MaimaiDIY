@@ -844,7 +844,7 @@ test('acrylic reverse is opaque beige and shikishi has a paper easel',async({pag
     const images=[];
     for(const color of ['#ff0000','#0000ff']){
       source.getContext('2d').fillStyle=color;source.getContext('2d').fillRect(0,0,source.width,source.height);viewer.setDesign(source,maps);
-      if(!images.length)for(let i=0;i<26;i++)host.querySelector('canvas').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));
+      if(!images.length)for(let i=0;i<26;i++)host.querySelector('canvas').dispatchEvent(new window.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));
       images.push(viewer.captureFrame());
     }
     const decode=async src=>{const img=new Image();img.src=src;await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);return ctx.getImageData(0,0,c.width,c.height).data;};
