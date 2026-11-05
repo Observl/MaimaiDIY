@@ -874,3 +874,39 @@ test('acrylic reverse is opaque beige and shikishi has a paper easel',async({pag
   await writeFile('output/playwright/opaque-acrylic-back.png',Buffer.from(result.reverseImage.split(',')[1],'base64'));
   await writeFile('output/playwright/shikishi-paper-easel.png',Buffer.from(result.paperImage.split(',')[1],'base64'));
 });
+
+test('finishes respond to orbiting the camera with lights fixed',async({page})=>{
+  await ready(page);
+  const metrics=await page.evaluate(async()=>{
+    const {createAcrylicPreview}=await import('/src/acrylic-preview.js');
+    const settingsUrl=new URL('/src/finish-settings.js',location.origin);settingsUrl.search=new URL(document.querySelector('script[src*="app.js"]').src).search;
+    const {uniforms}=await import(settingsUrl.href);const saved=Object.fromEntries(Object.entries(uniforms).map(([k,v])=>[k,v.value]));
+    const host=document.createElement('div');Object.assign(host.style,{width:'800px',height:'480px',position:'fixed',left:'-900px'});document.body.append(host);
+    const canvas=color=>{const c=document.createElement('canvas');c.width=1080;c.height=452;if(color){const ctx=c.getContext('2d');ctx.fillStyle=color;ctx.fillRect(0,0,c.width,c.height);}return c;};
+    const source=canvas('#5785a3'),maps={packed:canvas('#ffff00'),componentCoverage:canvas(),badgeCoverage:canvas()};
+    const viewer=createAcrylicPreview(host,{snapshot:true});const metrics=[];
+    const decode=async src=>{const img=new Image();img.src=src;await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);return ctx.getImageData(0,0,c.width,c.height).data;};
+    const strengths=['powderStrength','uvStrength','glitterStrength','pearlStrength','titlePearlStrength','avatarPearlStrength','rankPearlStrength','battlePearlStrength'];
+    try{
+      viewer.setDesign(source,maps);viewer.setLightAngle(0);
+      for(const product of ['acrylic','paper']){
+        viewer.setSelection({variant:'effect',shikishi:product==='paper',cardOnly:false,accessory:'none'});
+        for(const mode of ['powderStrength','uvStrength','glitterStrength','pearlStrength']){
+          viewer.focusCollectibles();const energies=[];
+          for(let pose=0;pose<3;pose++){
+            if(pose)for(let i=0;i<4;i++)host.querySelector('canvas').dispatchEvent(new window.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
+            strengths.forEach(key=>uniforms['lab_'+key].value=0);uniforms.lab_powderContrast.value=0;
+            const base=await decode(viewer.captureFrame());uniforms['lab_'+mode].value=saved['lab_'+mode];
+            const coated=await decode(viewer.captureFrame());let delta=0,area=0;
+            for(let i=0;i<base.length;i+=4)if(base[i+3]>200){area++;delta+=Math.abs(coated[i]-base[i])+Math.abs(coated[i+1]-base[i+1])+Math.abs(coated[i+2]-base[i+2]);}
+            energies.push(delta/Math.max(area,1));
+          }
+          metrics.push({product,mode,energies,variation:(Math.max(...energies)-Math.min(...energies))/Math.max(...energies,0.001)});
+        }
+      }
+    }finally{for(const [key,value]of Object.entries(saved))uniforms[key].value=value;viewer.dispose();host.remove();}
+    return metrics;
+  });
+  await writeFile('output/playwright/view-angle-finish-metrics.json',JSON.stringify(metrics,null,2));
+  for(const metric of metrics){expect(Math.max(...metric.energies),JSON.stringify(metric)).toBeGreaterThan(0.1);expect(metric.variation,JSON.stringify(metric)).toBeGreaterThan(0.06);}
+});
