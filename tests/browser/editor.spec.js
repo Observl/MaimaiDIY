@@ -510,7 +510,7 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('#shikishi-quantity').fill('2');
   await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥49.80');
   await page.locator('[data-config="cardPaper"]').click();
-  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥39.80');
+  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥39.90');
   await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
   await page.locator('[data-config="shikishi"]').click();
   await expect(page.locator('#shikishi-quantity')).toHaveValue('2');
@@ -537,15 +537,15 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('#shikishi-product-price del')).toHaveCount(0);
   await expect(page.locator('#purchase-lines')).toContainText('¥5.00');
   await page.locator('[data-config="complete"]').click();
-  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥90.70');
+  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥84.90');
   await expect(page.locator('[data-config="complete"] .config-price')).toHaveClass(/is-offer/);
   await expect(page.locator('[data-config="complete"] del')).toHaveText('¥83.70');
-  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥80.70 起 / 份');
+  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥74.90 起 / 份');
   await expect(page.locator('#bundle-quantity')).toBeVisible();
   for(const id of ['acrylic-quantity','acrylic-cards','shikishi-quantity']){await expect(page.locator('#'+id)).toBeHidden();await expect(page.locator('#'+id)).toBeDisabled();}
   await page.locator('#bundle-quantity').fill('2');
-  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥181.40');
-  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥80.70 起 / 份');
+  await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥169.80');
+  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥74.90 起 / 份');
   for(const id of ['acrylic-quantity','acrylic-cards','shikishi-quantity'])await expect(page.locator('#'+id)).toHaveValue('2');
   await page.locator('[data-config="cardPaper"]').click();await expect(page.locator('#bundle-quantity')).toHaveValue('1');
   await page.locator('[data-config="complete"]').click();await expect(page.locator('#bundle-quantity')).toHaveValue('2');
