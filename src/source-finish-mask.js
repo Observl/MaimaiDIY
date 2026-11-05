@@ -1,12 +1,13 @@
 // Trace thin, neutral-white strokes. Broad white backing and colored foil are matte.
-export function createWhiteOutlineMask(data,width,height) {
+export function createWhiteOutlineMask(data,width,height,options={}) {
+  const {alphaThreshold=96,whiteThreshold=215,whiteTolerance=22,maxStroke=8,boundaryContrast=48}=options;
   const white=new Uint8Array(width*height),result=new Uint8Array(width*height);
   for(let p=0;p<white.length;p++) {
     const i=p*4,r=data[i],g=data[i+1],b=data[i+2];
-    white[p]=data[i+3]>96&&Math.min(r,g,b)>=215&&Math.max(r,g,b)-Math.min(r,g,b)<=22?1:0;
+    white[p]=data[i+3]>alphaThreshold&&Math.min(r,g,b)>=whiteThreshold&&Math.max(r,g,b)-Math.min(r,g,b)<=whiteTolerance?1:0;
   }
   function distance(x,y,dx,dy) {
-    for(let n=1;n<=6;n++) {
+    for(let n=1;n<=Math.max(1,Math.ceil(maxStroke)-2);n++) {
       const nx=x+dx*n,ny=y+dy*n;
       if(nx<0||ny<0||nx>=width||ny>=height||!white[ny*width+nx])return n;
     }
@@ -18,13 +19,18 @@ export function createWhiteOutlineMask(data,width,height) {
   }
   function isStroke(x,y,dx,dy) {
     const left=distance(x,y,-dx,-dy),right=distance(x,y,dx,dy);
-    if(left+right>8)return false;
+    if(left+right>maxStroke)return false;
     const a=boundary(x-dx*left,y-dy*left),b=boundary(x+dx*right,y+dy*right);
-    if((a[3]>96)!==(b[3]>96))return true;
-    return a[3]>96&&b[3]>96&&Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])>48;
+    if((a[3]>alphaThreshold)!==(b[3]>alphaThreshold))return true;
+    // White glyphs can have the same dark outline on both sides.
+    if(options.allowWhiteLettering&&a[3]>alphaThreshold&&b[3]>alphaThreshold)return true;
+    return a[3]>alphaThreshold&&b[3]>alphaThreshold&&Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2])>boundaryContrast;
   }
   for(let y=0;y<height;y++)for(let x=0;x<width;x++) {
     const p=y*width+x;if(!white[p])continue;
+    // Rank artwork uses white glyph fills as well as thin rims. Include the exact
+    // neutral-white source pixels even where a thick glyph exceeds the rim width.
+    if(options.allowWhiteLettering){result[p]=255;continue;}
     // Both sides must terminate nearby, rather than merely tracing a white panel edge.
     if(isStroke(x,y,1,0)||isStroke(x,y,0,1))result[p]=255;
   }
@@ -32,7 +38,8 @@ export function createWhiteOutlineMask(data,width,height) {
 }
 
 // Independent powder and white-outline masks, generated in memory from each source.
-export function createSourceFinishMask(data,width,height,{powderFraction=0.14}={}) {
+export function createSourceFinishMask(data,width,height,options={}) {
+  const {powderFraction=0.14,alphaThreshold=96,edgeRadius=2,minComponent=3,componentContrast=12,contourFraction=0.28,contourContrast=16,contrastThreshold=14}=options;
   const count=width*height;
   const candidate=new Uint8Array(count), luma=new Float32Array(count), contrast=new Float32Array(count);
   for(let p=0;p<count;p++) {
@@ -43,11 +50,11 @@ export function createSourceFinishMask(data,width,height,{powderFraction=0.14}={
     const gold=r>165&&g>105&&b<175&&r>b*1.12;
     const cool=g>175&&b>180&&r>135&&spread<100;
     const colored=spread>35&&luma[p]>45;
-    if(data[i+3]>96&&(pale||gold||cool||colored)) candidate[p]=1;
+    if(data[i+3]>alphaThreshold&&(pale||gold||cool||colored)) candidate[p]=1;
   }
   for(let y=0;y<height;y++) for(let x=0;x<width;x++) {
     const p=y*width+x; let low=luma[p],high=low;
-    for(const [dx,dy] of [[-2,0],[2,0],[0,-2],[0,2],[-1,-1],[1,1]]) {
+    for(const [dx,dy] of [[-edgeRadius,0],[edgeRadius,0],[0,-edgeRadius],[0,edgeRadius],[-1,-1],[1,1]]) {
       const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=width||ny>=height)continue;
       low=Math.min(low,luma[ny*width+nx]);high=Math.max(high,luma[ny*width+nx]);
     }
@@ -65,11 +72,11 @@ export function createSourceFinishMask(data,width,height,{powderFraction=0.14}={
       }
     }
     // Reject broad flat backing regions and isolated compression noise.
-    const contourOnly=component.length>count*0.28;
-    if(component.length<3||(!contourOnly&&edge/component.length<12))continue;
+    const contourOnly=component.length>count*contourFraction;
+    if(component.length<minComponent||(!contourOnly&&edge/component.length<componentContrast))continue;
     for(const p of component) {
-      if(contourOnly&&contrast[p]<16)continue;
-      if(luma[p]>45&&contrast[p]>14) powder[p]=255;
+      if(contourOnly&&contrast[p]<contourContrast)continue;
+      if(luma[p]>45&&contrast[p]>contrastThreshold) powder[p]=255;
     }
   }
   // Per-source contrast ranking keeps flat backing colors out of the selected foil.
@@ -81,7 +88,7 @@ export function createSourceFinishMask(data,width,height,{powderFraction=0.14}={
       mask.fill(0);for(const p of selected.slice(0,limit))mask[p]=255;
     }
   }
-  const uv=createWhiteOutlineMask(data,width,height);
+  const uv=createWhiteOutlineMask(data,width,height,options);
   // White strokes have their own clear finish, never additive glitter particles.
   for(let p=0;p<count;p++)if(uv[p])powder[p]=0;
   return {uv,powder};

@@ -1,3 +1,4 @@
+import {DEFAULT_LIGHT_ANGLE} from './finish-settings.js';
 import { DISPLAY_FONT } from './config.js';
 import { readCurrentDesign } from './current-design.js';
 import { createRenderer } from './renderer.js';
@@ -16,7 +17,8 @@ let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
 const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
-const details = { basic: '背面彩印 · 白墨', light: '单层彩印 · 彩色细粉 · 白色描边 UV', premium: '单层双面印刷 · 彩色细粉 · 白色描边 UV' };
+lightDial.set(DEFAULT_LIGHT_ANGLE);
+const details = { basic: '背面彩印 · 白墨', effect: '单层双面印刷 · 彩色细粉 · 白色描边 UV · 珠光' };
 function syncPhysicalSelection() {
   const variant = document.querySelector('#acrylic-variant').value;
   const cardOnly = previewProduct==='card';
@@ -30,7 +32,7 @@ function syncPhysicalSelection() {
   document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射票 · 彩色镭射覆膜' : shikishi?'色纸 · 彩色细粉 · 白色描边 UV':details[variant];
   document.querySelector('.acrylic-preview-detail > span:last-child').textContent = cardOnly
     ? '随角度变色 · 无镜面高光' : shikishi?'图案展示':'120 × 50 × 15 mm · 材质示意';
-  physicalPreview?.setSelection({ variant:cardOnly?'premium':variant, cardOnly, shikishi, accessory });
+  physicalPreview?.setSelection({ variant:cardOnly?'effect':variant, cardOnly, shikishi, accessory });
 }
 async function updatePhysicalPreview(request) {
   physicalStatus.hidden = false;
@@ -133,8 +135,11 @@ async function refreshDesign() {
     status.append(' ', retry);
   }
 }
-window.addEventListener('pageshow', refreshDesign);
+window.addEventListener('pageshow',event=>{if(event.persisted)refreshDesign();});
+// Start immediately; CSS font requests must not postpone initial design loading.
+void refreshDesign();
 window.addEventListener('storage', refreshDesign);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) refreshDesign();
 });
+
