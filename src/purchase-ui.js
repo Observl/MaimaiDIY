@@ -34,12 +34,12 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
   const bundleInput=bundleControl.querySelector('input');
   const isBundle=id=>{const p=BUNDLE_PRESETS[id];return p.quantity+p.cardQuantity+p.shikishiQuantity>1||p.accessory!=='none';};
   for(const product of products){product.count=document.createElement('span');product.count.className='bundle-item-count';product.input.closest('.purchase-product-head').append(product.count);}
-  function showPrice(target,current,original,{shipping=null,unit='',offer=false}={}) {
+  function showPrice(target,current,original,{shipping=null,unit='',offer=false,fromBasic=false}={}) {
     target.replaceChildren();const amount=document.createElement('span');amount.className='price-amount';
     const currentPrice=document.createElement('span');currentPrice.className='price-current';currentPrice.textContent='¥'+yuan(current)+unit;amount.append(currentPrice);
     if(original>current){const old=document.createElement('del');old.className='price-original';old.setAttribute('aria-label','原价 ¥'+yuan(original));old.textContent='¥'+yuan(original);amount.append(old);}
     target.classList.toggle('is-offer',offer||original>current);target.append(amount);
-    if(shipping!==null){const delivery=document.createElement('span');delivery.className='price-shipping';delivery.textContent=shipping?'运费 ¥'+yuan(shipping):'免运费';target.append(delivery);}
+    if(shipping!==null){const delivery=document.createElement('span');delivery.className='price-shipping';delivery.textContent=(fromBasic?'基础款 · ':'')+(shipping?'运费 ¥'+yuan(shipping):'免运费');target.append(delivery);}
   }
   const merchandiseOriginal=quote=>quote.bodyOriginalFen+quote.extrasFen+quote.shikishiOriginalFen;
   const configList=document.createElement('div');configList.className='configuration-list';
@@ -144,7 +144,12 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     }
     for(const [id,header] of configHeaders) {
       const price=header.querySelector('.config-price');
-      try {const quote=quoteProductBundle({...BUNDLE_PRESETS[id],variant:variant.value,...configSelections.get(id),newCustomer:newcomer.checked});showPrice(price,quote.totalFen-quote.shippingFen,merchandiseOriginal(quote),{shipping:quote.shippingFen,offer:quote.comboDiscountFen>0});} catch {price.textContent='—';}
+      try {
+        const bundled=isBundle(id);
+        const config=bundled?{...BUNDLE_PRESETS[id],variant:'basic'}:{...BUNDLE_PRESETS[id],variant:variant.value,...configSelections.get(id)};
+        const quote=quoteProductBundle({...config,newCustomer:newcomer.checked});
+        showPrice(price,quote.totalFen-quote.shippingFen,merchandiseOriginal(quote),{shipping:quote.shippingFen,offer:quote.comboDiscountFen>0,unit:bundled?' 起 / 份':'',fromBasic:bundled&&quote.quantity>0});
+      } catch {price.textContent='—';}
     }
     get('purchase-lines').replaceChildren();
     try {

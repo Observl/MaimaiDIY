@@ -47,7 +47,8 @@ test('full collection preset combines existing offers without invented discounts
 });
 
 test('multiple fixed bundles apply the same discount to every complete set',()=>{
-  for(const id of ['display','duo','acrylicPaper','cardPaper','complete'])for(const variant of ['basic','effect'])for(const newCustomer of [false,true]){
+  assert.equal(BUNDLE_PRESETS.display,undefined);
+  for(const id of ['duo','acrylicPaper','cardPaper','complete'])for(const variant of ['basic','effect'])for(const newCustomer of [false,true]){
     const p=BUNDLE_PRESETS[id],one=quoteProductBundle({...p,variant,newCustomer});
     const two=quoteProductBundle({...p,quantity:p.quantity*2,cardQuantity:p.cardQuantity*2,shikishiQuantity:p.shikishiQuantity*2,variant,newCustomer});
     assert.equal(two.totalFen,one.totalFen*2);assert.equal(two.comboDiscountFen,one.comboDiscountFen*2);

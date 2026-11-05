@@ -474,7 +474,8 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('.configuration-panel img')).toHaveCount(0);
   await expect(page.locator('#bundle-presets')).toHaveCount(0);
-  await expect(page.locator('.configuration-image')).toHaveCount(8);
+  await expect(page.locator('.configuration-image')).toHaveCount(7);
+  await expect(page.locator('[data-config="display"]')).toHaveCount(0);
   const powderSlots=await page.evaluate(async()=>{
     const {readCurrentDesign}=await import('/src/current-design.js');
     const {createCollectibleMasks}=await import('/src/collectible-masks.js');
@@ -493,7 +494,7 @@ test('purchase presets select products, update newcomer prices and export all it
     return pixels[3]===0&&visible>500;
   });
   expect(transparentProduct).toBe(true);
-  await expect(page.locator('.configuration-choice')).toHaveCount(8);
+  await expect(page.locator('.configuration-choice')).toHaveCount(7);
   await expect(page.locator('.configuration-panel:visible')).toHaveCount(1);
   await expect(page.locator('.purchase-product-caption')).toHaveCount(0);
   await page.locator('[data-finish="basic"]').focus();
@@ -538,11 +539,13 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('[data-config="complete"]').click();
   await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥72.70');
   await expect(page.locator('[data-config="complete"] .config-price')).toHaveClass(/is-offer/);
-  await expect(page.locator('[data-config="complete"] del')).toHaveText('¥78.70');
+  await expect(page.locator('[data-config="complete"] del')).toHaveText('¥68.70');
+  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥59.70 起 / 份');
   await expect(page.locator('#bundle-quantity')).toBeVisible();
   for(const id of ['acrylic-quantity','acrylic-cards','shikishi-quantity']){await expect(page.locator('#'+id)).toBeHidden();await expect(page.locator('#'+id)).toBeDisabled();}
   await page.locator('#bundle-quantity').fill('2');
   await expect(page.locator('#acrylic-total .price-current')).toHaveText('¥145.40');
+  await expect(page.locator('[data-config="complete"] .price-current')).toHaveText('¥59.70 起 / 份');
   for(const id of ['acrylic-quantity','acrylic-cards','shikishi-quantity'])await expect(page.locator('#'+id)).toHaveValue('2');
   await page.locator('[data-config="cardPaper"]').click();await expect(page.locator('#bundle-quantity')).toHaveValue('1');
   await page.locator('[data-config="complete"]').click();await expect(page.locator('#bundle-quantity')).toHaveValue('2');
