@@ -9,6 +9,8 @@ const transitions = {pay:['pending_payment','paid_review'],approve:['paid_review
 export function createOrderStore(path = ':memory:') {
   const db = new DatabaseSync(path);
   db.exec('PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, request_hash TEXT NOT NULL, payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS production_batches (id TEXT PRIMARY KEY, payload TEXT NOT NULL)');
+  if(!db.prepare('PRAGMA table_info(orders)').all().some(column=>column.name==='owner_id'))db.exec('ALTER TABLE orders ADD COLUMN owner_id TEXT');
+  db.exec('CREATE INDEX IF NOT EXISTS orders_owner ON orders(owner_id)');
   function save(order) { db.prepare('UPDATE orders SET payload=? WHERE id=?').run(JSON.stringify(order),order.id); return order; }
   function get(id, token) {
     const row=db.prepare('SELECT * FROM orders WHERE id=? AND token_hash=?').get(id,hash(String(token||'')));
@@ -17,6 +19,7 @@ export function createOrderStore(path = ':memory:') {
   }
   function all(){return db.prepare('SELECT payload FROM orders ORDER BY rowid DESC').all().map(row=>JSON.parse(row.payload));}
   function byId(id){const row=db.prepare('SELECT payload FROM orders WHERE id=?').get(id);if(!row)fail('订单不存在',404);return JSON.parse(row.payload);}
+  function owned(id,userId){const row=db.prepare('SELECT payload FROM orders WHERE id=? AND owner_id=?').get(id,userId);if(!row)fail('订单不存在',404);return JSON.parse(row.payload);}
   const sku=item=>item.type==='acrylic-brick'?item.type+':'+item.variant:item.type;
   const productionItems=order=>order.draft.items.filter(item=>item.type!=='clear-stand');
   function transition(order,action,input={}) {
@@ -37,6 +40,12 @@ export function createOrderStore(path = ':memory:') {
   }
   return {
     close:()=>db.close(), get, list:all,
+    getForUser:owned,
+    listForUser(userId){return db.prepare('SELECT payload FROM orders WHERE owner_id=? ORDER BY rowid DESC').all(userId).map(row=>{
+      const o=JSON.parse(row.payload);return {id:o.id,status:o.status,createdAt:o.createdAt,totalFen:o.draft.quote.totalFen,items:o.draft.items.map(({type,variant,quantity})=>({type,variant,quantity})),tracking:o.tracking};
+    });},
+    actForUser(id,userId,action,input={}){const order=owned(id,userId);if(!['pay','cancel','complete'].includes(action))fail('该操作需要运营后台权限',403);return transition(order,action,input);},
+    packForUser(id,userId){const order=owned(id,userId);if(!['approved','producing','shipped','completed'].includes(order.status))fail('请先模拟付款并审核设计稿',409);return {format:'MaimaiDIY-demo-production-pack',version:1,orderId:id,mode:'demo',productionReady:false,draft:order.draft};},
     queue(){
       const groups=new Map();for(const order of all().filter(o=>o.status==='approved'))for(const item of productionItems(order)){
         const key=sku(item);if(order.productionBatches?.[key])continue;
@@ -68,7 +77,7 @@ export function createOrderStore(path = ':memory:') {
         warning:'仅供受授权厂家使用。包含收货信息，尚未实际发给厂家；印刷规格与样品需确认。',
         orders:batch.orderIds.map(orderId=>{const o=byId(orderId);return {orderId,shipping:o.shipping,design:o.draft.design,items:o.draft.items.filter(item=>sku(item)===batch.sku||(batch.sku.startsWith('acrylic-brick:')&&item.type==='clear-stand'))};})};
     },
-    create(input, token) {
+    create(input, token, ownerId=null) {
       if(!/^[a-f0-9]{64}$/.test(token||''))fail('缺少安全的订单访问凭据');
       const {draft,shipping,rightsConfirmed}=input||{};
       if(rightsConfirmed!==true)fail('请确认设计稿使用权限和定制信息');
@@ -84,10 +93,10 @@ export function createOrderStore(path = ':memory:') {
       const frozen=buildAcrylicDesignDraft({state:sanitizeImportedState(draft.design),variant:p.variant||'effect',quantity:p.quantity,accessory:p.accessory,cardQuantity:p.cardQuantity,shikishiQuantity:p.shikishiQuantity,newCustomer:false});
       const fingerprint=hash(JSON.stringify({frozen,shipping:clean}));
       const old=db.prepare('SELECT * FROM orders WHERE token_hash=?').get(hash(token));
-      if(old) {if(old.request_hash!==fingerprint)fail('该提交凭据已用于其他订单，请重新确认方案',409);return JSON.parse(old.payload);}
+      if(old) {if(old.owner_id!==ownerId||old.request_hash!==fingerprint)fail('该提交凭据已用于其他订单，请重新确认方案',409);return JSON.parse(old.payload);}
       const now=new Date().toISOString();
       const order={id:randomUUID(),mode:'demo',status:'pending_payment',createdAt:now,draft:frozen,shipping:clean,events:[{status:'pending_payment',at:now}],payment:null,tracking:null};
-      db.prepare('INSERT INTO orders VALUES (?,?,?,?)').run(order.id,hash(token),fingerprint,JSON.stringify(order));
+      db.prepare('INSERT INTO orders (id,token_hash,request_hash,payload,owner_id) VALUES (?,?,?,?,?)').run(order.id,hash(token),fingerprint,JSON.stringify(order),ownerId);
       return order;
     },
     act(id,token,action,input={}) {

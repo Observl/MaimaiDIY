@@ -140,6 +140,8 @@ async function validatedAsset(response, url) {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+  // Customer and order responses must never enter the shared artwork cache.
+  if (url.pathname.includes('/api/')) return;
   if (request.method !== 'GET' || !['http:', 'https:'].includes(url.protocol)) return;
   if (url.origin !== self.location.origin && !url.hostname.endsWith('.myqcloud.com')) return;
   const manifest =

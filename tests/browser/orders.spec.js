@@ -1,4 +1,37 @@
 import {test,expect} from '@playwright/test';
+import {createDefaultState} from '../../src/model.js';
+import {buildAcrylicDesignDraft} from '../../src/custom-order.js';
+test('customer accounts persist across tabs and isolate order lookup and changes',async({page,browser})=>{
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  const name='buyer_'+Date.now(),password='local-test-password-123';
+  await page.goto('/account.html?return=orders.html');await page.locator('#register-tab').click();
+  await page.locator('#account-form [name="username"]').fill(name);await page.locator('#password').fill(password);await page.locator('#confirm-password').fill(password);await page.locator('#account-submit').click();
+  await expect(page).toHaveURL(/orders.html$/);await expect(page.locator('#orders-user')).toHaveText(name);
+  const s=await(await page.request.get('/api/auth/session')).json();
+  const input={draft:buildAcrylicDesignDraft({state:createDefaultState(),variant:'effect',quantity:1}),requestId:'a'.repeat(64),shipping:{name:'隔离测试买家',phone:'13800000000',address:'仅用于账号隔离测试的虚构地址'},rightsConfirmed:true};
+  const created=await page.request.post('/api/orders',{headers:{Origin:'http://127.0.0.1:9426','X-CSRF-Token':s.csrf},data:input});expect(created.status()).toBe(201);const order=await created.json();
+  await page.locator('#orders-refresh').click();await expect(page.locator('#orders-list')).toContainText(order.id);await expect(page.locator('#orders-list')).not.toContainText('13800000000');
+  const same=await page.context().newPage();await same.goto('/orders.html');await expect(same.locator('#orders-list')).toContainText(order.id);await same.close();
+  const other=await browser.newContext({baseURL:'http://127.0.0.1:9426'});
+  try{
+    expect((await other.request.get('/api/orders/'+order.id)).status()).toBe(401);
+    const registered=await other.request.post('/api/auth/register',{headers:{Origin:'http://127.0.0.1:9426'},data:{username:'other_'+Date.now(),password}});expect(registered.status()).toBe(200);const otherSession=await registered.json();expect(registered.headers()['set-cookie']).toContain('HttpOnly');
+    expect((await other.request.get('/api/orders/'+order.id)).status()).toBe(404);
+    expect((await other.request.get('/api/orders/'+order.id+'/pack')).status()).toBe(404);
+    expect((await(await other.request.get('/api/orders')).json()).orders).toHaveLength(0);
+    expect((await other.request.post('/api/orders/'+order.id+'/actions',{headers:{Origin:'http://127.0.0.1:9426','X-CSRF-Token':otherSession.csrf},data:{action:'cancel'}})).status()).toBe(404);
+    expect((await page.request.post('/api/orders/'+order.id+'/actions',{headers:{Origin:'http://127.0.0.1:9426'},data:{action:'cancel'}})).status()).toBe(403);
+    const another=await browser.newContext({baseURL:'http://127.0.0.1:9426'});
+    try{
+      expect((await another.request.post('/api/auth/login',{headers:{Origin:'http://127.0.0.1:9426'},data:{username:name,password}})).status()).toBe(200);
+      expect((await another.request.get('/api/orders/'+order.id)).status()).toBe(200);
+      const changed=await page.request.post('/api/auth/password',{headers:{Origin:'http://127.0.0.1:9426','X-CSRF-Token':s.csrf},data:{currentPassword:password,newPassword:'changed-test-password-123'}});expect(changed.status()).toBe(200);
+      expect((await another.request.get('/api/orders')).status()).toBe(401);
+    }finally{await another.close();}
+  }finally{await other.close();}
+  await page.goto('/after-sales.html');await expect(page.getByText('Observl',{exact:true})).toBeVisible();await expect(page.getByRole('link',{name:'0bservl@protonmail.com'})).toHaveAttribute('href','mailto:0bservl@protonmail.com');
+  await page.setViewportSize({width:390,height:844});await page.goto('/orders.html');await expect(page.locator('#orders-list')).toContainText(order.id);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'output/playwright/customer-orders-mobile.png',fullPage:true});expect(errors).toEqual([]);
+});
 test('local demo freezes selection and completes the payment to delivery flow',async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('/custom-order.html',{waitUntil:'domcontentloaded'});
@@ -6,6 +39,11 @@ test('local demo freezes selection and completes the payment to delivery flow',a
   await page.reload({waitUntil:'domcontentloaded'});
   await expect(page.locator('#acrylic-export')).toBeEnabled();
   await page.locator('#order-checkout').click();
+  await expect(page).toHaveURL(/account.html\?return=checkout.html$/);
+  await page.locator('#register-tab').click();
+  await page.locator('#account-form [name="username"]').fill('flow_'+Date.now());
+  await page.locator('#password').fill('local-flow-password-123');await page.locator('#confirm-password').fill('local-flow-password-123');
+  await page.locator('#account-submit').click();
   await expect(page).toHaveURL(/checkout.html$/);
   await expect(page.locator('#shipping-form')).toBeVisible();
   await expect(page.locator('#design')).toHaveAttribute('width','1080');
@@ -13,8 +51,9 @@ test('local demo freezes selection and completes the payment to delivery flow',a
   await page.getByRole('button',{name:'建立模拟订单',exact:true}).click();
   await expect(page.locator('#status')).toHaveText('待模拟付款');
   const access=await page.evaluate(()=>JSON.parse(window.sessionStorage.getItem('maimai-order-access')));
-  const forbidden=await page.request.get('/api/admin/orders',{headers:{Authorization:'Bearer '+access.token}});expect(forbidden.status()).toBe(401);
-  const escalate=await page.request.post(`/api/orders/${access.id}/actions`,{headers:{Authorization:'Bearer '+access.token,Origin:'http://127.0.0.1:9426'},data:{action:'approve'}});expect(escalate.status()).toBe(403);
+  const forbidden=await page.request.get('/api/admin/orders');expect(forbidden.status()).toBe(401);
+  const session=await(await page.request.get('/api/auth/session')).json();
+  const escalate=await page.request.post(`/api/orders/${access.id}/actions`,{headers:{'X-CSRF-Token':session.csrf,Origin:'http://127.0.0.1:9426'},data:{action:'approve'}});expect(escalate.status()).toBe(403);
   await page.reload();await expect(page.locator('#status')).toHaveText('待模拟付款');
   await page.getByRole('button',{name:'模拟付款',exact:true}).click();await expect(page.locator('#status')).toHaveText('待审核设计');
   await expect(page.getByRole('button',{name:'模拟审核通过',exact:true})).toHaveCount(0);

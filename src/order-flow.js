@@ -2,18 +2,17 @@ import { buildAcrylicDesignDraft } from './custom-order.js';
 import { createRenderer } from './renderer.js';
 import { createCollectibleMasks } from './collectible-masks.js';
 import { FINISH_PARAMETERS, MASK_PARAMETERS } from './finish-settings.js';
+import { customerRequest, customerSession, signInUrl } from './customer-api.js';
 
 const $=id=>document.getElementById(id),storage=window.sessionStorage;
 const labels={pending_payment:'待模拟付款',paid_review:'待审核设计',approved:'已审核，等待凑批',producing:'生产中（本地演示）',shipped:'已发货（本地演示）',completed:'订单已完成',cancelled:'已取消'};
 const next={pending_payment:['pay','模拟付款'],shipped:['complete','确认收货（模拟）']};
 const money=fen=>'¥'+(fen/100).toFixed(2);
-let draft,order,credentials,previewVersion=0,busy=false;
+let draft,order,credentials,account,previewVersion=0,busy=false;
 const renderer=createRenderer($('design'));
 function message(text,error=false){$('message').textContent=text;$('message').dataset.error=String(error);}
 async function request(path,method='GET',data) {
-  const response=await fetch(path,{method,headers:{'Content-Type':'application/json',...(credentials?{Authorization:'Bearer '+credentials.token}:{})},...(data?{body:JSON.stringify(data)}:{})});
-  let result;try{result=await response.json();}catch{throw Error('订单服务未启动，请使用 npm run dev:orders 打开本地体验。');}
-  if(!response.ok)throw Error(result.error||'请求失败');return result;
+  try{return await customerRequest(path,method,data);}catch(error){if(error.status===401)location.assign(signInUrl('checkout.html'+(order?'?id='+order.id:'')));throw error;}
 }
 function safe(action){return async()=>{if(busy)return;busy=true;document.querySelectorAll('button').forEach(b=>b.disabled=true);try{await action();}catch(error){message(error.message,true);}finally{busy=false;document.querySelectorAll('button').forEach(b=>b.disabled=false);}};}
 async function renderDesign(state){const version=++previewVersion;try{await renderer.render(state,{strict:true});if(version===previewVersion)message('方案已载入。');}catch{message('部分素材无法载入，暂不能生成生产图。订单状态仍可演示。',true);}}
@@ -58,16 +57,27 @@ function displayOrder(value){
   message('本地模拟订单已保存；刷新本页可继续。');
 }
 $('shipping-form').addEventListener('submit',event=>{event.preventDefault();safe(async()=>{
-  if(!credentials){credentials={token:Array.from(crypto.getRandomValues(new Uint8Array(32)),n=>n.toString(16).padStart(2,'0')).join('')};storage.setItem('maimai-order-access',JSON.stringify(credentials));}
-  const fields=new window.FormData(event.currentTarget);const value=await request('/api/orders','POST',{draft,shipping:Object.fromEntries(['name','phone','address'].map(key=>[key,fields.get(key)])),rightsConfirmed:fields.get('rights')==='on'});
-  credentials.id=value.id;storage.setItem('maimai-order-access',JSON.stringify(credentials));displayOrder(value);
+  if(!account)throw Error('请先登录后购买');
+  if(!credentials){credentials={requestId:Array.from(crypto.getRandomValues(new Uint8Array(32)),n=>n.toString(16).padStart(2,'0')).join(''),ownerId:account.id};storage.setItem('maimai-order-access',JSON.stringify(credentials));}
+  const fields=new window.FormData(event.currentTarget);const value=await request('/api/orders','POST',{draft,requestId:credentials.requestId,shipping:Object.fromEntries(['name','phone','address'].map(key=>[key,fields.get(key)])),rightsConfirmed:fields.get('rights')==='on'});
+  credentials.id=value.id;storage.setItem('maimai-order-access',JSON.stringify(credentials));window.history.replaceState(null,'','checkout.html?id='+value.id);displayOrder(value);
 })();});
 $('reset').addEventListener('click',()=>{storage.removeItem('maimai-order-access');location.assign('custom-order.html');});
 async function init(){try{
   const health=await request('/api/health');if(health.mode!=='demo')throw Error('当前服务不是订单演示环境');
+  const session=await customerSession();account=session.user;
+  const requested=new URLSearchParams(location.search).get('id');
+  if(!account){$('shipping-form').hidden=true;location.replace(signInUrl('checkout.html'+(requested&&/^[a-f0-9-]{36}$/.test(requested)?'?id='+requested:'')));return;}
   credentials=JSON.parse(storage.getItem('maimai-order-access')||'null');
+  if(credentials?.ownerId!==account.id){credentials=null;storage.removeItem('maimai-order-access');}
+  if(requested){if(!/^[a-f0-9-]{36}$/.test(requested))throw Error('订单编号不正确');displayOrder(await request('/api/orders/'+requested));return;}
   if(credentials?.id){displayOrder(await request('/api/orders/'+credentials.id));return;}
   const pending=JSON.parse(storage.getItem('maimai-order-pending')||'null');if(!pending)throw Error('请先返回选购页面，选择商品并点击“体验订单流程”。');
   const p=pending.product;displayDraft(buildAcrylicDesignDraft({state:pending.design,...p,variant:p.variant||'effect',newCustomer:false}));
 }catch(error){message(error.message,true);$('shipping-form').hidden=true;}}
 init();
+window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
+document.addEventListener('visibilitychange',async()=>{
+  if(document.hidden||!account)return;
+  try{const current=await customerSession();if(current.user?.id!==account.id)location.reload();}catch{message('登录状态暂时无法确认，请刷新后重试。',true);}
+});
