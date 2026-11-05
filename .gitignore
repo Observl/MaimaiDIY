@@ -13,3 +13,12 @@ playwright-report/
 /materials/*.json
 /COS-upload/
 /COS-excluded/
+
+# Private local order data; never publish order/address records.
+server/data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.env
+.env.*
+!.env.example

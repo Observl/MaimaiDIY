@@ -22,6 +22,8 @@ for (const file of [
   'index.html',
   'support.html',
   'custom-order.html',
+  'checkout.html',
+  'checkout.css',
   'styles.css',
   'ui-motion.css',
   'ui-motion.js',

@@ -1,0 +1,27 @@
+import {test,expect} from '@playwright/test';
+test('local demo freezes selection and completes the payment to delivery flow',async({page})=>{
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('http://127.0.0.1:9425/custom-order.html',{waitUntil:'domcontentloaded'});
+  await page.evaluate(async()=>{const {createDefaultState}=await import('/src/model.js');const {saveCurrentDesign}=await import('/src/current-design.js');saveCurrentDesign(createDefaultState());});
+  await page.reload({waitUntil:'domcontentloaded'});
+  await expect(page.locator('#acrylic-export')).toBeEnabled();
+  await page.locator('#order-checkout').click();
+  await expect(page).toHaveURL(/checkout.html$/);
+  await expect(page.locator('#shipping-form')).toBeVisible();
+  await expect(page.locator('#design')).toHaveAttribute('width','1080');
+  await page.locator('[name="name"]').fill('模拟用户');await page.locator('[name="phone"]').fill('13800000000');await page.locator('[name="address"]').fill('仅用于演示的本地收货地址');await page.locator('[name="rights"]').check();
+  await page.getByRole('button',{name:'建立模拟订单',exact:true}).click();
+  await expect(page.locator('#status')).toHaveText('待模拟付款');
+  await page.reload();await expect(page.locator('#status')).toHaveText('待模拟付款');
+  await page.getByRole('button',{name:'模拟付款',exact:true}).click();await expect(page.locator('#status')).toHaveText('待审核设计');
+  await page.getByRole('button',{name:'模拟审核通过',exact:true}).click();await expect(page.locator('#status')).toHaveText('设计已审核');
+  await page.getByRole('button',{name:'生成设计稿和工艺蒙版',exact:true}).click();await expect(page.locator('#downloads a')).toHaveCount(4,{timeout:90000});
+  const blob=await page.locator('#downloads a').first().evaluate(async a=>Array.from(new Uint8Array(await (await fetch(a.href)).arrayBuffer())));
+  expect(Buffer.from(blob).readUInt32BE(16)).toBe(2160);expect(Buffer.from(blob).readUInt32BE(20)).toBe(904);
+  await page.screenshot({path:'output/playwright/order-demo-production.png',fullPage:true});
+  await page.getByRole('button',{name:'模拟交付厂家并开始生产',exact:true}).click();await expect(page.locator('#status')).toHaveText('模拟生产中');
+  await page.getByRole('button',{name:'模拟发货',exact:true}).click();await expect(page.locator('#status')).toHaveText('已模拟发货');
+  await page.getByRole('button',{name:'确认收货（模拟）',exact:true}).click();await expect(page.locator('#status')).toHaveText('订单已完成');
+  await page.setViewportSize({width:390,height:844});await page.screenshot({path:'output/playwright/order-demo-mobile.png',fullPage:true});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);
+});
