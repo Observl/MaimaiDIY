@@ -18,7 +18,6 @@ export const BUNDLE_PRESETS = Object.freeze({
   acrylic: Object.freeze({ label:'亚克力砖单品', quantity:1, cardQuantity:0, shikishiQuantity:0, accessory:'none' }),
   shikishi: Object.freeze({ label:'色纸单品', description:'1 张色纸', quantity:0, cardQuantity:0, shikishiQuantity:1, accessory:'none' }),
   card: Object.freeze({ label:'镭射票单品', description:'1 张镭射票', quantity:0, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
-  display: Object.freeze({ label:'亚克力砖＋托架', quantity:1, cardQuantity:0, shikishiQuantity:0, accessory:'clearStand' }),
   duo: Object.freeze({ label:'亚克力砖＋镭射票', quantity:1, cardQuantity:1, shikishiQuantity:0, accessory:'none' }),
   acrylicPaper: Object.freeze({ label:'亚克力砖＋色纸', quantity:1, cardQuantity:0, shikishiQuantity:1, accessory:'none' }),
   cardPaper: Object.freeze({ label:'镭射票＋色纸', quantity:0, cardQuantity:1, shikishiQuantity:1, accessory:'none' }),
@@ -45,7 +44,7 @@ export function quoteProductBundle({ variant, quantity, accessory = 'none', card
   const shikishiOriginalFen=SHIKISHI_PRODUCT.priceFen*shikishiQuantity;
   const shikishiFen=(newCustomer ? SHIKISHI_PRODUCT.newcomerPriceFen : SHIKISHI_PRODUCT.priceFen)*shikishiQuantity;
   const comboDiscountFen = quantity > 0
-    ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + (cardQuantity > 0 ? COMBO_DISCOUNTS.cardFen : 0)
+    ? (accessory === 'clearStand' ? COMBO_DISCOUNTS.standFen * quantity : 0) + COMBO_DISCOUNTS.cardFen * Math.min(quantity,cardQuantity)
     : 0;
   const shippingPending=false;
   const shippingFen = quantity>0 || cardQuantity+shikishiQuantity>=2 ? 0 : CARD_ONLY_SHIPPING_FEN;
