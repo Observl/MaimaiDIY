@@ -2,13 +2,13 @@ import { buildAcrylicDesignDraft } from './custom-order.js';
 import { createRenderer } from './renderer.js';
 import { createCollectibleMasks } from './collectible-masks.js';
 import { FINISH_PARAMETERS, MASK_PARAMETERS } from './finish-settings.js';
-import { customerRequest, customerSession, signInUrl } from './customer-api.js';
+import { customerRequest, customerSession, signInUrl, orderLabels } from './customer-api.js';
 
 const $=id=>document.getElementById(id),storage=window.sessionStorage;
 const labels={pending_payment:'待模拟付款',paid_review:'待审核设计',approved:'已审核，等待凑批',producing:'生产中（本地演示）',shipped:'已发货（本地演示）',completed:'订单已完成',cancelled:'已取消'};
 const next={pending_payment:['pay','模拟付款'],shipped:['complete','确认收货（模拟）']};
 const money=fen=>'¥'+(fen/100).toFixed(2);
-let draft,order,credentials,account,previewVersion=0,busy=false;
+let draft,order,credentials,account,cloudMode=false,previewVersion=0,busy=false;
 const renderer=createRenderer($('design'));
 function message(text,error=false){$('message').textContent=text;$('message').dataset.error=String(error);}
 async function request(path,method='GET',data) {
@@ -44,17 +44,17 @@ async function productionPack(){
 }
 function displayOrder(value){
   order=value;displayDraft(order.draft);$('shipping-form').hidden=true;$('order').hidden=false;
-  $('status').textContent=labels[order.status];$('order-id').textContent='订单 '+order.id;
+  $('status').textContent=(cloudMode?orderLabels:labels)[order.status];$('order-id').textContent='订单 '+order.id;
   $('shipping-summary').textContent=[order.shipping.name,order.shipping.phone,order.shipping.address].join(' · ');
-  $('timeline').replaceChildren();for(const event of order.events){const li=document.createElement('li');li.textContent=`${labels[event.status]} · ${new Date(event.at).toLocaleString()}`;$('timeline').append(li);}
+  $('timeline').replaceChildren();for(const event of order.events){const li=document.createElement('li');li.textContent=`${(cloudMode?orderLabels:labels)[event.status]} · ${new Date(event.at).toLocaleString()}`;$('timeline').append(li);}
   if(order.payment){const li=document.createElement('li');li.textContent='模拟交易号 '+order.payment.transactionId;$('timeline').append(li);}
   if(order.tracking){const li=document.createElement('li');li.textContent='模拟运单 '+order.tracking.number;$('timeline').append(li);}
   $('actions').replaceChildren();
   $('actions').append(button('刷新订单状态',async()=>displayOrder(await request(`/api/orders/${order.id}`))));
-  if(next[order.status]){const [action,label]=next[order.status];$('actions').append(button(label,async()=>displayOrder(await request(`/api/orders/${order.id}/actions`,'POST',{action,...(action==='ship'?{tracking:'DEMO-'+order.id.slice(0,8)}:{})}))));}
+  if(next[order.status]&&!(cloudMode&&order.status==='pending_payment')){const [action,label]=next[order.status];$('actions').append(button(cloudMode?'确认收货':label,async()=>displayOrder(await request(`/api/orders/${order.id}/actions`,'POST',{action,...(action==='ship'?{tracking:'DEMO-'+order.id.slice(0,8)}:{})}))));}
   if(order.status==='pending_payment')$('actions').append(button('取消订单',async()=>displayOrder(await request(`/api/orders/${order.id}/actions`,'POST',{action:'cancel'}))));
   if(['approved','producing','shipped','completed'].includes(order.status))$('actions').append(button('生成设计稿和工艺蒙版',productionPack));
-  message('本地模拟订单已保存；刷新本页可继续。');
+  message(cloudMode?'订单已保存。微信和支付宝支付暂未开通，当前无法付款。':'本地模拟订单已保存；刷新本页可继续。');
 }
 $('shipping-form').addEventListener('submit',event=>{event.preventDefault();safe(async()=>{
   if(!account)throw Error('请先登录后购买');
@@ -64,7 +64,8 @@ $('shipping-form').addEventListener('submit',event=>{event.preventDefault();safe
 })();});
 $('reset').addEventListener('click',()=>{storage.removeItem('maimai-order-access');location.assign('custom-order.html');});
 async function init(){try{
-  const health=await request('/api/health');if(health.mode!=='demo')throw Error('当前服务不是订单演示环境');
+  const health=await request('/api/health');if(!['demo','cloudbase'].includes(health.mode))throw Error('订单服务暂不可用');cloudMode=health.mode==='cloudbase';
+  if(cloudMode){document.querySelector('.tag').textContent='订单服务 · 支付暂未开通';document.querySelector('footer').textContent='订单保存于 CloudBase。微信和支付宝支付尚未接通，当前无法付款，不会安排生产。';$('shipping-form').querySelector('[type="submit"]').textContent='保存订单';}
   const session=await customerSession();account=session.user;
   const requested=new URLSearchParams(location.search).get('id');
   if(!account){$('shipping-form').hidden=true;location.replace(signInUrl('checkout.html'+(requested&&/^[a-f0-9-]{36}$/.test(requested)?'?id='+requested:'')));return;}

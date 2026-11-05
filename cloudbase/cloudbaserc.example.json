@@ -1,0 +1,13 @@
+{
+  "envId": "maimai-diy-d8go3owr74a7e260d",
+  "functionRoot": "functions",
+  "functions": [{
+    "name": "commerce-api", "runtime": "Nodejs20.19", "handler": "index.main",
+    "timeout": 30, "memorySize": 512, "installDependency": false,
+    "envVariables": {
+      "CLOUDBASE_ENV_ID": "maimai-diy-d8go3owr74a7e260d",
+      "CLOUDBASE_API_KEY": "INJECT_SERVER_SECRET_DO_NOT_COMMIT",
+      "ALLOWED_ORIGINS": "https://observl.github.io"
+    }
+  }]
+}

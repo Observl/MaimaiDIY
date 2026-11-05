@@ -94,6 +94,8 @@ MaimaiDIY 由个人维护。如果这个工具对你有帮助，可以自愿赞�
 
 ## 独立订单实验分支（仅本地）
 
+云端后端已新增 CloudBase PostgreSQL 版本，见 [cloudbase/README.md](cloudbase/README.md)。只部署账号订单云函数与迁移数据，GitHub Pages 和现有 COS 素材保持原状；本节的 SQLite、模拟付款和运营界面仍为独立本地演示，不是云端运营端。
+
 此分支不合并 main。Node.js 24.14+，先运行 npm ci、npm run build，再运行 npm run dev:orders。打开 http://127.0.0.1:9425/ 编辑设计，直接访问 /custom-order.html 选购，再进入订单体验。首页暂不显示购买入口。
 
 编辑器、模板和图片导入导出、商品预览均无需账号。提交购买订单时转到 /account.html 注册或登录，方案保留并在登录后继续。用户名为 3–32 位字母数字下划线（不区分大小写），密码 10–128 字符；不是微信授权登录。支持退出和修改密码，修改后其他会话失效。

@@ -23,7 +23,9 @@ async function refresh() {
   try { const s = await customerSession(); $('orders-login').hidden = !!s.user; $('orders-content').hidden = !s.user;
     if (!s.user) { orders=[]; $('orders-list').replaceChildren(); message(''); return; }
     $('orders-user').textContent = s.user.username;
-    orders = (await customerRequest('/api/orders')).orders; render(); message('');
+    const first=await customerRequest('/api/orders');orders=first.orders;let offset=first.nextOffset;
+    while(offset!==undefined&&offset!==null){const chunk=await customerRequest('/api/orders?offset='+offset);orders.push(...chunk.orders);offset=chunk.nextOffset;}
+    render(); message('');
   } catch (error) { orders=[]; $('orders-list').replaceChildren(); message(error.message, true); if(error.status===401){$('orders-content').hidden=true;$('orders-login').hidden=false;} }
   finally { $('orders-refresh').disabled = false; }
 }
