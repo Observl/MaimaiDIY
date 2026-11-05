@@ -1376,6 +1376,20 @@ canvas {
   #custom-order .purchase-total { margin-top:22px; padding-top:18px; border-top:1px solid var(--store-line); }
   #custom-order .custom-order-actions { margin-top:20px; }
 }
+#custom-order .price-amount { display:inline-flex; align-items:baseline; justify-content:inherit; flex-wrap:wrap; gap:4px 8px; }
+#custom-order .is-offer .price-current { color:#16713c; }
+#custom-order .price-original { color:#6e6e73; font-size:12px; font-weight:400; text-decoration-thickness:1px; letter-spacing:normal; }
+#custom-order .price-shipping { display:block; color:#6e6e73; font-size:12px; font-weight:400; line-height:1.5; }
+#custom-order .config-price { white-space:normal; text-align:right; }
+#custom-order .config-price .price-amount { justify-content:flex-end; }
+#custom-order .purchase-total .price-amount { gap:4px 10px; }
+#custom-order .purchase-total .price-original { font-size:15px; }
+#custom-order .purchase-line>span:last-child { white-space:normal; text-align:right; }
+#custom-order .bundle-quantity { display:flex; align-items:center; justify-content:space-between; gap:16px; padding-top:20px; color:var(--store-ink); }
+#custom-order .bundle-quantity input { width:76px; min-height:44px; text-align:center; border:1px solid var(--store-line); border-radius:10px; color:var(--store-ink); background:white; }
+#custom-order .bundle-item-count { font-size:14px; color:var(--store-muted); text-align:right; }
+#custom-order .bundle-quantity[hidden],#custom-order .purchase-quantity[hidden],#custom-order .bundle-item-count[hidden] { display:none!important; }
+@media(max-width:480px) { #custom-order .configuration-choice { grid-template-columns:60px minmax(0,1fr) minmax(82px,112px) 18px; } #custom-order .configuration-choice .configuration-image { width:60px; } }
 .custom-order-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 16px 0; }
 .custom-order-grid label { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
 .custom-order-grid input[type="number"], .custom-order-grid select {

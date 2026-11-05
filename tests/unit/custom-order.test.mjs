@@ -46,6 +46,14 @@ test('full collection preset combines existing offers without invented discounts
   assert.equal(quote.shippingFen,0);
 });
 
+test('multiple fixed bundles apply the same discount to every complete set',()=>{
+  for(const id of ['display','duo','acrylicPaper','cardPaper','complete'])for(const variant of ['basic','effect'])for(const newCustomer of [false,true]){
+    const p=BUNDLE_PRESETS[id],one=quoteProductBundle({...p,variant,newCustomer});
+    const two=quoteProductBundle({...p,quantity:p.quantity*2,cardQuantity:p.cardQuantity*2,shikishiQuantity:p.shikishiQuantity*2,variant,newCustomer});
+    assert.equal(two.totalFen,one.totalFen*2);assert.equal(two.comboDiscountFen,one.comboDiscountFen*2);
+  }
+});
+
 test('two product options with one fully enabled effect option',()=>{
   assert.deepEqual(Object.keys(ACRYLIC_PRODUCTS),['basic','effect']);
   assert.equal(ACRYLIC_PRODUCTS.basic.priceFen,2990);assert.equal(ACRYLIC_PRODUCTS.effect.priceFen,3990);
@@ -88,8 +96,8 @@ test('accessories and cards are not discounted', () => {
   });
   assert.equal(q.bodyFen, 13450);
   assert.equal(q.extrasFen, 4980);
-  assert.equal(q.comboDiscountFen, 700);
-  assert.equal(q.totalFen, 17730);
+  assert.equal(q.comboDiscountFen, 900);
+  assert.equal(q.totalFen, 17530);
   assert.equal(q.discountFen, 1500);
   assert.equal(q.discountReason, 'new-customer');
 });
