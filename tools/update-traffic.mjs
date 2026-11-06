@@ -8,9 +8,29 @@ const start = new Date(end.getTime() - 30 * 86400000);
 const url = new URL('https://observl.goatcounter.com/api/v0/stats/total');
 url.searchParams.set('start', start.toISOString());
 url.searchParams.set('end', end.toISOString());
-const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(30000) });
-if (!response.ok) throw new Error(`GoatCounter returned ${response.status}: ${(await response.text()).slice(0, 400)}`);
-const data = await response.json();
+// Retry transient network failures, rate limiting, and temporary server errors.
+async function fetchStatistics() {
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+        signal: AbortSignal.timeout(30000),
+      });
+      if (response.ok) return response.json();
+      const detail = (await response.text()).slice(0, 400);
+      const retryable = response.status === 429 || response.status >= 500;
+      if (!retryable || attempt === 4) {
+        throw new Error(`GoatCounter returned HTTP ${response.status}: ${detail}`);
+      }
+      console.warn(`GoatCounter HTTP ${response.status} (attempt ${attempt}/4): ${detail}`);
+    } catch (error) {
+      if (attempt === 4 || (error.message || '').startsWith('GoatCounter returned HTTP')) throw error;
+      console.warn(`GoatCounter request failed (attempt ${attempt}/4): ${error.message}`);
+    }
+    await new Promise(resolve => setTimeout(resolve, 2000 * 2 ** (attempt - 1)));
+  }
+}
+const data = await fetchStatistics();
 if (!Array.isArray(data.stats)) throw new Error('Invalid statistics response; previous chart preserved');
 const counts = new Map();
 for (const row of data.stats) {
