@@ -29,4 +29,16 @@ jobs:
           git add docs/traffic/daily.svg docs/traffic/daily.json
           git diff --cached --quiet && exit 0
           git commit -m 'Update daily website traffic chart'
-          git push origin HEAD:main
+          # Another commit may reach main while the chart is being generated.
+          # Rebase and retry rather than failing on a non-fast-forward push.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push failed (attempt $attempt/3); rebasing onto origin/main"
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort; exit 1; }
+            sleep $((attempt * 2))
+          done
+          echo 'Unable to push chart after three attempts' >&2
+          exit 1
