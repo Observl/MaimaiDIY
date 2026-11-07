@@ -11,12 +11,14 @@
   `184 / 8.5` (about 21.647px), and the leading inset is about 10.824px.
   Short names use the same positions; input text is not padded or rewritten.
 - Package metadata, page title, version link and README all use `1.2.3`.
-- The separate close-up/export candidate `518cbe23` is not included.
-  Camera framing, order-page controls and export controls are unchanged from main.
+- Integrates the requested close-up/export candidate `518cbe23`: the new
+  close-up control sits left of the near-view control and frames the nameplate;
+  the website background-export control is removed, while the underlying
+  background-rendering module is retained.
 
 ## Checks
 
-- `npm run check`: passed ESLint, all 72 unit tests and production build.
+- `npm run check`: passed ESLint, all 86 unit tests and production build.
 - `git diff --check`: passed.
 - Version consistency checks: package and both lockfile versions, README,
   page version link and built page title agree.
@@ -28,10 +30,10 @@
   text-protection and component-coverage masks matched alpha exactly.
   This is a geometry/Canvas check, not browser or physical-device validation;
   unsupported font glyphs can use fallback boxes in this environment.
-- Targeted Playwright invocation attempted name, Rating and powder-isolation
-  regressions. It stopped before running browser assertions because configured
-  Google Chrome was missing at `/opt/google/chrome/chrome`; the other three
-  tests did not run. The full browser suite is therefore not reported as passed.
+- Targeted Playwright invocations attempted name, Rating, powder-isolation
+  and close-up regressions. It stopped before running browser assertions because configured
+  Google Chrome was missing at `/opt/google/chrome/chrome`; the remaining five
+  selected tests did not run. The full browser suite is therefore not reported as passed.
 
 ## Publication
 
