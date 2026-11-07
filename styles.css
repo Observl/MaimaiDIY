@@ -1,4 +1,13 @@
 @font-face {
+  font-family: 'Maimai Rating Digits';
+  src: url('fonts/rating-digits-extrabold.ttf') format('truetype');
+  font-display: block;
+  font-style: normal;
+  font-weight: 800;
+  unicode-range: U+0030-0039;
+}
+
+@font-face {
   font-family: 'SEGA Maru Gothic DB';
   src: url('https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/fonts/SEGA_MARUGOTHICDB-web.ttf?v=2') format('truetype');
   font-display: block;

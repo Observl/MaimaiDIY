@@ -1,5 +1,7 @@
 export const CANVAS = { width: 1080, height: 452 };
 export const DISPLAY_FONT = '"SEGA Maru Gothic DB"';
+// Open-licensed approximation of the reference, separate from the name font.
+export const RATING_FONT = '"Maimai Rating Digits"';
 export const RENDER_SCALE = 4;
 export const OUTPUT = { width: 2160, height: 904 };
 export const DEFAULT_BACKGROUND = 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/backgrounds/UI_Frame_200402.png';

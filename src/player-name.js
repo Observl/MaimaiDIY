@@ -12,9 +12,11 @@ export function layoutPlayerName(value, availableWidth) {
   // CJK characters and emoji retain their original text.
   const characters = nameCharacters(value.replace(/[A-Za-z]/g,
     (letter) => String.fromCharCode(letter.charCodeAt(0) + 0xfee0)));
-  // Eight fixed em-sized cells. Neither name length nor glyph metrics changes
-  // the font size or spacing; narrow glyphs stay centered in their own cell.
-  const cellWidth = availableWidth / 8;
-  const glyphs = characters.map((text, index) => ({ text, x: index * cellWidth }));
-  return { glyphs, cellWidth, width: characters.length * cellWidth };
+  // Reserve one full-width space, then eight fixed em-sized character cells.
+  // This is layout padding, never a character inserted into the stored name.
+  // Neither name length nor glyph metrics changes the font size or spacing.
+  const cellWidth = availableWidth / 9;
+  const leadingSpace = cellWidth;
+  const glyphs = characters.map((text, index) => ({ text, x: (index + 1) * cellWidth }));
+  return { glyphs, cellWidth, leadingSpace, width: characters.length * cellWidth };
 }

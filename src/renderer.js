@@ -1,7 +1,20 @@
-import { CANVAS, DISPLAY_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots, COMPOSITION_ORDER } from './config.js';
+import { CANVAS, DISPLAY_FONT, RATING_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots, COMPOSITION_ORDER } from './config.js';
 import { nameCharacterCount } from './model.js';
 import { layoutPlayerName } from './player-name.js';
 import { loadImage } from './assets.js';
+
+let ratingFontReady;
+function prepareRatingFont() {
+  if (!document.fonts?.load) return Promise.resolve();
+  // All renderer consumers (preview, PNG and finish masks) wait for the same
+  // locally served font. Failed optional fonts must not block the editor.
+  ratingFontReady ||= document.fonts.load(`800 19px ${RATING_FONT}`, '0123456789')
+    .catch(error => {
+      ratingFontReady = undefined;
+      console.warn('Rating 字体加载失败，将使用备用字体', error);
+    });
+  return ratingFontReady;
+}
 
 export function preferredRenderScale({
   coarsePointer = globalThis.matchMedia?.('(pointer: coarse)').matches ?? false,
@@ -58,12 +71,12 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
     const cellCenters = [230.5, 246, 261, 276, 291];
     const startCell = 5 - digits.length;
     ctx.save();
-    ctx.font = `700 15px ${DISPLAY_FONT}, sans-serif`;
+    ctx.font = `800 19px ${RATING_FONT}, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.lineJoin = 'round';
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#fbc802';
+    ctx.lineWidth = 0.35;
+    ctx.strokeStyle = '#76530d';
     ctx.fillStyle = '#fbc802';
     [...digits].forEach((digit, index) => {
       const x = cellCenters[startCell + index];
@@ -76,8 +89,8 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
 
   function drawPlayerName() {
     ctx.save();
-    // Eight fixed cells span the name board's left edge to the rank's left
-    // edge, even when rank is hidden. No name-length or per-glyph scaling.
+    // One blank cell + eight fixed name cells span the board to the rank,
+    // even when rank is hidden. No name-length or per-glyph scaling.
     const left = slots.nameBase.x;
     const { glyphs, cellWidth } = layoutPlayerName(state.playerName || '', slots.rank.x - left);
     ctx.font = `400 ${cellWidth}px ${DISPLAY_FONT}, sans-serif`;
@@ -156,7 +169,11 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
         return null;
       }
     });
-    drawable.push(...(await Promise.all(prepared)).filter(Boolean));
+    const [images] = await Promise.all([
+      Promise.all(prepared),
+      snapshot.visible.ratingDigits ? prepareRatingFont() : null,
+    ]);
+    drawable.push(...images.filter(Boolean));
     if (version !== renderVersion) return false;
     state = snapshot;
     ctx.setTransform(1, 0, 0, 1, 0, 0);

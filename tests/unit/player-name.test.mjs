@@ -4,16 +4,18 @@ import { layoutPlayerName, nameCharacters } from '../../src/player-name.js';
 import { slots } from '../../src/config.js';
 
 const availableWidth = slots.rank.x - slots.nameBase.x;
+const cellWidth = availableWidth / 9;
 const layout = (text) => layoutPlayerName(text, availableWidth);
 
-test('eight fixed full-width cells fill precisely the name board to rank interval', () => {
+test('one leading space and eight fixed full-width cells fill the board to rank interval', () => {
   assert.equal(availableWidth, 184);
   for (const name of ['舞萌玩家名称测试', 'AbcXYZab', 'ＡＢＣＤＥＦＧＨ', '中A文b字C测试']) {
     const result = layout(name);
     assert.equal(result.glyphs.length, 8);
-    assert.equal(result.cellWidth, 23);
-    assert.equal(result.width, availableWidth);
-    assert.equal(result.glyphs[0].x, 0);
+    assert.equal(result.cellWidth, cellWidth);
+    assert.equal(result.leadingSpace, cellWidth);
+    assert.equal(result.width + result.leadingSpace, availableWidth);
+    assert.equal(result.glyphs[0].x, cellWidth);
     assert.equal(result.glyphs[7].x + result.cellWidth, availableWidth);
   }
 });
@@ -39,12 +41,12 @@ test('combining marks, surrogate pairs and joined emoji each stay in their visib
   assert.equal(nameCharacters(name).length, 6);
   const result = layout(name);
   assert.deepEqual(result.glyphs.map(({ text }) => text), ['ｅ\u0301', 'か\u3099', '𠮷', '👨‍👩‍👧', '🇨🇳', '👍🏽']);
-  assert.equal(result.width, 6 * 23);
+  assert.equal(result.width, 6 * cellWidth);
 });
 
 test('narrow punctuation and wide fallback glyphs cannot change cell positions or font size', () => {
   const result = layout('.🙂A﷽𠮷1🇨🇳B');
-  assert.equal(result.cellWidth, 23);
-  assert.deepEqual(result.glyphs.map(({ x }) => x), [0, 23, 46, 69, 92, 115, 138, 161]);
-  assert.equal(result.width, availableWidth);
+  assert.equal(result.cellWidth, cellWidth);
+  assert.deepEqual(result.glyphs.map(({ x }) => x), Array.from({ length: 8 }, (_, i) => (i + 1) * cellWidth));
+  assert.equal(result.width + result.leadingSpace, availableWidth);
 });
