@@ -16,6 +16,9 @@ let previewLoading;
 let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
+const imageExports = [...document.querySelectorAll('#acrylic-image-export, #acrylic-scene-export')];
+const exportStatus = document.querySelector('#acrylic-export-status');
+function enableImageExports(enabled) { imageExports.forEach(button => { button.disabled = !enabled; }); }
 const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
 lightDial.set(DEFAULT_LIGHT_ANGLE);
 const details = { basic: '背面彩印 · 白墨', effect: '单层双面印刷 · 彩色细粉 · 白色描边 UV · 珠光' };
@@ -50,14 +53,38 @@ async function updatePhysicalPreview(request) {
     viewer.setLightAngle(lightDial.value);
     viewport.hidden = false;
     physicalStatus.hidden = true;
+    enableImageExports(true);
   } catch (error) {
+    enableImageExports(false);
     console.warn('3D 预览不可用', error);
     physicalStatus.textContent = '当前设备无法显示 3D 预览，上方设计和商品选配仍可使用。';
   }
 }
 viewport.addEventListener('preview-unavailable', () => {
+  enableImageExports(false);
   physicalStatus.hidden = false;
   physicalStatus.textContent = '3D 画面已暂停，请刷新页面重试。';
+});
+for (const button of imageExports) button.addEventListener('click', async () => {
+  if (!physicalPreview || !state || button.disabled) return;
+  const request = version;
+  enableImageExports(false);
+  exportStatus.textContent = '正在生成高清 3D PNG…';
+  try {
+    // Let the busy state paint before the synchronous WebGL capture.
+    await new Promise(resolve => window.requestAnimationFrame(resolve));
+    if (request !== version || !state || !physicalStatus.hidden) return;
+    const transparent = button.id === 'acrylic-image-export';
+    const image = physicalPreview.captureFrame({ width: 2160, ...(transparent ? {} : { background: '#f3eee4' }) });
+    const link = document.createElement('a');
+    link.href = image; link.download = `maimaidiy-${previewProduct}-${transparent ? 'transparent' : 'studio'}-3d.png`; link.click();
+    exportStatus.textContent = '已生成 2160 像素宽 PNG，保留当前视角与光照。';
+  } catch (error) {
+    console.warn('3D PNG 导出失败', error);
+    exportStatus.textContent = '3D PNG 导出失败，请重试或降低浏览器负载。';
+  } finally {
+    enableImageExports(Boolean(state) && physicalStatus.hidden);
+  }
 });
 document.querySelector('#acrylic-view-reset').addEventListener('click', () => physicalPreview?.reset());
 document.querySelector('#acrylic-view-detail').addEventListener('click', () => physicalPreview?.focusCollectibles());
@@ -88,6 +115,8 @@ initializeCustomOrder({
 async function refreshDesign() {
   const request = ++version;
   state = null;
+  enableImageExports(false);
+  exportStatus.textContent = '';
   status.hidden = false;
   preview.hidden = true;
   viewport.hidden = true;

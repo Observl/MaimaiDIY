@@ -6,6 +6,8 @@ import { createPaperTexture } from './paper-texture.js';
 import { MeshTransmissionMaterial, getGPUTier } from '../vendor/render-extensions.js';
 import { createFinishMaterial } from './finish-material.js';
 import { previewQuality } from './preview-quality.js';
+import { DEFAULT_LIGHT_ANGLE } from './finish-settings.js';
+import { captureProductImage } from './transparent-capture.js';
 
 export function createAcrylicPreview(host,{snapshot=false}={}) {
   let quality=previewQuality({isMobile:window.matchMedia('(pointer: coarse)').matches},snapshot);
@@ -256,7 +258,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   function setDesign(source, finishMaps) {
     designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();
     const image = document.createElement('canvas');
-    const limit = Math.min(renderer.capabilities.maxTextureSize, snapshot?2048:4096);
+    const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
     const scale = Math.min(1, limit / source.width, limit / source.height);
     image.width = Math.round(source.width * scale);
     image.height = Math.round(source.height * scale);
@@ -294,6 +296,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     event.preventDefault();
     host.dispatchEvent(new window.Event('preview-unavailable'));
   });
+  setLightAngle(DEFAULT_LIGHT_ANGLE);
   reset(); resize();
   host.dataset.quality=quality.name;
   host.dataset.materialEngine='custom-shader-material+mesh-transmission';
@@ -317,6 +320,18 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       resize();rebuild();
     }).catch(()=>{if(!disposed){renderer.resetState();host.dataset.gpuTier='fallback';draw();}});
   }
+  function setLightAngle(degrees) {
+    const angle = THREE.MathUtils.degToRad(degrees);
+    key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+    windowPosition.set(-8, 7, 6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+    scene.environmentRotation.set(0, angle, 0);
+    renderer.shadowMap.needsUpdate=true;
+    draw();
+  }
+  function capture(options = {}) {
+    window.cancelAnimationFrame(pendingFrame); pendingFrame=0;
+    return captureProductImage({ renderer, scene, camera, floor, backgroundColor: new THREE.Color(), ...options });
+  }
   return {
     setDesign,
     setFinishMaps(maps) {
@@ -331,7 +346,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       const same=['variant','cardOnly','shikishi','accessory'].every(key=>(selection[key]??false)===(next[key]??false));
       selection=next;if(!same)rebuild();
     },
-    captureConfiguration(config) {
+    captureConfiguration(config, options = {}) {
       // Render the actual configured product meshes together, then freeze the frame as a PNG.
       const items=[...(config.quantity>0?[{cardOnly:false,shikishi:false,accessory:config.accessory}]:[]),
         ...(config.cardQuantity>0?[{cardOnly:true,shikishi:false,accessory:'none'}]:[]),
@@ -357,24 +372,13 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       const distance=Math.max(size.y/(2*tangent),size.x/(2*tangent*camera.aspect))*1.35+size.z;
       camera.position.copy(center).add(new THREE.Vector3(0.22,0.18,1).normalize().multiplyScalar(distance));camera.lookAt(center);
       window.cancelAnimationFrame(pendingFrame);pendingFrame=0;
-      renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera);
-      return renderer.domElement.toDataURL('image/png');
+      renderer.shadowMap.needsUpdate=true;
+      return capture(options);
     },
-    captureFrame() {
-      window.cancelAnimationFrame(pendingFrame);pendingFrame=0;
-      renderer.render(scene,camera);
-      return renderer.domElement.toDataURL('image/png');
-    },
+    captureFrame: capture,
     reset,
     focusCollectibles() {frameView(true);},
-    setLightAngle(degrees) {
-      const angle = THREE.MathUtils.degToRad(degrees);
-      key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
-      windowPosition.set(-8, 7, 6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
-      scene.environmentRotation.set(0, angle, 0);
-      renderer.shadowMap.needsUpdate=true;
-      draw();
-    },
+    setLightAngle,
     dispose() {
       disposed = true;window.cancelAnimationFrame(pendingFrame);observer.disconnect(); controls.dispose(); clearObject();
       designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
