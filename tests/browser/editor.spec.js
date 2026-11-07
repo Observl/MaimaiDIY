@@ -110,14 +110,15 @@ test('default rendering, required controls, large preview and PNG export', async
           (x >= 225 && x <= 300 && y >= 35 && y <= 65) ||
           (x >= 141 && x <= 409 && y >= 110 && y <= 138);
         if (!glyph) outsideText++;
-        if (!(x >= 142 && x < 326 && y >= 65 && y <= 108)) outsideName++;
+        if (!((x >= 142 && x < 326 && y >= 65 && y <= 108) ||
+          (x >= 222 && x <= 301 && y >= 36 && y <= 61))) outsideName++;
       }
       return { different, outsideText, outsideName, meanAbsoluteError: absolute / left.length, maxError };
     },
     { src: actual, expected }
   );
-  // The eight-cell name layout intentionally differs from the published golden.
-  // Dedicated real-font name tests cover it; all other pixels still match exactly.
+  // The inset name layout and dedicated Rating font intentionally differ from
+  // the published golden. All pixels outside those two regions still match.
   if (differences.different) console.log('Pixel comparison:', JSON.stringify(differences));
   expect(differences.outsideName).toBe(0);
   expect(errors).toEqual([]);

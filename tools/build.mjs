@@ -29,6 +29,8 @@ for (const file of [
   'author-recommendations.js',
   'background-motion.js',
   'sw.js',
+  'fonts/rating-digits-extrabold.ttf',
+  'licenses/Roboto-OFL.txt',
 ])
   files.add(file);
 for (const file of await readdir('src')) if (file.endsWith('.js')) files.add(`src/${file}`);
