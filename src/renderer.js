@@ -89,7 +89,7 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
 
   function drawPlayerName() {
     ctx.save();
-    // One blank cell + eight fixed name cells span the board to the rank,
+    // Half a blank cell + eight fixed name cells span the board to the rank,
     // even when rank is hidden. No name-length or per-glyph scaling.
     const left = slots.nameBase.x;
     const { glyphs, cellWidth } = layoutPlayerName(state.playerName || '', slots.rank.x - left);

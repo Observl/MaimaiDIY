@@ -44,7 +44,7 @@ test('real-font names use eight fixed cells without stretching or compression', 
         }
         const layout = layoutPlayerName(name, slots.rank.x - slots.nameBase.x);
         // The prefix must be pixel-identical regardless of the name's length.
-        const prefix = [...ctx.getImageData(142 * scale, 67 * scale, (184 / 9) * 2 * scale, 40 * scale).data];
+        const prefix = [...ctx.getImageData(142 * scale, 67 * scale, (layout.leadingSpace + layout.cellWidth) * scale, 40 * scale).data];
         samples.push({ name, scale, left, right, top, bottom,
           width: layout.width, cellWidth: layout.cellWidth, leadingSpace: layout.leadingSpace, count: layout.glyphs.length, prefix,
           unmodified: state.playerName === name,
@@ -63,8 +63,8 @@ test('real-font names use eight fixed cells without stretching or compression', 
   expect(result.fontLoaded).toBe(true);
   for (const sample of result.samples) {
     expect(sample.unmodified).toBe(true);
-    expect(sample.cellWidth).toBe(184 / 9);
-    expect(sample.leadingSpace).toBe(sample.cellWidth);
+    expect(sample.cellWidth).toBe(184 / 8.5);
+    expect(sample.leadingSpace).toBe(sample.cellWidth / 2);
     expect(sample.width).toBe(sample.count * sample.cellWidth);
     if (!sample.count) continue;
     expect(sample.left).toBeGreaterThanOrEqual(Math.floor((142 + sample.leadingSpace) * sample.scale));
@@ -128,7 +128,7 @@ test('preview, PNG export and finish masks share the same fixed name geometry', 
         maskDifference = Math.max(maskDifference, Math.abs(namePixels[p + 3] - maskPixels[p + 2]));
         coverageDifference = Math.max(coverageDifference, Math.abs(namePixels[p + 3] - coveragePixels[p + 3]));
         const x = (p / 4) % output.width;
-        if ((namePixels[p + 3] || maskPixels[p + 2]) && (x < Math.floor((142 + 184 / 9) * 2) || x >= 652)) outsideName++;
+        if ((namePixels[p + 3] || maskPixels[p + 2]) && (x < Math.floor((142 + 184 / 8.5 / 2) * 2) || x >= 652)) outsideName++;
       }
       // Preview is produced directly from the same high-resolution render.
       const expectedPreview = canvas(CANVAS.width, CANVAS.height);
