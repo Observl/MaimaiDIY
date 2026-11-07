@@ -1,6 +1,6 @@
 // All three fields are fixed in print space. Coarser fields represent unresolved
 // powder clusters for small previews; they are not a measured physical grain size.
-export const POWDER_LEVELS=Object.freeze([980,360,132]);
+export const POWDER_LEVELS=Object.freeze([840,300,104]);
 const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
 export function powderLevelWeights(footprint) {
   const fine=1-smooth(0.7,1.6,footprint);
@@ -69,7 +69,7 @@ export const POWDER_MICRORELIEF_GLSL=`
   }
 
   // xy: height gradient in the rotated print field, z: height, w: coverage.
-  vec4 powderReliefField(vec2 cells,float footprint,vec3 view,vec3 windowLight,vec3 sunLight,out float shadow) {
+  vec4 powderReliefField(vec2 cells,float footprint,vec3 view,vec3 windowLight,vec3 sunLight,out float shadow,out float sheen) {
     vec2 base=floor(cells),local=fract(cells),nearestDelta=vec2(0.0),chosen=base;
     float nearest=10.0;
     for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++) {
@@ -108,10 +108,18 @@ export const POWDER_MICRORELIEF_GLSL=`
     shadow=(powderHorizonShadow(point,inverseRadiiSquared,radius,peakHeight,localWindow)*windowWeight
       +powderHorizonShadow(point,inverseRadiiSquared,radius,peakHeight,localSun)*sunWeight)
       /max(windowWeight+sunWeight,0.001)*coverage;
+    // Each raised grain carries a stable, independently tilted reflecting face.
+    // Keep the cap gradient as well, so its lit shoulder moves instead of the
+    // whole grain acting like an unshaded painted dot.
+    vec3 facet=grainFacet(printHash(chosen+113.0),printHash(chosen+191.0),1.35);
+    facet=normalize(facet+vec3(-gradient*lab_powderSlope*0.38,0.0));
+    float response=grainReflection(facet,view,windowLight,lab_powderSharpness)*0.78
+      +grainReflection(facet,view,sunLight,lab_powderSharpness)*0.22;
+    sheen=coverage*(0.35+height*0.65)*(1.0-exp(-response*3.6));
     return vec4(gradient,height*occupied,coverage);
   }
 
-  vec4 powderMicrorelief(vec2 printPosition,vec3 view,vec3 windowLight,vec3 sunLight,out float shadow) {
+  vec4 powderMicrorelief(vec2 printPosition,vec3 view,vec3 windowLight,vec3 sunLight,out float shadow,out float sheen) {
     mat2 rotation=mat2(0.932,-0.362,0.362,0.932);
     vec2 field=rotation*printPosition;
     view.xy=rotation*view.xy;windowLight.xy=rotation*windowLight.xy;sunLight.xy=rotation*sunLight.xy;
@@ -120,14 +128,15 @@ export const POWDER_MICRORELIEF_GLSL=`
     float fineWeight=1.0-smoothstep(0.7,1.6,footprint);
     float middleWeight=(1.0-fineWeight)*(1.0-smoothstep(0.7,1.6,footprint*(${POWDER_LEVELS[1]}.0/${POWDER_LEVELS[0]}.0)));
     float clusterWeight=1.0-fineWeight-middleWeight;
-    float fineShadow,middleShadow,clusterShadow;
-    vec4 fine=powderReliefField(fineCells,footprint,view,windowLight,sunLight,fineShadow);
-    vec4 middle=powderReliefField(field*(${POWDER_LEVELS[1]}.0/11.91)+vec2(41.7,19.2),footprint*(${POWDER_LEVELS[1]}.0/${POWDER_LEVELS[0]}.0),view,windowLight,sunLight,middleShadow);
-    vec4 cluster=powderReliefField(field*(${POWDER_LEVELS[2]}.0/11.91)+vec2(23.1,67.3),footprint*(${POWDER_LEVELS[2]}.0/${POWDER_LEVELS[0]}.0),view,windowLight,sunLight,clusterShadow);
+    float fineShadow,middleShadow,clusterShadow,fineSheen,middleSheen,clusterSheen;
+    vec4 fine=powderReliefField(fineCells,footprint,view,windowLight,sunLight,fineShadow,fineSheen);
+    vec4 middle=powderReliefField(field*(${POWDER_LEVELS[1]}.0/11.91)+vec2(41.7,19.2),footprint*(${POWDER_LEVELS[1]}.0/${POWDER_LEVELS[0]}.0),view,windowLight,sunLight,middleShadow,middleSheen);
+    vec4 cluster=powderReliefField(field*(${POWDER_LEVELS[2]}.0/11.91)+vec2(23.1,67.3),footprint*(${POWDER_LEVELS[2]}.0/${POWDER_LEVELS[0]}.0),view,windowLight,sunLight,clusterShadow,clusterSheen);
     vec4 surface=fine*fineWeight+middle*middleWeight+cluster*clusterWeight;
     // Chain rule: move the field-space gradient back to the print tangent frame.
     surface.xy=mat2(0.932,0.362,-0.362,0.932)*surface.xy;
     shadow=fineShadow*fineWeight+middleShadow*middleWeight+clusterShadow*clusterWeight;
+    sheen=fineSheen*fineWeight+middleSheen*middleWeight+clusterSheen*clusterWeight;
     return surface;
   }
 `;

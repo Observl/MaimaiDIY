@@ -1,5 +1,6 @@
 import { uniforms as labUniforms } from './finish-settings.js';
 import { POWDER_MICRORELIEF_GLSL } from './powder-microrelief.js';
+import { GRANULAR_REFLECTION_GLSL } from './granular-reflection.js';
 import * as THREE from '../vendor/three.module.js';
 
 // Ray/print-plane intersection preserves the source resolution rather than
@@ -81,6 +82,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         h+=dot(h,h.yzx+33.33);
         return fract((h.x+h.y)*h.z);
       }
+      ${GRANULAR_REFLECTION_GLSL}
       ${POWDER_MICRORELIEF_GLSL}
       // Nearest fully-jittered particle: distance, brightness seed, and two facet seeds.
       vec4 printParticle(vec2 p) {
@@ -169,6 +171,12 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         vec3 halfSun = normalize(finishView + sunLight);
         vec3 finishTangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
         vec3 finishBitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
+        // The pigment bump normal is not perpendicular to the mesh tangent on
+        // opaque paper. Grain transport uses one orthonormal print-space frame.
+        vec3 grainNormal=normalize(mat3(printWorld)*vec3(0.0,0.0,1.0));
+        vec3 grainView=vec3(dot(finishView,finishTangent),dot(finishView,finishBitangent),dot(finishView,grainNormal));
+        vec3 grainWindow=vec3(dot(windowLight,finishTangent),dot(windowLight,finishBitangent),dot(windowLight,grainNormal));
+        vec3 grainSun=vec3(dot(sunLight,finishTangent),dot(sunLight,finishBitangent),dot(sunLight,grainNormal));
         float viewFacing=clamp(dot(finishNormal,finishView),0.0,1.0);
         // A broad, source-colored pigment luster on the rear background print.
         // It does not add a clearcoat or a white reflection to the acrylic surface.
@@ -192,28 +200,22 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           // Powder is a shallow granular surface: each grain has a continuous
           // height gradient, a light-facing side and directional local shadow.
           // It is not the broad uniform brightness used by the previous draft.
-          vec3 powderView=vec3(dot(finishView,finishTangent),dot(finishView,finishBitangent),dot(finishView,finishNormal));
-          vec3 powderWindow=vec3(dot(windowLight,finishTangent),dot(windowLight,finishBitangent),dot(windowLight,finishNormal));
-          vec3 powderSun=vec3(dot(sunLight,finishTangent),dot(sunLight,finishBitangent),dot(sunLight,finishNormal));
-          float powderShadow;
-          vec4 micro=powderMicrorelief(printUV*vec2(11.91,4.91),powderView,powderWindow,powderSun,powderShadow);
+          float powderShadow,powderSheen;
+          vec4 micro=powderMicrorelief(printUV*vec2(11.91,4.91),grainView,grainWindow,grainSun,powderShadow,powderSheen);
           float powderMask=finish.g*(1.0-finish.b);
-          vec3 powderNormal=normalize(finishNormal
+          vec3 powderNormal=normalize(grainNormal
             -finishTangent*micro.x*lab_powderSlope
             -finishBitangent*micro.y*lab_powderSlope);
-          float powderLight=max(dot(powderNormal,windowLight),0.0)*step(0.001,powderWindow.z)*0.75
-            +max(dot(powderNormal,sunLight),0.0)*step(0.001,powderSun.z)*0.25;
-          float flatLight=max(dot(finishNormal,windowLight),0.0)*0.75
-            +max(dot(finishNormal,sunLight),0.0)*0.25;
+          float powderLight=max(dot(powderNormal,windowLight),0.0)*step(0.001,grainWindow.z)*0.75
+            +max(dot(powderNormal,sunLight),0.0)*step(0.001,grainSun.z)*0.25;
+          float flatLight=max(dot(grainNormal,windowLight),0.0)*0.75
+            +max(dot(grainNormal,sunLight),0.0)*0.25;
           // Shade the light-opposed side and actual local horizon, not every rim.
           // This preserves relief without turning each grain into a dark dot.
-          float reliefDiffuse=clamp(1.0+(powderLight-flatLight)*1.9-powderShadow*0.16,0.40,1.45);
+          float reliefDiffuse=clamp(1.0+(powderLight-flatLight)*2.35-powderShadow*0.28,0.34,1.55);
           totalDiffuse*=mix(1.0,reliefDiffuse,powderMask*lab_powderContrast);
-          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),20.0*lab_powderSharpness)*0.8
-            +pow(max(dot(powderNormal,halfSun),0.0),36.0*lab_powderSharpness)*0.2;
-          float powderSheen=micro.w*(0.25+micro.z*0.75)*powderMask*0.95
-            *(1.0-exp(-powderLobe*powderLight*3.0))*max(dot(powderNormal,finishView),0.0);
-          totalSpecular+=imageTint*powderSheen*lab_powderStrength;
+          // Compress highlights per grain, never globally whiten the print.
+          totalSpecular+=imageTint*(1.0-exp(-powderSheen*lab_powderStrength))*powderMask*0.92;
         }
         if(printCard>0.5) {
           // Diffractive color modulation without a white mirror/varnish highlight.
@@ -247,24 +249,29 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
             float density=printFinish>1.5?1.0:0.7;
             float finishCoverage=1.0-componentPrint;
             if(finishCoverage>0.005 && lab_glitterDensity>0.001 && lab_glitterStrength>0.001) {
-              vec3 tangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
-              vec3 bitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
+              vec2 printPosition=printUV*vec2(11.91,4.91);
+              vec2 fineCells=mat2(0.956,-0.292,0.292,0.956)*printPosition*(420.0/11.91);
+              float footprint=max(length(dFdx(fineCells)),length(dFdy(fineCells)));
+              float fineWeight=1.0-smoothstep(0.7,1.6,footprint);
+              float middleWeight=(1.0-fineWeight)*(1.0-smoothstep(0.7,1.6,footprint*180.0/420.0));
               float glitterResponse=0.0;
-              for(int layer=0;layer<2;layer++) {
-                vec2 cells=layer==0?mat2(0.956,-0.292,0.292,0.956)*printUV*vec2(340.0,142.0)
-                  :mat2(0.819,0.574,-0.574,0.819)*printUV*vec2(590.0,246.0)+vec2(23.1,67.3);
+              for(int layer=0;layer<3;layer++) {
+                float weight=layer==0?fineWeight:layer==1?middleWeight:1.0-fineWeight-middleWeight;
+                // Coarser representative flakes retain discrete glints in a
+                // narrow preview, instead of subpixel noise or a uniform sheen.
+                vec2 cells=layer==0?fineCells:layer==1?
+                  mat2(0.819,0.574,-0.574,0.819)*printPosition*(180.0/11.91)+vec2(23.1,67.3):
+                  mat2(0.643,-0.766,0.766,0.643)*printPosition*(72.0/11.91)+vec2(71.3,11.9);
                 vec4 particle=printParticle(cells);
-                float radius=layer==0?mix(0.25,0.45,particle.y):mix(0.18,0.34,particle.y);
-                radius*=lab_glitterSize;
-                float edge=clamp(length(fwidth(cells))*0.15,0.03,0.16);
+                float radius=mix(0.23,0.41,particle.z)*lab_glitterSize;
+                float edge=clamp(max(length(dFdx(cells)),length(dFdy(cells)))*0.35,0.035,0.48);
                 float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(1.0-lab_glitterDensity,particle.y)*density;
-                vec3 flakeNormal=normalize(finishNormal+tangent*(particle.z-0.5)*1.5+bitangent*(particle.w-0.5)*1.5);
-                float sparkle=pow(max(dot(flakeNormal,halfWindow),0.0),32.0)
-                  +pow(max(dot(flakeNormal,halfSun),0.0),50.0);
-                float angularGate=0.05+pow(max(dot(finishNormal,halfWindow),0.0),8.0)+pow(max(dot(finishNormal,halfSun),0.0),12.0);
-                glitterResponse+=min(sparkle*angularGate*1.7*flake,0.4);
+                vec3 facet=grainFacet(particle.z,particle.w,1.6);
+                float sparkle=grainReflection(facet,grainView,grainWindow,0.85)*0.78
+                  +grainReflection(facet,grainView,grainSun,0.85)*0.22;
+                glitterResponse+=weight*flake*(1.0-exp(-sparkle*5.0));
               }
-              totalSpecular+=imageTint*min(glitterResponse*lab_glitterStrength,0.8)*(1.0-finish.b)*finishCoverage;
+              totalSpecular+=imageTint*(1.0-exp(-glitterResponse*lab_glitterStrength))*0.95*(1.0-finish.b)*finishCoverage;
             }
           }
         }
@@ -272,5 +279,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'view-responsive-powder-direction-v1-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'stable-grain-facets-wide-angle-v2-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }

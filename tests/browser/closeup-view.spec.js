@@ -14,7 +14,7 @@ test.beforeEach(async ({ context }) => {
 });
 
 for (const mobile of [false, true]) {
-  test(`${mobile ? 'mobile' : 'desktop'} close-up centers the nameplate and preserves transparent export`, async ({ page }) => {
+  test(`${mobile ? 'mobile' : 'desktop'} close-up centers the nameplate and preserves JSON export without 3D PNG controls`, async ({ page }) => {
     if (mobile) await page.setViewportSize({ width: 390, height: 844 });
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -23,8 +23,10 @@ for (const mobile of [false, true]) {
     const closeup = page.getByRole('button', { name: '特写', exact: true });
     const near = page.getByRole('button', { name: '近景', exact: true });
     const full = page.getByRole('button', { name: '全景', exact: true });
-    const imageExport = page.getByRole('button', { name: '导出透明 3D PNG', exact: true });
-    await expect(imageExport).toBeEnabled();
+    await expect(page.locator('#acrylic-preview-status')).toBeHidden();
+    await expect(page.locator('#acrylic-image-export')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /3D PNG/ })).toHaveCount(0);
+    await expect(page.locator('#acrylic-export-status')).toHaveCount(0);
     await expect(page.locator('#acrylic-scene-export')).toHaveCount(0);
     await expect(page.getByText('导出背景 3D PNG', { exact: true })).toHaveCount(0);
     const buttons = await page.locator('#acrylic-preview-card > .section-head button').allTextContents();
@@ -54,20 +56,12 @@ for (const mobile of [false, true]) {
     }
     const cameraBefore = await viewport.getAttribute('data-camera-distance');
     const targetBefore = await viewport.getAttribute('data-orbit-target');
-    const downloadPromise = page.waitForEvent('download');
-    await imageExport.click();
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('maimaidiy-acrylic-transparent-3d.png');
-    const png = await readFile(await download.path());
-    expect(png.readUInt32BE(16)).toBe(2160);
-    expect(png[25]).toBe(6); // PNG RGBA, rather than an opaque RGB background capture.
-    await expect(imageExport).toBeEnabled();
-    await expect(viewport).toHaveAttribute('data-camera-distance', cameraBefore);
-    await expect(viewport).toHaveAttribute('data-orbit-target', targetBefore);
     const draftPromise = page.waitForEvent('download');
     await page.locator('#acrylic-export').click();
     const draft = JSON.parse(await readFile(await (await draftPromise).path(), 'utf8'));
     expect(draft.format).toBe('MaimaiDIY-acrylic-order-draft');
+    await expect(viewport).toHaveAttribute('data-camera-distance', cameraBefore);
+    await expect(viewport).toHaveAttribute('data-orbit-target', targetBefore);
     await full.click();
     await expect(viewport).toHaveAttribute('data-view-mode', 'full');
     expect(Number(await viewport.getAttribute('data-camera-distance'))).toBeGreaterThan(nearDistance);
@@ -80,3 +74,25 @@ for (const mobile of [false, true]) {
     expect(errors).toEqual([]);
   });
 }
+
+
+test('flat PNG and template JSON downloads remain available in the editor', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#loading')).toBeHidden();
+  await expect(page.locator('#export')).toBeEnabled();
+  await expect(page.locator('#template-export')).toBeEnabled();
+  await expect(page.getByRole('button', { name: /3D PNG/ })).toHaveCount(0);
+  const pngPromise = page.waitForEvent('download');
+  await page.locator('#export').click();
+  const png = await readFile(await (await pngPromise).path());
+  expect(png.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+  expect(png.readUInt32BE(16)).toBe(2160);
+  expect(png.readUInt32BE(20)).toBe(904);
+  const jsonPromise = page.waitForEvent('download');
+  await page.locator('#template-export').click();
+  const template = JSON.parse(await readFile(await (await jsonPromise).path(), 'utf8'));
+  expect(template.state.playerName).toBeTruthy();
+  expect(errors).toEqual([]);
+});
