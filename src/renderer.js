@@ -1,5 +1,6 @@
 import { CANVAS, DISPLAY_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots, COMPOSITION_ORDER } from './config.js';
 import { nameCharacterCount } from './model.js';
+import { layoutPlayerName } from './player-name.js';
 import { loadImage } from './assets.js';
 
 export function preferredRenderScale({
@@ -74,15 +75,25 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
   }
 
   function drawPlayerName() {
-    const slot = slots.playerName;
     ctx.save();
     ctx.font = `400 21.33333px ${DISPLAY_FONT}, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#111318';
-    const availableWidth = slots.rank.x - slot.x - 4;
-    const spacing = (availableWidth - ctx.measureText('あ').width * 8) / 7;
-    drawSpacedText(state.playerName || '', slot.x, 87, spacing, availableWidth);
+    // Six full-width cells span the name board's left edge to the rank's left
+    // edge. Short names keep that cell width; longer names compress only in X.
+    // Keep the same bounds even when the rank is hidden.
+    const left = slots.nameBase.x;
+    const { glyphs } = layoutPlayerName(
+      state.playerName || '', slots.rank.x - left, (text) => ctx.measureText(text)
+    );
+    for (const glyph of glyphs) {
+      ctx.save();
+      ctx.translate(left + glyph.x, 87);
+      ctx.scale(glyph.scaleX, 1);
+      ctx.fillText(glyph.text, 0, 0);
+      ctx.restore();
+    }
     ctx.restore();
   }
 

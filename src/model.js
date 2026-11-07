@@ -8,6 +8,7 @@ import {
   TEMPLATE_FILE_MAX_BYTES,
 } from './config.js';
 import { resolveAssetUrl } from './asset-paths.js';
+import { nameCharacters } from './player-name.js';
 export function ratingBand(value) {
   return [...RATING_BANDS].reverse().find((band) => value >= band.min) || RATING_BANDS[0];
 }
@@ -25,10 +26,7 @@ export function titleAsset(color) {
 }
 
 export function nameCharacterCount(value) {
-  if (typeof Intl.Segmenter === 'function') {
-    return [...new Intl.Segmenter('zh', { granularity: 'grapheme' }).segment(value)].length;
-  }
-  return [...value].length;
+  return nameCharacters(value).length;
 }
 
 export function safeTemplateName(value) {
