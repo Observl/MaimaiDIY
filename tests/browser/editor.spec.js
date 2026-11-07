@@ -116,7 +116,7 @@ test('default rendering, required controls, large preview and PNG export', async
     },
     { src: actual, expected }
   );
-  // The six-cell name layout intentionally differs from the published golden.
+  // The eight-cell name layout intentionally differs from the published golden.
   // Dedicated real-font name tests cover it; all other pixels still match exactly.
   if (differences.different) console.log('Pixel comparison:', JSON.stringify(differences));
   expect(differences.outsideName).toBe(0);
