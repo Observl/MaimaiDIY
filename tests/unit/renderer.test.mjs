@@ -72,3 +72,35 @@ test('desktop rendering keeps the existing high-resolution composition', async (
     4
   );
 });
+
+test('name rendering uses full-width graphemes without changing the saved name or vertical scale', async () => {
+  const oldDocument = globalThis.document;
+  const draws = [], translations = [], scales = [];
+  class Canvas {
+    getContext() {
+      return {
+        save() {}, restore() {}, setTransform() {}, clearRect() {}, drawImage() {},
+        measureText: () => ({ width: 20 }),
+        translate: (x, y) => translations.push([x, y]),
+        scale: (x, y) => scales.push([x, y]),
+        fillText: (text) => draws.push(text),
+      };
+    }
+  }
+  globalThis.document = { createElement: () => new Canvas() };
+  try {
+    const { createRenderer } = await import('../../src/renderer.js');
+    const renderer = createRenderer(new Canvas());
+    const state = createDefaultState();
+    state.playerName = 'Ab中文👨‍👩‍👧EFG';
+    for (const id of Object.keys(state.visible)) state.visible[id] = id === 'playerName';
+    assert.equal(await renderer.render(state), true);
+    assert.equal(state.playerName, 'Ab中文👨‍👩‍👧EFG');
+    assert.deepEqual(draws, ['Ａ', 'ｂ', '中', '文', '👨‍👩‍👧', 'Ｅ', 'Ｆ', 'Ｇ']);
+    assert.deepEqual(translations[0], [142, 87]);
+    assert.deepEqual(translations.at(-1), [303, 87]);
+    assert.ok(scales.every(([x, y]) => x === 184 / 8 / 20 && y === 1));
+  } finally {
+    globalThis.document = oldDocument;
+  }
+});
