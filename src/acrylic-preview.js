@@ -8,6 +8,7 @@ import { createFinishMaterial } from './finish-material.js';
 import { previewQuality } from './preview-quality.js';
 import { DEFAULT_LIGHT_ANGLE } from './finish-settings.js';
 import { captureProductImage } from './transparent-capture.js';
+import { nameplateRegion, fitPerspectiveDistance } from './preview-framing.js';
 
 export function createAcrylicPreview(host,{snapshot=false}={}) {
   let quality=previewQuality({isMobile:window.matchMedia('(pointer: coarse)').matches},snapshot);
@@ -114,11 +115,23 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   };
   controls.addEventListener('change', draw);
   let compactView=host.clientWidth<500;
-  let nearView=false;
-  function frameView(close) {
-    nearView=close;
-    controls.minDistance=7;
-    if(close) {
+  let viewMode='full';
+  function frameView(mode) {
+    viewMode=mode;
+    host.dataset.viewMode=mode;
+    controls.minDistance=mode==='nameplate'?3:7;
+    if(mode==='nameplate') {
+      const art=object.getObjectByName('single-composited-design');
+      if(!art)return;
+      const region=nameplateRegion(art.geometry.parameters.width,art.geometry.parameters.height);
+      // localToWorld includes the 0.25-unit clear-stand lift and each product's print depth.
+      const center=art.localToWorld(new THREE.Vector3(...region.center));
+      const offsets=region.corners.map(point=>art.localToWorld(new THREE.Vector3(...point)).sub(center).toArray());
+      const direction=new THREE.Vector3(6,2.75,12.5).normalize();
+      const distance=Math.max(controls.minDistance,fitPerspectiveDistance(offsets,direction.toArray(),camera.fov,camera.aspect));
+      controls.target.copy(center);
+      camera.position.copy(center).addScaledVector(direction,distance);
+    } else if(mode==='near') {
       camera.position.set(6, 5.4, 12.5);
       controls.target.set(0, 2.65, 0);
       if(compactView)camera.position.sub(controls.target).multiplyScalar(1.45).add(controls.target);
@@ -136,7 +149,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     controls.update();
     draw();
   }
-  function reset(){frameView(false);}
+  function reset(){frameView('full');}
   function resize() {
     const width = host.clientWidth;
     if (!width) return;
@@ -145,7 +158,9 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     camera.aspect = width / height;
     // Keep the brick within the viewport on narrow screens.
     camera.fov = width < 500 ? 48 : 34;
-    if(compactView!==(width<500)){compactView=width<500;frameView(nearView);}
+    const breakpointChanged=compactView!==(width<500);
+    compactView=width<500;
+    if(breakpointChanged||viewMode==='nameplate')frameView(viewMode);
     camera.updateProjectionMatrix();
     draw();
   }
@@ -247,7 +262,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     host.dataset.printPlacement=cardOnly||shikishi?'surface':'innermost';
     host.dataset.printPlaneZ=String(art.position.z);
     host.dataset.reverseTexture=cardOnly?'fine-card-grain':shikishi?'paper-fibers':'none';
-    if(!nearView) {
+    if(viewMode==='nameplate')frameView('nameplate');
+    else if(viewMode==='full') {
       const center=new THREE.Box3().setFromObject(object).getCenter(new THREE.Vector3());
       camera.position.add(center.clone().sub(controls.target));
       controls.target.copy(center);controls.update();
@@ -377,7 +393,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     },
     captureFrame: capture,
     reset,
-    focusCollectibles() {frameView(true);},
+    focusCollectibles() {frameView('near');},
+    focusNameplate() {frameView('nameplate');},
     setLightAngle,
     dispose() {
       disposed = true;window.cancelAnimationFrame(pendingFrame);observer.disconnect(); controls.dispose(); clearObject();

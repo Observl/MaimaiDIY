@@ -50,7 +50,7 @@
       </div>
     </section>
     <section id="acrylic-preview-card" class="card acrylic-preview-card" aria-labelledby="acrylic-preview-title">
-      <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2><div class="acrylic-view-tools"><button id="acrylic-view-detail" class="button secondary" type="button">近景</button><button id="acrylic-view-reset" class="button secondary" type="button">全景</button></div></div>
+      <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2><div class="acrylic-view-tools"><button id="acrylic-view-closeup" class="button secondary" type="button">特写</button><button id="acrylic-view-detail" class="button secondary" type="button">近景</button><button id="acrylic-view-reset" class="button secondary" type="button">全景</button></div></div>
       <div class="preview-products" role="group" aria-label="展示产品">
         <button type="button" data-preview-product="acrylic" aria-pressed="true">亚克力砖</button>
         <button type="button" data-preview-product="card" aria-pressed="false">镭射卡</button>
@@ -62,9 +62,9 @@
       </div>
       <div id="acrylic-viewport" class="acrylic-viewport"></div>
       <div class="acrylic-light-control"><span id="acrylic-light-label">光照角度</span><div id="acrylic-light-angle" class="light-angle-dial" role="slider" tabindex="0" aria-labelledby="acrylic-light-label" aria-orientation="horizontal" aria-valuemin="-150" aria-valuemax="150" aria-valuenow="0"><span class="light-angle-ticks" aria-hidden="true"></span><span class="light-angle-indicator" aria-hidden="true"></span></div><output id="acrylic-light-value">0°</output></div>
-      <div class="acrylic-view-tools"><button id="acrylic-image-export" class="button primary" type="button" disabled>导出透明 3D PNG</button><button id="acrylic-scene-export" class="button secondary" type="button" disabled>导出背景 3D PNG</button></div>
+      <div class="acrylic-view-tools"><button id="acrylic-image-export" class="button primary" type="button" disabled>导出透明 3D PNG</button></div>
       <p id="acrylic-export-status" role="status" aria-live="polite"></p>
-      <p class="acrylic-preview-detail">导出当前视角和光照。透明 PNG 保留透光边缘与反射；换背景后不会重新折射，固定背景版更适合完整展示。材质效果为模拟示意，非实物保证。</p>
+      <p class="acrylic-preview-detail">导出当前视角和光照。透明 PNG 保留透光边缘与反射；换背景后不会重新折射。材质效果为模拟示意，非实物保证。</p>
       <p id="acrylic-preview-status" role="status">等待上屏设计</p>
       <p class="acrylic-preview-detail"><span id="acrylic-material-detail">背面彩印 · 白墨</span><span>120 × 50 × 15 mm · 材质示意</span></p>
     </section>

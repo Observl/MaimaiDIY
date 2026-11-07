@@ -4,18 +4,18 @@ import { layoutPlayerName, nameCharacters } from '../../src/player-name.js';
 import { slots } from '../../src/config.js';
 
 const availableWidth = slots.rank.x - slots.nameBase.x;
-const cellWidth = availableWidth / 9;
+const cellWidth = availableWidth / 8.5;
 const layout = (text) => layoutPlayerName(text, availableWidth);
 
-test('one leading space and eight fixed full-width cells fill the board to rank interval', () => {
+test('half a leading space and eight fixed full-width cells fill the board to rank interval', () => {
   assert.equal(availableWidth, 184);
   for (const name of ['舞萌玩家名称测试', 'AbcXYZab', 'ＡＢＣＤＥＦＧＨ', '中A文b字C测试']) {
     const result = layout(name);
     assert.equal(result.glyphs.length, 8);
     assert.equal(result.cellWidth, cellWidth);
-    assert.equal(result.leadingSpace, cellWidth);
+    assert.equal(result.leadingSpace, cellWidth / 2);
     assert.equal(result.width + result.leadingSpace, availableWidth);
-    assert.equal(result.glyphs[0].x, cellWidth);
+    assert.equal(result.glyphs[0].x, cellWidth / 2);
     assert.equal(result.glyphs[7].x + result.cellWidth, availableWidth);
   }
 });
@@ -47,6 +47,6 @@ test('combining marks, surrogate pairs and joined emoji each stay in their visib
 test('narrow punctuation and wide fallback glyphs cannot change cell positions or font size', () => {
   const result = layout('.🙂A﷽𠮷1🇨🇳B');
   assert.equal(result.cellWidth, cellWidth);
-  assert.deepEqual(result.glyphs.map(({ x }) => x), Array.from({ length: 8 }, (_, i) => (i + 1) * cellWidth));
+  assert.deepEqual(result.glyphs.map(({ x }) => x), Array.from({ length: 8 }, (_, i) => cellWidth / 2 + i * cellWidth));
   assert.equal(result.width + result.leadingSpace, availableWidth);
 });

@@ -1,4 +1,5 @@
 import { uniforms as labUniforms } from './finish-settings.js';
+import { POWDER_MICRORELIEF_GLSL } from './powder-microrelief.js';
 import * as THREE from '../vendor/three.module.js';
 
 // Ray/print-plane intersection preserves the source resolution rather than
@@ -80,6 +81,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         h+=dot(h,h.yzx+33.33);
         return fract((h.x+h.y)*h.z);
       }
+      ${POWDER_MICRORELIEF_GLSL}
       // Nearest fully-jittered particle: distance, brightness seed, and two facet seeds.
       vec4 printParticle(vec2 p) {
         vec2 base=floor(p),local=fract(p),chosen=base;
@@ -187,36 +189,30 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           totalSpecular+=pearlTint*pearlResponse;
         }
         if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && finish.g>0.005 && lab_powderDensity>0.001) {
-          // Dense colored pigment grains with soft light-dependent metallic luster.
-          vec2 powderUV=mat2(0.932,-0.362,0.362,0.932)*printUV;
-          vec2 powderCells=powderUV*vec2(980.0,409.0);
-          vec4 fineParticle=printParticle(powderCells);
-          // Preserve a stable pigment-grain signal when individual grains are subpixel.
-          // Averaging everything to 0.5 erased the visible effect at normal zoom.
-          vec4 aggregateParticle=printParticle(powderUV*vec2(260.0,109.0)+vec2(41.7,19.2));
-          float powderFootprint=max(fwidth(powderCells.x),fwidth(powderCells.y));
-          float grainLOD=smoothstep(0.8,2.0,powderFootprint);
-          float fineCoverage=1.0-smoothstep(0.16+fineParticle.y*0.12,0.38+fineParticle.y*0.18,fineParticle.x/max(lab_powderSize,0.01));
-          float aggregateCoverage=1.0-smoothstep(0.16+aggregateParticle.y*0.12,0.38+aggregateParticle.y*0.18,aggregateParticle.x/max(lab_powderSize,0.01));
-          float powderGrain=mix(fineCoverage,aggregateCoverage,grainLOD);
-          vec4 facet=mix(fineParticle,aggregateParticle,grainLOD);
-          vec3 colorGrain=vec3(facet.z,facet.w,facet.y)-0.5;
-          vec3 powderModulation=vec3(0.72+powderGrain*0.5+facet.y*0.08)+colorGrain*0.04;
-          float powderAmount=step(1.0-lab_powderDensity,facet.y)*finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
-          totalDiffuse*=mix(vec3(1.0),mix(vec3(1.0),powderModulation,lab_powderContrast),powderAmount);
-          // Grain facets are attached to the print plane, rather than camera-space noise.
-          vec3 powderTangent=normalize(mat3(printWorld)*vec3(1.0,0.0,0.0));
-          vec3 powderBitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
+          // Powder is a shallow granular surface: each grain has a continuous
+          // height gradient, a light-facing side and directional local shadow.
+          // It is not the broad uniform brightness used by the previous draft.
+          vec3 powderView=vec3(dot(finishView,finishTangent),dot(finishView,finishBitangent),dot(finishView,finishNormal));
+          vec3 powderWindow=vec3(dot(windowLight,finishTangent),dot(windowLight,finishBitangent),dot(windowLight,finishNormal));
+          vec3 powderSun=vec3(dot(sunLight,finishTangent),dot(sunLight,finishBitangent),dot(sunLight,finishNormal));
+          float powderShadow;
+          vec4 micro=powderMicrorelief(printUV*vec2(11.91,4.91),powderView,powderWindow,powderSun,powderShadow);
+          float powderMask=finish.g*(1.0-finish.b);
           vec3 powderNormal=normalize(finishNormal
-            +powderTangent*(facet.z-0.5)*(0.9+facet.y*0.9)*lab_powderSlope
-            +powderBitangent*(facet.w-0.5)*(0.9+facet.y*0.9)*lab_powderSlope);
-          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),28.0*lab_powderSharpness)*0.8
-            +pow(max(dot(powderNormal,halfSun),0.0),40.0*lab_powderSharpness)*0.2;
-          float powderIllumination=max(dot(powderNormal,windowLight),0.0)*0.7
-            +max(dot(powderNormal,sunLight),0.0)*0.3;
-          float facetVisibility=max(dot(powderNormal,finishView),0.0);
-          float powderSheen=powderAmount*(0.15+0.85*powderGrain)*0.65
-            *(1.0-exp(-powderLobe*powderIllumination*4.3))*facetVisibility;
+            -finishTangent*micro.x*lab_powderSlope
+            -finishBitangent*micro.y*lab_powderSlope);
+          float powderLight=max(dot(powderNormal,windowLight),0.0)*step(0.001,powderWindow.z)*0.75
+            +max(dot(powderNormal,sunLight),0.0)*step(0.001,powderSun.z)*0.25;
+          float flatLight=max(dot(finishNormal,windowLight),0.0)*0.75
+            +max(dot(finishNormal,sunLight),0.0)*0.25;
+          // Shade the light-opposed side and actual local horizon, not every rim.
+          // This preserves relief without turning each grain into a dark dot.
+          float reliefDiffuse=clamp(1.0+(powderLight-flatLight)*1.9-powderShadow*0.16,0.40,1.45);
+          totalDiffuse*=mix(1.0,reliefDiffuse,powderMask*lab_powderContrast);
+          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),20.0*lab_powderSharpness)*0.8
+            +pow(max(dot(powderNormal,halfSun),0.0),36.0*lab_powderSharpness)*0.2;
+          float powderSheen=micro.w*(0.25+micro.z*0.75)*powderMask*0.95
+            *(1.0-exp(-powderLobe*powderLight*3.0))*max(dot(powderNormal,finishView),0.0);
           totalSpecular+=imageTint*powderSheen*lab_powderStrength;
         }
         if(printCard>0.5) {
@@ -276,5 +272,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'view-responsive-finishes-v6-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'view-responsive-powder-direction-v1-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }

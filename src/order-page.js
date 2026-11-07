@@ -16,7 +16,7 @@ let previewLoading;
 let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
-const imageExports = [...document.querySelectorAll('#acrylic-image-export, #acrylic-scene-export')];
+const imageExports = [...document.querySelectorAll('#acrylic-image-export')];
 const exportStatus = document.querySelector('#acrylic-export-status');
 function enableImageExports(enabled) { imageExports.forEach(button => { button.disabled = !enabled; }); }
 const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
@@ -74,10 +74,9 @@ for (const button of imageExports) button.addEventListener('click', async () => 
     // Let the busy state paint before the synchronous WebGL capture.
     await new Promise(resolve => window.requestAnimationFrame(resolve));
     if (request !== version || !state || !physicalStatus.hidden) return;
-    const transparent = button.id === 'acrylic-image-export';
-    const image = physicalPreview.captureFrame({ width: 2160, ...(transparent ? {} : { background: '#f3eee4' }) });
+    const image = physicalPreview.captureFrame({ width: 2160 });
     const link = document.createElement('a');
-    link.href = image; link.download = `maimaidiy-${previewProduct}-${transparent ? 'transparent' : 'studio'}-3d.png`; link.click();
+    link.href = image; link.download = `maimaidiy-${previewProduct}-transparent-3d.png`; link.click();
     exportStatus.textContent = '已生成 2160 像素宽 PNG，保留当前视角与光照。';
   } catch (error) {
     console.warn('3D PNG 导出失败', error);
@@ -87,6 +86,7 @@ for (const button of imageExports) button.addEventListener('click', async () => 
   }
 });
 document.querySelector('#acrylic-view-reset').addEventListener('click', () => physicalPreview?.reset());
+document.querySelector('#acrylic-view-closeup').addEventListener('click', () => physicalPreview?.focusNameplate());
 document.querySelector('#acrylic-view-detail').addEventListener('click', () => physicalPreview?.focusCollectibles());
 document.querySelectorAll('[data-preview-product]').forEach(button=>button.addEventListener('click',()=>{
   previewProduct=button.dataset.previewProduct;

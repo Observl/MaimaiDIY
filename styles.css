@@ -1463,6 +1463,8 @@ canvas {
 }
 
 .acrylic-preview-card { margin-top: 18px; }
+.acrylic-preview-card > .section-head { flex-wrap:wrap; gap:12px; }
+.acrylic-preview-card > .section-head .acrylic-view-tools { flex-wrap:nowrap; }
 .preview-products { display:flex; gap:8px; margin:16px 0 12px; }
 .preview-products button { flex:1; min-height:44px; border:1px solid #d0d1d6; border-radius:12px; background:#f0f0f3; color:#171821; font:inherit; font-weight:700; cursor:pointer; }
 .preview-products button[aria-pressed='true'] { background:#171821; color:#fff; border-color:#171821; }

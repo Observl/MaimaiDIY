@@ -99,10 +99,10 @@ test('name rendering uses fixed full-width cells, clips overhangs and never scal
     assert.equal(await renderer.render(state), true);
     assert.equal(state.playerName, 'Ab中文👨‍👩‍👧EFG');
     assert.deepEqual(draws.map(([text]) => text), ['Ａ', 'ｂ', '中', '文', '👨‍👩‍👧', 'Ｅ', 'Ｆ', 'Ｇ']);
-    const cellWidth = (slots.rank.x - slots.nameBase.x) / 9;
-    assert.deepEqual(draws[0], ['Ａ', 142 + cellWidth + cellWidth / 2, 87]);
-    assert.deepEqual(draws.at(-1), ['Ｇ', 142 + 8 * cellWidth + cellWidth / 2, 87]);
-    assert.deepEqual(rectangles, Array.from({ length: 8 }, (_, i) => [142 + (i + 1) * cellWidth, 67, cellWidth, 40]));
+    const cellWidth = (slots.rank.x - slots.nameBase.x) / 8.5;
+    assert.deepEqual(draws[0], ['Ａ', 142 + cellWidth / 2 + cellWidth / 2, 87]);
+    assert.deepEqual(draws.at(-1), ['Ｇ', 142 + cellWidth / 2 + 7 * cellWidth + cellWidth / 2, 87]);
+    assert.deepEqual(rectangles, Array.from({ length: 8 }, (_, i) => [142 + (cellWidth / 2 + i * cellWidth), 67, cellWidth, 40]));
     assert.deepEqual(fonts, [`400 ${cellWidth}px "SEGA Maru Gothic DB", sans-serif`]);
     assert.deepEqual(scales, []);
   } finally {
