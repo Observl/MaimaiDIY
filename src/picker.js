@@ -1,8 +1,9 @@
 import { COS, TITLE_COLOR_NAMES } from './config.js';
-import { loadManifest, loadTitleManifest, loadBadgeManifest, assetUrl } from './assets.js';
+import { loadManifest, loadTitleManifest, loadBadgeManifest, loadImage, assetUrl } from './assets.js';
 import { titleAsset } from './model.js';
 export function initializePicker({ state, recordHistory, render, onSelection }) {
   let manifest;
+  let selectionVersion = 0;
   let pickerState = { control: null, category: null, items: [], shown: 0, start: 0 };
   const picker = document.querySelector('#asset-picker');
   const pickerTitle = document.querySelector('#picker-title');
@@ -75,6 +76,25 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       button.title = [item.name, item.description, item.id].filter(Boolean).join('\n');
       button.append(image, name, group);
       button.addEventListener('click', async () => {
+        const version = ++selectionVersion;
+        const selectedUrl = control.id === 'title'
+          ? titleAsset(item.color || 'Normal')
+          : assetUrl(item);
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        showPickerMessage('正在加载所选素材…');
+        try {
+          // Keep the current composition and history intact until the image is usable.
+          await loadImage(selectedUrl);
+        } catch {
+          if (picker.open && version === selectionVersion)
+            showPickerMessage('这张素材暂时无法加载，已保留原搭配。可点击重试或选择其他素材。');
+          return;
+        } finally {
+          button.disabled = false;
+          button.removeAttribute('aria-busy');
+        }
+        if (!picker.open || version !== selectionVersion) return;
         pickerSelections[control.id] = button.dataset.assetId;
         try {
           localStorage.setItem(PICKER_SELECTION_KEY, JSON.stringify(pickerSelections));
@@ -87,9 +107,9 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
         if (control.id === 'title') {
           state.titleName = item.name;
           state.titleColor = item.color || 'Normal';
-          state.files.titleBase = titleAsset(state.titleColor);
+          state.files.titleBase = selectedUrl;
         } else {
-          state.files[control.target] = assetUrl(item);
+          state.files[control.target] = selectedUrl;
         }
         state.labels[control.id] = item.name;
         state.visible[control.target] = true;
@@ -150,6 +170,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
 
   function applyPickerFilters(locateSelection = false) {
     if (!pickerState.category) return;
+    selectionVersion += 1;
     const query = pickerSearch.value.trim().toLocaleLowerCase('zh-CN');
     const group = pickerFilter.value;
     pickerState.items = pickerState.category.items
@@ -206,6 +227,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
   }
 
   async function openPicker(control) {
+    selectionVersion += 1;
     const cachedView = pickerViews.get(control.id);
     if (cachedView) {
       pickerState = cachedView.state;
@@ -237,7 +259,6 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
     pickerMessage.hidden = true;
     picker.showModal();
     try {
-      manifest ||= await loadManifest();
       let category;
       if (control.id === 'title') {
         category = { id: 'titles', label: '称号', items: (await loadTitleManifest()).items };
@@ -246,20 +267,22 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
           (item) => item.id === control.category
         );
       } else {
+        manifest ||= await loadManifest();
         category = manifest.categories.find((item) => item.id === control.category);
       }
       if (!picker.open || pickerState !== requestState) return;
       if (!category || !category.items?.length) {
         pickerMeta.textContent = '当前分类暂无云端素材';
-        showPickerMessage('可继续使用默认素材，或通过“本地上传”替换。');
+        showPickerMessage('可保留当前搭配；头像也可通过“本地上传”替换。');
         return;
       }
       pickerState = { control, category, items: category.items, shown: 0 };
       preparePickerFilters(category);
       applyPickerFilters(true);
     } catch (error) {
+      if (!picker.open || pickerState !== requestState) return;
       pickerMeta.textContent = '连接失败';
-      showPickerMessage('素材库暂时不可用，请稍后重试；默认素材和本地上传不受影响。');
+      showPickerMessage('此分类的素材库暂时不可用，请稍后重新打开重试。未缓存的云端图片也可能无法加载；本地上传头像仍可使用。');
     }
   }
 
@@ -267,7 +290,9 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
   pickerMore.addEventListener('click', () => appendPickerItems());
   pickerPrevious.addEventListener('click', () => appendPickerItems(true));
   picker.addEventListener('close', () => {
-    if (picker.open || !pickerState.control || !pickerState.category) return;
+    if (picker.open) return;
+    selectionVersion += 1;
+    if (!pickerState.control || !pickerState.category) return;
     const scroll = picker.scrollTop;
     const nodes = document.createDocumentFragment();
     nodes.append(...pickerGrid.childNodes);

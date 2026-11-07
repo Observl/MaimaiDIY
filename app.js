@@ -330,7 +330,7 @@ async function initialize() {
     const data = await loadManifest();
     setAssetStatus('is-online', `云端素材已连接 · ${data.summary?.items ?? 0} 项`);
   } catch (error) {
-    setAssetStatus('is-offline', '素材索引暂时不可用 · 云端图片仍可加载');
+    setAssetStatus('is-offline', '素材索引暂时不可用 · 部分云端图片可能无法加载');
   }
   await document.fonts
     .load(`18px ${DISPLAY_FONT}`)

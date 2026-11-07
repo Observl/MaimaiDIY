@@ -113,3 +113,38 @@ test('failed image loads are evicted and retried', async () => {
     globalThis.Image = oldImage;
   }
 });
+
+test('permanent HTTP failures stop immediately and retain their status', async () => {
+  const oldFetch = globalThis.fetch;
+  try {
+    const api = await fresh();
+    for (const status of [403, 404, 451]) {
+      let requests = 0;
+      globalThis.fetch = async () => {
+        requests++;
+        return new Response('unavailable', { status });
+      };
+      await assert.rejects(api.fetchJson('https://example.com/materials/manifest.json'), { status });
+      assert.equal(requests, 1);
+    }
+  } finally {
+    globalThis.fetch = oldFetch;
+  }
+});
+
+test('transient HTTP failures still retry and recover', async () => {
+  const oldFetch = globalThis.fetch;
+  try {
+    const api = await fresh();
+    for (const status of [408, 429, 503]) {
+      let requests = 0;
+      globalThis.fetch = async () => ++requests === 1
+        ? new Response('try again', { status })
+        : Response.json(manifest);
+      assert.deepEqual(await api.fetchJson('https://example.com/materials/manifest.json'), manifest);
+      assert.equal(requests, 2);
+    }
+  } finally {
+    globalThis.fetch = oldFetch;
+  }
+});
