@@ -1,9 +1,9 @@
 // Shared studio settings for live previews, product images and exports.
 // Coverage remains source-derived; stronger responses do not coat unselected art.
 export const FINISH_PARAMETERS=Object.freeze({
-  powderDensity:0.61,powderSize:2.5,powderStrength:2.1,powderSlope:1.5,
-  powderSharpness:1.4,powderContrast:0.72,
-  glitterDensity:0.18,glitterSize:1.2,glitterStrength:2.4,
+  powderDensity:0.61,powderSize:2.5,powderStrength:2.8,powderSlope:1.8,
+  powderSharpness:0.85,powderContrast:0.9,
+  glitterDensity:0.25,glitterSize:1.2,glitterStrength:3.0,
   pearlStrength:1.45,titlePearlStrength:1.45,avatarPearlStrength:1.45,
   rankPearlStrength:1.45,battlePearlStrength:1.45,pearlSpread:1.35,
   uvStrength:3,uvSharpness:1,laserStrength:0.6,randomness:1,seed:142,

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('3D export preserves glass alpha, print opacity, light and the live viewport', async ({ page }) => {
+test('internal 3D capture preserves glass alpha, print opacity, light and the live viewport', async ({ page }) => {
   await page.goto('/custom-order.html', { waitUntil: 'domcontentloaded' });
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
   const result=await page.evaluate(async()=>{
@@ -34,5 +34,5 @@ test('3D export preserves glass alpha, print opacity, light and the live viewpor
   expect(result.restored).toBe(true);expect(result.lightChanged).toBe(true);
   expect(result.clear).toBeGreaterThan(10000);expect(result.partial).toBeGreaterThan(1000);expect(result.opaque).toBeGreaterThan(5000);
   expect(result.backdropResponsive).toBeGreaterThan(300);expect(result.effectPixels).toBeGreaterThan(1500);
-  await test.info().attach('transparent-3d-export',{body:Buffer.from(result.cutout.split(',')[1],'base64'),contentType:'image/png'});
+  await test.info().attach('transparent-3d-capture',{body:Buffer.from(result.cutout.split(',')[1],'base64'),contentType:'image/png'});
 });
