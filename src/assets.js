@@ -50,10 +50,17 @@ export async function fetchJson(url, forceFresh = false) {
         signal: controller.signal,
         cache: forceFresh ? 'reload' : 'default',
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        const error = new Error(`HTTP ${response.status}`);
+        error.status = response.status;
+        throw error;
+      }
       return await response.json();
     } catch (error) {
       lastError = error;
+      // Retrying unavailable/forbidden objects cannot recover them. Still retry
+      // transient failures, request timeouts and rate limits.
+      if (error.status >= 400 && error.status < 500 && ![408, 429].includes(error.status)) break;
       if (attempt < COS.retries) await wait(350 * (attempt + 1));
     } finally {
       clearTimeout(timer);
