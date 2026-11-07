@@ -193,7 +193,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           vec4 fineParticle=printParticle(powderCells);
           // Preserve a stable pigment-grain signal when individual grains are subpixel.
           // Averaging everything to 0.5 erased the visible effect at normal zoom.
-          vec4 aggregateParticle=printParticle(powderUV*vec2(390.0,163.0)+vec2(41.7,19.2));
+          vec4 aggregateParticle=printParticle(powderUV*vec2(260.0,109.0)+vec2(41.7,19.2));
           float powderFootprint=max(fwidth(powderCells.x),fwidth(powderCells.y));
           float grainLOD=smoothstep(0.8,2.0,powderFootprint);
           float fineCoverage=1.0-smoothstep(0.16+fineParticle.y*0.12,0.38+fineParticle.y*0.18,fineParticle.x/max(lab_powderSize,0.01));
@@ -201,7 +201,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           float powderGrain=mix(fineCoverage,aggregateCoverage,grainLOD);
           vec4 facet=mix(fineParticle,aggregateParticle,grainLOD);
           vec3 colorGrain=vec3(facet.z,facet.w,facet.y)-0.5;
-          vec3 powderModulation=vec3(0.80+powderGrain*0.38+facet.y*0.06)+colorGrain*0.04;
+          vec3 powderModulation=vec3(0.72+powderGrain*0.5+facet.y*0.08)+colorGrain*0.04;
           float powderAmount=step(1.0-lab_powderDensity,facet.y)*finish.g*(printFinish>1.5?1.0:0.72)*(1.0-finish.b);
           totalDiffuse*=mix(vec3(1.0),mix(vec3(1.0),powderModulation,lab_powderContrast),powderAmount);
           // Grain facets are attached to the print plane, rather than camera-space noise.
@@ -255,8 +255,8 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
               vec3 bitangent=normalize(mat3(printWorld)*vec3(0.0,1.0,0.0));
               float glitterResponse=0.0;
               for(int layer=0;layer<2;layer++) {
-                vec2 cells=layer==0?mat2(0.956,-0.292,0.292,0.956)*printUV*vec2(520.0,217.0)
-                  :mat2(0.819,0.574,-0.574,0.819)*printUV*vec2(770.0,322.0)+vec2(23.1,67.3);
+                vec2 cells=layer==0?mat2(0.956,-0.292,0.292,0.956)*printUV*vec2(340.0,142.0)
+                  :mat2(0.819,0.574,-0.574,0.819)*printUV*vec2(590.0,246.0)+vec2(23.1,67.3);
                 vec4 particle=printParticle(cells);
                 float radius=layer==0?mix(0.25,0.45,particle.y):mix(0.18,0.34,particle.y);
                 radius*=lab_glitterSize;
@@ -276,5 +276,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'view-responsive-finishes-v5-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'view-responsive-finishes-v6-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }
