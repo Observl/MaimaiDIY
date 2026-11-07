@@ -1,10 +1,13 @@
 // A preview-scale microfacet model, not a calibration of a physical coating.
 // Grain position and orientation are fixed to the print. Only the subset that
 // reflects a light toward the eye changes as the view or the lights move.
+// Favor shallow facets that can reflect through acrylic refraction, while the
+// long tail keeps oblique views active. A uniform slope disk (sqrt(seed)) put
+// most flakes beyond the refracted half-vector and made the live finish vanish.
 export const FACET_LOBES=Object.freeze({broad:12,core:72});
 const normalize=v=>{const n=Math.hypot(...v);return v.map(x=>x/n);};
 export function facetNormal(azimuthSeed,tiltSeed,spread=1.4) {
-  const angle=azimuthSeed*Math.PI*2,tilt=Math.sqrt(tiltSeed)*spread;
+  const angle=azimuthSeed*Math.PI*2,tilt=Math.pow(tiltSeed,1.5)*spread;
   return normalize([Math.cos(angle)*tilt,Math.sin(angle)*tilt,1]);
 }
 export function facetResponse(normal,view,light,sharpness=1) {
@@ -18,7 +21,7 @@ export function facetResponse(normal,view,light,sharpness=1) {
 export const GRANULAR_REFLECTION_GLSL=`
   vec3 grainFacet(float azimuthSeed,float tiltSeed,float spread) {
     float angle=azimuthSeed*6.28318530718;
-    float tilt=sqrt(tiltSeed)*spread;
+    float tilt=pow(tiltSeed,1.5)*spread;
     return normalize(vec3(cos(angle)*tilt,sin(angle)*tilt,1.0));
   }
   float grainReflection(vec3 facet,vec3 view,vec3 light,float sharpness) {

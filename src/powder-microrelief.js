@@ -119,12 +119,12 @@ export const POWDER_MICRORELIEF_GLSL=`
     return vec4(gradient,height*occupied,coverage);
   }
 
-  vec4 powderMicrorelief(vec2 printPosition,vec3 view,vec3 windowLight,vec3 sunLight,out float shadow,out float sheen) {
+  vec4 powderMicrorelief(vec2 printPosition,float printFootprint,vec3 view,vec3 windowLight,vec3 sunLight,out float shadow,out float sheen) {
     mat2 rotation=mat2(0.932,-0.362,0.362,0.932);
     vec2 field=rotation*printPosition;
     view.xy=rotation*view.xy;windowLight.xy=rotation*windowLight.xy;sunLight.xy=rotation*sunLight.xy;
     vec2 fineCells=field*(${POWDER_LEVELS[0]}.0/11.91);
-    float footprint=max(length(dFdx(fineCells)),length(dFdy(fineCells)));
+    float footprint=printFootprint*(${POWDER_LEVELS[0]}.0/11.91);
     float fineWeight=1.0-smoothstep(0.7,1.6,footprint);
     float middleWeight=(1.0-fineWeight)*(1.0-smoothstep(0.7,1.6,footprint*(${POWDER_LEVELS[1]}.0/${POWDER_LEVELS[0]}.0)));
     float clusterWeight=1.0-fineWeight-middleWeight;

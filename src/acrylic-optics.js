@@ -8,11 +8,12 @@ import * as THREE from '../vendor/three.module.js';
 export function applyPrintOptics(material, mesh, { design, mask, components, badges, depth, variant, keyPosition, windowPosition, card=false, paper=false }) {
   const inverse = new THREE.Matrix4();
   const eye=new THREE.Vector3();
-  const liveUniforms={printEye:{value:eye},printSun:{value:keyPosition.clone()},printWindow:{value:windowPosition.clone()}};
+  const liveUniforms={printPixelRatio:{value:1},printEye:{value:eye},printSun:{value:keyPosition.clone()},printWindow:{value:windowPosition.clone()}};
   const previousRender=mesh.onBeforeRender;
   mesh.onBeforeRender = (renderer,scene,camera,...args) => {
     previousRender.call(mesh,renderer,scene,camera,...args);
     inverse.copy(mesh.matrixWorld).invert();
+    liveUniforms.printPixelRatio.value=renderer.getPixelRatio();
     camera.getWorldPosition(eye);
     liveUniforms.printSun.value.copy(keyPosition);
     liveUniforms.printWindow.value.copy(windowPosition);
@@ -74,6 +75,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
       uniform mat4 printWorld;
       uniform float printDepth;
       uniform float printFinish;
+      uniform float printPixelRatio;
       uniform vec3 printSun;
       uniform vec3 printWindow;
       uniform vec3 printEye;
@@ -178,6 +180,14 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         vec3 grainWindow=vec3(dot(windowLight,finishTangent),dot(windowLight,finishBitangent),dot(windowLight,grainNormal));
         vec3 grainSun=vec3(dot(sunLight,finishTangent),dot(sunLight,finishBitangent),dot(sunLight,grainNormal));
         float viewFacing=clamp(dot(finishNormal,finishView),0.0,1.0);
+        // Derivatives must run before fragment-varying artwork/mask branches.
+        // Use displayed pixels, not high-DPI buffer pixels that disappear when
+        // the browser downsamples the canvas back to its CSS dimensions.
+        vec2 printPosition=printUV*vec2(11.91,4.91);
+        float printFootprint=max(length(dFdx(printPosition)),length(dFdy(printPosition)))*printPixelRatio;
+        // A flake reflects some neutral incident light even over dark pigment.
+        // Limit this to isolated grains so the artwork is not globally whitened.
+        vec3 grainTint=mix(imageTint,vec3(1.0),0.24);
         // A broad, source-colored pigment luster on the rear background print.
         // It does not add a clearcoat or a white reflection to the acrylic surface.
         if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && (lab_pearlStrength+lab_titlePearlStrength+lab_avatarPearlStrength+lab_rankPearlStrength+lab_battlePearlStrength)>0.001) {
@@ -196,12 +206,12 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           vec3 pearlTint=imageTint*(0.82+0.18*cos(pearlPhase+vec3(0.0,2.1,4.2)));
           totalSpecular+=pearlTint*pearlResponse;
         }
-        if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && finish.g>0.005 && lab_powderDensity>0.001) {
+        if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && finish.g>0.005 && lab_powderDensity>0.001 && lab_powderStrength>0.001) {
           // Powder is a shallow granular surface: each grain has a continuous
           // height gradient, a light-facing side and directional local shadow.
           // It is not the broad uniform brightness used by the previous draft.
           float powderShadow,powderSheen;
-          vec4 micro=powderMicrorelief(printUV*vec2(11.91,4.91),grainView,grainWindow,grainSun,powderShadow,powderSheen);
+          vec4 micro=powderMicrorelief(printPosition,printFootprint,grainView,grainWindow,grainSun,powderShadow,powderSheen);
           float powderMask=finish.g*(1.0-finish.b);
           vec3 powderNormal=normalize(grainNormal
             -finishTangent*micro.x*lab_powderSlope
@@ -215,7 +225,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           float reliefDiffuse=clamp(1.0+(powderLight-flatLight)*2.35-powderShadow*0.28,0.34,1.55);
           totalDiffuse*=mix(1.0,reliefDiffuse,powderMask*lab_powderContrast);
           // Compress highlights per grain, never globally whiten the print.
-          totalSpecular+=imageTint*(1.0-exp(-powderSheen*lab_powderStrength))*powderMask*0.92;
+          totalSpecular+=grainTint*(1.0-exp(-powderSheen*lab_powderStrength))*powderMask*1.25;
         }
         if(printCard>0.5) {
           // Diffractive color modulation without a white mirror/varnish highlight.
@@ -249,9 +259,8 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
             float density=printFinish>1.5?1.0:0.7;
             float finishCoverage=1.0-componentPrint;
             if(finishCoverage>0.005 && lab_glitterDensity>0.001 && lab_glitterStrength>0.001) {
-              vec2 printPosition=printUV*vec2(11.91,4.91);
               vec2 fineCells=mat2(0.956,-0.292,0.292,0.956)*printPosition*(420.0/11.91);
-              float footprint=max(length(dFdx(fineCells)),length(dFdy(fineCells)));
+              float footprint=printFootprint*(420.0/11.91);
               float fineWeight=1.0-smoothstep(0.7,1.6,footprint);
               float middleWeight=(1.0-fineWeight)*(1.0-smoothstep(0.7,1.6,footprint*180.0/420.0));
               float glitterResponse=0.0;
@@ -264,14 +273,15 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
                   mat2(0.643,-0.766,0.766,0.643)*printPosition*(72.0/11.91)+vec2(71.3,11.9);
                 vec4 particle=printParticle(cells);
                 float radius=mix(0.23,0.41,particle.z)*lab_glitterSize;
-                float edge=clamp(max(length(dFdx(cells)),length(dFdy(cells)))*0.35,0.035,0.48);
+                float cellFootprint=footprint*(layer==0?1.0:layer==1?180.0/420.0:72.0/420.0);
+                float edge=clamp(cellFootprint*0.35,0.035,0.48);
                 float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(1.0-lab_glitterDensity,particle.y)*density;
                 vec3 facet=grainFacet(particle.z,particle.w,1.6);
                 float sparkle=grainReflection(facet,grainView,grainWindow,0.85)*0.78
                   +grainReflection(facet,grainView,grainSun,0.85)*0.22;
                 glitterResponse+=weight*flake*(1.0-exp(-sparkle*5.0));
               }
-              totalSpecular+=imageTint*(1.0-exp(-glitterResponse*lab_glitterStrength))*0.95*(1.0-finish.b)*finishCoverage;
+              totalSpecular+=grainTint*(1.0-exp(-glitterResponse*lab_glitterStrength))*1.45*(1.0-finish.b)*finishCoverage;
             }
           }
         }
@@ -279,5 +289,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'stable-grain-facets-wide-angle-v2-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'visible-grain-facets-safe-lod-v3-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }

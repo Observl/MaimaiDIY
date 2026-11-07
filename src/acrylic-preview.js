@@ -114,9 +114,9 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     });
   };
   controls.addEventListener('change', draw);
-  let compactView=host.clientWidth<500;
   let viewMode='full';
-  function frameView(mode) {
+  function frameView(mode,preserveDirection=false) {
+    const direction=preserveDirection?camera.position.clone().sub(controls.target).normalize():new THREE.Vector3(6,2.75,12.5).normalize();
     viewMode=mode;
     host.dataset.viewMode=mode;
     controls.minDistance=mode==='nameplate'?3:7;
@@ -127,24 +127,22 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       // localToWorld includes the 0.25-unit clear-stand lift and each product's print depth.
       const center=art.localToWorld(new THREE.Vector3(...region.center));
       const offsets=region.corners.map(point=>art.localToWorld(new THREE.Vector3(...point)).sub(center).toArray());
-      const direction=new THREE.Vector3(6,2.75,12.5).normalize();
       const distance=Math.max(controls.minDistance,fitPerspectiveDistance(offsets,direction.toArray(),camera.fov,camera.aspect));
       controls.target.copy(center);
       camera.position.copy(center).addScaledVector(direction,distance);
-    } else if(mode==='near') {
-      camera.position.set(6, 5.4, 12.5);
-      controls.target.set(0, 2.65, 0);
-      if(compactView)camera.position.sub(controls.target).multiplyScalar(1.45).add(controls.target);
     } else {
-      // Orbit the product's geometry, excluding the floor and contact shadow.
+      // Fit the product's actual projected corners. A fixed 33-unit distance
+      // reduced a phone's entire print to roughly 110px, hiding its finishes.
       const bounds=new THREE.Box3().setFromObject(object);
-      const center=bounds.isEmpty()?new THREE.Vector3(0,2.5,0):bounds.getCenter(new THREE.Vector3());
-      const radius=bounds.isEmpty()?6.6:bounds.getBoundingSphere(new THREE.Sphere()).radius;
-      const halfFov=THREE.MathUtils.degToRad(camera.fov/2);
-      const limitingHalfFov=Math.min(halfFov,Math.atan(Math.tan(halfFov)*camera.aspect));
-      const distance=Math.max(33,radius/Math.sin(limitingHalfFov)*1.35);
+      if(bounds.isEmpty())bounds.set(new THREE.Vector3(-6,0,-0.75),new THREE.Vector3(6,5,0.75));
+      const center=mode==='near'?new THREE.Vector3(0,2.65,0):bounds.getCenter(new THREE.Vector3());
+      const offsets=[];
+      for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]) {
+        offsets.push(new THREE.Vector3(x,y,z).sub(center).toArray());
+      }
+      const distance=Math.max(controls.minDistance,fitPerspectiveDistance(offsets,direction.toArray(),camera.fov,camera.aspect,mode==='near'?1.10:1.42));
       controls.target.copy(center);
-      camera.position.copy(center).add(new THREE.Vector3(6,2.75,12.5).normalize().multiplyScalar(Math.min(distance,65)));
+      camera.position.copy(center).addScaledVector(direction,Math.min(distance,controls.maxDistance));
     }
     controls.update();
     draw();
@@ -158,9 +156,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     camera.aspect = width / height;
     // Keep the brick within the viewport on narrow screens.
     camera.fov = width < 500 ? 48 : 34;
-    const breakpointChanged=compactView!==(width<500);
-    compactView=width<500;
-    if(breakpointChanged||viewMode==='nameplate')frameView(viewMode);
+    // Refit at every aspect change, retaining the user's orbit direction.
+    frameView(viewMode,true);
     camera.updateProjectionMatrix();
     draw();
   }
@@ -262,12 +259,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     host.dataset.printPlacement=cardOnly||shikishi?'surface':'innermost';
     host.dataset.printPlaneZ=String(art.position.z);
     host.dataset.reverseTexture=cardOnly?'fine-card-grain':shikishi?'paper-fibers':'none';
-    if(viewMode==='nameplate')frameView('nameplate');
-    else if(viewMode==='full') {
-      const center=new THREE.Box3().setFromObject(object).getCenter(new THREE.Vector3());
-      camera.position.add(center.clone().sub(controls.target));
-      controls.target.copy(center);controls.update();
-    }
+    frameView(viewMode,true);
     renderer.shadowMap.needsUpdate=true;
     draw();
   }

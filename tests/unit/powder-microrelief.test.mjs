@@ -62,3 +62,15 @@ test('grain self-shadow is bounded, directional and absent for overhead light',a
   assert.ok(powderSelfShadow([-0.25,0],[-1,0,0.15])<shadow);
   assert.equal(powderSelfShadow([0.25,0],[-1,0,0.15]),shadow);
 });
+
+
+test('mask-conditional grain helpers accept precomputed derivatives',async()=>{
+  const {POWDER_MICRORELIEF_GLSL}=await import('../../src/powder-microrelief.js');
+  assert.doesNotMatch(POWDER_MICRORELIEF_GLSL,/\b(?:dFdx|dFdy|fwidth)\s*\(/);
+  const {readFile}=await import('node:fs/promises');
+  const optics=await readFile(new URL('../../src/acrylic-optics.js',import.meta.url),'utf8');
+  const firstFinishBranch=optics.indexOf('if(printCard<0.5');
+  assert.ok(firstFinishBranch>0);
+  assert.match(optics.slice(0,firstFinishBranch),/dFdx\(printPosition\)/);
+  assert.doesNotMatch(optics.slice(firstFinishBranch),/\b(?:dFdx|dFdy|fwidth)\s*\(/);
+});

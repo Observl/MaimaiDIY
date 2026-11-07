@@ -25,7 +25,8 @@ test('actual WebGL grain functions redistribute glints with view and light, with
       out vec4 color;
       void main(){
         vec2 uv=gl_FragCoord.xy/vec2(384.0,160.0);float response;
-        if(mode==0){float shadow,sheen;powderMicrorelief(uv*vec2(11.91,4.91),eye,light,light,shadow,sheen);response=sheen;}
+        vec2 position=uv*vec2(11.91,4.91);float footprint=max(length(dFdx(position)),length(dFdy(position)));
+        if(mode==0){float shadow,sheen;powderMicrorelief(position,footprint,eye,light,light,shadow,sheen);response=sheen;}
         else {vec2 id=floor(uv*vec2(96.0,40.0));vec3 facet=grainFacet(printHash(id+19.0),printHash(id+53.0),1.6);response=1.0-exp(-grainReflection(facet,eye,light,0.85)*5.0);}
         color=vec4(vec3(response),1.0);
       }`);

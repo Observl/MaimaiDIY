@@ -54,3 +54,20 @@ test('perspective fitting uses the camera up axis and accounts for corner depth'
     assert.ok(Math.abs(projected.y) <= 1 / 1.16 + 1e-9);
   }
 });
+
+
+for(const [width,height,fov] of [[360,300,48],[960,422,34],[256,300,48]])test(`whole-product presets use the available ${width}px viewport without cropping`,()=>{
+  const offsets=[];
+  for(const x of [-6,6])for(const y of [-2.5,2.5])for(const z of [-0.75,0.75])offsets.push([x,y,z]);
+  let previous=0;
+  for(const padding of [1.10,1.42]) {
+    const distance=fitPerspectiveDistance(offsets,direction.toArray(),fov,width/height,padding);
+    assert.ok(distance>previous);previous=distance;
+    const camera=new PerspectiveCamera(fov,width/height,0.1,120);
+    camera.position.copy(direction).multiplyScalar(distance);camera.lookAt(0,0,0);camera.updateMatrixWorld();
+    const projected=offsets.map(v=>new Vector3(...v).project(camera));
+    for(const p of projected)assert.ok(Math.abs(p.x)<=1/padding+1e-9&&Math.abs(p.y)<=1/padding+1e-9);
+    const span=Math.max(...projected.map(v=>v.x))-Math.min(...projected.map(v=>v.x));
+    assert.ok(span>1,'the product occupies over half the display width');
+  }
+});
