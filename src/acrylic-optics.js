@@ -190,23 +190,28 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         }
         if(printCard<0.5 && printFinish>0.5 && lab_enabled>0.5 && insidePrint>0.5 && finish.g>0.005 && lab_powderDensity>0.001) {
           // Powder is a shallow granular surface: each grain has a continuous
-          // height gradient, a light-facing side and a shaded contact rim.
+          // height gradient, a light-facing side and directional local shadow.
           // It is not the broad uniform brightness used by the previous draft.
-          vec4 micro=powderMicrorelief(printUV*vec2(11.91,4.91));
+          vec3 powderView=vec3(dot(finishView,finishTangent),dot(finishView,finishBitangent),dot(finishView,finishNormal));
+          vec3 powderWindow=vec3(dot(windowLight,finishTangent),dot(windowLight,finishBitangent),dot(windowLight,finishNormal));
+          vec3 powderSun=vec3(dot(sunLight,finishTangent),dot(sunLight,finishBitangent),dot(sunLight,finishNormal));
+          float powderShadow;
+          vec4 micro=powderMicrorelief(printUV*vec2(11.91,4.91),powderView,powderWindow,powderSun,powderShadow);
           float powderMask=finish.g*(1.0-finish.b);
           vec3 powderNormal=normalize(finishNormal
             -finishTangent*micro.x*lab_powderSlope
             -finishBitangent*micro.y*lab_powderSlope);
-          float powderLight=max(dot(powderNormal,windowLight),0.0)*0.75
-            +max(dot(powderNormal,sunLight),0.0)*0.25;
+          float powderLight=max(dot(powderNormal,windowLight),0.0)*step(0.001,powderWindow.z)*0.75
+            +max(dot(powderNormal,sunLight),0.0)*step(0.001,powderSun.z)*0.25;
           float flatLight=max(dot(finishNormal,windowLight),0.0)*0.75
             +max(dot(finishNormal,sunLight),0.0)*0.25;
-          float contactRim=(1.0-micro.z)*micro.w;
-          float reliefDiffuse=clamp(1.0+(powderLight-flatLight)*2.2-contactRim*0.24,0.30,1.45);
+          // Shade the light-opposed side and actual local horizon, not every rim.
+          // This preserves relief without turning each grain into a dark dot.
+          float reliefDiffuse=clamp(1.0+(powderLight-flatLight)*1.9-powderShadow*0.16,0.40,1.45);
           totalDiffuse*=mix(1.0,reliefDiffuse,powderMask*lab_powderContrast);
-          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),16.0*lab_powderSharpness)*0.8
-            +pow(max(dot(powderNormal,halfSun),0.0),28.0*lab_powderSharpness)*0.2;
-          float powderSheen=micro.w*(0.3+micro.z*0.7)*powderMask*0.8
+          float powderLobe=pow(max(dot(powderNormal,halfWindow),0.0),20.0*lab_powderSharpness)*0.8
+            +pow(max(dot(powderNormal,halfSun),0.0),36.0*lab_powderSharpness)*0.2;
+          float powderSheen=micro.w*(0.25+micro.z*0.75)*powderMask*0.95
             *(1.0-exp(-powderLobe*powderLight*3.0))*max(dot(powderNormal,finishView),0.0);
           totalSpecular+=imageTint*powderSheen*lab_powderStrength;
         }
@@ -267,5 +272,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'view-responsive-powder-relief-v2-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'view-responsive-powder-direction-v1-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }
