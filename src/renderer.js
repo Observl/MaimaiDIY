@@ -76,22 +76,22 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
 
   function drawPlayerName() {
     ctx.save();
-    ctx.font = `400 21.33333px ${DISPLAY_FONT}, sans-serif`;
-    ctx.textAlign = 'left';
+    // Eight fixed cells span the name board's left edge to the rank's left
+    // edge, even when rank is hidden. No name-length or per-glyph scaling.
+    const left = slots.nameBase.x;
+    const { glyphs, cellWidth } = layoutPlayerName(state.playerName || '', slots.rank.x - left);
+    ctx.font = `400 ${cellWidth}px ${DISPLAY_FONT}, sans-serif`;
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#111318';
-    // Six full-width cells span the name board's left edge to the rank's left
-    // edge. Short names keep that cell width; longer names compress only in X.
-    // Keep the same bounds even when the rank is hidden.
-    const left = slots.nameBase.x;
-    const { glyphs } = layoutPlayerName(
-      state.playerName || '', slots.rank.x - left, (text) => ctx.measureText(text)
-    );
     for (const glyph of glyphs) {
       ctx.save();
-      ctx.translate(left + glyph.x, 87);
-      ctx.scale(glyph.scaleX, 1);
-      ctx.fillText(glyph.text, 0, 0);
+      // Unusually wide fallback glyphs or ink overhangs are clipped rather
+      // than compressed, so they cannot intrude into another cell or the rank.
+      ctx.beginPath();
+      ctx.rect(left + glyph.x, slots.nameBase.y, cellWidth, slots.nameBase.height);
+      ctx.clip();
+      ctx.fillText(glyph.text, left + glyph.x + cellWidth / 2, 87);
       ctx.restore();
     }
     ctx.restore();

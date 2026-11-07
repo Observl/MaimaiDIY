@@ -29,6 +29,11 @@ test('name limit counts visible graphemes, including joined emoji', () => {
   assert.equal(nameCharacterCount('1234567👨‍👩‍👧'), 8);
   assert.equal(nameCharacterCount('éあ测试'), 4);
   assert.throws(() => sanitizeImportedState({ playerName: '123456789' }), /八个字符/);
+  for (const playerName of ['ABCDEFGH', '舞萌玩家名称测试', '1234567👨‍👩‍👧', 'e\u0301か\u3099𠮷👨‍👩‍👧🇨🇳👍🏽中A']) {
+    assert.equal(nameCharacterCount(playerName), 8);
+    assert.equal(sanitizeImportedState({ playerName }).playerName, playerName);
+    assert.throws(() => sanitizeImportedState({ playerName: playerName + '9' }), /八个字符/);
+  }
 });
 
 test('template import cannot replace required visibility or derived frames', () => {
