@@ -17,7 +17,7 @@ test('independent grains continue reflecting across a broad front-facing view ra
   const light=normalize([-0.6,0.2,0.75]);
   for(const angle of [-70,-50,-25,0,25,50,70]) {
     const active=bright(direction(angle),light);
-    assert.ok(active.size>140&&active.size<450,`${angle}: ${active.size} bright grains`);
+    assert.ok(active.size>80&&active.size<grains.length*0.4,`${angle}: ${active.size} bright grains`);
   }
 });
 
@@ -38,4 +38,15 @@ test('front-facing reflection is bounded and back-side lighting cannot make glow
     const response=facetResponse(normal,[0,0,1],[0,0,1]);
     assert.ok(response>=0&&response<=1.62);
   }
+});
+
+
+test('refraction-compressed front views retain a visible population of flakes',()=>{
+  // Actual default acrylic half-vector is close to the print normal after IOR 1.49.
+  // The former sqrt(seed) distribution put nearly all faces outside this cone.
+  const view=normalize([0.28,0.13,0.95]),light=normalize([-0.39,0.29,0.87]);
+  const active=grains.filter(n=>facetResponse(n,view,light,0.85)>0.5);
+  assert.ok(active.length>400&&active.length<grains.length*0.4,`${active.length} visible front facets`);
+  const tilted=grains.filter(n=>n[2]<Math.cos(40*Math.PI/180));
+  assert.ok(tilted.length>800,'retain an oblique tail, rather than flattening every flake');
 });
