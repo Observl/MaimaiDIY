@@ -33,4 +33,4 @@
 
 运行环境为桌面 Chromium 的 SwiftShader 软件 WebGL。手机为尺寸、DPR 与触控模拟，未在实体 iPhone/Android GPU 或 Safari 上验证。GPU 自动分级在该软件环境选择 balanced，另有高分屏上下文的生产回归；不能据此声称所有实体 GPU 均通过。页面交互/下载自动测试使用隔离的图像夹具，真实素材的外观结论来自上述独立生产渲染矩阵。
 
-此次提交不恢复用户界面的 3D PNG 导出，不合并或部署；原有平面 PNG、模板 JSON 和定制方案 JSON 保留。
+此次修复不恢复用户界面的 3D PNG 导出；原有平面 PNG、模板 JSON 和定制方案 JSON 保留。
