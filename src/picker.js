@@ -1,8 +1,9 @@
 import { COS, TITLE_COLOR_NAMES } from './config.js';
 import { loadManifest, loadTitleManifest, loadBadgeManifest, loadImage, assetUrl } from './assets.js';
 import { titleAsset } from './model.js';
-export function initializePicker({ state, recordHistory, render, onSelection }) {
+export function initializePicker({ state, recordHistory, render, onSelection, resolveCategory }) {
   let manifest;
+  const viewKey = (id) => `${state.region || 'cn'}:${id}`;
   let selectionVersion = 0;
   let pickerState = { control: null, category: null, items: [], shown: 0, start: 0 };
   const picker = document.querySelector('#asset-picker');
@@ -44,7 +45,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       button.dataset.assetId = String(item.id || item.file || item.name);
       button.classList.toggle(
         'is-selected',
-        button.dataset.assetId === pickerSelections[control.id]
+        button.dataset.assetId === pickerSelections[viewKey(control.id)]
       );
       const image =
         control.id === 'title' ? document.createElement('i') : document.createElement('img');
@@ -95,7 +96,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
           button.removeAttribute('aria-busy');
         }
         if (!picker.open || version !== selectionVersion) return;
-        pickerSelections[control.id] = button.dataset.assetId;
+        pickerSelections[viewKey(control.id)] = button.dataset.assetId;
         try {
           localStorage.setItem(PICKER_SELECTION_KEY, JSON.stringify(pickerSelections));
         } catch {}
@@ -104,6 +105,13 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
           .forEach((node) => node.classList.remove('is-selected'));
         button.classList.add('is-selected');
         recordHistory();
+        if (control.select) {
+          control.select(item);
+          picker.close();
+          onSelection();
+          await render();
+          return;
+        }
         if (control.id === 'title') {
           state.titleName = item.name;
           state.titleColor = item.color || 'Normal';
@@ -195,7 +203,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       locateSelection === true
         ? pickerState.items.findIndex(
             (item) =>
-              String(item.id || item.file || item.name) === pickerSelections[pickerState.control.id]
+              String(item.id || item.file || item.name) === pickerSelections[viewKey(pickerState.control.id)]
           )
         : -1;
     pickerState.start = index < 0 ? 0 : Math.floor(index / COS.pageSize) * COS.pageSize;
@@ -215,20 +223,29 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
   function preparePickerFilters(category) {
     pickerSearch.value = '';
     pickerFilter.replaceChildren(new Option('全部分类', ''));
-    const groups = [...new Set(category.items.map(itemGroup))].sort(compareMaterialGroups);
-    groups.forEach((group) =>
-      pickerFilter.add(
-        new Option(
-          `${group}（${category.items.filter((item) => itemGroup(item) === group).length}）`,
-          group
-        )
-      )
+    // V2 categories already carry a validated group index. Legacy catalogs are
+    // counted once, rather than rescanning the full library for every group.
+    const counts = new Map();
+    if (Array.isArray(category.groups)) {
+      category.groups.forEach(({ label, count, ids }) =>
+        counts.set(label, Number.isInteger(count) ? count : ids.length));
+    } else {
+      category.items.forEach((item) => {
+        const group = itemGroup(item);
+        counts.set(group, (counts.get(group) || 0) + 1);
+      });
+    }
+    [...counts.keys()].sort(compareMaterialGroups).forEach((group) =>
+      pickerFilter.add(new Option(`${group}（${counts.get(group)}）`, group))
     );
   }
 
   async function openPicker(control) {
+    const sourceLabel = picker.querySelector('.eyebrow');
+    if (sourceLabel) sourceLabel.textContent = state.region === 'jp' ? 'JP ASSETS' : 'CN ASSETS';
     selectionVersion += 1;
-    const cachedView = pickerViews.get(control.id);
+    const openedRegion = state.region;
+    const cachedView = pickerViews.get(viewKey(control.id));
     if (cachedView) {
       pickerState = cachedView.state;
       pickerTitle.textContent = `选择${control.label}`;
@@ -259,8 +276,9 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
     pickerMessage.hidden = true;
     picker.showModal();
     try {
-      let category;
-      if (control.id === 'title') {
+      let category = await resolveCategory?.(control);
+      if (category) { /* The region catalog owns this category. */ }
+      else if (control.id === 'title') {
         category = { id: 'titles', label: '称号', items: (await loadTitleManifest()).items };
       } else if (['rank', 'friendBattle'].includes(control.id)) {
         category = (await loadBadgeManifest()).categories.find(
@@ -270,17 +288,17 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
         manifest ||= await loadManifest();
         category = manifest.categories.find((item) => item.id === control.category);
       }
-      if (!picker.open || pickerState !== requestState) return;
+      if (!picker.open || pickerState !== requestState || state.region !== openedRegion) return;
       if (!category || !category.items?.length) {
         pickerMeta.textContent = '当前分类暂无云端素材';
-        showPickerMessage('可保留当前搭配；头像也可通过“本地上传”替换。');
+        showPickerMessage(category?.unavailableMessage || '可保留当前搭配；头像也可通过“本地上传”替换。');
         return;
       }
       pickerState = { control, category, items: category.items, shown: 0 };
       preparePickerFilters(category);
       applyPickerFilters(true);
     } catch (error) {
-      if (!picker.open || pickerState !== requestState) return;
+      if (!picker.open || pickerState !== requestState || state.region !== openedRegion) return;
       pickerMeta.textContent = '连接失败';
       showPickerMessage('此分类的素材库暂时不可用，请稍后重新打开重试。未缓存的云端图片也可能无法加载；本地上传头像仍可使用。');
     }
@@ -296,7 +314,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
     const scroll = picker.scrollTop;
     const nodes = document.createDocumentFragment();
     nodes.append(...pickerGrid.childNodes);
-    pickerViews.set(pickerState.control.id, {
+    pickerViews.set(viewKey(pickerState.control.id), {
       state: pickerState,
       nodes,
       query: pickerSearch.value,
@@ -311,5 +329,5 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
     if (event.target === picker) picker.close();
   });
 
-  return { open: openPicker };
+  return { open: openPicker, close() { selectionVersion += 1; picker.close(); } };
 }
