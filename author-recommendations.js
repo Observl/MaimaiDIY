@@ -2,6 +2,13 @@ import { titleAsset, createDefaultState, sanitizeImportedState as sanitize, isAl
 import { fetchJson } from './src/assets.js';
 import { COS } from './src/config.js';
 import { resolveAssetUrl } from './src/asset-paths.js';
+// Recommendations are complete regional designs, not evidence that individual
+// artwork is exclusive. Pre-region files keep their documented CN semantics.
+export function recommendationMatchesRegion(item, region) {
+  return ['cn', 'jp'].includes(region) && item?.state !== null &&
+    typeof item?.state === 'object' && !Array.isArray(item.state) &&
+    (item.state.region ?? 'cn') === region;
+}
 export function initializeRecommendations({
   state,
   snapshotState,
@@ -63,6 +70,8 @@ export function initializeRecommendations({
   }
 
   async function applyRecommendation(item) {
+    if (!recommendationMatchesRegion(item, state.region))
+      throw new Error('此推荐不属于当前区服，请重新打开当前区服的推荐。');
     const next = sanitizeImportedState(item.state);
     // Copy only appearance fields, leaving all player information and visibility intact.
     recordHistory();
@@ -82,11 +91,12 @@ export function initializeRecommendations({
 
   async function displayRecommendations() {
     const version = ++displayVersion;
+    const region = state.region;
     recommendationsGrid.replaceChildren();
     recommendationsStatus.textContent = '正在加载推荐…';
     try {
-      const items = await getRecommendations();
-      if (version !== displayVersion || !recommendationsDialog.open) return;
+      const items = (await getRecommendations()).filter(item => recommendationMatchesRegion(item, region));
+      if (version !== displayVersion || !recommendationsDialog.open || state.region !== region) return;
       const localIds = new Set(localRecommendations().map((item) => item.id));
       for (const item of items) {
         if (
@@ -141,8 +151,9 @@ export function initializeRecommendations({
         }
         recommendationsGrid.append(card);
       }
-      recommendationsStatus.textContent = '';
+      recommendationsStatus.textContent = items.length ? '' : '当前区服暂无作者推荐；其他区服的搭配不会在此显示。';
     } catch (error) {
+      if (version !== displayVersion || !recommendationsDialog.open || state.region !== region) return;
       recommendationsStatus.textContent = error.message;
     }
   }
@@ -172,7 +183,7 @@ export function initializeRecommendations({
       preview.height = 452;
       preview.getContext('2d').drawImage(renderCanvas, 0, 0, 1080, 452);
       const items = localRecommendations();
-      const existing = items.find((item) => item.name === name);
+      const existing = items.find((item) => item.name === name && recommendationMatchesRegion(item, state.region));
       const item = {
         id: existing?.id || `author-${crypto.randomUUID()}`,
         name,

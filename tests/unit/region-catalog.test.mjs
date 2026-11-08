@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { registerRegionCatalog, sanitizeRegionFields, LEGACY_JP_ASSET_ROOT, REGION_ASSET_ROOT } from '../../src/region-profile.js';
 import { REGION_BASE_URL } from '../../src/region-index.js';
+import { regionCategory } from '../../src/region-catalog.js';
 const catalogs = {};
 for (const region of ['cn', 'jp']) catalogs[region] = JSON.parse(await readFile(new URL(`../../data/regions/${region}.json`, import.meta.url), 'utf8'));
 test('bundled catalogs register separately and preserve regional chart differences', () => {
@@ -41,4 +42,11 @@ test('Japanese art groups retain source provenance without inventing versions', 
 
 test('index and template asset rules pin the same immutable COS release', () => {
   assert.equal(REGION_ASSET_ROOT, REGION_BASE_URL);
+});
+
+test('JP title category is explicitly unavailable rather than falling back to CN', async () => {
+  const category = await regionCategory('jp', { id: 'title', category: 'titles', label: '称号' });
+  assert.deepEqual(category.items, []);
+  assert.match(category.unavailableMessage, /不混用国服/);
+  assert.equal(await regionCategory('cn', { id: 'title', category: 'titles' }), null);
 });
