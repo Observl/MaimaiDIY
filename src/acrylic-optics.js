@@ -1,6 +1,7 @@
 import { uniforms as labUniforms } from './finish-settings.js';
 import { POWDER_MICRORELIEF_GLSL } from './powder-microrelief.js';
 import { GRANULAR_REFLECTION_GLSL } from './granular-reflection.js';
+import { GLITTER_LIGHTING_GLSL } from './glitter-lighting.js';
 import * as THREE from '../vendor/three.module.js';
 
 // Ray/print-plane intersection preserves the source resolution rather than
@@ -85,6 +86,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         return fract((h.x+h.y)*h.z);
       }
       ${GRANULAR_REFLECTION_GLSL}
+      ${GLITTER_LIGHTING_GLSL}
       ${POWDER_MICRORELIEF_GLSL}
       // Nearest fully-jittered particle: distance, brightness seed, and two facet seeds.
       vec4 printParticle(vec2 p) {
@@ -165,7 +167,11 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
         #endif
         vec3 windowLight = normalize(printWindow - finishPosition);
         vec3 sunLight = normalize(printSun - finishPosition);
+        vec2 glitterLightEntry=vec2(1.0);
         #ifdef USE_TRANSMISSION
+        // Keep the pre-refraction incidence. Internal light.z is already about
+        // 0.74 at grazing entry through acrylic and cannot describe this fade.
+        glitterLightEntry=glitterEntry(vec2(dot(finishNormal,windowLight),dot(finishNormal,sunLight)));
         if(dot(finishNormal,windowLight)>0.0)windowLight=-refract(-windowLight,finishNormal,1.0/material.ior);
         if(dot(finishNormal,sunLight)>0.0)sunLight=-refract(-sunLight,finishNormal,1.0/material.ior);
         #endif
@@ -277,9 +283,9 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
                 float edge=clamp(cellFootprint*0.35,0.035,0.48);
                 float flake=(1.0-smoothstep(radius-edge,radius+edge,particle.x))*step(1.0-lab_glitterDensity,particle.y)*density;
                 vec3 facet=grainFacet(particle.z,particle.w,1.6);
-                float sparkle=grainReflection(facet,grainView,grainWindow,0.85)*0.78
-                  +grainReflection(facet,grainView,grainSun,0.85)*0.22;
-                glitterResponse+=weight*flake*(1.0-exp(-sparkle*5.0));
+                float sparkle=glitterLighting(grainReflection(facet,grainView,grainWindow,0.85),
+                  grainReflection(facet,grainView,grainSun,0.85),glitterLightEntry);
+                glitterResponse+=weight*flake*sparkle;
               }
               totalSpecular+=grainTint*(1.0-exp(-glitterResponse*lab_glitterStrength))*1.45*(1.0-finish.b)*finishCoverage;
             }
@@ -289,5 +295,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'visible-grain-facets-safe-lod-v3-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'continuous-glitter-entry-v4-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }
