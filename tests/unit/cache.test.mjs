@@ -127,3 +127,30 @@ test('legacy invalid image cache is evicted, HTML cannot be cached as a font', a
   await font.get('assets/font.ttf');
   assert.equal(font.entries.size, 0);
 });
+
+
+test('versioned image caches are separated by region and immutable release', async () => {
+  let requests = 0;
+  const api = worker({ fetch: async () => {
+    requests++;
+    return new Response('image', { headers: { 'content-type': 'image/png' } });
+  } });
+  for (const path of [
+    'materials/regions/releases/20261108/jp/collection/icons/UI_Icon_000001.png',
+    'materials/regions/releases/20261109/jp/collection/icons/UI_Icon_000001.png',
+    'materials/regions/releases/20261108/cn/collection/icons/UI_Icon_000001.png',
+  ]) {
+    await api.get(path);
+    await api.get(path);
+  }
+  assert.equal(requests, 3);
+  assert.equal(api.entries.size, 3);
+});
+
+test('v2 JSON validation and cache are owned by the regional loader, not the legacy service worker', async () => {
+  const api = worker({ fetch: async () => { throw Error('should not intercept'); } });
+  assert.equal(await api.get('materials/regions/releases/20261108/index-v2.json'), undefined);
+  assert.equal(await api.get('materials/regions/releases/20261108/catalogs/v2/jp/index.json'), undefined);
+  assert.equal(await api.get('materials/regions/releases/20261108/catalogs/v2/jp/icons.json'), undefined);
+  assert.equal(api.entries.size, 0);
+});

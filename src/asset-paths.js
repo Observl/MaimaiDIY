@@ -1,4 +1,5 @@
 import {COS,DEFAULT_BACKGROUND} from './config.js';
+import { migratePinnedRegionAssetUrl } from './region-profile.js';
 const root=COS.baseUrl+'/materials/';
 const legacy={
   'default-background.png':DEFAULT_BACKGROUND,
@@ -17,6 +18,8 @@ const legacy={
 // Resolve legacy template/index addresses without keeping artwork in the repository.
 export function resolveAssetUrl(value) {
   if(typeof value!=='string')return value;
+  const regional = migratePinnedRegionAssetUrl(value);
+  if (regional !== value) return regional;
   const path=value.split(/[?#]/)[0],suffix=value.slice(path.length);
   if(path.startsWith('assets/')) {
     const relative=path.slice(7);
