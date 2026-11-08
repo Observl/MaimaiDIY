@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { installCosFixtures, readReleaseFixture, RELEASE_URL } from './regional-index-fixtures.js';
+import { createMaterialVisibilityFilter } from '../../src/material-visibility.js';
+const visibility = createMaterialVisibilityFilter(JSON.parse(await readFile(new URL('../../data/regions/visibility-20261108.json', import.meta.url), 'utf8')));
 
 test.use({ serviceWorkers: 'block' });
 test.skip(!process.env.MAIMAI_TEST_INDEX_ROOT, 'Requires the byte-verified regional v2 fixture release');
@@ -12,7 +14,7 @@ const refFor = body => ({ sha256: createHash('sha256').update(body).digest('hex'
 async function setup(page, options) {
   const fixtures = await installCosFixtures(page.context(), options);
   const legacyRequests = [];
-  await page.route('**/data/regions/*.json', async route => {
+  await page.route(/\/data\/regions\/(?:cn|jp)\.json(?:\?.*)?$/, async route => {
     legacyRequests.push(route.request().url());
     await route.abort();
   });
@@ -86,15 +88,24 @@ test('v2 network indexes deduplicate, preserve counts and drive grouped picker p
   expect(jsonRequests).toHaveLength(13);
   expect(new Set(jsonRequests).size).toBe(13);
 
+  const frameIndex = JSON.parse(await readReleaseFixture('catalogs/v2/jp/frames.json'));
+  const visibleFrames = visibility({ id: 'backgrounds', items: frameIndex.order.map(id => frameIndex.byId[id]) }, 'jp').items;
+  expect(visibleFrames).toHaveLength(425);
+  const groups = new Map();
+  for (const item of visibleFrames) {
+    const label = item.group || item.genre || item.category || '来源未分类';
+    groups.set(label, (groups.get(label) || 0) + 1);
+  }
+  const visibleGroups = [...groups].map(([label, count]) => ({ label, count }));
   await switchRegion(page, 'jp');
   await page.locator('[data-control="background"] .library-button').click();
-  await expect(page.locator('#picker-meta')).toHaveText(`找到 ${result.counts.frames} / ${result.counts.frames} 个素材`);
-  await expect(page.locator('#picker-filter option')).toHaveCount(result.frameGroups.length + 1);
-  const largest = [...result.frameGroups].sort((a, b) => b.count - a.count)[0];
+  await expect(page.locator('#picker-meta')).toHaveText(`找到 ${visibleFrames.length} / ${visibleFrames.length} 个素材`);
+  await expect(page.locator('#picker-filter option')).toHaveCount(visibleGroups.length + 1);
+  const largest = visibleGroups.sort((a, b) => b.count - a.count)[0];
   expect(largest.count).toBeGreaterThan(36);
   await expect(page.locator('#picker-filter')).toContainText(`${largest.label}（${largest.count}）`);
   await page.locator('#picker-filter').selectOption(largest.label);
-  await expect(page.locator('#picker-meta')).toHaveText(`找到 ${largest.count} / ${result.counts.frames} 个素材`);
+  await expect(page.locator('#picker-meta')).toHaveText(`找到 ${largest.count} / ${visibleFrames.length} 个素材`);
   await expect(page.locator('#picker-grid .asset-item')).toHaveCount(18);
   expect(await page.locator('#picker-grid .asset-item small').allTextContents()).toEqual(Array(18).fill(largest.label));
   await page.locator('#picker-more').click();
@@ -107,7 +118,7 @@ test('v2 network indexes deduplicate, preserve counts and drive grouped picker p
   await expect(page.locator('#picker-grid .asset-item')).toHaveCount(36);
   await page.locator('#picker-search').fill('no-such-material-qa-987654321');
   await expect(page.locator('#picker-grid .asset-item')).toHaveCount(0);
-  await expect(page.locator('#picker-meta')).toHaveText(`找到 0 / ${result.counts.frames} 个素材`);
+  await expect(page.locator('#picker-meta')).toHaveText(`找到 0 / ${visibleFrames.length} 个素材`);
   await page.locator('#picker-search').fill('');
   await expect(page.locator('#picker-grid .asset-item')).toHaveCount(18);
   expect(log.legacyRequests).toEqual([]);
@@ -230,5 +241,118 @@ test('legacy CN templates load and pinned GitHub JP templates migrate to COS wit
   expect(log.legacyRequests).toEqual([]);
   expect(log.rawRequests).toEqual([]);
   expect(log.missing).toEqual([]);
+  expect(log.errors).toEqual([]);
+});
+
+test('regional visibility keeps only evidenced new choices and preserves shared and legacy designs', async ({ page }) => {
+  const log = await setup(page);
+  const picker = page.locator('#asset-picker');
+  const search = page.locator('#picker-search');
+  const cards = page.locator('#picker-grid .asset-item');
+  async function open(control, count) {
+    await page.locator(`[data-control="${control}"] .library-button`).click();
+    await expect(page.locator('#picker-meta')).toHaveText(`找到 ${count} / ${count} 个素材`);
+  }
+  async function find(id, count) {
+    await search.fill(id);
+    await expect(cards).toHaveCount(count);
+  }
+  async function close() { await page.locator('#picker-close').click(); }
+
+  for (const [control, count] of [['background', 347], ['avatar', 1046], ['nameplate', 395]]) {
+    await open(control, count);
+    if (control === 'background') {
+      await find('100101', 1);
+      await expect(cards.locator('img')).toHaveAttribute('src', /\/materials\/backgrounds\/UI_Frame_100101\.png$/);
+      await cards.click();
+      await expect(picker).toBeHidden();
+    } else {
+      if (control === 'nameplate') await find('450001', 0);
+      await close();
+    }
+  }
+  await open('title', 2766);
+  for (const id of ['409000', '509000']) await find(id, 1);
+  for (const id of ['408150', '408192', '408193', '408194', '408195', '408196']) await find(id, 0);
+  await close();
+  const cn = (await exported(page)).state;
+  await switchRegion(page, 'jp');
+  for (const [control, count] of [['background', 425], ['avatar', 1192], ['nameplate', 422]]) {
+    await open(control, count);
+    if (control === 'background') {
+      await find('100101', 1);
+      await expect(cards.locator('img')).toHaveAttribute('src', `${RELEASE_URL}jp/collection/frames/UI_Frame_100101.png`);
+      await cards.click();
+      await expect(picker).toBeHidden();
+    } else if (control === 'nameplate') {
+      await find('450001', 1);
+      await expect(cards).toContainText('KING of Performai The 5th');
+      await cards.click();
+      await expect(picker).toBeHidden();
+    } else await close();
+  }
+  await page.locator('[data-control="title"] .library-button').click();
+  await expect(page.locator('#picker-message')).toContainText('不混用国服称号');
+  for (const id of ['409000', '509000']) await find(id, 0);
+  await close();
+  await expect(page.locator('#author-recommendations')).toBeDisabled();
+  await page.locator('#screen-mode').selectOption('companions');
+  await page.locator('#companion-controls .library-button').first().click();
+  await expect(page.locator('#picker-meta')).toHaveText('找到 1082 / 1082 个素材');
+  for (const id of ['000101', '000301', '004101']) {
+    await find(id, 1);
+    await expect(cards).toHaveAttribute('data-asset-id', id);
+  }
+  await close();
+  const jp = (await exported(page)).state;
+  expect(jp.files.nameplate).toBe(`${RELEASE_URL}jp/collection/plates/UI_Plate_450001.png`);
+  for (let round = 0; round < 2; round++) {
+    await switchRegion(page, 'cn');
+    expect((await exported(page)).state).toEqual(cn);
+    await page.locator('[data-control="nameplate"] .library-button').click();
+    await expect(search).toHaveValue('450001');
+    await expect(page.locator('#picker-meta')).toHaveText('找到 0 / 395 个素材');
+    await close();
+    await switchRegion(page, 'jp');
+    expect((await exported(page)).state).toEqual(jp);
+    await page.locator('[data-control="nameplate"] .library-button').click();
+    await expect(search).toHaveValue('450001');
+    await expect(page.locator('#picker-meta')).toHaveText('找到 1 / 422 个素材');
+    await expect(cards).toHaveClass(/is-selected/);
+    await close();
+  }
+  expect(log.legacyRequests).toEqual([]);
+  expect(log.rawRequests).toEqual([]);
+  expect(log.missing).toEqual([]);
+  expect(log.errors).toEqual([]);
+});
+
+test('a picker cannot reopen the old region while switching awaits its index', async ({ page }) => {
+  const log = await setup(page);
+  let release;
+  const blocked = new Promise(resolve => { release = resolve; });
+  await page.route(`${RELEASE_URL}catalogs/v2/jp/index.json`, async route => {
+    await blocked;
+    await route.fallback();
+  });
+  // Cover the cached path as well as a previously unopened picker.
+  await page.locator('[data-control="background"] .library-button').click();
+  await expect(page.locator('#picker-meta')).toHaveText('找到 347 / 347 个素材');
+  await page.locator('#picker-close').click();
+  await page.locator('#region-select').selectOption('jp');
+  await expect(page.locator('#region-select')).toBeDisabled();
+  try {
+    for (const control of ['background', 'avatar', 'nameplate']) {
+      const button = page.locator(`[data-control="${control}"] .library-button`);
+      if (await button.isEnabled()) await button.click();
+      await expect(page.locator('#asset-picker')).toBeHidden();
+    }
+  } finally { release(); }
+  await expect(page.locator('#region-select')).toBeEnabled();
+  await expect(page.locator('#region-select')).toHaveValue('jp');
+  await expect(page.locator('#asset-picker')).toBeHidden();
+  await page.locator('[data-control="background"] .library-button').click();
+  await expect(page.locator('#asset-picker .eyebrow')).toHaveText('JP ASSETS');
+  await expect(page.locator('#picker-meta')).toHaveText('找到 425 / 425 个素材');
   expect(log.errors).toEqual([]);
 });
