@@ -186,7 +186,7 @@ test('picker reuse, refresh location, search and classification for every materi
   await ready(page);
   await library(page).click();
   await expect(page.locator('.asset-item')).toHaveCount(18);
-  await page.locator('#picker-more').click();
+  await page.locator('#asset-picker').evaluate(dialog => { dialog.scrollTop = dialog.scrollHeight; });
   const choice = page.locator('.asset-item').nth(25);
   const selected = await choice.getAttribute('data-asset-id');
   await choice.click();
@@ -198,7 +198,7 @@ test('picker reuse, refresh location, search and classification for every materi
   await library(page).click();
   await expect(page.locator('.asset-item')).toHaveCount(18);
   await expect(page.locator('.is-selected')).toHaveAttribute('data-asset-id', selected);
-  await expect(page.locator('#picker-previous')).toBeVisible();
+  await expect(page.locator('#picker-previous')).toHaveCount(0);
   await page.locator('#picker-search').fill('no-such-asset-xyz');
   await expect(page.locator('#picker-message')).toBeVisible();
   await page.locator('#picker-close').click();
@@ -298,7 +298,7 @@ test('template storage failure is atomic', async ({ page }) => {
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
-      if (key === 'maimai-diy-templates-v1') throw new Error('quota exceeded');
+      if (key === 'maimai-diy-region-templates-v1:cn:collection') throw new Error('quota exceeded');
       return original.call(this, key, value);
     };
   });

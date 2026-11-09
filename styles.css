@@ -521,6 +521,7 @@ canvas {
   opacity: 0;
 }
 .asset-picker {
+  overflow-anchor: none;
   width: min(920px, calc(100% - 32px));
   max-height: min(700px, calc(100dvh - 112px));
   margin-top: 40px;
@@ -688,10 +689,6 @@ canvas {
   background: #f5f5f7;
   color: var(--muted);
   text-align: center;
-}
-.picker-more {
-  width: 100%;
-  margin-top: 18px;
 }
 .template-tools {
   display: grid;
@@ -1490,3 +1487,53 @@ canvas {
 .acrylic-preview-detail { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; font-size: 14px; color: #545661; }
 #acrylic-preview-status { margin: 12px 0 0; }
 @media (max-width: 540px) { .acrylic-variants button { padding: 10px 6px; font-size: 13px; } .acrylic-preview-detail { font-size: 12px; } }
+
+/* Regional controls extend the existing editor; original cards and composition stay intact. */
+.region-toolbar { display:flex; gap:16px; flex-wrap:wrap; align-items:end; margin:0 0 12px; }
+.region-toolbar label,.region-song-fields label { display:flex; align-items:center; gap:8px; font-weight:600; font-size:13px; }
+.region-toolbar select,.region-song-fields select,.region-song-fields input,.companion-level { min-height:38px; padding:8px 10px; border:1px solid #dfdbea; border-radius:10px; background:#fff; color:#24202e; font:inherit; }
+.region-note { margin:8px 0 14px; font-size:12px; line-height:1.6; color:#706a80; }
+.region-content { margin-top:18px; }
+.region-content[hidden],#companion-controls[hidden],#song-controls[hidden] { display:none; }
+.region-song-fields { display:flex; flex-wrap:wrap; gap:14px; padding:14px 4px; }
+#song-achievement { width:126px; }.companion-level { width:72px; }
+@media(max-width:640px){.region-toolbar{gap:10px}.region-toolbar label{width:100%}.region-toolbar select{flex:1;min-width:0}.region-song-fields{gap:10px}}
+
+/* Reuse archived official MAGiCAL website art without changing editor cards or canvas. */
+.maiDecorationBg { z-index:-1; overflow:hidden; }
+.maiDecorationBg .background-layer { isolation:isolate; }
+html[data-background-motion='paused'] .maiDecorationBg * { animation-play-state:paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-background-motion='running']) :is(.maiDecorationBg, .bg.circle) * {
+    animation-play-state: paused !important;
+  }
+}
+
+.hero-background-controls { position:absolute; top:72px; right:24px; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+.hero-background-controls .background-motion { position:static; }
+.region-toolbar[hidden] { display:none; }
+.jp-title-input { width:100%; max-width:240px; margin-top:6px; padding:6px 9px; border:1px solid var(--line); border-radius:8px; font:inherit; }
+#circle-background[hidden], #magical-background[hidden] { display:block; }
+#magical-background { opacity:1; transition:opacity 550ms cubic-bezier(.22,.7,.25,1); }
+#magical-background[hidden] { opacity:0; }
+@media(max-width:640px) { .hero-background-controls { top:50px; right:18px; } }
+@media(prefers-reduced-motion:reduce) { #magical-background { transition:none; } }
+
+.preview-card .preview-mode { position: static; flex-shrink: 0; }
+#preview-hotspots { position: absolute; inset: 0; z-index: 1; }
+#preview-hotspots[hidden], .preview-hotspot[hidden], #preview-title-library[hidden] { display: none; }
+.preview-hotspot { position: absolute; border: 0; padding: 0; background: transparent; cursor: pointer; }
+.preview-hotspot:hover, .preview-hotspot:focus-visible { outline: 2px solid #fff; outline-offset: -3px; box-shadow: inset 0 0 0 4px #5142d8; }
+#preview-value-dialog { width: min(420px, calc(100% - 32px)); border: 0; border-radius: 20px; padding: 22px; color: inherit; }
+#preview-value-dialog::backdrop { background: #17182199; }
+#preview-value-dialog label { display: block; margin-bottom: 6px; }
+#preview-value { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 10px; font: inherit; }
+.preview-value-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+.controls-summary { cursor: pointer; list-style: none; }
+.controls-summary::-webkit-details-marker { display: none; }
+.controls-summary::after { content: ''; width: 8px; height: 8px; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-right: 4px; }
+.controls-card[open] > .controls-summary::after { transform: rotate(225deg); }
+.controls-card:not([open]) > .controls-summary { margin-bottom: 0; }
+
+#region-toggle[hidden] { display: none; }

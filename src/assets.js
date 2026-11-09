@@ -38,6 +38,19 @@ function wait(ms) {
 }
 
 export async function fetchJson(url, forceFresh = false) {
+  const hostname = globalThis.location?.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    const index = [COS.manifestUrl, COS.titleManifestUrl, COS.badgeManifestUrl, COS.recommendationsUrl]
+      .find((source) => source === url);
+    if (index) {
+      try {
+        const response = await fetch(`/cos-index/${index.split('/').pop()}`, { cache: 'no-store' });
+        if (response.ok) return await response.json();
+      } catch {
+        // Local snapshots are optional. Continue with the cloud source.
+      }
+    }
+  }
   let lastError;
   for (let attempt = 0; attempt <= COS.retries; attempt += 1) {
     const controller = new AbortController();
@@ -135,6 +148,31 @@ export function normalizeManifestGroups(data) {
     BLACKROSE: '黑蔷薇',
     'BLACK ROSE': '黑蔷薇',
     しゅわしゅわ: '咻哇咻哇',
+    ドラゴン: '龙之',
+    スカイストリート: '天空街',
+    パーリィ: '派对',
+    ハピフェス: '欢乐节日',
+    でらっくす: 'DX',
+    ProjectDIVA: 'Project DIVA',
+    'HARDCORETANO*C': 'HARDCORE TANO*C',
+  };
+  const groupNames = {
+    実績: '成绩',
+    その他: '其他',
+    デフォルト: '默认',
+    ランダム: '随机',
+    随机选择: '随机',
+    'maimaiシリーズ': '舞萌系列',
+  };
+  const canonicalGroup = (value) => {
+    const label = value?.replace(/^2026\s*·\s*/, '').trim();
+    if (!label) return undefined;
+    const region = /^(.*?)(?:ちほー|区域)\s*(\d*)(.*)$/.exec(label);
+    if (region) {
+      const [, name, number, suffix] = region;
+      return `${regionNames[name.trim()] ?? name.trim()}区域${number}${suffix}`;
+    }
+    return groupNames[label] ?? label;
   };
   data.categories.forEach((category) => {
     const seenAssets = new Set();
@@ -146,19 +184,8 @@ export function normalizeManifestGroups(data) {
     });
     category.count = category.items.length;
     category.items.forEach((item) => {
-      const region = /^(.*)ちほー(\d*)(.*)$/.exec(item.genre || '');
-      if (region && regionNames[region[1]]) {
-        item.group = `${regionNames[region[1]]}区域${region[2]}${region[3]}`;
-      }
-    });
-    const genreGroups = new Map();
-    category.items.forEach((item) => {
-      if (item.genre && item.group && !/^2026\s*·\s*/.test(item.group))
-        genreGroups.set(item.genre, item.group);
-    });
-    category.items.forEach((item) => {
-      if (!/^2026\s*·\s*/.test(item.group || '')) return;
-      item.group = genreGroups.get(item.genre) || item.group.replace(/^2026\s*·\s*/, '');
+      const group = canonicalGroup(item.genre) ?? canonicalGroup(item.group);
+      if (group) item.group = group;
     });
   });
   return data;

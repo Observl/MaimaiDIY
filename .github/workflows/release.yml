@@ -18,7 +18,7 @@ jobs:
     if: github.repository == 'Observl/MaimaiDIY' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Publish the version PR announcement without a changelog file
+      - name: Publish the version announcement without a changelog file
         uses: actions/github-script@v7
         with:
           script: |
@@ -40,11 +40,17 @@ jobs:
               owner, repo, commit_sha: context.sha
             });
             const announcement = pulls.find(pr => pr.merged_at && pr.base.ref === 'main' && pr.title.includes(tag));
-            if (!announcement?.body?.trim()) throw new Error('The version PR must contain the release announcement');
+            const { data: commit } = await github.rest.repos.getCommit({
+              owner, repo, ref: context.sha
+            });
+            const [subject, ...lines] = commit.commit.message.split('\n');
+            const directBody = subject === 'Release ' + tag ? lines.join('\n').trim() : '';
+            const body = announcement?.body?.trim() || directBody;
+            if (!body) throw new Error('The version PR or release commit must contain the announcement');
             const { data: release } = await github.rest.repos.createRelease({
               owner, repo, tag_name: tag, target_commitish: context.sha,
-              name: announcement.title.replace(/^Release\s+/i, ''),
-              body: announcement.body, draft: false, prerelease: false,
+              name: announcement?.title.replace(/^Release\s+/i, '') || tag,
+              body, draft: false, prerelease: false,
               generate_release_notes: false, make_latest: 'true'
             });
             core.notice('Published ' + release.html_url);

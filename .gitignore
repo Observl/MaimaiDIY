@@ -13,3 +13,7 @@ playwright-report/
 /materials/*.json
 /COS-upload/
 /COS-excluded/
+
+node_modules
+
+/data/regions/jp-profile/

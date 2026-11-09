@@ -1,4 +1,5 @@
 import {COS,DEFAULT_BACKGROUND} from './config.js';
+import { migratePinnedRegionAssetUrl } from './region-profile.js';
 const root=COS.baseUrl+'/materials/';
 const legacy={
   'default-background.png':DEFAULT_BACKGROUND,
@@ -17,6 +18,12 @@ const legacy={
 // Resolve legacy template/index addresses without keeping artwork in the repository.
 export function resolveAssetUrl(value) {
   if(typeof value!=='string')return value;
+  if (/^data\/regions\/jp-profile\/[a-zA-Z0-9_-]+\.png$/.test(value))
+    return root + 'regions/jp-profile/' + value.split('/').at(-1);
+  if (value === 'cos-index/cn-review/images/UI_Frame_409517.png')
+    return root + 'backgrounds/UI_Frame_409517.png';
+  const regional = migratePinnedRegionAssetUrl(value);
+  if (regional !== value) return regional;
   const path=value.split(/[?#]/)[0],suffix=value.slice(path.length);
   if(path.startsWith('assets/')) {
     const relative=path.slice(7);

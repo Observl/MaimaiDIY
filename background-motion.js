@@ -1,12 +1,15 @@
 (() => {
   const button = document.querySelector('#background-motion');
   const storageKey = 'maimai-diy-background-motion';
-  let enabled = true;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let preference;
+  let enabled;
   try {
-    enabled = localStorage.getItem(storageKey) !== 'paused';
+    preference = localStorage.getItem(storageKey);
   } catch {}
 
   function update() {
+    enabled = preference === 'running' || (preference !== 'paused' && !reducedMotion.matches);
     document.documentElement.dataset.backgroundMotion = enabled ? 'running' : 'paused';
     button.textContent = enabled ? '关闭动效' : '开启动效';
     button.setAttribute('aria-pressed', String(enabled));
@@ -14,11 +17,12 @@
   }
 
   update();
+  reducedMotion.addEventListener('change', update);
   button.addEventListener('click', () => {
-    enabled = !enabled;
+    preference = enabled ? 'paused' : 'running';
     update();
     try {
-      localStorage.setItem(storageKey, enabled ? 'running' : 'paused');
+      localStorage.setItem(storageKey, preference);
     } catch {}
   });
 })();

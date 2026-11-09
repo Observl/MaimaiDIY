@@ -16,7 +16,7 @@ const badges = {
 const titles = { schemaVersion: 1, items: [{ name: '测试称号', color: 'Silver' }] };
 const library = (page, id) => page.locator(`[data-control="${id}"] .library-button`);
 const item = (page, id) => page.locator(`[data-asset-id="${id}"]`);
-const savedState = page => page.evaluate(() => JSON.parse(localStorage.getItem('maimai-diy-current-design-v1')).state);
+const savedState = page => page.evaluate(() => JSON.parse(localStorage.getItem('maimai-diy-region-current-design-v1')).state);
 const deferred = () => {
   let resolve;
   const promise = new Promise(done => { resolve = done; });

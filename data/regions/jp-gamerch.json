@@ -1,0 +1,952 @@
+{
+  "frames": {
+    "100101": {
+      "name": "しゅわしゅわちほー",
+      "category": "maiマイルショップ"
+    },
+    "109101": {
+      "name": "PERFECT Jewel ［Diamond］",
+      "category": "制覇系"
+    },
+    "109102": {
+      "name": "SYNC Jewel ［Diamond］",
+      "category": "制覇系"
+    },
+    "150051": {
+      "name": "タケモトピアノ",
+      "category": "プレイ"
+    },
+    "200102": {
+      "name": "宇宙すてーしょんちほー おまけ",
+      "category": "ちほー"
+    },
+    "200202": {
+      "name": "天界ちほー4 おまけ",
+      "category": "ちほー"
+    },
+    "200302": {
+      "name": "メトロポリスちほー4 おまけ",
+      "category": "ちほー"
+    },
+    "200402": {
+      "name": "7sRefちほー おまけ",
+      "category": "ちほー"
+    },
+    "200602": {
+      "name": "BLACK ROSEちほー5 おまけ",
+      "category": "ちほー"
+    },
+    "209102": {
+      "name": "SYNC Jewel ［Emerald］",
+      "category": "制覇系"
+    },
+    "209103": {
+      "name": "PERFECT Jewel ［Emerald］",
+      "category": "制覇系"
+    },
+    "250054": {
+      "name": "BLUE ZONE",
+      "category": "FULL SYNC(DX)"
+    },
+    "250102": {
+      "name": "宇宙すてーしょんちほー2 おまけ",
+      "category": "ちほー"
+    },
+    "250202": {
+      "name": "メトロポリスちほー5 おまけ",
+      "category": "ちほー"
+    },
+    "250302": {
+      "name": "天界ちほー5 おまけ",
+      "category": "ちほー"
+    },
+    "250402": {
+      "name": "7sRefちほー2 おまけ",
+      "category": "ちほー"
+    },
+    "250602": {
+      "name": "BLACK ROSEちほー6 おまけ",
+      "category": "ちほー"
+    },
+    "300102": {
+      "name": "ハピフェスちほー おまけ",
+      "category": "ちほー"
+    },
+    "300202": {
+      "name": "メトロポリスちほー6 おまけ",
+      "category": "ちほー"
+    },
+    "300302": {
+      "name": "スカイストリートちほー3 おまけ",
+      "category": "ちほー"
+    },
+    "300402": {
+      "name": "天界ちほー6 おまけ",
+      "category": "ちほー"
+    },
+    "300602": {
+      "name": "BLACK ROSEちほー7 おまけ",
+      "category": "ちほー"
+    },
+    "309101": {
+      "name": "Thank you for playing -UNiVERSE-",
+      "category": "制覇系"
+    },
+    "309102": {
+      "name": "SYNC Jewel ［Sapphire］",
+      "category": "制覇系"
+    },
+    "309103": {
+      "name": "PERFECT Jewel ［Sapphire］",
+      "category": "制覇系"
+    },
+    "350051": {
+      "name": "ぱちんこ maimai でらっくす",
+      "category": "1クレジット内指定プレイ"
+    },
+    "400101": {
+      "name": "パーリィちほー",
+      "category": "ちほー"
+    },
+    "400201": {
+      "name": "メトロポリスちほー7",
+      "category": "ちほー"
+    },
+    "400301": {
+      "name": "スカイストリートちほー5",
+      "category": "ちほー"
+    },
+    "400401": {
+      "name": "7sRefちほー3",
+      "category": "ちほー"
+    },
+    "400601": {
+      "name": "BLACK ROSEちほー9",
+      "category": "ちほー"
+    },
+    "409101": {
+      "name": "Thank you for playing -FESTiVAL-",
+      "category": "制覇系"
+    },
+    "409102": {
+      "name": "SYNC Jewel ［Amethyst］",
+      "category": "制覇系"
+    },
+    "409103": {
+      "name": "PERFECT Jewel ［Amethyst］",
+      "category": "制覇系"
+    },
+    "409507": {
+      "name": "ねこドアップ",
+      "category": "プレイ"
+    },
+    "409508": {
+      "name": "みんないるよ",
+      "category": "マルチプレイ"
+    },
+    "409509": {
+      "name": "ウーパールーパー",
+      "category": "プレイ"
+    },
+    "409510": {
+      "name": "ペンギン島流し",
+      "category": "プレイ"
+    },
+    "409511": {
+      "name": "ぐるん地獄行き",
+      "category": "プレイ"
+    },
+    "409512": {
+      "name": "ねこ無限増殖",
+      "category": "プレイ"
+    },
+    "409513": {
+      "name": "らくがき",
+      "category": "プレイ"
+    },
+    "409514": {
+      "name": "ネオンポップ",
+      "category": "プレイ"
+    },
+    "409515": {
+      "name": "純粋な爆発",
+      "category": "1クレジット内指定プレイ"
+    },
+    "459505": {
+      "name": "MMT type DX",
+      "category": "1クレジット内指定プレイ"
+    },
+    "500102": {
+      "name": "KALEIDXSCOPE -青春エリア-",
+      "category": "プレイ"
+    },
+    "500202": {
+      "name": "KALEIDXSCOPE -神様エリア-",
+      "category": "プレイ"
+    },
+    "500302": {
+      "name": "KALEIDXSCOPE -黒薔薇エリア-",
+      "category": "プレイ"
+    },
+    "500402": {
+      "name": "KALEIDXSCOPE -終末エリア-",
+      "category": "プレイ"
+    },
+    "509101": {
+      "name": "Thank you for playing -BUDDiES-",
+      "category": "制覇系"
+    },
+    "509102": {
+      "name": "SYNC Jewel ［Topaz］",
+      "category": "制覇系"
+    },
+    "509103": {
+      "name": "PERFECT Jewel ［Topaz］",
+      "category": "制覇系"
+    },
+    "550102": {
+      "name": "KALEIDXSCOPE -はじまりエリア-",
+      "category": "プレイ"
+    },
+    "550202": {
+      "name": "KALEIDXSCOPE -世界樹エリア-",
+      "category": "プレイ"
+    },
+    "550302": {
+      "name": "KALEIDXSCOPE -プリズムエリア-",
+      "category": "プレイ"
+    },
+    "550303": {
+      "name": "KALEIDXSCOPE -旧き世界-",
+      "category": "プレイ"
+    },
+    "550304": {
+      "name": "KALEIDXSCOPE -アシッド-",
+      "category": "プレイ"
+    },
+    "550306": {
+      "name": "KALEIDXSCOPE -PRiSM-",
+      "category": "プレイ"
+    },
+    "550307": {
+      "name": "KALEIDXSCOPE -Ref:rain-",
+      "category": "プレイ"
+    },
+    "600101": {
+      "name": "トリコロちほー",
+      "category": "ちほー"
+    },
+    "600201": {
+      "name": "kawaiiちほー2",
+      "category": "ちほー"
+    },
+    "600301": {
+      "name": "高天原ちほー2",
+      "category": "ちほー"
+    },
+    "600401": {
+      "name": "スカイストリートちほー7",
+      "category": "ちほー"
+    },
+    "609101": {
+      "name": "Thank you for playing -PRiSM-",
+      "category": "制覇系"
+    },
+    "609102": {
+      "name": "SYNC Jewel ［Opal］",
+      "category": "制覇系"
+    },
+    "609103": {
+      "name": "PERFECT Jewel ［Opal］",
+      "category": "制覇系"
+    }
+  },
+  "plates": {
+    "109101": {
+      "name": "華極",
+      "category": "制覇系"
+    },
+    "109102": {
+      "name": "華将",
+      "category": "制覇系"
+    },
+    "109103": {
+      "name": "華神",
+      "category": "制覇系"
+    },
+    "109104": {
+      "name": "華舞舞",
+      "category": "制覇系"
+    },
+    "150051": {
+      "name": "真皆伝",
+      "category": "段位認定"
+    },
+    "159101": {
+      "name": "爽極",
+      "category": "制覇系"
+    },
+    "159102": {
+      "name": "爽将",
+      "category": "制覇系"
+    },
+    "159103": {
+      "name": "爽神",
+      "category": "制覇系"
+    },
+    "159104": {
+      "name": "爽舞舞",
+      "category": "制覇系"
+    },
+    "209101": {
+      "name": "煌極",
+      "category": "制覇系"
+    },
+    "209102": {
+      "name": "煌将",
+      "category": "制覇系"
+    },
+    "209103": {
+      "name": "煌神",
+      "category": "制覇系"
+    },
+    "209104": {
+      "name": "煌舞舞",
+      "category": "制覇系"
+    },
+    "250051": {
+      "name": "真初段",
+      "category": "段位認定"
+    },
+    "250052": {
+      "name": "真二段",
+      "category": "段位認定"
+    },
+    "250053": {
+      "name": "真三段",
+      "category": "段位認定"
+    },
+    "250054": {
+      "name": "真四段",
+      "category": "段位認定"
+    },
+    "250055": {
+      "name": "真五段",
+      "category": "段位認定"
+    },
+    "250056": {
+      "name": "真六段",
+      "category": "段位認定"
+    },
+    "250057": {
+      "name": "真七段",
+      "category": "段位認定"
+    },
+    "250058": {
+      "name": "真八段",
+      "category": "段位認定"
+    },
+    "250059": {
+      "name": "真九段",
+      "category": "段位認定"
+    },
+    "250060": {
+      "name": "真十段",
+      "category": "段位認定"
+    },
+    "259101": {
+      "name": "宙極",
+      "category": "制覇系"
+    },
+    "259102": {
+      "name": "宙将",
+      "category": "制覇系"
+    },
+    "259103": {
+      "name": "宙神",
+      "category": "制覇系"
+    },
+    "259104": {
+      "name": "宙舞舞",
+      "category": "制覇系"
+    },
+    "309101": {
+      "name": "星極",
+      "category": "制覇系"
+    },
+    "309102": {
+      "name": "星将",
+      "category": "制覇系"
+    },
+    "309103": {
+      "name": "星神",
+      "category": "制覇系"
+    },
+    "309104": {
+      "name": "星舞舞",
+      "category": "制覇系"
+    },
+    "359101": {
+      "name": "祭極",
+      "category": "制覇系"
+    },
+    "359102": {
+      "name": "祭将",
+      "category": "制覇系"
+    },
+    "359103": {
+      "name": "祭神",
+      "category": "制覇系"
+    },
+    "359104": {
+      "name": "祭舞舞",
+      "category": "制覇系"
+    },
+    "400101": {
+      "name": "パーリィちほー",
+      "category": "ちほー関連"
+    },
+    "400201": {
+      "name": "メトロポリスちほー7",
+      "category": "ちほー関連"
+    },
+    "400301": {
+      "name": "スカイストリートちほー5",
+      "category": "ちほー関連"
+    },
+    "400401": {
+      "name": "7sRefちほー3",
+      "category": "ちほー関連"
+    },
+    "400601": {
+      "name": "BLACK ROSEちほー9",
+      "category": "ちほー関連"
+    },
+    "409101": {
+      "name": "祝極",
+      "category": "制覇系"
+    },
+    "409102": {
+      "name": "祝将",
+      "category": "制覇系"
+    },
+    "409103": {
+      "name": "祝神",
+      "category": "制覇系"
+    },
+    "409104": {
+      "name": "祝舞舞",
+      "category": "制覇系"
+    },
+    "409501": {
+      "name": "ねこCOOL",
+      "category": "プレイ"
+    },
+    "409502": {
+      "name": "ウーパールーパー",
+      "category": "クリアランク"
+    },
+    "409503": {
+      "name": "みんないるよ",
+      "category": "クリアランク"
+    },
+    "409504": {
+      "name": "まいまいネ申",
+      "category": "ALL PERFECT(+)"
+    },
+    "409506": {
+      "name": "USM二人三脚",
+      "category": "FULL SYNC(DX)"
+    },
+    "409507": {
+      "name": "大量ねこクローン",
+      "category": "1クレジット内指定プレイ"
+    },
+    "409508": {
+      "name": "ぐるん",
+      "category": "クリアランク"
+    },
+    "409509": {
+      "name": "ペンギン",
+      "category": "クリアランク"
+    },
+    "450051": {
+      "name": "裏皆伝",
+      "category": "段位認定"
+    },
+    "459101": {
+      "name": "双極",
+      "category": "制覇系"
+    },
+    "459102": {
+      "name": "双将",
+      "category": "制覇系"
+    },
+    "459103": {
+      "name": "双神",
+      "category": "制覇系"
+    },
+    "459104": {
+      "name": "双舞舞",
+      "category": "制覇系"
+    },
+    "509101": {
+      "name": "宴極",
+      "category": "制覇系"
+    },
+    "509102": {
+      "name": "宴将",
+      "category": "制覇系"
+    },
+    "509103": {
+      "name": "宴神",
+      "category": "制覇系"
+    },
+    "509104": {
+      "name": "宴舞舞",
+      "category": "制覇系"
+    },
+    "559101": {
+      "name": "鏡極",
+      "category": "制覇系"
+    },
+    "559102": {
+      "name": "鏡将",
+      "category": "制覇系"
+    },
+    "559103": {
+      "name": "鏡神",
+      "category": "制覇系"
+    },
+    "559104": {
+      "name": "鏡舞舞",
+      "category": "制覇系"
+    },
+    "600101": {
+      "name": "トリコロちほー",
+      "category": "ちほー関連"
+    },
+    "600201": {
+      "name": "kawaiiちほー2",
+      "category": "ちほー関連"
+    },
+    "600301": {
+      "name": "高天原ちほー2",
+      "category": "ちほー関連"
+    },
+    "600401": {
+      "name": "スカイストリートちほー7",
+      "category": "ちほー関連"
+    },
+    "609101": {
+      "name": "彩極",
+      "category": "制覇系"
+    },
+    "609102": {
+      "name": "彩将",
+      "category": "制覇系"
+    },
+    "609103": {
+      "name": "彩神",
+      "category": "制覇系"
+    },
+    "609104": {
+      "name": "彩舞舞",
+      "category": "制覇系"
+    },
+    "000011": {
+      "name": "maimai でらっくす",
+      "category": "実績"
+    },
+    "006101": {
+      "name": "真極",
+      "category": "制覇系"
+    },
+    "006102": {
+      "name": "真神",
+      "category": "制覇系"
+    },
+    "006103": {
+      "name": "真舞舞",
+      "category": "制覇系"
+    },
+    "006104": {
+      "name": "超極",
+      "category": "制覇系"
+    },
+    "006105": {
+      "name": "超将",
+      "category": "制覇系"
+    },
+    "006106": {
+      "name": "超神",
+      "category": "制覇系"
+    },
+    "006107": {
+      "name": "超舞舞",
+      "category": "制覇系"
+    },
+    "006108": {
+      "name": "檄極",
+      "category": "制覇系"
+    },
+    "006109": {
+      "name": "檄将",
+      "category": "制覇系"
+    },
+    "006110": {
+      "name": "檄神",
+      "category": "制覇系"
+    },
+    "006111": {
+      "name": "檄舞舞",
+      "category": "制覇系"
+    },
+    "006112": {
+      "name": "橙極",
+      "category": "制覇系"
+    },
+    "006113": {
+      "name": "橙将",
+      "category": "制覇系"
+    },
+    "006114": {
+      "name": "橙神",
+      "category": "制覇系"
+    },
+    "006115": {
+      "name": "橙舞舞",
+      "category": "制覇系"
+    },
+    "006116": {
+      "name": "暁極",
+      "category": "制覇系"
+    },
+    "006117": {
+      "name": "暁将",
+      "category": "制覇系"
+    },
+    "006118": {
+      "name": "暁神",
+      "category": "制覇系"
+    },
+    "006119": {
+      "name": "暁舞舞",
+      "category": "制覇系"
+    },
+    "006120": {
+      "name": "桃極",
+      "category": "制覇系"
+    },
+    "006121": {
+      "name": "桃将",
+      "category": "制覇系"
+    },
+    "006122": {
+      "name": "桃神",
+      "category": "制覇系"
+    },
+    "006123": {
+      "name": "桃舞舞",
+      "category": "制覇系"
+    },
+    "006124": {
+      "name": "櫻極",
+      "category": "制覇系"
+    },
+    "006125": {
+      "name": "櫻将",
+      "category": "制覇系"
+    },
+    "006126": {
+      "name": "櫻神",
+      "category": "制覇系"
+    },
+    "006127": {
+      "name": "櫻舞舞",
+      "category": "制覇系"
+    },
+    "006128": {
+      "name": "紫極",
+      "category": "制覇系"
+    },
+    "006129": {
+      "name": "紫将",
+      "category": "制覇系"
+    },
+    "006130": {
+      "name": "紫神",
+      "category": "制覇系"
+    },
+    "006131": {
+      "name": "紫舞舞",
+      "category": "制覇系"
+    },
+    "006132": {
+      "name": "菫極",
+      "category": "制覇系"
+    },
+    "006133": {
+      "name": "菫将",
+      "category": "制覇系"
+    },
+    "006134": {
+      "name": "菫神",
+      "category": "制覇系"
+    },
+    "006135": {
+      "name": "菫舞舞",
+      "category": "制覇系"
+    },
+    "006136": {
+      "name": "白極",
+      "category": "制覇系"
+    },
+    "006137": {
+      "name": "白将",
+      "category": "制覇系"
+    },
+    "006138": {
+      "name": "白神",
+      "category": "制覇系"
+    },
+    "006139": {
+      "name": "白舞舞",
+      "category": "制覇系"
+    },
+    "006140": {
+      "name": "雪極",
+      "category": "制覇系"
+    },
+    "006141": {
+      "name": "雪将",
+      "category": "制覇系"
+    },
+    "006142": {
+      "name": "雪神",
+      "category": "制覇系"
+    },
+    "006143": {
+      "name": "雪舞舞",
+      "category": "制覇系"
+    },
+    "006144": {
+      "name": "輝極",
+      "category": "制覇系"
+    },
+    "006145": {
+      "name": "輝将",
+      "category": "制覇系"
+    },
+    "006146": {
+      "name": "輝神",
+      "category": "制覇系"
+    },
+    "006147": {
+      "name": "輝舞舞",
+      "category": "制覇系"
+    },
+    "006148": {
+      "name": "覇者",
+      "category": "制覇系"
+    },
+    "006149": {
+      "name": "舞極",
+      "category": "制覇系"
+    },
+    "006150": {
+      "name": "舞将",
+      "category": "制覇系"
+    },
+    "006151": {
+      "name": "舞神",
+      "category": "制覇系"
+    },
+    "006152": {
+      "name": "舞舞舞",
+      "category": "制覇系"
+    },
+    "055101": {
+      "name": "熊極",
+      "category": "制覇系"
+    },
+    "055102": {
+      "name": "熊将",
+      "category": "制覇系"
+    },
+    "055103": {
+      "name": "熊神",
+      "category": "制覇系"
+    },
+    "055104": {
+      "name": "熊舞舞",
+      "category": "制覇系"
+    },
+    "050101": {
+      "name": "はじまりのちほー2",
+      "category": "maiマイルショップ"
+    },
+    "000101": {
+      "name": "はじまりのちほー",
+      "category": "ちほー関連"
+    },
+    "000201": {
+      "name": "青春ちほー",
+      "category": "ちほー関連"
+    },
+    "000401": {
+      "name": "メトロポリスちほー",
+      "category": "ちほー関連"
+    },
+    "000501": {
+      "name": "ドラゴンちほー",
+      "category": "ちほー関連"
+    },
+    "000601": {
+      "name": "天界ちほー",
+      "category": "ちほー関連"
+    },
+    "000701": {
+      "name": "BLACK ROSEちほー",
+      "category": "ちほー関連"
+    },
+    "000303": {
+      "name": "でらっくすちほー おしゃま牛乳",
+      "category": "ちほー関連"
+    },
+    "000302": {
+      "name": "でらっくすちほー 竜宮茶館",
+      "category": "ちほー関連"
+    },
+    "000301": {
+      "name": "でらっくすちほー caféMiLK",
+      "category": "ちほー関連"
+    },
+    "003301": {
+      "name": "GYARIちほー",
+      "category": "ちほー関連"
+    },
+    "003501": {
+      "name": "Project DIVAちほー",
+      "category": "ちほー関連"
+    },
+    "003901": {
+      "name": "からめるちほー",
+      "category": "ちほー関連"
+    },
+    "003401": {
+      "name": "東方Projectちほー",
+      "category": "ちほー関連"
+    },
+    "004001": {
+      "name": "イロドリミドリちほー",
+      "category": "ちほー関連"
+    },
+    "004201": {
+      "name": "結月ゆかりちほー",
+      "category": "ちほー関連"
+    }
+  },
+  "icons": {
+    "255406": {
+      "name": "Feryquitous",
+      "category": "プレイ"
+    },
+    "255407": {
+      "name": "Sakuzyo",
+      "category": "プレイ"
+    },
+    "255408": {
+      "name": "xi",
+      "category": "プレイ"
+    },
+    "255409": {
+      "name": "Ysk439",
+      "category": "プレイ"
+    },
+    "259501": {
+      "name": "SEGA本社",
+      "category": "プレイ"
+    },
+    "355511": {
+      "name": "MEGAREX",
+      "category": "プレイ"
+    },
+    "355512": {
+      "name": "DJPoyoshi",
+      "category": "プレイ"
+    },
+    "355513": {
+      "name": "lapix",
+      "category": "プレイ"
+    },
+    "355514": {
+      "name": "rejection",
+      "category": "プレイ"
+    },
+    "355515": {
+      "name": "Zekk",
+      "category": "プレイ"
+    },
+    "355516": {
+      "name": "DJ勝也",
+      "category": "プレイ"
+    },
+    "355517": {
+      "name": "Mameyudoufu",
+      "category": "プレイ"
+    },
+    "355518": {
+      "name": "Blacklolita",
+      "category": "プレイ"
+    },
+    "355519": {
+      "name": "YUKIYANAGI",
+      "category": "プレイ"
+    },
+    "409502": {
+      "name": "共に走る",
+      "category": "FULL SYNC(DX)"
+    },
+    "409503": {
+      "name": "女の子",
+      "category": "プレイ"
+    },
+    "409504": {
+      "name": "かわいい女の子",
+      "category": "プレイ"
+    },
+    "609502": {
+      "name": "モ°ルモ°ル",
+      "category": "サークル"
+    },
+    "609503": {
+      "name": "TEmPTaTiON",
+      "category": "サークル"
+    },
+    "609504": {
+      "name": "Paradisoda",
+      "category": "サークル"
+    },
+    "609505": {
+      "name": "[X]",
+      "category": "サークル"
+    },
+    "609506": {
+      "name": "#狂った民族２ PRAVARGYAZOOQA",
+      "category": "サークル"
+    },
+    "609507": {
+      "name": "隠密あんみつDX",
+      "category": "サークル"
+    },
+    "609508": {
+      "name": "VERTeX (rintaro soma deconstructed remix)",
+      "category": "サークル"
+    },
+    "000011": {
+      "name": "maimai でらっくす",
+      "category": "実績"
+    }
+  }
+}

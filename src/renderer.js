@@ -3,6 +3,44 @@ import { nameCharacterCount } from './model.js';
 import { layoutPlayerName } from './player-name.js';
 import { loadImage } from './assets.js';
 
+const ratingArtworkBounds = new WeakMap();
+// Cell centers in the original 664 × 130 Japanese textures. The high tiers
+// have less visible artwork to the right, so their slot scales differently.
+const JP_RATING_CELL_X = [335, 389, 442, 495, 549];
+// Offset the text baseline so the visible digit ink centers vertically.
+const JP_RATING_CELL_Y = 71;
+const RATING_FRAME_INSET = 2;
+
+function visibleRatingBounds(image) {
+  if (ratingArtworkBounds.has(image)) return ratingArtworkBounds.get(image);
+  const { naturalWidth: width, naturalHeight: height } = image;
+  if (!width || !height) return null;
+  const sample = document.createElement('canvas');
+  sample.width = width;
+  sample.height = height;
+  const context = sample.getContext('2d');
+  let bounds = null;
+  try {
+    context.drawImage(image, 0, 0);
+    const { data } = context.getImageData(0, 0, width, height);
+    let left = width, top = height, right = -1, bottom = -1;
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        if (data[(y * width + x) * 4 + 3] <= 16) continue;
+        left = Math.min(left, x);
+        top = Math.min(top, y);
+        right = Math.max(right, x);
+        bottom = Math.max(bottom, y);
+      }
+    }
+    if (right >= left) bounds = [left, top, right - left + 1, bottom - top + 1];
+  } catch {
+    // A texture that cannot be sampled still uses the shared slot dimensions.
+  }
+  ratingArtworkBounds.set(image, bounds);
+  return bounds;
+}
+
 let ratingFontReady;
 function prepareRatingFont() {
   if (!document.fonts?.load) return Promise.resolve();
@@ -66,9 +104,18 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
     ctx.restore();
   }
 
-  function drawRatingValue() {
+  function drawRatingValue(frameImage) {
     const digits = String(state.ratingValue).slice(-5);
-    const cellCenters = [230.5, 246, 261, 276, 291];
+    let cellCenters = [230.5, 246, 261, 276, 291];
+    let y = 49;
+    if (state.region === 'jp') {
+      const frame = slots.ratingFrame;
+      const inset = RATING_FRAME_INSET;
+      const [left, top, width, height] = (frameImage && visibleRatingBounds(frameImage)) ||
+        [4, 4, state.ratingValue >= 14000 ? 596 : 656, 122];
+      cellCenters = JP_RATING_CELL_X.map(x => frame.x + inset + (x - left) / width * (frame.width - 2 * inset));
+      y = frame.y + inset + (JP_RATING_CELL_Y - top) / height * (frame.height - 2 * inset);
+    }
     const startCell = 5 - digits.length;
     ctx.save();
     ctx.font = `800 19px ${RATING_FONT}, sans-serif`;
@@ -80,7 +127,6 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
     ctx.fillStyle = '#fbc802';
     [...digits].forEach((digit, index) => {
       const x = cellCenters[startCell + index];
-      const y = 49;
       ctx.strokeText(digit, x, y);
       ctx.fillText(digit, x, y);
     });
@@ -136,6 +182,11 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
   }
 
   function drawTitleBase(image, slot) {
+    // JP NET frames are already cropped to the visible 25-pixel artwork.
+    if (state.region === 'jp') {
+      ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
+      return;
+    }
     // The source has transparent rows 0–4 and 30–35. Cropping only those rows
     // thickens the frame vertically without changing its destination bounds.
     ctx.drawImage(image, 0, 5, image.naturalWidth, 25, slot.x, slot.y, slot.width, slot.height);
@@ -179,9 +230,10 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    const ratingFrame = drawable.find(layer => layer.id === 'ratingFrame')?.image;
     for (const { id, slot, image } of drawable) {
       if (id === 'ratingDigits') {
-        drawRatingValue();
+        drawRatingValue(ratingFrame);
         continue;
       }
       if (id === 'playerName') {
@@ -192,13 +244,19 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
         drawTitleText();
         continue;
       }
-      if (id === 'titleBase' && state.titleColor === 'Bronze') {
+      if (id === 'titleBase' && state.titleColor === 'Bronze' && state.region !== 'jp') {
         ctx.save();
         ctx.filter = 'sepia(1) saturate(1.25) brightness(.78)';
         drawTitleBase(image, slot);
         ctx.restore();
       } else if (id === 'titleBase') {
         drawTitleBase(image, slot);
+      } else if (id === 'ratingFrame' && state.region === 'jp') {
+        const bounds = visibleRatingBounds(image);
+        // The CN frame artwork sits two canvas pixels inside the shared slot.
+        const inset = RATING_FRAME_INSET;
+        if (bounds) ctx.drawImage(image, ...bounds, slot.x + inset, slot.y + inset, slot.width - 2 * inset, slot.height - 2 * inset);
+        else ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
       } else {
         ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
       }

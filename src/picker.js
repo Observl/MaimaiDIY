@@ -1,17 +1,22 @@
 import { COS, TITLE_COLOR_NAMES } from './config.js';
 import { loadManifest, loadTitleManifest, loadBadgeManifest, loadImage, assetUrl } from './assets.js';
 import { titleAsset } from './model.js';
-export function initializePicker({ state, recordHistory, render, onSelection }) {
+export function initializePicker({
+  state, recordHistory, render, onSelection, resolveCategory,
+  filterCategory = (category) => category,
+  canOpen = () => true,
+}) {
   let manifest;
+  const currentRegion = () => state.region || 'cn';
+  const viewKey = (id, region) => `${region}:${id}`;
   let selectionVersion = 0;
-  let pickerState = { control: null, category: null, items: [], shown: 0, start: 0 };
+  let activeView = false;
+  let pickerState = { control: null, category: null, region: null, items: [], shown: 0, start: 0 };
   const picker = document.querySelector('#asset-picker');
   const pickerTitle = document.querySelector('#picker-title');
   const pickerMeta = document.querySelector('#picker-meta');
   const pickerGrid = document.querySelector('#picker-grid');
   const pickerMessage = document.querySelector('#picker-message');
-  const pickerMore = document.querySelector('#picker-more');
-  const pickerPrevious = document.querySelector('#picker-previous');
   const pickerViews = new Map();
   const PICKER_SELECTION_KEY = 'maimai-diy-picker-selection-v1';
   let pickerSelections = {};
@@ -27,11 +32,25 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
   const pickerFilter = document.querySelector('#picker-filter');
   function showPickerMessage(text) {
     pickerMessage.textContent = text;
-    pickerMessage.hidden = false;
+    pickerMessage.hidden = !text;
+  }
+
+  function isCurrentView(view) {
+    return canOpen() && activeView && picker.open && pickerState === view && currentRegion() === view.region;
+  }
+
+  function showPickerResultsMessage() {
+    if (!pickerState.items.length) {
+      showPickerMessage('没有符合当前搜索和分类条件的素材。');
+    } else {
+      showPickerMessage('');
+    }
   }
 
   function appendPickerItems(prepend = false) {
-    const { control, items } = pickerState;
+    if (!isCurrentView(pickerState)) return;
+    const view = pickerState;
+    const { control, items, region } = view;
     const start = prepend ? Math.max(0, pickerState.start - COS.pageSize) : pickerState.shown;
     const next = items.slice(start, prepend ? pickerState.start : start + COS.pageSize);
     const fragment = document.createDocumentFragment();
@@ -44,7 +63,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       button.dataset.assetId = String(item.id || item.file || item.name);
       button.classList.toggle(
         'is-selected',
-        button.dataset.assetId === pickerSelections[control.id]
+        button.dataset.assetId === pickerSelections[viewKey(control.id, region)]
       );
       const image =
         control.id === 'title' ? document.createElement('i') : document.createElement('img');
@@ -76,9 +95,10 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       button.title = [item.name, item.description, item.id].filter(Boolean).join('\n');
       button.append(image, name, group);
       button.addEventListener('click', async () => {
+        if (!isCurrentView(view)) return;
         const version = ++selectionVersion;
         const selectedUrl = control.id === 'title'
-          ? titleAsset(item.color || 'Normal')
+          ? titleAsset(item.color || 'Normal', region)
           : assetUrl(item);
         button.disabled = true;
         button.setAttribute('aria-busy', 'true');
@@ -87,15 +107,16 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
           // Keep the current composition and history intact until the image is usable.
           await loadImage(selectedUrl);
         } catch {
-          if (picker.open && version === selectionVersion)
+          if (isCurrentView(view) && version === selectionVersion)
             showPickerMessage('这张素材暂时无法加载，已保留原搭配。可点击重试或选择其他素材。');
           return;
         } finally {
           button.disabled = false;
           button.removeAttribute('aria-busy');
         }
-        if (!picker.open || version !== selectionVersion) return;
-        pickerSelections[control.id] = button.dataset.assetId;
+        if (!isCurrentView(view) || version !== selectionVersion) return;
+        showPickerMessage('');
+        pickerSelections[viewKey(control.id, region)] = button.dataset.assetId;
         try {
           localStorage.setItem(PICKER_SELECTION_KEY, JSON.stringify(pickerSelections));
         } catch {}
@@ -104,6 +125,12 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
           .forEach((node) => node.classList.remove('is-selected'));
         button.classList.add('is-selected');
         recordHistory();
+        if (control.select) {
+          control.select(item);
+          onSelection();
+          await render();
+          return;
+        }
         if (control.id === 'title') {
           state.titleName = item.name;
           state.titleColor = item.color || 'Normal';
@@ -115,7 +142,6 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
         state.visible[control.target] = true;
         document.querySelector(`[data-control="${control.id}"] .control-file`).textContent =
           item.name;
-        picker.close();
         onSelection();
         await render();
       });
@@ -129,8 +155,6 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       pickerGrid.append(fragment);
       pickerState.shown += next.length;
     }
-    pickerPrevious.hidden = !pickerState.start;
-    pickerMore.hidden = pickerState.shown >= items.length;
   }
 
   function itemGroup(item) {
@@ -169,7 +193,7 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
   }
 
   function applyPickerFilters(locateSelection = false) {
-    if (!pickerState.category) return;
+    if (!pickerState.category || !isCurrentView(pickerState)) return;
     selectionVersion += 1;
     const query = pickerSearch.value.trim().toLocaleLowerCase('zh-CN');
     const group = pickerFilter.value;
@@ -195,40 +219,83 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       locateSelection === true
         ? pickerState.items.findIndex(
             (item) =>
-              String(item.id || item.file || item.name) === pickerSelections[pickerState.control.id]
+              String(item.id || item.file || item.name) === pickerSelections[viewKey(pickerState.control.id, pickerState.region)]
           )
         : -1;
     pickerState.start = index < 0 ? 0 : Math.floor(index / COS.pageSize) * COS.pageSize;
     pickerState.shown = pickerState.start;
     pickerGrid.replaceChildren();
-    pickerMessage.hidden = pickerState.items.length > 0;
-    if (!pickerState.items.length) showPickerMessage('没有符合当前搜索和分类条件的素材。');
+    showPickerResultsMessage();
     pickerMeta.textContent = `找到 ${pickerState.items.length} / ${pickerState.category.items.length} 个素材`;
     appendPickerItems();
+    // Fill short viewports far enough to make the next batch reachable by scrolling.
+    while (pickerState.shown < pickerState.items.length && picker.clientHeight > 0 &&
+      picker.scrollHeight - picker.clientHeight <= 24) appendPickerItems();
     picker.scrollTop = 0;
-    if (index >= 0)
-      requestAnimationFrame(() =>
-        pickerGrid.querySelector('.is-selected')?.scrollIntoView({ block: 'center' })
-      );
+    if (index >= 0) scrollToSelection(pickerState);
   }
 
   function preparePickerFilters(category) {
     pickerSearch.value = '';
     pickerFilter.replaceChildren(new Option('全部分类', ''));
-    const groups = [...new Set(category.items.map(itemGroup))].sort(compareMaterialGroups);
-    groups.forEach((group) =>
-      pickerFilter.add(
-        new Option(
-          `${group}（${category.items.filter((item) => itemGroup(item) === group).length}）`,
-          group
-        )
-      )
+    // V2 categories already carry a validated group index. Legacy catalogs are
+    // counted once, rather than rescanning the full library for every group.
+    const counts = new Map();
+    if (Array.isArray(category.groups)) {
+      category.groups.forEach(({ label, count, ids }) =>
+        counts.set(label, Number.isInteger(count) ? count : ids.length));
+    } else {
+      category.items.forEach((item) => {
+        const group = itemGroup(item);
+        counts.set(group, (counts.get(group) || 0) + 1);
+      });
+    }
+    [...counts.keys()].sort(compareMaterialGroups).forEach((group) =>
+      pickerFilter.add(new Option(`${group}（${counts.get(group)}）`, group))
     );
   }
 
-  async function openPicker(control) {
+  function cachePickerView() {
+    if (!activeView) return;
+    activeView = false;
+    if (!pickerState.control || !pickerState.category) return;
+    const scroll = picker.scrollTop;
+    const nodes = document.createDocumentFragment();
+    nodes.append(...pickerGrid.childNodes);
+    pickerViews.set(viewKey(pickerState.control.id, pickerState.region), {
+      state: pickerState,
+      nodes,
+      query: pickerSearch.value,
+      group: pickerFilter.value,
+      meta: pickerMeta.textContent,
+      scroll,
+    });
+  }
+
+  function closePicker() {
     selectionVersion += 1;
-    const cachedView = pickerViews.get(control.id);
+    // Native dialog close events are deferred. Save this view while it still
+    // owns the grid, before a region change or a new picker can replace it.
+    cachePickerView();
+    picker.close();
+  }
+
+  function scrollToSelection(view) {
+    requestAnimationFrame(() => {
+      if (isCurrentView(view))
+        pickerGrid.querySelector('.is-selected')?.scrollIntoView({ block: 'center' });
+    });
+  }
+
+  async function openPicker(control) {
+    if (!canOpen()) return;
+    cachePickerView();
+    const openedRegion = currentRegion();
+    const sourceLabel = picker.querySelector('.eyebrow');
+    if (sourceLabel) sourceLabel.textContent = openedRegion === 'jp' ? 'JP ASSETS' : 'CN ASSETS';
+    selectionVersion += 1;
+    const cachedView = pickerViews.get(viewKey(control.id, openedRegion));
+    activeView = true;
     if (cachedView) {
       pickerState = cachedView.state;
       pickerTitle.textContent = `选择${control.label}`;
@@ -237,30 +304,25 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
       pickerFilter.value = cachedView.group;
       pickerGrid.replaceChildren(cachedView.nodes);
       pickerMeta.textContent = cachedView.meta;
-      pickerMessage.hidden = pickerState.items.length > 0;
-      pickerMore.hidden = pickerState.shown >= pickerState.items.length;
-      pickerPrevious.hidden = !pickerState.start;
+      showPickerResultsMessage();
       picker.showModal();
       picker.scrollTop = cachedView.scroll;
-      requestAnimationFrame(() =>
-        pickerGrid.querySelector('.is-selected')?.scrollIntoView({ block: 'center' })
-      );
+      scrollToSelection(pickerState);
       return;
     }
     pickerTitle.textContent = `选择${control.label}`;
-    pickerState = { control, category: null, items: [], shown: 0, start: 0 };
+    pickerState = { control, category: null, region: openedRegion, items: [], shown: 0, start: 0 };
     const requestState = pickerState;
     pickerMeta.textContent = '正在读取云端素材…';
     pickerGrid.replaceChildren();
     pickerSearch.value = '';
     pickerFilter.replaceChildren(new Option('全部分类', ''));
-    pickerMore.hidden = true;
-    pickerPrevious.hidden = true;
     pickerMessage.hidden = true;
     picker.showModal();
     try {
-      let category;
-      if (control.id === 'title') {
+      let category = await resolveCategory?.(control, openedRegion);
+      if (category) { /* The region catalog owns this category. */ }
+      else if (control.id === 'title') {
         category = { id: 'titles', label: '称号', items: (await loadTitleManifest()).items };
       } else if (['rank', 'friendBattle'].includes(control.id)) {
         category = (await loadBadgeManifest()).categories.find(
@@ -270,46 +332,48 @@ export function initializePicker({ state, recordHistory, render, onSelection }) 
         manifest ||= await loadManifest();
         category = manifest.categories.find((item) => item.id === control.category);
       }
-      if (!picker.open || pickerState !== requestState) return;
+      if (!isCurrentView(requestState)) return;
+      if (category) category = await filterCategory(category, openedRegion, control);
+      if (!isCurrentView(requestState)) return;
       if (!category || !category.items?.length) {
         pickerMeta.textContent = '当前分类暂无云端素材';
-        showPickerMessage('可保留当前搭配；头像也可通过“本地上传”替换。');
+        showPickerMessage('此分类暂无可用素材。');
         return;
       }
-      pickerState = { control, category, items: category.items, shown: 0 };
+      Object.assign(requestState, { category, items: category.items });
       preparePickerFilters(category);
       applyPickerFilters(true);
     } catch (error) {
-      if (!picker.open || pickerState !== requestState) return;
+      if (!isCurrentView(requestState)) return;
       pickerMeta.textContent = '连接失败';
       showPickerMessage('此分类的素材库暂时不可用，请稍后重新打开重试。未缓存的云端图片也可能无法加载；本地上传头像仍可使用。');
     }
   }
 
-  document.querySelector('#picker-close').addEventListener('click', () => picker.close());
-  pickerMore.addEventListener('click', () => appendPickerItems());
-  pickerPrevious.addEventListener('click', () => appendPickerItems(true));
+  document.querySelector('#picker-close').addEventListener('click', closePicker);
+  picker.addEventListener('scroll', () => {
+    if (!isCurrentView(pickerState)) return;
+    const edge = 24;
+    if (pickerState.start > 0 && picker.scrollTop <= edge) {
+      appendPickerItems(true);
+    } else if (pickerState.shown < pickerState.items.length &&
+      picker.scrollHeight - picker.clientHeight - picker.scrollTop <= edge) {
+      appendPickerItems();
+    }
+  }, { passive: true });
   picker.addEventListener('close', () => {
     if (picker.open) return;
     selectionVersion += 1;
-    if (!pickerState.control || !pickerState.category) return;
-    const scroll = picker.scrollTop;
-    const nodes = document.createDocumentFragment();
-    nodes.append(...pickerGrid.childNodes);
-    pickerViews.set(pickerState.control.id, {
-      state: pickerState,
-      nodes,
-      query: pickerSearch.value,
-      group: pickerFilter.value,
-      meta: pickerMeta.textContent,
-      scroll,
-    });
+    cachePickerView();
   });
   pickerSearch.addEventListener('input', applyPickerFilters);
   pickerFilter.addEventListener('change', applyPickerFilters);
   picker.addEventListener('click', (event) => {
-    if (event.target === picker) picker.close();
+    if (event.target !== picker) return;
+    const { left, top, right, bottom } = picker.getBoundingClientRect();
+    if (event.clientX < left || event.clientX >= right ||
+        event.clientY < top || event.clientY >= bottom) closePicker();
   });
 
-  return { open: openPicker };
+  return { open: openPicker, close: closePicker };
 }
