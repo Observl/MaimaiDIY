@@ -9,6 +9,7 @@ import {
 import { loadManifest } from './src/assets.js';
 import { resolveAssetUrl } from './src/asset-paths.js';
 import { createRenderer } from './src/renderer.js';
+import { initializeImageExport } from './src/image-export.js';
 import { initializePicker } from './src/picker.js';
 import { indexedMaterialCategory } from './src/material-index.js';
 import { initializeTemplates } from './src/templates.js';
@@ -380,22 +381,8 @@ document.querySelector('#reset').addEventListener('click', () => {
 undoButton.addEventListener('click', undo);
 redoButton.addEventListener('click', redo);
 
-document.querySelector('#export').addEventListener('click', () => {
-  try {
-    const link = document.createElement('a');
-    link.download = `maimai-diy-${OUTPUT.width}x${OUTPUT.height}-${Date.now()}.png`;
-    const outputCanvas = document.createElement('canvas');
-    outputCanvas.width = OUTPUT.width;
-    outputCanvas.height = OUTPUT.height;
-    const outputContext = outputCanvas.getContext('2d');
-    outputContext.imageSmoothingEnabled = true;
-    outputContext.imageSmoothingQuality = 'high';
-    outputContext.drawImage(renderCanvas, 0, 0, OUTPUT.width, OUTPUT.height);
-    link.href = outputCanvas.toDataURL('image/png');
-    link.click();
-  } catch (error) {
-    alert('云端素材的跨域设置尚未生效，暂时无法导出。请稍后重试。');
-  }
+const imageExporter = initializeImageExport({
+  renderCanvas, width: OUTPUT.width, height: OUTPUT.height, isReady: () => loading.hidden,
 });
 
 async function initialize() {
@@ -418,6 +405,7 @@ async function initialize() {
     button.hidden = state.visible[control.target] === false;
   }
   loading.hidden = false;
+  imageExporter.updateAvailability();
   try {
     const data = await loadManifest();
     if (state.region === 'cn') setAssetStatus('is-online', `国服素材库已连接 · ${data.summary?.items ?? 0} 项`);
@@ -435,12 +423,16 @@ async function render(options) {
   saveCurrentDesign(snapshotState());
   const version = ++pendingRender;
   loading.hidden = false;
+  imageExporter.updateAvailability();
   try {
     const rendered = await renderer.render(state, options);
     if (rendered) updateControlIcons();
     return rendered;
   } finally {
-    if (version === pendingRender) loading.hidden = true;
+    if (version === pendingRender) {
+      loading.hidden = true;
+      imageExporter.updateAvailability();
+    }
   }
 }
 function updateControlIcons() {

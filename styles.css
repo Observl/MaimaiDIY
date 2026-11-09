@@ -1541,3 +1541,11 @@ html[data-background-motion='paused'] .maiDecorationBg * { animation-play-state:
 .controls-card:not([open]) > .controls-summary { margin-bottom: 0; }
 
 #region-toggle[hidden] { display: none; }
+
+/* Keep a real image available for Safari's native long-press save menu. */
+#image-export-dialog { width: min(860px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto; border: 0; border-radius: 20px; padding: 22px; color: var(--ink); }
+#image-export-dialog::backdrop { background: #17182199; }
+#image-export-status { line-height: 1.6; }
+#image-export-preview { width: 100%; height: auto; -webkit-touch-callout: default; }
+#image-export-actions:not([hidden]) { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+#image-export-download { text-decoration: none; }
