@@ -183,6 +183,19 @@
   </dialog>
   <dialog id="large-preview" aria-label="大屏预览，点击退出"><canvas width="2160" height="904"></canvas></dialog>
 
+  <dialog id="image-export-dialog" aria-labelledby="image-export-title" aria-describedby="image-export-status">
+    <div class="section-head">
+      <h2 id="image-export-title">保存高清图片</h2>
+      <button id="image-export-close" class="icon-button" type="button" aria-label="关闭图片导出" autofocus>×</button>
+    </div>
+    <p id="image-export-status" role="status"></p>
+    <img id="image-export-preview" alt="待保存的高清上屏图片" hidden>
+    <div id="image-export-actions" hidden>
+      <button id="image-export-share" class="button primary" type="button" hidden>保存 / 分享图片</button>
+      <a id="image-export-download" class="button secondary" download>下载 PNG</a>
+    </div>
+  </dialog>
+
   <template id="control-template">
     <article class="control-row">
       <div class="control-main">
