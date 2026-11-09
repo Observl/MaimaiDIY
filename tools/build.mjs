@@ -14,15 +14,12 @@ const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
   .split('\0')
   .filter(Boolean);
 const publicFile = (path) =>
-  /^(licenses\/|BG\/Magical BG\/(?:assets\/.*\.png$|background.css$)|BG\/Circle BG\/(?:live-assets\/|background.css$|preview.css$))/.test(
+  /^(licenses\/|BG\/Circle BG\/(?:live-assets\/|background.css$|preview.css$))/.test(
     path
   );
 const files = new Set(tracked.filter(publicFile));
 for (const file of [
   'index.html',
-  'data/regions/jp.json',
-  'data/regions/cn.json',
-  'data/regions/visibility-20261108.json',
   'support.html',
   'custom-order.html',
   'styles.css',
@@ -103,5 +100,5 @@ for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
     throw Error(`Missing public dependency: ${path}`);
 }
 console.log(
-  `Built ${files.size} public files. Development tools, tests and raw captures stay out of the site.`
+  `Built ${files.size} public files. Source tools, tests, raw captures and archived backgrounds stay out of the site.`
 );

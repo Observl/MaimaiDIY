@@ -10,12 +10,9 @@ import { loadManifest } from './src/assets.js';
 import { resolveAssetUrl } from './src/asset-paths.js';
 import { createRenderer } from './src/renderer.js';
 import { initializePicker } from './src/picker.js';
-import { filterMaterialCategory } from './src/material-visibility.js';
 import { initializeTemplates } from './src/templates.js';
 import { initializeRecommendations } from './author-recommendations.js';
-import { loadRegionCatalog, regionCategory } from './src/region-catalog.js';
-import { initializeRegionControls } from './src/region-controls.js';
-import { readCurrentDesign, saveCurrentDesign, readRegionDesign } from './src/current-design.js';
+import { readCurrentDesign, saveCurrentDesign } from './src/current-design.js';
 const canvas = document.querySelector('#preview');
 const renderer = createRenderer(canvas);
 const renderCanvas = renderer.renderCanvas;
@@ -23,7 +20,6 @@ const applyRatingBand = () => updateRatingBand(state);
 const loading = document.querySelector('#loading');
 const assetStatus = document.querySelector('#asset-status');
 const state = createDefaultState();
-let regionControls;
 const history = { past: [], future: [], transaction: null };
 const largePreview = document.querySelector('#large-preview');
 canvas.tabIndex = 0;
@@ -101,7 +97,7 @@ async function redo() {
 }
 
 function resetState() {
-  Object.assign(state, createDefaultState(state.region));
+  Object.assign(state, createDefaultState());
 }
 
 function inspectLocalImage(file) {
@@ -255,31 +251,19 @@ function syncControlsFromState() {
     const visible = control.slotIds.every((slotId) => state.visible[slotId] !== false);
     const visibility = row.querySelector('.visibility');
     if (visibility) visibility.checked = visible;
-    const unavailable = state.region === 'jp' && ['rank', 'friendBattle'].includes(control.id);
-    row.classList.toggle('is-unavailable', unavailable);
-    if (visibility) visibility.disabled = unavailable;
-    const libraryButton = row.querySelector('.library-button');
-    if (libraryButton) libraryButton.disabled = unavailable;
     const fallback = control.id === 'avatar' ? '默认素材 · 上传限 1:1，最大 720 × 720' : '默认素材';
     row.querySelector('.control-file').textContent = state.labels[control.id] || fallback;
   });
-  const band = ratingBand(state.ratingValue, state.region);
+  const band = ratingBand(state.ratingValue);
   document.querySelector('[data-control="rating"] .control-file').textContent =
     `${band.label}框 · ${state.ratingValue}`;
   document.querySelector('[data-control="playerName"] .control-file').textContent =
     state.playerName || '未输入名称';
-  regionControls?.sync();
-  templates.refresh();
-  document.querySelector('#author-recommendations').disabled = state.region === 'jp';
 }
 
 document.querySelector('#reset').addEventListener('click', () => {
   recordHistory();
   resetState();
-  if (state.region === 'jp') {
-    state.playerName = 'GUEST'; state.ratingValue = 0; applyRatingBand();
-    syncControlsFromState(); render(); return;
-  }
   Object.assign(state.files, {
     background: `${COS.baseUrl}/materials/backgrounds/UI_Frame_000001.png`,
     nameplate: `${COS.baseUrl}/materials/nameplates/UI_Plate_000001.png`,
@@ -344,9 +328,9 @@ async function initialize() {
   loading.hidden = false;
   try {
     const data = await loadManifest();
-    setAssetStatus('is-online', `国服原素材库已连接 · ${data.summary?.items ?? 0} 项`);
+    setAssetStatus('is-online', `云端素材已连接 · ${data.summary?.items ?? 0} 项`);
   } catch (error) {
-    setAssetStatus('is-offline', '国服原素材库索引暂时不可用 · 部分云端图片可能无法加载');
+    setAssetStatus('is-offline', '素材索引暂时不可用 · 部分云端图片可能无法加载');
   }
   await document.fonts
     .load(`18px ${DISPLAY_FONT}`)
@@ -370,7 +354,6 @@ async function render(options) {
 function updateControlIcons() {
   for (const control of controls) {
     const icon = document.querySelector(`[data-control="${control.id}"] .control-icon`);
-    if (!state.files[control.target]) { icon.replaceChildren(); continue; }
     const src = resolveAssetUrl(state.files[control.target] || slots[control.target].asset);
     if (icon.firstElementChild?.getAttribute('src') === src) continue;
     const image = new Image();
@@ -386,31 +369,14 @@ const materialPicker = initializePicker({
   recordHistory,
   render,
   onSelection: syncControlsFromState,
-  resolveCategory: (control, region) => regionCategory(region, control),
-  filterCategory: filterMaterialCategory,
-  canOpen: () => !document.querySelector('#region-select').disabled,
 });
 const templates = initializeTemplates({
-  getCatalog: loadRegionCatalog,
   state,
   snapshotState,
   recordHistory,
   applyRatingBand,
   syncControlsFromState,
   render,
-});
-regionControls = initializeRegionControls({
-  state, recordHistory, render: () => { templates.refresh(); return render(); }, picker: materialPicker,
-  async changeRegion(region) {
-    if (region === state.region) return;
-    await loadRegionCatalog(region);
-    materialPicker.close();
-    saveCurrentDesign(snapshotState());
-    recordHistory();
-    Object.assign(state, readRegionDesign(region) || createDefaultState(region));
-    syncControlsFromState();
-    await render();
-  },
 });
 if (location.hash === '#custom-order') location.replace('./custom-order.html');
 initializeRecommendations({

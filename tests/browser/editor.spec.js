@@ -298,7 +298,7 @@ test('template storage failure is atomic', async ({ page }) => {
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
-      if (key === 'maimai-diy-region-templates-v1:cn:collection') throw new Error('quota exceeded');
+      if (key === 'maimai-diy-templates-v1') throw new Error('quota exceeded');
       return original.call(this, key, value);
     };
   });
