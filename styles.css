@@ -903,10 +903,8 @@ canvas {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  * {
-    scroll-behavior: auto !important;
-    transition: none !important;
-  }
+  * { scroll-behavior: auto !important; }
+  :not(#magical-background) { transition: none !important; }
 }
 .control-icon img {
   width: 100%;
@@ -1513,11 +1511,17 @@ html[data-background-motion='paused'] .maiDecorationBg * { animation-play-state:
 .hero-background-controls .background-motion { position:static; }
 .region-toolbar[hidden] { display:none; }
 .jp-title-input { width:100%; max-width:240px; margin-top:6px; padding:6px 9px; border:1px solid var(--line); border-radius:8px; font:inherit; }
-#circle-background[hidden], #magical-background[hidden] { display:block; }
-#magical-background { opacity:1; transition:opacity 550ms cubic-bezier(.22,.7,.25,1); }
+#circle-background[hidden], #magical-background[hidden] { display: block !important; }
+/* Keep CiRCLE opaque below MAGiCAL so neither direction exposes the page base. */
+#circle-background { z-index: -2; }
+#magical-background {
+  z-index: -1;
+  opacity: 1;
+  transition: opacity 650ms cubic-bezier(.4, 0, .2, 1);
+}
 #magical-background[hidden] { opacity:0; }
 @media(max-width:640px) { .hero-background-controls { top:50px; right:18px; } }
-@media(prefers-reduced-motion:reduce) { #magical-background { transition:none; } }
+@media (prefers-reduced-motion: reduce) { #magical-background { transition-duration: 240ms; } }
 
 .preview-card .preview-mode { position: static; flex-shrink: 0; }
 #preview-hotspots { position: absolute; inset: 0; z-index: 1; }

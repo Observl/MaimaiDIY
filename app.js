@@ -484,7 +484,6 @@ regionControls = initializeRegionControls({
     recordHistory();
     Object.assign(state, readRegionDesign(region) || createDefaultState(region));
     syncControlsFromState();
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     void render();
   },
 });
