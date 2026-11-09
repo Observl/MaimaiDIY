@@ -1,4 +1,3 @@
-import { applyRegionBackground } from './region-background.js';
 import {DEFAULT_LIGHT_ANGLE} from './finish-settings.js';
 import { DISPLAY_FONT } from './config.js';
 import { readCurrentDesign } from './current-design.js';
@@ -97,7 +96,6 @@ async function refreshDesign() {
   physicalStatus.textContent = '等待上屏设计';
   document.querySelector('#acrylic-export').disabled = true;
   const latest = readCurrentDesign();
-  applyRegionBackground(latest?.region || 'cn');
   if (!latest) {
     status.textContent = '还没有可用的上屏设计，请返回编辑器完成搭配后再来。';
     return;

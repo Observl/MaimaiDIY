@@ -12,7 +12,7 @@ const deferred = () => {
   return { promise, resolve };
 };
 
-async function setup(context, { fetch, image = () => true, resolveCategory } = {}) {
+async function setup(context, { fetch, image = () => true } = {}) {
   const id = ++serial;
   const dom = pickerDOM();
   const storage = new Map();
@@ -55,7 +55,6 @@ async function setup(context, { fetch, image = () => true, resolveCategory } = {
     recordHistory: () => { calls.history++; },
     render: async () => { calls.render++; },
     onSelection: () => { calls.selected++; },
-    resolveCategory,
   });
   return { ...dom, id, state, calls, storage, requests,
     open: id => picker.open(controls.find(control => control.id === id)),
@@ -173,30 +172,4 @@ test('late index errors cannot overwrite a newer independent library', async con
   assert.equal(ui.get('#picker-meta').textContent, '找到 1 / 1 个素材');
   assert.equal(ui.get('#picker-message').hidden, true);
   assert.equal(warning.mock.callCount(), 1);
-});
-
-
-test('versioned category group index preserves counts, filtering and region separation', async context => {
-  const ui = await setup(context, { resolveCategory: async () => ({
-    id: 'avatars',
-    items: [
-      { id: '1', name: 'JP One', file: 'avatars/1.png', group: '活动' },
-      { id: '2', name: 'JP Two', file: 'avatars/2.png', group: '活动' },
-      { id: '3', name: 'JP Three', file: 'avatars/3.png', group: '来源未分类' },
-    ],
-    groups: [{ label: '活动', ids: ['1', '2'], count: 2 }, { label: '来源未分类', ids: ['3'], count: 1 }],
-  }) });
-  ui.state.region = 'jp';
-  await ui.open('avatar');
-  const options = ui.get('#picker-filter').childNodes.map(option => option.textContent);
-  assert.ok(options.includes('活动（2）'));
-  assert.ok(options.includes('来源未分类（1）'));
-  ui.get('#picker-filter').value = '活动';
-  await ui.get('#picker-filter').emit('change');
-  assert.equal(ui.items().length, 2);
-  assert.equal(ui.get('#picker-meta').textContent, '找到 2 / 3 个素材');
-  await ui.items()[0].emit('click');
-  const selections = JSON.parse(ui.storage.get('maimai-diy-picker-selection-v1'));
-  assert.equal(selections['jp:avatar'], '1');
-  assert.equal(selections['cn:avatar'], undefined);
 });

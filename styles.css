@@ -1490,20 +1490,3 @@ canvas {
 .acrylic-preview-detail { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; font-size: 14px; color: #545661; }
 #acrylic-preview-status { margin: 12px 0 0; }
 @media (max-width: 540px) { .acrylic-variants button { padding: 10px 6px; font-size: 13px; } .acrylic-preview-detail { font-size: 12px; } }
-
-/* Regional controls extend the existing editor; original cards and composition stay intact. */
-.region-toolbar { display:flex; gap:16px; flex-wrap:wrap; align-items:end; margin:0 0 12px; }
-.region-toolbar label,.region-song-fields label { display:flex; align-items:center; gap:8px; font-weight:600; font-size:13px; }
-.region-toolbar select,.region-song-fields select,.region-song-fields input,.companion-level { min-height:38px; padding:8px 10px; border:1px solid #dfdbea; border-radius:10px; background:#fff; color:#24202e; font:inherit; }
-.region-note { margin:8px 0 14px; font-size:12px; line-height:1.6; color:#706a80; }
-.region-content { margin-top:18px; }
-.region-content[hidden],#companion-controls[hidden],#song-controls[hidden] { display:none; }
-.region-song-fields { display:flex; flex-wrap:wrap; gap:14px; padding:14px 4px; }
-#song-achievement { width:126px; }.companion-level { width:72px; }
-@media(max-width:640px){.region-toolbar{gap:10px}.region-toolbar label{width:100%}.region-toolbar select{flex:1;min-width:0}.region-song-fields{gap:10px}}
-
-/* Reuse archived official MAGiCAL website art without changing editor cards or canvas. */
-.maiDecorationBg { z-index:-1; overflow:hidden; }
-.maiDecorationBg .background-layer { isolation:isolate; }
-html[data-background-motion='paused'] .maiDecorationBg * { animation-play-state:paused !important; }
-@media(prefers-reduced-motion:reduce) { .maiDecorationBg *,.bg.circle * { animation:none !important; } }
