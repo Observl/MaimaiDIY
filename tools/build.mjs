@@ -22,7 +22,6 @@ for (const file of [
   'index.html',
   'data/regions/jp.json',
   'data/regions/cn.json',
-  'data/regions/visibility-20261108.json',
   'support.html',
   'custom-order.html',
   'styles.css',

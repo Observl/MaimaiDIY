@@ -15,7 +15,6 @@ export const loadRegionCategoryIndex = (region, category) => loader.loadCategory
 export { getRegionCatalogItem } from './region-profile.js';
 export async function regionCategory(region, control) {
   requireIndexRegion(region);
-  if (region === 'jp' && control.category === 'titles') return { id: 'titles', label: control.label, items: [], groups: [], unavailableMessage: '日服称号的区服依据待补充，暂不混用国服称号列表；仍可保留或导入已有称号。' };
   if (region === 'jp' && ['ranks', 'friend-battles'].includes(control.category)) return { id: control.category, label: control.label, items: [], groups: [], unavailableMessage: '日服原版徽章素材待补充，不使用国服素材代替。' };
   const key = mapping[control.category];
   if (!key || (region === 'cn' && !['charas', 'songs'].includes(key))) return null;

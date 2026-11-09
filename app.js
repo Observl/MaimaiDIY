@@ -10,7 +10,6 @@ import { loadManifest } from './src/assets.js';
 import { resolveAssetUrl } from './src/asset-paths.js';
 import { createRenderer } from './src/renderer.js';
 import { initializePicker } from './src/picker.js';
-import { filterMaterialCategory } from './src/material-visibility.js';
 import { initializeTemplates } from './src/templates.js';
 import { initializeRecommendations } from './author-recommendations.js';
 import { loadRegionCatalog, regionCategory } from './src/region-catalog.js';
@@ -386,9 +385,7 @@ const materialPicker = initializePicker({
   recordHistory,
   render,
   onSelection: syncControlsFromState,
-  resolveCategory: (control, region) => regionCategory(region, control),
-  filterCategory: filterMaterialCategory,
-  canOpen: () => !document.querySelector('#region-select').disabled,
+  resolveCategory: (control) => regionCategory(state.region, control),
 });
 const templates = initializeTemplates({
   getCatalog: loadRegionCatalog,
@@ -404,7 +401,6 @@ regionControls = initializeRegionControls({
   async changeRegion(region) {
     if (region === state.region) return;
     await loadRegionCatalog(region);
-    materialPicker.close();
     saveCurrentDesign(snapshotState());
     recordHistory();
     Object.assign(state, readRegionDesign(region) || createDefaultState(region));
