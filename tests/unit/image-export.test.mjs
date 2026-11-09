@@ -16,8 +16,13 @@ async function fixture(run, options = {}) {
   const elements = new Map();
   const canvases = [], links = [], created = [], revoked = [], timers = [];
   function element() {
+    const classes = new Set();
     return {
       handlers: {}, hidden: true, disabled: false, open: false, textContent: '',
+      classList: {
+        toggle(name, force) { if (force) classes.add(name); else classes.delete(name); },
+        contains(name) { return classes.has(name); },
+      },
       addEventListener(name, fn) { this.handlers[name] = fn; },
       removeAttribute(name) { delete this[name]; },
       showModal() { this.open = true; },
@@ -147,6 +152,8 @@ test('preview keeps its URL, shares only on a new tap and calls share synchronou
     assert.equal(e('image-export-preview').hidden, false);
     assert.equal(e('image-export-share').hidden, false);
     assert.equal(e('image-export-download').download.endsWith('.png'), true);
+    assert.equal(e('image-export-status').classList.contains('sr-only'), true);
+    assert.equal(e('image-export-status').textContent, '图片已生成。可长按图片保存。');
     const pending = click('image-export-share');
     assert.equal(calls, 1);
     assert.equal(shared.files[0].type, 'image/png');
@@ -154,6 +161,8 @@ test('preview keeps its URL, shares only on a new tap and calls share synchronou
     assert.equal(revoked.length, 0);
     await pending;
     assert.doesNotMatch(e('image-export-status').textContent, /已保存/);
+    assert.equal(e('image-export-status').textContent, '系统操作已结束。');
+    assert.equal(e('image-export-status').classList.contains('sr-only'), true);
     click('image-export-close');
     assert.equal(e('image-export-preview').src, undefined);
     assert.equal(e('image-export-download').href, undefined);
@@ -177,6 +186,7 @@ for (const [label, navigator] of [
     assert.equal(e('image-export-preview').hidden, false);
     assert.equal(e('image-export-download').href, 'blob:test-1');
     assert.match(e('image-export-status').textContent, /长按/);
+    assert.equal(e('image-export-status').classList.contains('sr-only'), true);
     assert.doesNotMatch(e('image-export-status').textContent, /保存 \/ 分享/);
   }, { navigator });
 });
@@ -187,6 +197,7 @@ for (const name of ['AbortError', 'NotAllowedError']) test(`${name} retains prev
     await click('export');
     await click('image-export-share');
     assert.match(e('image-export-status').textContent, name === 'AbortError' ? /已取消/ : /暂不可用/);
+    assert.equal(e('image-export-status').classList.contains('sr-only'), name === 'AbortError');
     assert.equal(e('image-export-dialog').open, true);
     assert.equal(e('image-export-share').disabled, false);
     assert.equal(e('image-export-preview').src, 'blob:test-1');
@@ -200,6 +211,8 @@ for (const name of ['AbortError', 'NotAllowedError']) test(`${name} retains prev
 test('pending encoding ignores repeated clicks, and closing invalidates an older result after reopening', async () => {
   await fixture(async ({ click, canvases, e, created }) => {
     const first = click('export');
+    assert.match(e('image-export-status').textContent, /正在生成/);
+    assert.equal(e('image-export-status').classList.contains('sr-only'), false);
     await click('export');
     assert.equal(canvases.length, 1);
     assert.equal(e('export').disabled, true);
@@ -244,6 +257,7 @@ test('pending share deduplicates taps and cannot overwrite a newer export after 
     gate.reject({ name: 'AbortError' });
     await first;
     assert.equal(e('image-export-status').textContent, status);
+    assert.equal(e('image-export-status').classList.contains('sr-only'), true);
     assert.equal(e('image-export-share').disabled, false);
     assert.equal(e('image-export-preview').src, 'blob:test-2');
   }, { navigator: { canShare: () => true, share() { calls++; return gate.promise; } } });
@@ -259,6 +273,7 @@ for (const [label, options, pattern] of [
   await fixture(async ({ click, e, canvases, created }) => {
     await click('export');
     assert.match(e('image-export-status').textContent, pattern);
+    assert.equal(e('image-export-status').classList.contains('sr-only'), false);
     assert.equal(e('image-export-dialog').open, true);
     assert.equal(e('image-export-actions').hidden, true);
     assert.equal(canvases[0].width, 0);
@@ -287,6 +302,7 @@ test('desktop download exception shows a recoverable error instead of claiming s
     assert.equal(e('image-export-dialog').open, true);
     assert.equal(e('image-export-preview').hidden, true);
     assert.match(e('image-export-status').textContent, /图片生成失败/);
+    assert.equal(e('image-export-status').classList.contains('sr-only'), false);
   }, { preferPreview: false, clickError: new Error('download failed') });
 });
 
