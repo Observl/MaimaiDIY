@@ -89,6 +89,10 @@ export function initializeImageExport({
   let current = null;
   let sharing = false;
 
+  function setStatus(message, visible = true) {
+    status.textContent = message;
+    status.classList.toggle('sr-only', !visible);
+  }
   function release(url) {
     // Never revoke at image.onload or immediately after a click. Safari/system
     // save menus may still be reading the URL after the dialog is dismissed.
@@ -132,9 +136,7 @@ export function initializeImageExport({
     share.hidden = !current.file;
     share.disabled = sharing;
     actions.hidden = false;
-    status.textContent = '图片已生成。长按下方图片可保存。' +
-      (current.file ? '点击“保存到相册”，在系统菜单中选择“存储图像”。' : '') +
-      '如需 PNG 文件，可选择“保存到文件”。';
+    setStatus('图片已生成。可长按图片保存。', false);
     if (!dialog.open) dialog.showModal();
   }
 
@@ -144,13 +146,13 @@ export function initializeImageExport({
     busy = true;
     button.disabled = true;
     const version = generation;
-    status.textContent = '正在生成高清图片…';
+    setStatus('正在生成高清图片…');
     const filename = `maimai-diy-${width}x${height}-${Date.now()}.png`;
     if (!preferPreview) {
       try {
         downloadPng(renderCanvas, width, height, filename);
       } catch (error) {
-        status.textContent = exportErrorMessage(error);
+        setStatus(exportErrorMessage(error));
         dialog.showModal();
       } finally {
         busy = false;
@@ -173,7 +175,7 @@ export function initializeImageExport({
       showPreview();
     } catch (error) {
       if (version !== generation) return;
-      status.textContent = exportErrorMessage(error);
+      setStatus(exportErrorMessage(error));
       if (!dialog.open) dialog.showModal();
     } finally {
       if (version === generation) {
@@ -190,14 +192,16 @@ export function initializeImageExport({
     const snapshot = current;
     sharing = true;
     share.disabled = true;
+    setStatus('请在系统菜单中确认保存。', false);
     try {
       await navigator.share({ files: [snapshot.file] });
       if (current === snapshot)
-        status.textContent = '系统操作已结束。若尚未保存，可再次点击“保存到相册”或长按图片。';
+        setStatus('系统操作已结束。', false);
     } catch (error) {
-      if (current === snapshot) status.textContent = error?.name === 'AbortError'
-        ? '已取消保存。图片仍在，可再次点击“保存到相册”或长按图片。'
-        : '系统保存暂不可用，请长按下方图片保存到相册，或选择“保存到文件”。';
+      if (current === snapshot) {
+        const cancelled = error?.name === 'AbortError';
+        setStatus(cancelled ? '已取消保存。' : '系统保存暂不可用，请长按图片保存或重试。', !cancelled);
+      }
     } finally {
       sharing = false;
       share.disabled = false;
