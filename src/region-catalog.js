@@ -1,16 +1,7 @@
 import { jpProfileItems } from './jp-profile-assets.js';
 import { registerRegionCatalog } from './region-profile.js';
-import { createRegionIndexLoader, requireIndexRegion, REGION_BASE_URL, REGION_RELEASE_ID } from './region-index.js';
-const loader = createRegionIndexLoader({
-  async fetchImpl(url, options) {
-    if (['localhost', '127.0.0.1'].includes(globalThis.location?.hostname) && url.startsWith(REGION_BASE_URL)) {
-      const local = await fetch(`/cos-index/regions/${REGION_RELEASE_ID}/${url.slice(REGION_BASE_URL.length)}`, options);
-      // The loader still verifies the pinned release and each shard digest.
-      if (local.ok) return new Response(local.body);
-    }
-    return fetch(url, options);
-  },
-});
+import { createRegionIndexLoader, requireIndexRegion } from './region-index.js';
+const loader = createRegionIndexLoader({ allowLegacy: false });
 const requests = new Map();
 let gamerchRequest;
 let jpTitlesRequest;
@@ -52,17 +43,17 @@ export async function regionCategory(region, control) {
   if (region === 'jp' && Object.hasOwn(jpProfileItems, control.category))
     return { id: control.category, label: control.label, items: jpProfileItems[control.category] };
   const key = mapping[control.category];
-  if (!key || (region === 'cn' && !['charas', 'songs'].includes(key))) return null;
-  const catalog = await loadRegionCatalog(region);
+  if (!key || (region === 'cn' && key !== 'songs')) return null;
+  const index = await loadRegionCategoryIndex(region, key);
   const byArea = region === 'jp' && ['frames', 'plates'].includes(key);
   const metadata = region === 'jp' && (byArea || key === 'icons')
     ? (await loadGamerchMetadata())[key] || {} : {};
   return {
     id: control.category,
     label: control.label,
-    groups: byArea ? undefined : catalog.indexes[key].groups,
-    sourceStatus: catalog.sourceStatus,
-    items: catalog[key].map(item => {
+    groups: byArea ? undefined : index.groups,
+    sourceStatus: index.sourceStatus,
+    items: index.items.map(item => {
       const wiki = metadata[item.id];
       const group = item.group || item.genre || item.category || '来源未分类';
       const area = byArea && /^(原创|联动)(?:地区|区域)\s*·\s*(.+)$/.exec(group);

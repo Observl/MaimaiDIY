@@ -5,15 +5,24 @@ test.use({ serviceWorkers: 'block' });
 const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGP4DwQACfsD/fteaysAAAAASUVORK5CYII=', 'base64');
 const host = 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com';
 const entry = (category, id) => ({ id: `${category}/${id}`, name: id, file: `${category}/${id}.png` });
+const longAvatarName = '示例头像 · 相同系列名称用于核对完整版本编号 900002';
 const manifest = {
   schemaVersion: 1,
-  categories: [{ id: 'avatars', items: ['first', 'second'].map(id => entry('avatars', id)) }],
+  categories: [{ id: 'avatars', items: [entry('avatars', 'UI_Icon_900001'), {
+    ...entry('avatars', 'UI_Icon_900002'), name: longAvatarName,
+  }] }],
 };
 const badges = {
   schemaVersion: 1,
   categories: ['ranks', 'friend-battles'].map(id => ({ id, items: [entry(id, 'test')] })),
 };
-const titles = { schemaVersion: 1, items: [{ name: '测试称号', color: 'Silver' }] };
+const titles = { schemaVersion: 1, items: [{ id: 'titles/900003', name: '测试称号', color: 'Silver' }] };
+const visibility = {
+  schemaVersion: 1, snapshotDate: '2026-11-08', sources: [],
+  cnReleased: { frames: {}, plates: {}, icons: {}, titles: {} },
+  cnReviewed: { icons: ['900001', '900002'], titles: ['900003'] },
+  jpIdentified: { frames: [], plates: [], icons: [], charas: [] },
+};
 const library = (page, id) => page.locator(`[data-control="${id}"] .library-button`);
 const item = (page, id) => page.locator(`[data-asset-id="${id}"]`);
 const savedState = page => page.evaluate(() => JSON.parse(localStorage.getItem('maimai-diy-region-current-design-v1')).state);
@@ -26,7 +35,11 @@ const deferred = () => {
 async function setup(page, context, handle) {
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
-    if (url.hostname === '127.0.0.1') return route.continue();
+    if (url.hostname === '127.0.0.1') {
+      if (url.pathname === '/data/regions/visibility-20261108.json') return route.fulfill({ json: visibility });
+      if (/^\/cos-(?:local|index)\//.test(url.pathname)) return route.fulfill({ status: 404 });
+      return route.continue();
+    }
     if (url.origin !== host) return route.abort();
     const response = await handle?.(url.pathname, route);
     if (response === 'handled') return;
@@ -44,6 +57,7 @@ async function setup(page, context, handle) {
   });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loading')).toBeHidden();
+  await page.locator('.controls-summary').click();
 }
 
 test('a failed main index does not block independent title and badge libraries', async ({ page, context }) => {
@@ -56,7 +70,7 @@ test('a failed main index does not block independent title and badge libraries',
   });
   await expect(page.locator('#asset-status')).toContainText('部分云端图片可能无法加载');
   expect(mainRequests).toBe(1);
-  for (const [control, assetId] of [['title', '测试称号'], ['rank', 'ranks/test'], ['friendBattle', 'friend-battles/test']]) {
+  for (const [control, assetId] of [['title', 'titles/900003'], ['rank', 'ranks/test'], ['friendBattle', 'friend-battles/test']]) {
     await library(page, control).click();
     await expect(item(page, assetId)).toBeVisible();
     await page.locator('#picker-close').click();
@@ -65,25 +79,42 @@ test('a failed main index does not block independent title and badge libraries',
 });
 
 test('failed selection preserves design and history, then the same item can be retried', async ({ page, context }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   let unavailable = true;
-  await setup(page, context, path => path === '/materials/avatars/first.png' && unavailable
+  await setup(page, context, path => path === '/materials/avatars/UI_Icon_900001.png' && unavailable
     ? { status: 503, body: 'Unavailable', headers: { 'access-control-allow-origin': '*' } }
     : undefined);
   const original = await savedState(page);
   await library(page, 'avatar').click();
-  await item(page, 'avatars/first').click();
+  const choice = item(page, 'avatars/UI_Icon_900001');
+  await choice.focus();
+  await choice.press('Enter');
   await expect(page.locator('#picker-message')).toContainText('已保留原搭配');
+  await expect(page.locator('#picker-message')).toContainText('「UI_Icon_900001」');
+  await expect(choice).toHaveAttribute('data-selection-error', '');
+  await expect(choice).toBeFocused();
+  await expect(choice.getByText('缩略图暂不可用')).toBeVisible();
   await expect(page.locator('#asset-picker')).toBeVisible();
   await expect(page.locator('#undo')).toBeDisabled();
   expect(await savedState(page)).toEqual(original);
   expect(await page.evaluate(() => localStorage.getItem('maimai-diy-picker-selection-v1'))).toBeNull();
   unavailable = false;
-  await item(page, 'avatars/first').click();
-  await expect(page.locator('#asset-picker')).toBeHidden();
-  expect((await savedState(page)).files.avatar).toBe(`${host}/materials/avatars/first.png`);
+  await item(page, 'avatars/UI_Icon_900001').click();
+  await expect(item(page, 'avatars/UI_Icon_900001')).toHaveAttribute('aria-pressed', 'true');
+  await expect(choice).not.toHaveAttribute('data-selection-error');
+  await expect(page.locator('#picker-message')).toHaveText('已选择：UI_Icon_900001');
+  await expect(choice.getByText('缩略图暂不可用')).toBeHidden();
+  await page.locator('#picker-close').click();
+  expect((await savedState(page)).files.avatar).toBe(`${host}/materials/avatars/UI_Icon_900001.png`);
   await expect(page.locator('#undo')).toBeEnabled();
   await page.locator('#undo').click();
   expect(await savedState(page)).toEqual(original);
+  await library(page, 'avatar').click();
+  await expect(choice).toHaveAttribute('aria-pressed', 'false');
+  await page.keyboard.press('Escape');
+  await page.locator('#redo').click();
+  await library(page, 'avatar').click();
+  await expect(choice).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('title selection also validates its frame before changing the title', async ({ page, context }) => {
@@ -92,27 +123,31 @@ test('title selection also validates its frame before changing the title', async
     : undefined);
   const original = await savedState(page);
   await library(page, 'title').click();
-  await item(page, '测试称号').click();
+  await item(page, 'titles/900003').click();
   await expect(page.locator('#picker-message')).toContainText('已保留原搭配');
   expect(await savedState(page)).toEqual(original);
   await expect(page.locator('#undo')).toBeDisabled();
 });
 
 test('a newer selection wins over an earlier slow image', async ({ page, context }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   const slow = deferred();
   await setup(page, context, async path => {
-    if (path === '/materials/avatars/first.png') await slow.promise;
+    if (path === '/materials/avatars/UI_Icon_900001.png') await slow.promise;
   });
   await library(page, 'avatar').click();
-  await item(page, 'avatars/first').click();
-  await expect(item(page, 'avatars/first')).toBeDisabled();
-  await item(page, 'avatars/second').click();
-  await expect(page.locator('#asset-picker')).toBeHidden();
+  await item(page, 'avatars/UI_Icon_900001').click();
+  await expect(item(page, 'avatars/UI_Icon_900001')).toBeDisabled();
+  const nextAvatar = item(page, 'avatars/UI_Icon_900002');
+  const name = nextAvatar.getByText(longAvatarName, { exact: true });
+  await expect(name).toBeVisible();
+  expect(await name.evaluate(label => label.clientHeight > Number.parseFloat(getComputedStyle(label).lineHeight))).toBe(true);
+  await nextAvatar.click();
+  await expect(item(page, 'avatars/UI_Icon_900002')).toHaveAttribute('aria-pressed', 'true');
   const selected = await savedState(page);
-  expect(selected.files.avatar).toBe(`${host}/materials/avatars/second.png`);
+  expect(selected.files.avatar).toBe(`${host}/materials/avatars/UI_Icon_900002.png`);
   slow.resolve();
-  await library(page, 'avatar').click();
-  await expect(item(page, 'avatars/first')).toBeEnabled();
+  await expect(item(page, 'avatars/UI_Icon_900001')).toBeEnabled();
   expect(await savedState(page)).toEqual(selected);
 });
 
@@ -120,22 +155,22 @@ for (const dismiss of ['close', 'escape']) {
   test(`${dismiss} and reopening another library cancels a pending selection`, async ({ page, context }) => {
     const slow = deferred();
     await setup(page, context, async path => {
-      if (path === '/materials/avatars/first.png') await slow.promise;
+      if (path === '/materials/avatars/UI_Icon_900001.png') await slow.promise;
     });
     const original = await savedState(page);
     await library(page, 'avatar').click();
-    await item(page, 'avatars/first').click();
+    await item(page, 'avatars/UI_Icon_900001').click();
     if (dismiss === 'close') await page.locator('#picker-close').click();
     else await page.keyboard.press('Escape');
     await library(page, 'title').click();
-    await expect(item(page, '测试称号')).toBeVisible();
+    await expect(item(page, 'titles/900003')).toBeVisible();
     slow.resolve();
     await page.evaluate(async () => {
       // Drain the actual image promise, rather than relying on an arbitrary delay.
       const script = [...document.scripts].find(node => node.src.includes('/app.js'));
       const version = new URL(script.src).search;
       const { loadImage } = await import(`./src/assets.js${version}`);
-      await loadImage('https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/avatars/first.png');
+      await loadImage('https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/avatars/UI_Icon_900001.png');
     });
     await expect(page.locator('#asset-picker')).toBeVisible();
     await expect(page.locator('#picker-title')).toHaveText('选择称号');
@@ -157,7 +192,7 @@ test('a late failure from a dismissed library cannot overwrite a newer library',
   await library(page, 'avatar').click();
   await page.locator('#picker-close').click();
   await library(page, 'title').click();
-  await expect(item(page, '测试称号')).toBeVisible();
+  await expect(item(page, 'titles/900003')).toBeVisible();
   slow.resolve();
   await page.evaluate(async () => {
     const script = [...document.scripts].find(node => node.src.includes('/app.js'));

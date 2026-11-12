@@ -28,7 +28,7 @@ export async function createCollectibleMasks(state,options=MASK_PARAMETERS) {
     if (!state.visible[id]) continue;
     await new Promise(resolve=>setTimeout(resolve,0));
     const visible = Object.fromEntries(Object.keys(slots).map(key => [key, key === id]));
-    await isolated.render({ ...state, visible }, { strict: true });
+    await isolated.render({ ...state, visible, screenMode: 'collection' }, { strict: true });
     layerContext.clearRect(0,0,width,height);
     layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
     if(id!=='background') {

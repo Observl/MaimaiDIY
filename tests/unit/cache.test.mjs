@@ -37,10 +37,10 @@ function worker({
   });
   return {
     entries,
-    get: async (path) => {
+    get: async (path, options) => {
       let response;
       listeners.fetch({
-        request: new Request(`https://example.com/MaimaiDIY/${path}`),
+        request: new Request(new URL(path, 'https://example.com/MaimaiDIY/'), options),
         respondWith: (value) => {
           response = value;
         },
@@ -77,6 +77,36 @@ test('invalid and failed manifests do not replace a good cached response', async
   const empty = worker({ fetch: async () => Response.json({}) });
   assert.equal((await empty.get('materials/titles.json')).type, 'error');
   assert.equal(empty.entries.size, 0);
+});
+
+test('preview refresh replaces the old asset under its original cache key', async () => {
+  let body = 'old';
+  const api = worker({ fetch: async () => new Response(body, { headers: { 'content-type': 'image/png' } }) });
+  assert.equal(await (await api.get('assets/a.png')).text(), 'old');
+  body = 'fresh';
+  assert.equal(await (await api.get('assets/a.png?preview-refresh=1')).text(), 'fresh');
+  assert.equal(await (await api.get('assets/a.png')).text(), 'fresh');
+  assert.equal(api.entries.size, 1);
+});
+
+test('an older refresh finishing last cannot overwrite the newer cached image', async () => {
+  const started = Promise.withResolvers();
+  const finishOlder = Promise.withResolvers();
+  const api = worker({ fetch: async request => {
+    const version = new URL(request.url).searchParams.get('preview-refresh');
+    if (version === 'older') {
+      started.resolve();
+      await finishOlder.promise;
+    }
+    return new Response(version, { headers: { 'content-type': 'image/png' } });
+  } });
+  const older = api.get('assets/a.png?preview-refresh=older');
+  await started.promise;
+  await api.get('assets/a.png?preview-refresh=newer');
+  finishOlder.resolve();
+  await older;
+  assert.equal(await (await api.get('assets/a.png')).text(), 'newer');
+  assert.equal(api.entries.size, 1);
 });
 
 test('bad image bodies and error responses are never cached', async () => {
@@ -153,4 +183,30 @@ test('v2 JSON validation and cache are owned by the regional loader, not the leg
   assert.equal(await api.get('materials/regions/releases/20261108/catalogs/v2/jp/index.json'), undefined);
   assert.equal(await api.get('materials/regions/releases/20261108/catalogs/v2/jp/icons.json'), undefined);
   assert.equal(api.entries.size, 0);
+});
+
+test('order APIs and private requests bypass the asset cache even when their URLs look like assets', async () => {
+  const api = worker({ fetch: async () => { throw Error('should not intercept'); } });
+  assert.equal(await api.get('api/orders/preview.png'), undefined);
+  assert.equal(await api.get('index.html?order-edit=' + 'a'.repeat(48)), undefined);
+  assert.equal(await api.get('materials/manifest.json', { headers: { Authorization: 'Bearer test' } }), undefined);
+  assert.equal(await api.get('assets/private.png', { cache: 'no-store' }), undefined);
+  assert.equal(api.entries.size, 0);
+});
+
+test('only the configured COS origin can enter the cross-origin asset cache', async () => {
+  const api = worker({ fetch: async request => {
+    assert.equal(request.credentials, 'omit');
+    assert.equal(request.redirect, 'error');
+    if (new URL(request.url).searchParams.has('preview-refresh')) {
+      throw new TypeError('Redirect rejected');
+    }
+    return new Response('image', { headers: { 'content-type': 'image/png' } });
+  } });
+  assert.equal(await api.get('https://other.cos.ap-shanghai.myqcloud.com/materials/preview.png'), undefined);
+  const url = 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/preview.png';
+  assert.equal(await (await api.get(url)).text(), 'image');
+  await assert.rejects(api.get(`${url}?preview-refresh=1`), /Redirect rejected/);
+  assert.equal(await (await api.get(url)).text(), 'image');
+  assert.deepEqual([...api.entries.keys()], [url]);
 });

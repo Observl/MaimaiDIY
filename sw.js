@@ -1,5 +1,7 @@
-const CACHE_NAME = 'maimai-diy-assets-cos-v2';
+const CACHE_NAME = 'maimai-diy-assets-cos-v3';
+const COS_ORIGIN = 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com';
 const MANIFEST_NAMES = ['manifest.json', 'titles.json', 'badges.json', 'recommendations.json'];
+const pendingAssets = new Map();
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
@@ -24,6 +26,7 @@ function cacheKey(url) {
   const key = new URL(url);
   key.searchParams.delete('refresh');
   key.searchParams.delete('selected');
+  key.searchParams.delete('preview-refresh');
   return key.href;
 }
 
@@ -79,7 +82,11 @@ async function networkManifest(request, url, cache) {
     const cached = await cache?.match(key).catch(() => undefined);
     if (cached) {
       try {
-        if (validManifest(url, await cached.clone().json())) return cached;
+        if (validManifest(url, await cached.clone().json())) {
+          const headers = new Headers(cached.headers);
+          headers.set('X-Maimai-Index-Source', 'cache');
+          return new Response(cached.body, { headers });
+        }
       } catch {}
       await cache.delete(key).catch(() => {});
     }
@@ -87,23 +94,37 @@ async function networkManifest(request, url, cache) {
   }
 }
 
-async function cachedAsset(request, url, cache) {
+async function cachedAsset(request, url, cache, refresh) {
   const key = cacheKey(url);
-  const cached = await cache?.match(key).catch(() => undefined);
+  const pending = pendingAssets.get(key) || { count: 0, refreshVersion: 0 };
+  pendingAssets.set(key, pending);
+  pending.count++;
+  if (refresh) pending.refreshVersion++;
+  const version = pending.refreshVersion;
+  const canWrite = () => refresh ? version === pending.refreshVersion : pending.refreshVersion === 0;
+  try {
+    return await readAsset(request, url, cache, key, refresh, canWrite);
+  } finally {
+    if (--pending.count === 0) pendingAssets.delete(key);
+  }
+}
+
+async function readAsset(request, url, cache, key, refresh, canWrite) {
+  const cached = refresh ? undefined : await cache?.match(key).catch(() => undefined);
   if (cached) {
     if (cached.headers.get('X-Maimai-Validated') === '1') return cached;
     const checked = await validatedAsset(cached, url);
     if (checked) {
-      await cache.put(key, checked.clone()).catch(() => {});
+      if (canWrite()) await cache.put(key, checked.clone()).catch(() => {});
       return checked;
     }
-    await cache.delete(key).catch(() => {});
+    if (canWrite()) await cache.delete(key).catch(() => {});
   }
   const response = await fetch(request);
   if (!cache || !response.ok || response.type === 'opaque') return response;
   const checked = await validatedAsset(response, url);
   if (checked) {
-    await cache.put(key, checked.clone()).catch(() => {});
+    if (canWrite()) await cache.put(key, checked.clone()).catch(() => {});
     return checked;
   }
   return response;
@@ -141,7 +162,10 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   if (request.method !== 'GET' || !['http:', 'https:'].includes(url.protocol)) return;
-  if (url.origin !== self.location.origin && !url.hostname.endsWith('.myqcloud.com')) return;
+  if (request.mode === 'navigate') return;
+  if (request.headers.has('Authorization') || request.cache === 'no-store') return;
+  if (url.origin === self.location.origin && /\/api(?:\/|$)/.test(url.pathname)) return;
+  if (url.origin !== self.location.origin && url.origin !== COS_ORIGIN) return;
   const manifest =
     url.pathname.includes('/materials/') && MANIFEST_NAMES.includes(url.pathname.split('/').pop());
   if (!manifest && !/\.(png|jpe?g|webp|otf|ttf|woff2?)$/i.test(url.pathname)) return;
@@ -150,11 +174,11 @@ self.addEventListener('fetch', (event) => {
       const cache = await caches.open(CACHE_NAME).catch(() => undefined);
       const corsRequest =
         url.origin !== self.location.origin
-          ? new Request(request, { mode: 'cors', credentials: 'omit' })
+          ? new Request(request, { mode: 'cors', credentials: 'omit', redirect: 'error' })
           : request;
       return manifest
         ? networkManifest(corsRequest, url, cache)
-        : cachedAsset(corsRequest, url, cache);
+        : cachedAsset(corsRequest, url, cache, url.searchParams.has('preview-refresh'));
     })()
   );
 });

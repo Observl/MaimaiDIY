@@ -4,9 +4,22 @@ const imageCache = new Map();
 let titleManifest;
 let badgeManifest;
 let manifestRequest;
-export function loadImage(src) {
+const manifestSources = new WeakMap();
+export const manifestSource = manifest => manifestSources.get(manifest);
+export function loadImage(src, refreshId) {
   src=resolveAssetUrl(src);
-  if (imageCache.has(src)) return imageCache.get(src);
+  const refresh = refreshId && typeof src === 'string' &&
+    (src.startsWith(COS.baseUrl + '/materials/') ||
+      /^regional-display\/(?:cn|jp|charas)\/[\w-]+\.webp$/.test(src));
+  const cached = imageCache.get(src);
+  if (!refresh && cached?.previous) return cached.previous.request;
+  if (cached && (!refresh || cached.refreshId === refreshId)) return cached.request;
+  let requestUrl = src;
+  if (refresh) {
+    const url = new URL(src, globalThis.location?.href);
+    url.searchParams.set('preview-refresh', refreshId);
+    requestUrl = url.href;
+  }
   const request = new Promise((resolve, reject) => {
     const image = new Image();
     const timer = setTimeout(() => {
@@ -26,10 +39,19 @@ export function loadImage(src) {
       clearTimeout(timer);
       reject(error);
     };
-    image.src = src;
+    image.src = requestUrl;
   });
-  imageCache.set(src, request);
-  request.catch(() => imageCache.delete(src));
+  const entry = { request, refreshId: refresh ? refreshId : undefined,
+    previous: cached?.loaded ? cached : cached?.previous, loaded: false };
+  imageCache.set(src, entry);
+  request.then(() => {
+    entry.loaded = true;
+    entry.previous = undefined;
+  }, () => {
+    if (imageCache.get(src) !== entry) return;
+    if (entry.previous) imageCache.set(src, entry.previous);
+    else imageCache.delete(src);
+  });
   return request;
 }
 
@@ -37,20 +59,7 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function fetchJson(url, forceFresh = false) {
-  const hostname = globalThis.location?.hostname;
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    const index = [COS.manifestUrl, COS.titleManifestUrl, COS.badgeManifestUrl, COS.recommendationsUrl]
-      .find((source) => source === url);
-    if (index) {
-      try {
-        const response = await fetch(`/cos-index/${index.split('/').pop()}`, { cache: 'no-store' });
-        if (response.ok) return await response.json();
-      } catch {
-        // Local snapshots are optional. Continue with the cloud source.
-      }
-    }
-  }
+export async function fetchJson(url, forceFresh = false, onSource) {
   let lastError;
   for (let attempt = 0; attempt <= COS.retries; attempt += 1) {
     const controller = new AbortController();
@@ -68,7 +77,9 @@ export async function fetchJson(url, forceFresh = false) {
         error.status = response.status;
         throw error;
       }
-      return await response.json();
+      const data = await response.json();
+      onSource?.(response.headers.get('X-Maimai-Index-Source') === 'cache' ? 'cache' : 'network');
+      return data;
     } catch (error) {
       lastError = error;
       // Retrying unavailable/forbidden objects cannot recover them. Still retry
@@ -114,7 +125,9 @@ async function readManifest() {
   const sources = [COS.manifestUrl];
   for (const url of sources) {
     try {
-      const data = validateManifest(await fetchJson(url, true));
+      let source;
+      const data = validateManifest(await fetchJson(url, true, value => { source = value; }));
+      manifestSources.set(data, source);
       normalizeManifestGroups(data);
       try {
         localStorage.setItem(COS.cacheKey, JSON.stringify(data));
@@ -128,7 +141,11 @@ async function readManifest() {
   }
   try {
     const cached = localStorage.getItem(COS.cacheKey);
-    if (cached) return normalizeManifestGroups(validateManifest(JSON.parse(cached)));
+    if (cached) {
+      const data = normalizeManifestGroups(validateManifest(JSON.parse(cached)));
+      manifestSources.set(data, 'cache');
+      return data;
+    }
   } catch {
     /* A blocked or corrupt browser cache must not break the editor. */
   }

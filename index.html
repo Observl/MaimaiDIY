@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta name="referrer" content="no-referrer">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#171821">
   <title>MaimaiDIY v1.2.5 · 舞萌上屏装饰模拟器</title>
@@ -16,6 +17,7 @@
   <script src="background-motion.js" defer></script>
 </head>
 <body>
+  <a class="button primary page-skip-link" href="#editor-preview" hidden>跳到实时预览</a>
   <div id="circle-background" class="bg circle" aria-hidden="true"><div class="bg--wrap">
     <div class="bg--pattern"></div>
     <div class="bg--layer">
@@ -47,8 +49,8 @@
         <p class="subtitle">舞萌上屏收藏品展示模拟器</p>
       </div>
       <div class="hero-side">
-        <span id="asset-status" class="status is-loading"><i></i> 正在连接国服原素材库</span>
-        <a class="version-link" href="https://github.com/Observl/MaimaiDIY/releases/tag/v1.2.5" target="_blank" rel="noopener noreferrer">v1.2.5</a>
+        <span id="asset-status" class="status is-loading" role="status"><i></i> 正在读取素材索引</span>
+        <a class="version-link" href="https://github.com/Observl/MaimaiDIY/releases/tag/v1.2.5" target="_blank" rel="noopener noreferrer">MaimaiDIY v1.2.5</a>
         <a class="github-profile" href="https://github.com/ObservL" target="_blank" rel="noopener noreferrer" aria-label="访问 ObservL 的 GitHub 主页">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.01-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.64 0c2.15-1.45 3.1-1.15 3.1-1.15.61 1.55.23 2.7.11 2.98.72.78 1.16 1.78 1.16 3.01 0 4.32-2.64 5.28-5.15 5.56.4.35.76 1.03.76 2.08v3.1c0 .3.2.65.78.54A11.25 11.25 0 0 0 12 .75Z"/></svg>
           <span>@ObservL</span>
@@ -62,14 +64,15 @@
 
     <section class="preview-card card">
       <div class="section-head">
-        <h2>实时预览</h2>
-        <button id="preview-mode" class="background-motion preview-mode" type="button" aria-label="更改素材模式" aria-pressed="false">放大预览</button>
+        <h2 id="editor-preview" tabindex="-1">实时预览</h2>
+        <div class="preview-heading-actions">
+          <button id="preview-refresh" class="background-motion preview-refresh" type="button" aria-label="刷新预览" aria-describedby="preview-refresh-status" title="重新获取素材并刷新预览"><span aria-hidden="true">↻</span></button>
+          <button id="preview-mode" class="background-motion preview-mode" type="button" aria-pressed="false">放大预览</button>
+        </div>
       </div>
-      <div class="region-toolbar" hidden aria-label="区服与展示模式">
-        <label>区服 <select id="region-select"><option value="cn">国服 · 舞萌DX2026 / CiRCLE 网页</option><option value="jp">日服 · MAGiCAL 网页</option></select></label>
-        <label>展示内容 <select id="screen-mode"><option value="collection">收藏品</option><option value="companions">旅行伙伴</option><option value="achievement">歌曲达成率</option></select></label>
-      </div>
+      <select id="region-select" hidden aria-label="区服"><option value="cn">国服 · 舞萌DX2026 / CiRCLE 网页</option><option value="jp">日服 · MAGiCAL 网页</option></select>
       <p id="region-status" class="region-note" role="status">区服切换网页装饰；上屏设计背景独立选择，不随网页主题替换。</p>
+      <p id="preview-refresh-status" class="template-status export-status" role="status"></p>
       <div class="canvas-shell">
         <canvas id="preview" width="1080" height="452" aria-label="舞萌上屏合成预览"></canvas>
         <div id="preview-hotspots" hidden></div>
@@ -85,15 +88,17 @@
           </button>
         </div>
         <button id="reset" class="button secondary" type="button">清空</button>
-        <button id="export" class="button primary" type="button">导出高清 PNG</button>
+        <button id="export" class="button primary" type="button" aria-describedby="export-status">导出高清 PNG</button>
       </div>
+      <p id="export-status" class="template-status export-status" role="status"></p>
+      <button id="export-refresh" class="button secondary" type="button" aria-describedby="export-status" hidden>重新获取导出素材</button>
     </section>
 
     <section class="card template-card">
       <div class="section-head">
         <div>
           <h2>本地模板</h2>
-          <p>模板仅保存在当前设备的浏览器中，不会同步到云端。</p>
+          <p id="template-storage-note">模板仅保存在当前设备的浏览器中，不会同步到云端。</p>
         </div>
       </div>
       <div class="template-tools">
@@ -131,20 +136,30 @@
           <div id="material-controls"></div>
         </section>
       </div>
-      <section id="region-content" class="component-panel region-content" hidden aria-labelledby="region-content-title">
-        <h3 id="region-content-title">旅行伙伴</h3>
-        <p id="region-content-note" class="region-note"></p>
-        <div id="companion-controls" hidden></div>
-        <div id="song-controls" hidden>
-          <article class="control-row" data-control="region-song">
-            <div class="control-main"><span class="control-icon" id="song-cover"></span><div><h3 class="control-label">歌曲</h3><p class="control-file" id="song-label">未选择歌曲</p></div></div>
-            <div class="control-actions"><button id="song-pick" class="library-button" type="button">曲库</button></div>
-          </article>
-          <div class="region-song-fields">
-            <label>难度 <select id="song-difficulty" disabled></select></label>
-            <label>达成率 <input id="song-achievement" type="number" min="0" max="101" step="0.0001" value="100.0000" inputmode="decimal"> %</label>
-          </div>
+      <section class="component-panel region-content" aria-labelledby="screen-module-title">
+        <h3 id="screen-module-title">上屏模块</h3>
+        <div id="screen-mode" class="region-toolbar" role="radiogroup" aria-labelledby="screen-module-title">
+          <label><input type="radio" name="screen-mode" value="collection" checked><span>仅收藏品</span></label>
+          <label><input type="radio" name="screen-mode" value="companions"><span>旅行伙伴</span></label>
+          <label><input type="radio" name="screen-mode" value="achievement"><span>歌曲达成率</span></label>
         </div>
+        <section id="region-content" class="region-module-fields" hidden aria-labelledby="region-content-title">
+          <h3 id="region-content-title">旅行伙伴</h3>
+          <p id="region-content-note" class="region-note"></p>
+          <p id="regional-display-error" class="region-note" role="status"></p>
+          <button id="regional-display-retry" class="button secondary" type="button" hidden>重试展示素材</button>
+          <div id="companion-controls" hidden></div>
+          <div id="song-controls" hidden>
+            <article class="control-row" data-control="region-song">
+              <div class="control-main"><span class="control-icon" id="song-cover"></span><div><h3 class="control-label">歌曲</h3><p class="control-file" id="song-label">未选择歌曲</p></div></div>
+              <div class="control-actions"><button id="song-pick" class="library-button" type="button">曲库</button></div>
+            </article>
+            <div class="region-song-fields">
+              <label><span>难度</span><select id="song-difficulty" disabled></select></label>
+              <label><span>达成率</span><span class="song-percentage"><input id="song-achievement" type="number" min="0" max="101" step="0.0001" value="100.0000" inputmode="decimal"><span aria-hidden="true">%</span></span></label>
+            </div>
+          </div>
+        </section>
       </section>
       <button id="author-recommendations" class="button secondary recommendations-entry" type="button">作者推荐</button>
     </details>
@@ -174,6 +189,9 @@
         <h2 id="preview-value-title"></h2>
         <button id="preview-value-close" class="icon-button" type="button" aria-label="关闭">×</button>
       </div>
+      <label id="preview-song-chart" hidden>难度与等级
+        <select id="preview-song-difficulty"></select>
+      </label>
       <label id="preview-value-label" for="preview-value"></label>
       <input id="preview-value" autofocus>
       <div class="preview-value-actions">
@@ -181,7 +199,41 @@
       </div>
     </form>
   </dialog>
-  <dialog id="large-preview" aria-label="大屏预览，点击退出"><canvas width="2160" height="904"></canvas></dialog>
+  <dialog id="large-preview" aria-label="大屏预览">
+    <button id="large-preview-close" class="button secondary" type="button" autofocus>关闭预览</button>
+    <canvas width="2160" height="904" aria-label="当前设计的大屏预览"></canvas>
+  </dialog>
+
+  <template id="control-template">
+    <article class="control-row">
+      <div class="control-main">
+        <span class="control-icon"></span>
+        <div>
+          <h3 class="control-label"></h3>
+          <p class="control-file">默认素材</p>
+        </div>
+      </div>
+      <div class="control-actions">
+        <label class="rating-editor" hidden>
+          <input class="rating-input" aria-label="Rating" type="number" min="0" max="99999" step="1" value="15000" inputmode="numeric">
+        </label>
+        <label class="name-editor" hidden>
+          <span>名称</span>
+          <input class="name-input" type="text" maxlength="128" value="maimai" autocomplete="off" aria-label="玩家名称">
+        </label>
+        <label class="switch-wrap">
+          <span>展示</span>
+          <input class="visibility" type="checkbox" checked>
+          <i class="switch"></i>
+        </label>
+        <button class="library-button" type="button">素材库</button>
+        <label class="upload-button">
+          本地上传
+          <input class="file-input" type="file" accept="image/png,image/jpeg,image/webp">
+        </label>
+      </div>
+    </article>
+  </template>
 
   <dialog id="image-export-dialog" aria-labelledby="image-export-title" aria-describedby="image-export-status">
     <div class="section-head">
@@ -227,15 +279,15 @@
     </article>
   </template>
 
-  <dialog id="asset-picker" class="asset-picker">
+  <dialog id="asset-picker" class="asset-picker" aria-labelledby="picker-title">
     <div class="picker-sticky">
     <div class="picker-head">
       <div>
         <p class="eyebrow">COS ASSETS</p>
         <h2 id="picker-title">选择素材</h2>
-        <p id="picker-meta" class="picker-meta"></p>
+        <p id="picker-meta" class="picker-meta" role="status"></p>
       </div>
-      <button id="picker-close" class="icon-button" type="button" aria-label="关闭">×</button>
+      <button id="picker-close" class="icon-button" type="button" aria-label="关闭素材选择" autofocus>×</button>
     </div>
     <div class="picker-tools">
       <label class="picker-search-wrap">
@@ -249,9 +301,15 @@
         </select>
       </label>
     </div>
+    <button id="picker-clear" class="button secondary picker-recovery" type="button" hidden>清除筛选</button>
     </div>
-    <div id="picker-message" class="picker-message" hidden></div>
+    <div id="picker-scroll" class="picker-scroll">
+    <div id="picker-message" class="picker-message" role="status" hidden></div>
+    <button id="picker-clear-search" class="button secondary picker-recovery" type="button" hidden>清除关键词，保留分类</button>
+    <button id="picker-all-groups" class="button secondary picker-recovery" type="button" hidden>保留关键词，查看全部分类</button>
+    <button id="picker-retry" class="button secondary picker-recovery" type="button" hidden>重试加载素材</button>
     <div id="picker-grid" class="picker-grid"></div>
+    </div>
   </dialog>
 
   <dialog id="recommendations-dialog" class="asset-picker recommendations-dialog" aria-labelledby="recommendations-title">
@@ -265,7 +323,7 @@
     <p id="recommendations-status" role="status"></p>
     <div id="recommendations-grid" class="recommendations-grid"></div>
   </dialog>
-  <script type="module" src="app.js?v=cleanup-1"></script>
   <script data-goatcounter="https://observl.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  <script type="module" src="app.js?v=cleanup-1"></script>
 </body>
 </html>

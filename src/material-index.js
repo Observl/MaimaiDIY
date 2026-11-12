@@ -18,40 +18,20 @@ async function readCategory(control, region) {
   return filterMaterialCategory(category || { id, label: control.label, items: [] }, region);
 }
 
-export function mergeMaterialCategories(cn, jp) {
-  const byId = new Map();
-  for (const [region, category] of [['cn', cn], ['jp', jp]]) {
-    for (const item of category.items) {
-      const id = materialIdentity(item, category.id);
-      const key = id == null ? `${region}:${item.file || item.name}` : `id:${id}`;
-      let record = byId.get(key);
-      if (!record) {
-        record = { variants: {} };
-        byId.set(key, record);
-      }
-      record.variants[region] ??= item;
-    }
-  }
-  return [...byId.values()].map(({ variants }) => ({
-    regionIndex: variants.cn && variants.jp ? 0 : variants.jp ? 1 : 2,
-    variants,
-  }));
-}
-
 export async function indexedMaterialCategory(control, region) {
-  const id = control.category;
-  if (!indexes.has(id)) {
-    indexes.set(id, Promise.all([readCategory(control, 'cn'), readCategory(control, 'jp')])
-      .then(([cn, jp]) => ({ cn, jp, records: mergeMaterialCategories(cn, jp) }))
-      .catch(error => { indexes.delete(id); throw error; }));
+  const key = region + ':' + control.category;
+  if (!indexes.has(key)) {
+    indexes.set(key, readCategory(control, region).then(category => {
+      const seen = new Set();
+      const items = category.items.filter(item => {
+        const id = materialIdentity(item, category.id);
+        const identity = id == null ? 'file:' + (item.file || item.name) : 'id:' + id;
+        if (seen.has(identity)) return false;
+        seen.add(identity);
+        return true;
+      });
+      return items.length === category.items.length ? category : { ...category, groups: undefined, items };
+    }).catch(error => { indexes.delete(key); throw error; }));
   }
-  const index = await indexes.get(id);
-  const { label, visibilityMessage, unavailableMessage, sourceStatus } = index[region];
-  const regionIndex = region === 'jp' ? 1 : 2;
-  return {
-    id, label, visibilityMessage, unavailableMessage, sourceStatus,
-    items: index.records
-      .filter(record => record.regionIndex === 0 || record.regionIndex === regionIndex)
-      .map(record => ({ ...record.variants[region], regionIndex: record.regionIndex })),
-  };
+  return indexes.get(key);
 }

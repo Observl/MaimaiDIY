@@ -6,9 +6,9 @@ import {
   nameCharacterCount,
   applyRatingBand as updateRatingBand,
 } from './src/model.js';
-import { loadManifest } from './src/assets.js';
+import { loadImage } from './src/assets.js';
 import { resolveAssetUrl } from './src/asset-paths.js';
-import { createRenderer } from './src/renderer.js';
+import { createRenderer, failedPreviewAssetLabel } from './src/renderer.js';
 import { initializeImageExport } from './src/image-export.js';
 import { initializePicker } from './src/picker.js';
 import { indexedMaterialCategory } from './src/material-index.js';
@@ -16,32 +16,91 @@ import { initializeTemplates } from './src/templates.js';
 import { initializeRecommendations } from './author-recommendations.js';
 import { loadRegionCatalog } from './src/region-catalog.js';
 import { initializeRegionControls } from './src/region-controls.js';
+import { songJacketBounds } from './src/regional-display.js';
 import { readCurrentDesign, saveCurrentDesign, readRegionDesign } from './src/current-design.js';
 const canvas = document.querySelector('#preview');
 const renderer = createRenderer(canvas);
 const renderCanvas = renderer.renderCanvas;
 const applyRatingBand = () => updateRatingBand(state);
 const loading = document.querySelector('#loading');
-const assetStatus = document.querySelector('#asset-status');
 const state = createDefaultState();
 let regionControls;
-const history = { past: [], future: [], transaction: null };
+const historyByRegion = {
+  cn: { past: [], future: [], transaction: null },
+  jp: { past: [], future: [], transaction: null },
+};
 const largePreview = document.querySelector('#large-preview');
 const previewMode = document.querySelector('#preview-mode');
+const previewRefresh = document.querySelector('#preview-refresh');
+const previewRefreshStatus = document.querySelector('#preview-refresh-status');
+const regionalDisplayError = document.querySelector('#regional-display-error');
+const regionalDisplayRetry = document.querySelector('#regional-display-retry');
+regionalDisplayRetry.addEventListener('click', async () => {
+  if (regionalDisplayRetry.getAttribute('aria-disabled') === 'true') return;
+  const restoreFocus = document.activeElement === regionalDisplayRetry;
+  regionalDisplayRetry.setAttribute('aria-disabled', 'true');
+  try {
+    if (await refreshPreview(regionalDisplayError)) {
+      regionalDisplayError.textContent = '展示素材已重新载入，预览已更新。';
+      if (restoreFocus && [document.body, regionalDisplayRetry].includes(document.activeElement)) canvas.focus();
+    }
+  } finally {
+    regionalDisplayRetry.removeAttribute('aria-disabled');
+  }
+});
+let previewRegionVersion = 0;
+let previewWorkPending = false;
+function setPreviewWorkPending(pending) {
+  previewWorkPending = pending;
+  for (const button of [previewRefresh, exportButton, exportRefresh]) {
+    if (pending) button.setAttribute('aria-disabled', 'true');
+    else button.removeAttribute('aria-disabled');
+  }
+  imageExporter.updateAvailability();
+}
+async function refreshPreview(status = previewRefreshStatus) {
+  if (previewWorkPending) return false;
+  const regionVersion = previewRegionVersion;
+  setPreviewWorkPending(true);
+  status.textContent = '正在重新获取素材…';
+  try {
+    const rendered = await render({ strict: true, refreshId: crypto.randomUUID() });
+    if (regionVersion !== previewRegionVersion) return false;
+    if (!rendered) {
+      status.textContent = '预览已更新，请稍后重试刷新。';
+      return false;
+    }
+    if (status === exportStatus || !exportRefresh.hidden) {
+      exportStatus.textContent = '素材已刷新，可以重新导出高清 PNG。';
+      exportRefresh.hidden = true;
+    }
+    previewRefreshStatus.textContent = status === previewRefreshStatus ? '预览已刷新。' : '';
+    return true;
+  } catch (error) {
+    if (regionVersion === previewRegionVersion) {
+      const asset = failedPreviewAssetLabel(error);
+      status.textContent = `${asset ? '“' + asset + '”' : '素材'}暂时无法重新加载，已保留当前预览。请稍后重试。`;
+    }
+    return false;
+  } finally {
+    setPreviewWorkPending(false);
+  }
+}
+previewRefresh.addEventListener('click', () => refreshPreview());
 const previewHotspots = document.querySelector('#preview-hotspots');
 const valueDialog = document.querySelector('#preview-value-dialog');
 const valueInput = document.querySelector('#preview-value');
+const previewSongChart = document.querySelector('#preview-song-chart');
+const previewSongDifficulty = document.querySelector('#preview-song-difficulty');
 const editorFields = { playerName: '.name-input', rating: '.rating-input' };
 let activePreviewEditor;
 canvas.tabIndex = 0;
 canvas.setAttribute('role', 'button');
 canvas.setAttribute('aria-label', '打开横屏大屏预览');
 function openLargePreview() {
-  if (!previewHotspots.hidden) return;
+  if (!previewHotspots.hidden || largePreview.open) return;
   const enlarged = largePreview.querySelector('canvas');
-  const enlargedContext = enlarged.getContext('2d');
-  enlargedContext.imageSmoothingQuality = 'high';
-  enlargedContext.drawImage(renderCanvas, 0, 0, enlarged.width, enlarged.height);
+  renderer.paintPreview(enlarged);
   largePreview.showModal();
 }
 canvas.addEventListener('click', openLargePreview);
@@ -51,7 +110,13 @@ canvas.addEventListener('keydown', (event) => {
     openLargePreview();
   }
 });
-largePreview.addEventListener('click', () => largePreview.close());
+document.querySelector('#large-preview-close').addEventListener('click', () => largePreview.close());
+largePreview.addEventListener('click', event => {
+  if (event.target === largePreview) largePreview.close();
+});
+largePreview.addEventListener('close', () => {
+  if (previewHotspots.hidden) canvas.focus({ preventScroll: true });
+});
 previewMode.addEventListener('click', () => {
   const editing = previewHotspots.hidden;
   previewHotspots.hidden = !editing;
@@ -61,14 +126,25 @@ previewMode.addEventListener('click', () => {
   canvas.toggleAttribute('inert', editing);
 });
 
-function openPreviewControl(control) {
+function openPreviewControl(control, trigger) {
   const selector = editorFields[control.id];
   if (!selector) {
-    void materialPicker.open(control);
+    void materialPicker.open(control, trigger);
     return;
   }
   const field = document.querySelector(`[data-control="${control.id}"] ${selector}`);
+  openPreviewValue(control, field);
+}
+
+function openPreviewValue(control, field) {
   activePreviewEditor = { control, field };
+  previewSongChart.hidden = control.id !== 'song-achievement';
+  if (!previewSongChart.hidden) {
+    const difficulty = document.querySelector('#song-difficulty');
+    previewSongDifficulty.replaceChildren(...[...difficulty.options].map(option =>
+      new Option(`${option.text} · Lv ${option.dataset.level}`, option.value)));
+    previewSongDifficulty.value = difficulty.value;
+  }
   valueInput.setCustomValidity('');
   valueInput.type = field.type;
   valueInput.inputMode = field.inputMode;
@@ -76,7 +152,7 @@ function openPreviewControl(control) {
     if (field.hasAttribute(attribute)) valueInput.setAttribute(attribute, field.getAttribute(attribute));
     else valueInput.removeAttribute(attribute);
   }
-  valueInput.required = control.id === 'rating';
+  valueInput.required = field.type === 'number';
   valueInput.value = field.value;
   document.querySelector('#preview-value-title').textContent = '更改' + control.label;
   document.querySelector('#preview-value-label').textContent = control.label;
@@ -89,6 +165,10 @@ valueInput.addEventListener('input', () => valueInput.setCustomValidity(''));
 valueDialog.querySelector('form').addEventListener('submit', event => {
   if (event.submitter?.value !== 'apply' || !activePreviewEditor) return;
   const { control, field } = activePreviewEditor;
+  if (control.id === 'song-achievement') {
+    regionControls.applySongSettings(Number(previewSongDifficulty.value), valueInput.valueAsNumber);
+    return;
+  }
   if (control.id === 'playerName' && nameCharacterCount(valueInput.value) > 8) {
     event.preventDefault();
     valueInput.setCustomValidity('名称最多允许八个字符');
@@ -116,9 +196,28 @@ for (const control of controls) {
     height: slot.height / CANVAS.height * 100 + '%',
     zIndex: String(COMPOSITION_ORDER.indexOf(control.target)),
   });
-  button.addEventListener('click', () => openPreviewControl(control));
+  button.addEventListener('click', () => openPreviewControl(control, button));
   previewHotspots.append(button);
 }
+const songHotspot = document.createElement('button');
+songHotspot.type = 'button';
+songHotspot.className = 'preview-hotspot';
+songHotspot.style.zIndex = String(COMPOSITION_ORDER.length);
+songHotspot.hidden = true;
+songHotspot.setAttribute('aria-label', '更换歌曲并填写达成率');
+songHotspot.title = '更换歌曲并填写达成率';
+songHotspot.addEventListener('click', () => {
+  regionControls.openSongPicker(songHotspot, () => {
+    materialPicker.close();
+    openPreviewValue({ id: 'song-achievement', label: '达成率' }, document.querySelector('#song-achievement'));
+  });
+});
+previewHotspots.append(songHotspot);
+valueDialog.addEventListener('close', () => {
+  if (activePreviewEditor?.control.id === 'song-achievement' && !songHotspot.hidden && !previewHotspots.hidden)
+    songHotspot.focus({ preventScroll: true });
+  activePreviewEditor = undefined;
+});
 const undoButton = document.querySelector('#undo');
 const redoButton = document.querySelector('#redo');
 
@@ -127,6 +226,7 @@ function snapshotState() {
 }
 
 function updateHistoryButtons() {
+  const history = historyByRegion[state.region];
   undoButton.disabled = history.past.length === 0;
   redoButton.disabled = history.future.length === 0;
   undoButton.title = history.past.length
@@ -137,9 +237,12 @@ function updateHistoryButtons() {
     : '没有可重做的操作';
 }
 
-function recordHistory(transaction = null) {
+function recordHistory(transaction = null, region = state.region) {
+  const history = historyByRegion[region];
   if (transaction && history.transaction === transaction) return;
-  history.past.push(snapshotState());
+  if (region !== state.region) historyByRegion[state.region].transaction = null;
+  history.past.push(region === state.region
+    ? snapshotState() : readRegionDesign(region) || createDefaultState(region));
   if (history.past.length > HISTORY_LIMIT) history.past.shift();
   history.future.length = 0;
   history.transaction = transaction;
@@ -147,6 +250,7 @@ function recordHistory(transaction = null) {
 }
 
 function endHistoryTransaction(transaction) {
+  const history = historyByRegion[state.region];
   if (history.transaction === transaction) history.transaction = null;
 }
 
@@ -158,21 +262,25 @@ async function restoreHistoryState(snapshot) {
 }
 
 async function undo() {
+  const history = historyByRegion[state.region];
   if (!history.past.length) return;
   history.transaction = null;
   history.future.push(snapshotState());
   if (history.future.length > HISTORY_LIMIT) history.future.shift();
-  await restoreHistoryState(history.past.pop());
+  const snapshot = history.past.pop();
   updateHistoryButtons();
+  await restoreHistoryState(snapshot);
 }
 
 async function redo() {
+  const history = historyByRegion[state.region];
   if (!history.future.length) return;
   history.transaction = null;
   history.past.push(snapshotState());
   if (history.past.length > HISTORY_LIMIT) history.past.shift();
-  await restoreHistoryState(history.future.pop());
+  const snapshot = history.future.pop();
   updateHistoryButtons();
+  await restoreHistoryState(snapshot);
 }
 
 function resetState() {
@@ -203,10 +311,6 @@ function fileToDataUrl(file) {
   });
 }
 
-function setAssetStatus(mode, text) {
-  assetStatus.className = `status ${mode}`;
-  assetStatus.replaceChildren(document.createElement('i'), document.createTextNode(` ${text}`));
-}
 
 function buildControls() {
   const root = document.querySelector('#controls');
@@ -272,7 +376,7 @@ function buildControls() {
       fileLabel.textContent = '默认素材 · 上传限 1:1，最大 720 × 720';
       input.setAttribute('aria-label', '上传头像，要求 1:1，最大 720 × 720 像素');
     }
-    libraryButton.addEventListener('click', () => materialPicker.open(control));
+    libraryButton.addEventListener('click', () => materialPicker.open(control, libraryButton));
 
 
     checkbox.addEventListener('change', () => {
@@ -321,6 +425,7 @@ function buildControls() {
 }
 
 function syncControlsFromState() {
+  updateHistoryButtons();
   document.querySelector('[data-control="rating"] .rating-input').value = String(state.ratingValue);
   const nameInput = document.querySelector('[data-control="playerName"] .name-input');
   nameInput.value = state.playerName;
@@ -381,8 +486,18 @@ document.querySelector('#reset').addEventListener('click', () => {
 undoButton.addEventListener('click', undo);
 redoButton.addEventListener('click', redo);
 
+const exportButton = document.querySelector('#export');
+const exportStatus = document.querySelector('#export-status');
+const exportRefresh = document.querySelector('#export-refresh');
+exportRefresh.addEventListener('click', async () => {
+  if (previewWorkPending) return;
+  const restoreFocus = document.activeElement === exportRefresh;
+  if (await refreshPreview(exportStatus)) {
+    if (restoreFocus && [document.body, exportRefresh].includes(document.activeElement)) exportButton.focus();
+  }
+});
 const imageExporter = initializeImageExport({
-  renderCanvas, width: OUTPUT.width, height: OUTPUT.height, isReady: () => loading.hidden,
+  renderCanvas, width: OUTPUT.width, height: OUTPUT.height, isReady: () => loading.hidden && regionalDisplayRetry.hidden && !previewWorkPending,
 });
 
 async function initialize() {
@@ -400,18 +515,11 @@ async function initialize() {
   buildControls();
   syncControlsFromState();
   templates.refresh();
-  for (const button of previewHotspots.children) {
+  for (const button of previewHotspots.querySelectorAll('[data-preview-control]')) {
     const control = controls.find(item => item.id === button.dataset.previewControl);
     button.hidden = state.visible[control.target] === false;
   }
   loading.hidden = false;
-  imageExporter.updateAvailability();
-  try {
-    const data = await loadManifest();
-    if (state.region === 'cn') setAssetStatus('is-online', `国服素材库已连接 · ${data.summary?.items ?? 0} 项`);
-  } catch (error) {
-    if (state.region === 'cn') setAssetStatus('is-offline', '国服素材库索引暂时不可用');
-  }
   await document.fonts
     .load(`18px ${DISPLAY_FONT}`)
     .catch((error) => console.warn('字体加载失败', error));
@@ -419,14 +527,33 @@ async function initialize() {
 }
 
 let pendingRender = 0;
+const iconLoads = new WeakMap();
 async function render(options) {
+  songHotspot.hidden = state.screenMode !== 'achievement';
+  if (!songHotspot.hidden) {
+    const [x, y, width, height] = songJacketBounds(state.region);
+    Object.assign(songHotspot.style, {
+      left: x / CANVAS.width * 100 + '%',
+      top: y / CANVAS.height * 100 + '%',
+      width: width / CANVAS.width * 100 + '%',
+      height: height / CANVAS.height * 100 + '%',
+    });
+  }
   saveCurrentDesign(snapshotState());
   const version = ++pendingRender;
   loading.hidden = false;
   imageExporter.updateAvailability();
   try {
-    const rendered = await renderer.render(state, options);
-    if (rendered) updateControlIcons();
+    const rendered = await renderer.render(state, {
+      ...options,
+      onRegionalDisplayError(error) {
+        const asset = failedPreviewAssetLabel(error);
+        regionalDisplayError.textContent = error
+          ? `${asset || '展示'}素材暂时无法加载。已保留你的选择，可以重试。` : '';
+        regionalDisplayRetry.hidden = !error;
+      },
+    });
+    if (rendered) updateControlIcons(Boolean(options?.refreshId));
     return rendered;
   } finally {
     if (version === pendingRender) {
@@ -435,17 +562,30 @@ async function render(options) {
     }
   }
 }
-function updateControlIcons() {
+function updateControlIcons(refreshVisible = false) {
   for (const control of controls) {
     const icon = document.querySelector(`[data-control="${control.id}"] .control-icon`);
-    if (!state.files[control.target]) { icon.replaceChildren(); continue; }
+    if (!state.files[control.target]) {
+      iconLoads.delete(icon);
+      delete icon.dataset.assetSource;
+      icon.replaceChildren();
+      continue;
+    }
     const src = resolveAssetUrl(state.files[control.target] || slots[control.target].asset);
-    if (icon.firstElementChild?.getAttribute('src') === src) continue;
-    const image = new Image();
-    image.alt = '';
-    image.crossOrigin = 'anonymous';
-    image.src = src;
-    icon.replaceChildren(image);
+    const sameSource = icon.dataset.assetSource === src;
+    if (sameSource && !(refreshVisible && state.visible[control.target])) continue;
+    icon.dataset.assetSource = src;
+    if (!sameSource) icon.replaceChildren();
+    const request = loadImage(src);
+    iconLoads.set(icon, request);
+    request.then(image => {
+      if (iconLoads.get(icon) !== request) return;
+      const thumbnail = image.cloneNode();
+      thumbnail.alt = '';
+      icon.replaceChildren(thumbnail);
+    }).catch(() => {
+      if (iconLoads.get(icon) === request) delete icon.dataset.assetSource;
+    });
   }
 }
 
@@ -466,14 +606,19 @@ const templates = initializeTemplates({
   syncControlsFromState,
   render,
 });
+document.querySelector('#region-toggle').hidden = false;
 regionControls = initializeRegionControls({
   state, recordHistory, render: () => { templates.refresh(); return render(); }, picker: materialPicker,
   async changeRegion(region) {
     if (region === state.region) return;
     await loadRegionCatalog(region);
+    previewRegionVersion++;
+    previewRefreshStatus.textContent = '';
+    exportStatus.textContent = '';
+    exportRefresh.hidden = true;
     materialPicker.close();
     saveCurrentDesign(snapshotState());
-    recordHistory();
+    historyByRegion[state.region].transaction = null;
     Object.assign(state, readRegionDesign(region) || createDefaultState(region));
     syncControlsFromState();
     void render();
@@ -488,4 +633,4 @@ initializeRecommendations({
   renderCanvas,
   syncControlsFromState,
 });
-initialize();
+void initialize();

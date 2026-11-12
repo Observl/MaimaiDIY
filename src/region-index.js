@@ -11,6 +11,16 @@ const LEGACY_ART_ROOT =
   'https://raw.githubusercontent.com/basilomorireal/maimai-asset-browser/0ebcd319585af286bce5c31cc416fcf245e28428/assets/';
 const LEGACY_COVER_ROOT =
   'https://raw.githubusercontent.com/realtvop/SaltMeta/d327942662643b391b6883ba40dd0b89e9a1d169/covers/';
+
+export function regionalImageFallback(url) {
+  if (typeof url !== 'string' || !url.startsWith(REGION_BASE_URL)) return null;
+  const path = url.slice(REGION_BASE_URL.length);
+  if (/^jp\/collection\/(?:frames\/UI_Frame|plates\/UI_Plate|icons\/UI_Icon|charas\/UI_Chara)_\d{6}\.png$/.test(path))
+    return LEGACY_ART_ROOT + path.slice('jp/collection/'.length);
+  if (/^shared\/saltmeta\/covers\/\d{6}\.png$/.test(path))
+    return LEGACY_COVER_ROOT + path.slice('shared/saltmeta/covers/'.length);
+  return null;
+}
 const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const MAX_JSON_BYTES = 16 * 1024 * 1024;
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -312,7 +322,7 @@ export function createRegionIndexLoader({
         requireValue(!response.url || response.url === new URL(url, globalThis.location?.href || baseUrl).href, '响应地址发生变化');
         const bytes = await response.arrayBuffer();
         requireValue(bytes.byteLength > 0 && bytes.byteLength <= MAX_JSON_BYTES, '文件大小');
-        return bytes;
+        return { bytes, local: response.headers.get('X-Maimai-Index-Source') === 'local' };
       } catch (error) {
         if (error instanceof RegionIndexError && error.code !== 'INDEX_UNAVAILABLE') throw error;
         lastError = error;
@@ -344,9 +354,9 @@ export function createRegionIndexLoader({
   function read(path, ref, validate, mode) {
     const url = `${baseUrl}${path}`;
     return shared(resources, `${mode}:${url}:${ref?.sha256 || 'root'}`, async () => {
-      const bytes = await (mode === 'network' ? networkBytes(url) : cachedBytes(url));
+      const { bytes, local } = mode === 'network' ? await networkBytes(url) : { bytes: await cachedBytes(url), local: false };
       const data = freezeTree(validate(await decode(bytes, ref)));
-      return { url, bytes, data };
+      return { url, bytes, data, local };
     });
   }
   async function persist(records) {
@@ -368,7 +378,9 @@ export function createRegionIndexLoader({
     if (failures.length) throw (failures.find(result => result.reason.code !== 'INDEX_UNAVAILABLE') || failures[0]).reason;
     const records = settled.map(result => result.value);
     if (mode === 'network') await persist([root, index, ...records]);
-    return { index: index.data, shards: Object.fromEntries(requested.map((category, i) => [category, records[i].data])), sourceStatus: { kind: `v2-${mode}`, releaseId } };
+    const local = [root, index, ...records].some(record => record.local);
+    return { index: index.data, shards: Object.fromEntries(requested.map((category, i) => [category, records[i].data])),
+      sourceStatus: { kind: `v2-${mode}`, releaseId, ...(local ? { local: true } : {}) } };
   }
   async function withFallback(region, requested) {
     let cause;
@@ -377,7 +389,7 @@ export function createRegionIndexLoader({
     try { return await transaction(region, requested, 'cache'); }
     catch (error) { if (error.code !== 'INDEX_UNAVAILABLE') throw error; }
     if (!allowLegacy) throw cause;
-    const bytes = await networkBytes(`./data/regions/${region}.json`);
+    const { bytes } = await networkBytes(`./data/regions/${region}.json`);
     const legacy = validateLegacyCatalog(await decode(bytes), { region, releaseId, baseUrl, reason: cause.message });
     return { legacy };
   }

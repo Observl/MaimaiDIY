@@ -117,7 +117,7 @@ test('the latest selection wins when an earlier image finishes later', async con
   await ui.open('avatar');
   const [first, second] = ui.items();
   const pending = first.emit('click');
-  assert.equal(first.disabled, true);
+  assert.equal(first.attributes.get('aria-disabled'), 'true');
   await second.emit('click');
   slow.resolve(true);
   await pending;
@@ -197,9 +197,8 @@ test('versioned category group index preserves counts, filtering and region sepa
   assert.equal(ui.items().length, 2);
   assert.equal(ui.get('#picker-meta').textContent, '找到 2 / 3 个素材');
   await ui.items()[0].emit('click');
-  const selections = JSON.parse(ui.storage.get('maimai-diy-picker-selection-v1'));
-  assert.equal(selections['jp:avatar'], '1');
-  assert.equal(selections['cn:avatar'], undefined);
+  assert.equal(ui.items()[0].classes.has('is-selected'), true);
+  assert.match(ui.state.files.avatar, /\/avatars\/1\.png$/);
 });
 
 
@@ -308,7 +307,7 @@ test('empty or failed visibility filtering never exposes the unfiltered category
   });
   await ui.open('avatar');
   assert.equal(ui.items().length, 0);
-  assert.equal(ui.get('#picker-message').textContent, '此分类暂无可用素材。');
+  assert.equal(ui.get('#picker-message').textContent, '当前区域没有可用素材。');
   ui.close();
   failure = true;
   await ui.open('avatar');
@@ -397,11 +396,12 @@ test('regional cached views retain independent search, pagination and selected i
     return regionalCategory(region, COS.pageSize + 3);
   } });
   await ui.open('avatar');
-  const dialog = ui.get('#asset-picker');
-  Object.assign(dialog, { scrollHeight: 1000, clientHeight: 500, scrollTop: 500 });
-  await dialog.emit('scroll');
+  const scroll = ui.get('#picker-scroll');
+  Object.assign(scroll, { scrollHeight: 1000, clientHeight: 500, scrollTop: 500 });
+  await scroll.emit('scroll');
   const cnItems = [...ui.items()];
   await cnItems[COS.pageSize].emit('click');
+  const cnAvatar = ui.state.files.avatar;
   ui.state.region = 'jp';
   await ui.open('avatar');
   assert.equal(ui.items().length, COS.pageSize);
@@ -411,24 +411,24 @@ test('regional cached views retain independent search, pagination and selected i
   await ui.get('#picker-filter').emit('change');
   const jpItems = [...ui.items()];
   await jpItems[0].emit('click');
+  const jpAvatar = ui.state.files.avatar;
   ui.state.region = 'cn';
+  ui.state.files.avatar = cnAvatar;
   await ui.open('avatar');
   assert.deepEqual(ui.items(), cnItems);
   assert.equal(ui.get('#picker-search').value, '');
   assert.equal(ui.get('#picker-filter').value, '');
-  await dialog.emit('scroll');
+  await scroll.emit('scroll');
   assert.deepEqual(ui.items(), cnItems);
   assert.equal(ui.items()[COS.pageSize].classes.has('is-selected'), true);
   ui.close();
   ui.state.region = 'jp';
+  ui.state.files.avatar = jpAvatar;
   await ui.open('avatar');
   assert.deepEqual(ui.items(), jpItems);
   assert.equal(ui.get('#picker-search').value, 'JP 2');
   assert.equal(ui.get('#picker-filter').value, 'JP');
   assert.equal(ui.items()[0].classes.has('is-selected'), true);
-  assert.deepEqual(JSON.parse(ui.storage.get('maimai-diy-picker-selection-v1')), {
-    'cn:avatar': `cn-${COS.pageSize + 1}`, 'jp:avatar': 'jp-2',
-  });
   assert.deepEqual(requests, ['cn', 'jp']);
 });
 

@@ -60,7 +60,7 @@ export class Element {
     ]);
   }
   querySelector(selector) { return this.querySelectorAll(selector)[0]; }
-  scrollIntoView() {}
+  getBoundingClientRect() { return { top: 0, bottom: 0, height: 0 }; }
   showModal() { this.open = true; }
   close() { this.open = false; return this.emit('close'); }
 }

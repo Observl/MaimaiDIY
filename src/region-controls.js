@@ -1,11 +1,14 @@
 import { applyRegionBackground } from './region-background.js';
 import { loadRegionCatalog } from './region-catalog.js';
 import { getRegionCatalogItem } from './region-profile.js';
+import { loadManifest, manifestSource } from './assets.js';
+import { REGION_CATEGORIES } from './region-index.js';
 const difficultyNames = ['BASIC', 'ADVANCED', 'EXPERT', 'MASTER', 'Re:MASTER'];
 export function initializeRegionControls({ state, recordHistory, render, changeRegion, picker }) {
   const regionSelect = document.querySelector('#region-select');
   const regionToggle = document.querySelector('#region-toggle');
   const modeSelect = document.querySelector('#screen-mode');
+  const modeOptions = modeSelect.querySelectorAll('input');
   const panel = document.querySelector('#region-content');
   const title = document.querySelector('#region-content-title');
   const note = document.querySelector('#region-content-note');
@@ -14,34 +17,64 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
   const difficulty = document.querySelector('#song-difficulty');
   const achievement = document.querySelector('#song-achievement');
   const status = document.querySelector('#region-status');
+  const indicator = document.querySelector('#asset-status');
   let requestVersion = 0;
   let catalog;
   let readyRegion = '';
+  let indicatorRegion = '';
+  let indicatorVersion = 0;
+  function showAssetStatus(mode, text) {
+    if (indicator.classList.contains(mode) && indicator.textContent.trim() === text) return;
+    indicator.className = 'status ' + mode;
+    indicator.replaceChildren(document.createElement('i'), document.createTextNode(' ' + text));
+  }
   regionSelect.addEventListener('change', async () => {
+    const next = regionSelect.value;
+    if (next === state.region || regionSelect.disabled) return;
     picker.close();
     regionSelect.disabled = regionToggle.disabled = true;
-    try { await changeRegion(regionSelect.value); }
-    catch (error) { status.textContent = `切换失败：${error.message}，已保留原搭配。`; }
+    status.textContent = next === 'jp' ? '正在切换至日服展示板…' : '正在切换至国服展示板…';
+    try { await changeRegion(next); }
+    catch {
+      const region = next === 'jp' ? '日服' : '国服';
+      status.textContent = `暂时无法载入${region}素材。当前搭配已保留，请再次点击区服按钮重试。`;
+    }
     finally { regionSelect.disabled = regionToggle.disabled = false; regionSelect.value = state.region; }
   });
   regionToggle.addEventListener('click', () => {
     regionSelect.value = state.region === 'jp' ? 'cn' : 'jp';
     regionSelect.dispatchEvent(new window.Event('change'));
   });
-  modeSelect.addEventListener('change', () => {
-    recordHistory(); state.screenMode = modeSelect.value; sync(); render();
+  modeSelect.addEventListener('change', event => {
+    if (!event.target.checked || event.target.value === state.screenMode) return;
+    recordHistory(); state.screenMode = event.target.value; sync(); render();
   });
-  document.querySelector('#song-pick').addEventListener('click', () => picker.open({
-    id: 'region-song', label: '歌曲', category: 'songs', select(item) {
+  const songPick = document.querySelector('#song-pick');
+  const openSongPicker = (trigger, afterSelect) => picker.open({
+    id: 'region-song', label: '歌曲', category: 'songs',
+    selectedAssetId: () => state.song.id,
+    select(item) {
       state.song = { ...state.song, id: item.id, difficulty: item.charts[0]?.difficulty ?? 0 };
     },
-  }));
-  difficulty.addEventListener('change', () => { recordHistory(); state.song.difficulty = Number(difficulty.value); render(); });
-  achievement.addEventListener('change', () => {
-    recordHistory(); const value = Number(achievement.value);
-    state.song.achievement = Math.min(101, Math.max(0, Number.isFinite(value) ? value : 0)).toFixed(4);
-    achievement.value = state.song.achievement; render();
-  });
+    afterSelect,
+  }, trigger);
+  songPick.addEventListener('click', () => openSongPicker(songPick));
+  function applySongSettings(chart, value) {
+    const nextChart = [...difficulty.options].some(option => Number(option.value) === chart)
+      ? chart : state.song.difficulty;
+    const next = Number.isFinite(value)
+      ? Math.min(101, Math.max(0, value)).toFixed(4)
+      : state.song.achievement;
+    achievement.value = next;
+    difficulty.value = String(nextChart);
+    if (next === state.song.achievement && nextChart === state.song.difficulty) return;
+    recordHistory();
+    state.song.achievement = next;
+    state.song.difficulty = nextChart;
+    render();
+  }
+  difficulty.addEventListener('change', () => applySongSettings(Number(difficulty.value), achievement.valueAsNumber));
+  achievement.addEventListener('change', () => applySongSettings(state.song.difficulty, achievement.valueAsNumber));
   function paintFields() {
     companions.replaceChildren();
     for (let index = 0; index < 5; index++) {
@@ -82,37 +115,68 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     const cover = document.querySelector('#song-cover'); cover.replaceChildren();
     if (song) { const image = new Image(); image.src = song.image; image.alt = ''; cover.append(image); }
     difficulty.replaceChildren();
-    (song?.charts || []).forEach(chart => difficulty.add(new Option(`${difficultyNames[chart.difficulty]} · ${chart.level}`, String(chart.difficulty))));
+    for (const chart of song?.charts || []) {
+      const option = new Option(difficultyNames[chart.difficulty], String(chart.difficulty));
+      option.dataset.level = chart.level;
+      difficulty.add(option);
+    }
     difficulty.value = String(state.song.difficulty); difficulty.disabled = !song;
     achievement.value = state.song.achievement;
   }
   async function sync() {
     const version = ++requestVersion;
+    if (indicatorRegion !== state.region) {
+      indicatorRegion = state.region;
+      const stamp = ++indicatorVersion;
+      showAssetStatus('is-loading', state.region === 'jp' ? '正在读取日服素材索引' : '正在读取国服素材索引');
+      if (state.region === 'cn') {
+        loadManifest().then(data => {
+          if (stamp !== indicatorVersion) return;
+          const source = manifestSource(data);
+          const label = source === 'local' ? '国服本地素材索引' : source === 'cache' ? '国服缓存素材索引' : '国服云端素材索引';
+          const count = data.summary?.items ?? data.categories.reduce((total, item) => total + item.items.length, 0);
+          showAssetStatus(source === 'network' ? 'is-online' : 'is-offline', `${label} · ${count} 项`);
+        }).catch(() => {
+          if (stamp === indicatorVersion) showAssetStatus('is-offline', '国服素材索引暂不可用，部分云端图片可能无法加载');
+        });
+      }
+    }
     applyRegionBackground(state.region);
     regionToggle.textContent = state.region === 'jp' ? '日服展示板' : '国服展示板';
-    regionSelect.value = state.region; modeSelect.value = state.screenMode;
+    regionSelect.value = state.region;
+    for (const option of modeOptions) option.checked = option.value === state.screenMode;
     panel.hidden = state.screenMode === 'collection';
     companions.hidden = state.screenMode !== 'companions'; songs.hidden = state.screenMode !== 'achievement';
     title.textContent = state.screenMode === 'achievement' ? '歌曲达成率' : '旅行伙伴';
     const ui = state.region === 'jp' ? 'MAGiCAL' : 'CiRCLE';
     status.textContent = `${state.region === 'jp' ? '日服' : '国服'} · ${ui} 网页背景`;
-    note.textContent = '可先选择并保存内容；新版上屏 UI 核对完成前，旅行伙伴与成绩不会套用自制框进入预览或 PNG。';
+    note.textContent = state.screenMode === 'companions'
+      ? (state.region === 'cn' ? '国服 CN1.55 原版素材包尚未取得，旅行伙伴暂不可选。' : '旅行伙伴可保存到模板。') : '';
     if (readyRegion !== state.region) {
       catalog = undefined; paintFields();
       try { const next = await loadRegionCatalog(state.region); if (version !== requestVersion) return; catalog = next; readyRegion = state.region; }
-      catch (error) { if (version === requestVersion) note.textContent = `地区曲库加载失败：${error.message}`; return; }
+      catch (error) {
+        if (version === requestVersion) {
+          note.textContent = `地区曲库加载失败：${error.message}`;
+          if (state.region === 'jp') showAssetStatus('is-offline', '日服素材索引暂不可用');
+        }
+        return;
+      }
     }
     const source = catalog?.sourceStatus?.kind;
-    if (source) {
-      const indicator = document.querySelector('#asset-status');
-      indicator.className = 'status is-online';
-      indicator.textContent = `${state.region === 'jp' ? '日服' : '国服'}素材库已连接`;
+    const local = catalog?.sourceStatus?.local;
+    if (source && state.region === 'jp') {
+      const label = source === 'v1-fallback' ? '日服兼容素材索引'
+        : source === 'v2-cache' ? '日服缓存素材索引'
+        : local ? '日服本地素材索引' : '日服云端素材索引';
+      const count = REGION_CATEGORIES.reduce((total, category) => total + catalog[category].length, 0);
+      showAssetStatus(source === 'v2-network' && !local ? 'is-online' : 'is-offline', `${label} · ${count} 项`);
     }
     if (source) status.textContent += source === 'v1-fallback'
       ? ' 当前使用兼容索引，COS 新索引暂不可用。'
-      : source === 'v2-cache' ? ' 当前使用已校验的本版本离线索引。' : ' 已加载 COS v2 分类索引。';
-    if (state.region === 'cn' && state.screenMode === 'companions') note.textContent = '国服 CN1.55 原版素材包尚未取得，旅行伙伴暂不可选。不会混用日服素材。';
+      : source === 'v2-cache' ? ' 当前使用已校验的本版本离线索引。'
+      : local ? ' 已加载经校验的本地 COS v2 索引。' : ' 已加载 COS v2 分类索引。';
     paintFields();
   }
-  return { sync };
+  return { sync, openSongPicker, applySongSettings };
 }

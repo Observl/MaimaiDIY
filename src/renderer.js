@@ -1,7 +1,17 @@
-import { CANVAS, DISPLAY_FONT, RATING_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots, COMPOSITION_ORDER } from './config.js';
+import { CANVAS, DISPLAY_FONT, RATING_FONT, RENDER_SCALE, DEFAULT_BACKGROUND, slots, controls, COMPOSITION_ORDER } from './config.js';
 import { nameCharacterCount } from './model.js';
 import { layoutPlayerName } from './player-name.js';
 import { loadImage } from './assets.js';
+import { prepareRegionalDisplay } from './regional-display.js';
+
+export function failedPreviewAssetLabel(error) {
+  const slot = error?.assetSlot;
+  if (slot === 'ratingFrame') return 'Rating 框';
+  if (slot === 'nameBase') return '名称底板';
+  if (slot === 'companions') return '旅行伙伴';
+  if (slot === 'achievement') return '歌曲达成率';
+  return controls.find(control => control.slotIds.includes(slot))?.label;
+}
 
 const ratingArtworkBounds = new WeakMap();
 // Cell centers in the original 664 × 130 Japanese textures. The high tiers
@@ -66,19 +76,30 @@ export function preferredRenderScale({
   return mobile ? Math.min(2, RENDER_SCALE) : RENDER_SCALE;
 }
 
-export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) {
-  const previewCtx = canvas.getContext('2d');
+export function createRenderer(canvas, { scale = preferredRenderScale(), previewExamples = false } = {}) {
   const renderCanvas = document.createElement('canvas');
   renderCanvas.width = CANVAS.width * scale;
   renderCanvas.height = CANVAS.height * scale;
   const ctx = renderCanvas.getContext('2d');
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  previewCtx.imageSmoothingEnabled = true;
-  previewCtx.imageSmoothingQuality = 'high';
 
   let renderVersion = 0;
   let state;
+  let previewOverlay;
+
+  function paintPreview(target = canvas) {
+    const preview = target.getContext('2d');
+    preview.imageSmoothingEnabled = true;
+    preview.imageSmoothingQuality = 'high';
+    preview.clearRect(0, 0, target.width, target.height);
+    preview.drawImage(renderCanvas, 0, 0, target.width, target.height);
+    if (!previewOverlay) return;
+    preview.save();
+    preview.scale(target.width / CANVAS.width, target.height / CANVAS.height);
+    previewOverlay(preview);
+    preview.restore();
+  }
   function textWidth(text, spacing) {
     return [...text].reduce(
       (width, char, index) => width + ctx.measureText(char).width + (index ? spacing : 0),
@@ -192,7 +213,7 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
     ctx.drawImage(image, 0, 5, image.naturalWidth, 25, slot.x, slot.y, slot.width, slot.height);
   }
 
-  async function render(composition, { strict = false } = {}) {
+  async function render(composition, { strict = false, refreshId, onRegionalDisplayError } = {}) {
     if (nameCharacterCount(composition.playerName || '') > 8) {
       alert('名称最多允许八个字符，请修改后再试。');
       return;
@@ -210,9 +231,9 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
         return { id, slot };
       }
       try {
-        return { id, slot, image: await loadImage(snapshot.files[id]) };
+        return { id, slot, image: await loadImage(snapshot.files[id], refreshId) };
       } catch (error) {
-        if (strict) throw new Error(`素材未加载完成：${id}`);
+        if (strict) throw Object.assign(new Error(`素材未加载完成：${id}`), { assetSlot: id });
         console.warn(`素材加载失败：${snapshot.files[id]}`, error);
         if (id === 'background' && snapshot.files[id] !== DEFAULT_BACKGROUND) {
           return { id, slot, image: await loadImage(DEFAULT_BACKGROUND) };
@@ -220,12 +241,22 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
         return null;
       }
     });
-    const [images] = await Promise.all([
+    let regionalDisplayFailure;
+    const [images, , display] = await Promise.all([
       Promise.all(prepared),
       snapshot.visible.ratingDigits ? prepareRatingFont() : null,
+      prepareRegionalDisplay(snapshot, refreshId, previewExamples).catch(error => {
+        regionalDisplayFailure = Object.assign(new Error('展示素材加载失败', { cause: error }), {
+          assetSlot: snapshot.screenMode,
+        });
+        if (strict) throw regionalDisplayFailure;
+        console.warn('展示素材加载失败', error);
+        return null;
+      }),
     ]);
     drawable.push(...images.filter(Boolean));
     if (version !== renderVersion) return false;
+    onRegionalDisplayError?.(regionalDisplayFailure);
     state = snapshot;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
@@ -261,10 +292,11 @@ export function createRenderer(canvas, { scale = preferredRenderScale() } = {}) 
         ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
       }
     }
-    previewCtx.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    previewCtx.drawImage(renderCanvas, 0, 0, CANVAS.width, CANVAS.height);
+    display?.draw(ctx);
+    previewOverlay = display?.preview;
+    paintPreview();
     return true;
   }
 
-  return { render, renderCanvas };
+  return { render, renderCanvas, paintPreview };
 }

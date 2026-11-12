@@ -207,7 +207,7 @@ export function initializeTemplates({
         : [...templates, template];
       if (!isCurrent(request)) return;
       localStorage.setItem(storageKey(importedState), JSON.stringify(next));
-      recordHistory();
+      recordHistory(null, importedState.region);
       Object.assign(state, importedState);
       request.scope = scope();
       listedScope = scope();

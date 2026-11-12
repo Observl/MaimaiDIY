@@ -3,6 +3,7 @@ import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promi
 import { resolve, relative, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { build } from 'esbuild';
+import { validateRegionalDisplayLayout } from '../src/regional-display-layout.js';
 
 const root = process.cwd();
 const dist = resolve(root, 'dist');
@@ -18,6 +19,17 @@ const publicFile = (path) =>
     path
   );
 const files = new Set(tracked.filter(publicFile));
+for (const region of ['cn', 'jp']) {
+  const directory = `regional-display/${region}`;
+  const layoutFile = `${directory}/layout.json`;
+  const layers = validateRegionalDisplayLayout(JSON.parse(await readFile(layoutFile, 'utf8')), region);
+  files.add(layoutFile);
+  for (const name of layers) {
+    const file = `${directory}/${name}.webp`;
+    if (!(await stat(file)).isFile()) throw Error(`Invalid song asset: ${file}`);
+    files.add(file);
+  }
+}
 for (const file of [
   'index.html',
   'data/regions/jp.json',

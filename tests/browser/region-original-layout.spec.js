@@ -46,6 +46,7 @@ async function ready(page) {
   await installCosFixtures(page.context());
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loading')).toBeHidden();
+  await page.locator('.controls-card:not([open]) > summary').click();
 }
 async function template(page) {
   const pending = page.waitForEvent('download');
@@ -57,7 +58,7 @@ async function save(page, title) {
   await page.locator('#template-save').click();
 }
 async function region(page, value) {
-  await page.locator('#region-select').selectOption(value);
+  await page.getByRole('button', { name: '切换区服展示板' }).click();
   await expect(page.locator('#region-select')).toBeEnabled();
   await expect(page.locator('#region-select')).toHaveValue(value);
 }
@@ -88,23 +89,27 @@ test('original layout region isolation, modes, pickers, templates and screenshot
   await expect(page.locator('#template-list')).toContainText('keep');
   await expect(page.locator('#preview')).toHaveAttribute('width', '1080');
   await expect(page.locator('#circle-background')).toBeVisible();
-  await expect(page.locator('#magical-background')).toBeHidden();
+  await expect(page.locator('#magical-background')).toHaveCSS('opacity', '0');
   await page.screenshot({ path: output('cn-desktop.png'), fullPage: true });
   await name(page).fill('CN TEST');
   await name(page).press('Tab');
   await rating(page).fill('12345');
   await rating(page).press('Tab');
   await save(page, 'CN COLLECTION');
-  await page.locator('#screen-mode').selectOption('companions');
+  if (!(await page.locator('#screen-mode').isVisible())) await page.locator('.controls-summary').click();
+
+  await page.locator('#screen-mode input[value="companions"]').check();
   await expect(page.locator('#companion-controls .control-row')).toHaveCount(5);
   await expect(page.locator('#region-content-note')).toContainText('暂不可选');
   await save(page, 'CN COMPANIONS');
   await expect(page.locator('#template-list')).not.toContainText('CN COLLECTION');
   await region(page, 'jp');
-  await expect(page.locator('#asset-status')).toHaveText('国服原素材库已连接 · 2247 项');
+  await expect(page.locator('#asset-status')).toContainText('日服云端素材索引');
   await name(page).fill('JP TEST');
   await name(page).press('Tab');
-  await page.locator('#screen-mode').selectOption('companions');
+  if (!(await page.locator('#screen-mode').isVisible())) await page.locator('.controls-summary').click();
+
+  await page.locator('#screen-mode input[value="companions"]').check();
   await expect(page.locator('#companion-controls .library-button').first()).toBeEnabled();
   for (let i = 0; i < 5; i++) {
     await page
@@ -114,7 +119,8 @@ test('original layout region isolation, modes, pickers, templates and screenshot
       .click();
     await expect(page.locator('#asset-picker')).toBeVisible();
     await page.locator('#picker-grid .asset-item').nth(i).click();
-    await expect(page.locator('#asset-picker')).not.toBeVisible();
+    await expect(page.locator('#picker-message')).toContainText('已选择');
+    await page.locator('#picker-close').click();
   }
   await expect(page.locator('#companion-controls input:enabled')).toHaveCount(5);
   await page.locator('#companion-controls input').first().fill('77');
@@ -131,7 +137,8 @@ test('original layout region isolation, modes, pickers, templates and screenshot
     .getByRole('button', { name: '素材库' })
     .click();
   await page.locator('#picker-grid .asset-item').first().click();
-  await expect(page.locator('#asset-picker')).not.toBeVisible();
+  await expect(page.locator('#picker-message')).toContainText('已选择');
+  await page.locator('#picker-close').click();
   const swappedParty = (await template(page)).state.companions;
   expect(swappedParty).toHaveLength(5);
   expect(swappedParty.map((member) => member.id).sort()).toEqual(
@@ -144,8 +151,8 @@ test('original layout region isolation, modes, pickers, templates and screenshot
   ]);
   await page.locator('#undo').click();
   expect((await template(page)).state.companions).toEqual(partyBeforeSwap);
-  await expect(page.locator('#magical-background')).toBeVisible();
-  await expect(page.locator('#circle-background')).toBeHidden();
+  await expect(page.locator('#magical-background')).toHaveCSS('opacity', '1');
+  await expect(page.locator('#circle-background')).toHaveAttribute('hidden', '');
   const jpFiles = (await template(page)).state.files;
   expect(jpFiles.ratingFrame).toBe(`${RELEASE_URL}ui/maidraw/dxRating/jp/circleplus/kiwami.webp`);
   for (const control of ['rank', 'friendBattle']) {
@@ -202,11 +209,14 @@ test('original layout region isolation, modes, pickers, templates and screenshot
   ).toBe('running');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.screenshot({ path: output('jp-desktop.png'), fullPage: true });
-  await page.locator('#screen-mode').selectOption('achievement');
+  if (!(await page.locator('#screen-mode').isVisible())) await page.locator('.controls-summary').click();
+
+  await page.locator('#screen-mode input[value="achievement"]').check();
   await expect(page.locator('#template-list')).not.toContainText('JP COMPANIONS');
   await page.locator('#song-pick').click();
   await page.locator('#picker-grid .asset-item').first().click();
-  await expect(page.locator('#asset-picker')).not.toBeVisible();
+  await expect(page.locator('#picker-message')).toContainText('已选择');
+  await page.locator('#picker-close').click();
   const options = await page.locator('#song-difficulty option').allTextContents();
   expect(options.length).toBeGreaterThan(1);
   await page.locator('#song-difficulty').selectOption({ index: options.length - 1 });
@@ -219,9 +229,9 @@ test('original layout region isolation, modes, pickers, templates and screenshot
   await region(page, 'cn');
   await expect(name(page)).toHaveValue('CN TEST');
   await expect(page.locator('#circle-background')).toBeVisible();
-  await expect(page.locator('#magical-background')).toBeHidden();
+  await expect(page.locator('#magical-background')).toHaveCSS('opacity', '0');
   await expect(rating(page)).toHaveValue('12345');
-  await expect(page.locator('#screen-mode')).toHaveValue('companions');
+  await expect(page.locator('#screen-mode input[value="companions"]')).toBeChecked();
   await region(page, 'jp');
   await expect(name(page)).toHaveValue('JP TEST');
   await expect(page.locator('#song-achievement')).toHaveValue('100.1234');
@@ -238,8 +248,8 @@ test('original layout region isolation, modes, pickers, templates and screenshot
   expect(await page.evaluate(() => localStorage.getItem('maimai-diy-current-design-v1'))).toBe(
     JSON.stringify({ version: 1, state: { playerName: 'Observ.L', ratingValue: 16411 } })
   );
-  await expect(page.locator('#magical-background')).toBeVisible();
-  await expect(page.locator('#circle-background')).toBeHidden();
+  await expect(page.locator('#magical-background')).toHaveCSS('opacity', '1');
+  await expect(page.locator('#circle-background')).toHaveAttribute('hidden', '');
   await page.evaluate(() => document.fonts.ready);
   const brokenImages = await page.locator('img')
     .evaluateAll((imgs) => imgs.filter((i) => !i.naturalWidth).map((i) => i.src));

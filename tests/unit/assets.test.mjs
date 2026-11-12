@@ -114,6 +114,41 @@ test('failed image loads are evicted and retried', async () => {
   }
 });
 
+test('a preview refresh shares matching image requests and replaces the export cache', async () => {
+  const oldImage = globalThis.Image;
+  const requests = [];
+  globalThis.Image = class {
+    naturalWidth = 128;
+    naturalHeight = 128;
+    set src(value) {
+      requests.push(value);
+      queueMicrotask(() => value.endsWith('preview-refresh=failed')
+        ? this.onerror(new Error('offline')) : this.onload());
+    }
+  };
+  try {
+    const api = await fresh();
+    const source = COS.baseUrl + '/materials/avatars/UI_Icon_900001.png';
+    const original = await api.loadImage(source);
+    const refresh = api.loadImage(source, 'refresh-one');
+    assert.equal(api.loadImage(source, 'refresh-one'), refresh);
+    assert.notEqual(await refresh, original);
+    assert.equal(api.loadImage(source), refresh);
+    const failedRefresh = api.loadImage(source, 'failed');
+    assert.equal(api.loadImage(source), refresh);
+    await assert.rejects(failedRefresh, /offline/);
+    assert.equal(api.loadImage(source), refresh);
+    const next = api.loadImage(source, 'refresh-two');
+    assert.notEqual(next, refresh);
+    await next;
+    assert.equal(api.loadImage(source), next);
+    assert.deepEqual(requests, ['','?preview-refresh=refresh-one','?preview-refresh=failed','?preview-refresh=refresh-two']
+      .map(query => source + query));
+  } finally {
+    globalThis.Image = oldImage;
+  }
+});
+
 test('permanent HTTP failures stop immediately and retain their status', async () => {
   const oldFetch = globalThis.fetch;
   try {
