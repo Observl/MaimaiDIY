@@ -8020,170 +8020,14 @@
       "group": "联动区域"
     },
     {
-      "id": "jp-title-041f370423da9516",
-      "name": "千本桜",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a4191f3d8877ab64",
-      "name": "39",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0c8398ab39e81c6e",
-      "name": "脳漿炸裂ガール",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-5c230ee621670c30",
-      "name": "いーあるふぁんくらぶ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-16c46d0f2e62b904",
-      "name": "六兆年と一夜物語",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-89221142e5c29d28",
-      "name": "シャルル",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-36768992dd6deb87",
-      "name": "METEOR",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a56771a1283ac80d",
-      "name": "メルト",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-7abe7eba42c05195",
-      "name": "メルティランドナイトメア",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-533870e7caa7c3f4",
       "name": "アウトサイダー",
       "color": "Gold",
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-b3b47113ca4729e8",
-      "name": "アディショナルメモリー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-d807616146b3bb5c",
       "name": "ジャガーノート",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-bede1104412b54fa",
-      "name": "Strobe♡Girl",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6ad32afa82f2cdb8",
-      "name": "グリーンライツ・セレナーデ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-381ab94c63eb621c",
-      "name": "デンパラダイム",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-de5a58697ed50f3f",
-      "name": "骸骨楽団とリリア",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-4a15672473460b08",
-      "name": "星屑ユートピア",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3ba5c3ab61dedf6c",
-      "name": "アマツキツネ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-cde017cc290d993e",
-      "name": "CocktaiL",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d7224fc25c9bfc52",
-      "name": "太陽系デスコ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-61a28885a577bb5c",
-      "name": "だからパンを焼いたんだ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6b419ae1cabf6730",
-      "name": "アカリがやってきたぞっ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-22ab513958f1b98d",
-      "name": "quiet room",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-19b3fca1340630f5",
-      "name": "サヨナラチェーンソー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-e3c880d69be3f352",
-      "name": "イカサマライフゲイム",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-af8719caa0c37c58",
-      "name": "だれかの心臓になれたなら",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-75f5ce9b6355d0a2",
-      "name": "幾望の月",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-780fb13a918365b4",
-      "name": "39みゅーじっく！",
       "color": "Gold",
       "group": "niconicoボーカロイド"
     },
@@ -8260,84 +8104,6 @@
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-31f428a243664971",
-      "name": "ビターチョコデコレーション",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-fca816f27d8fe135",
-      "name": "アンドロイドガール",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-85b295d7ad08c9aa",
-      "name": "スターリースカイ☆パレード",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a29174c21e6f7da4",
-      "name": "スロウダウナー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-024110b32aa73259",
-      "name": "クレイジー・ビート",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-c7373fbf4fa3ddec",
-      "name": "バイオレンストリガー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0ef00e17c21278e1",
-      "name": "グラーヴェ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-9a34e8a301cc9b4c",
-      "name": "KILLER B",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6b39875ae28023e6",
-      "name": "すーぱーぬこになれんかった",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-cb497114b08f9055",
-      "name": "アスヘノBRAVE",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-7d86980303396493",
-      "name": "深海シティアンダーグラウンド",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-4f2cbe44628b3c5f",
-      "name": "表裏一体",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-ebd71033b286d2eb",
-      "name": "Catch the Wave",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-2b9e7bc6c0d39d31",
       "name": "「構ってもっと　足りないの」",
       "color": "Bronze",
@@ -8395,102 +8161,6 @@
       "id": "jp-title-a73d19868b943c9e",
       "name": "僕らの未来 震わせよう",
       "color": "Bronze",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-bd75bc8b8c6fa41a",
-      "name": "命に嫌われている",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-eed4afc602d2f8d3",
-      "name": "アンクローズ・ヒューマン",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-8f837a78b381a08d",
-      "name": "乙女解剖",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-7ad92719e46b49ea",
-      "name": "絶え間なく藍色",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-71ea9be54cfb474b",
-      "name": "ガランド",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1439fd2b889e6099",
-      "name": "とりあえずアナタがいなくなるまえに",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-85707de0b5618e01",
-      "name": "明星ギャラクティカ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-96607eb47462981b",
-      "name": "絶対にチョコミントを食べるアオイチャン",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-cf784ad8c85c77ac",
-      "name": "デリヘル呼んだら君が来た",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-8990ce6cf29ea863",
-      "name": "ベノム",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-46f60422954473c3",
-      "name": "マネマネサイコトロピック",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-4c92f74020755deb",
-      "name": "劣等上等",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-7a94cf5356366d05",
-      "name": "アスノヨゾラ哨戒班",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-b7cc4d7779d4db98",
-      "name": "自傷無色",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-e05bafb61f1037cb",
-      "name": "天ノ弱",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-faa382f3475b4fca",
-      "name": "ダンスロボットダンス",
-      "color": "Gold",
       "group": "niconicoボーカロイド"
     },
     {
@@ -8572,90 +8242,6 @@
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-960ed0059181d09a",
-      "name": "ネガティブ進化論",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-43d93e47c91a5cd4",
-      "name": "雨とペトラ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-be93ac9e9bb4b2cf",
-      "name": "永遠にゲームで対戦したいキリタン",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1dfa55798c5aa062",
-      "name": "KING",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-87a3b493e710bdb5",
-      "name": "幽霊東京",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-dba7a230cb33c2eb",
-      "name": "Alice in 冷凍庫",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-19496f75d870c0d5",
-      "name": "ディカディズム",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a7e679879b85d33d",
-      "name": "猫猫的宇宙論",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3ec6a713b70cf4d8",
-      "name": "ラットが死んだnew words",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-47e7be94fb2b2e8e",
-      "name": "阿吽のビーツ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0d2c0befb89adae8",
-      "name": "再会",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-02a39a6045183255",
-      "name": "約束",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-b5a1faa73b79159e",
-      "name": "トラフィック・ジャム",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-73d47377ba9ed62a",
-      "name": "アルティメットセンパイ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-d4b864cfa6c40cd8",
       "name": "あ～～～ゲームたのし～～～～",
       "color": "Normal",
@@ -8707,114 +8293,6 @@
       "id": "jp-title-eae4975a722ad976",
       "name": "もう一度どこかで巡り合う気がした",
       "color": "Normal",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-70d960f94bd7d985",
-      "name": "テレキャスタービーボーイ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a54e87801f24f7c7",
-      "name": "僕は空気が嫁ない",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-800280aebed5ba83",
-      "name": "デッドマンズバラッド",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d80ce760fb0e2500",
-      "name": "セカイはまだ始まってすらいない",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0fd5017cc62b1033",
-      "name": "ポッピンキャンディ☆フィーバー！",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-2c4f2f0e390b248b",
-      "name": "どぅーまいべすと！",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1cbdfbbfe4d2e47a",
-      "name": "失敗作少女",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-5bb1c80e9d157448",
-      "name": "悪魔の踊り方",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a7309b51bf973ecb",
-      "name": "ノイローゼ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-2d231a4ee65a0626",
-      "name": "グッバイ宣言",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-23e5450067fc22b1",
-      "name": "春嵐",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-2934ce8110e971ae",
-      "name": "ラグトレイン",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-5475ebd50eeafc2b",
-      "name": "アカツキアライヴァル",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-16365bcc64387712",
-      "name": "リモコン",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-de166a52a76f88da",
-      "name": "on the rocks",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-adbda118c52cf751",
-      "name": "アイドル新鋭隊",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3f1956c81b87f9e8",
-      "name": "needLe",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-b8c7be809a1dcb73",
-      "name": "ゴーストルール",
-      "color": "Gold",
       "group": "niconicoボーカロイド"
     },
     {
@@ -8896,54 +8374,6 @@
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-2384c23c2353d098",
-      "name": "セツナトリップ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-73b50b7664a3c325",
-      "name": "ヴァンパイア",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1863b5716f0b21a8",
-      "name": "エンヴィーベイビー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-7c2683cf5fa578ac",
-      "name": "初音天地開闢神話",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-df150e8e1cbfb6b0",
-      "name": "ジャンキーナイトタウンオーケストラ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-b9dddac133917ad7",
-      "name": "終焉逃避行",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-397a709f564e9fff",
-      "name": "エゴロック",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0d2a174b33888ff4",
-      "name": "ただ選択があった",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-c4e81801b405dbcf",
       "name": "まずはこっちおいで",
       "color": "Normal",
@@ -9019,126 +8449,6 @@
       "id": "jp-title-127ca1dd61cc6f18",
       "name": "人生は選択の連続",
       "color": "Normal",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-b7f5b1378f407153",
-      "name": "モザイクロール",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3b21c015e814483a",
-      "name": "M.S.S.Planet",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0175788ec7ce81ab",
-      "name": "アニマル",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6c7cc80d1dacc4f4",
-      "name": "ジレンマ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-72de3d701bd7f834",
-      "name": "フォニイ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-2ead4168a15c6733",
-      "name": "ヴィラン",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a498436481991450",
-      "name": "EYE",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-84143ac065eff766",
-      "name": "群青讃歌",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d300a78485a9a679",
-      "name": "セカイ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-4352c55b4d080f54",
-      "name": "ワーワーワールド",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6347961acc57ddf0",
-      "name": "マーシャル・マキシマイザー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-364a857845e66da0",
-      "name": "秋の未確認生物",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-51ec338f7cb2dfaf",
-      "name": "キュートなカノジョ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-ec9ce0757b185782",
-      "name": "へべれけジャンキー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-8702655eaee32f86",
-      "name": "きゅうくらりん",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3c4cf985de0e843c",
-      "name": "回る空うさぎ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6bf9904fe8546d1d",
-      "name": "ボッカデラベリタ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6de41f1ef71b095f",
-      "name": "『んっあっあっ。』",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-eda6baf64f15ed8c",
-      "name": "独りんぼエンヴィー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d2f7e277dc17b4dc",
-      "name": "ロータスイーター",
-      "color": "Gold",
       "group": "niconicoボーカロイド"
     },
     {
@@ -9370,78 +8680,6 @@
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-be4a4bf7b9c5375c",
-      "name": "深海少女",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d69cd12f94492282",
-      "name": "神っぽいな",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1e4f519b192343a7",
-      "name": "魔法少女とチョコレゐト",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-57755359eba3099a",
-      "name": "ロウワー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-ccb9a7ebd09a34dd",
-      "name": "キャットラビング",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6c0fc7fd75184f75",
-      "name": "花となれ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0d624dd4fcd859b3",
-      "name": "私のドッペルゲンガー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-4ae703cb8d71e5df",
-      "name": "テオ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-e5d1a72ec04f86e5",
-      "name": "まにまに",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-b9686d88ebc26160",
-      "name": "感情ディシーブ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1dd8e87f80cef988",
-      "name": "ド屑",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-e4a64880cd58bd62",
-      "name": "絶対敵対メチャキライヤー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-0c9427361bb690eb",
       "name": "洗濯機っぽいな",
       "color": "Normal",
@@ -9610,102 +8848,6 @@
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-875490be5a940541",
-      "name": "＊ハロー、プラネット。",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-33b8410e744d173b",
-      "name": "初音ミクの消失",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-05e4e8b96b456fad",
-      "name": "ノンブレス・オブリージュ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-a7a38e554e6e4b0b",
-      "name": "熱異常",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d520fed98ff8304d",
-      "name": "1000年生きてる",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3354f4debe8ddc99",
-      "name": "IMAWANOKIWA",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-20dd2a98a921590f",
-      "name": "バグ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-bb9f5d9d8ac02e4c",
-      "name": "星界ちゃんと可不ちゃんのおつかい合騒曲",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-4788dde3996aa643",
-      "name": "トンデモワンダーズ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-690b9a949057540e",
-      "name": "ずんだもんの朝食　〜目覚ましずんラップ〜",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-12424475538887e2",
-      "name": "あなたは世界の終わりにずんだを食べるのだ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-c4e069e3c3d1a990",
-      "name": "ジェヘナ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-18a321435e97bc3e",
-      "name": "ツギハギスタッカート",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-28635c8addf325ae",
-      "name": "QUEEN",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3439d4833ff7be31",
-      "name": "天使の翼。",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-4ba0206ddf18816c",
-      "name": "さよならプリンセス",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-5b47130b90fd1fab",
       "name": "熱中症",
       "color": "Normal",
@@ -9835,102 +8977,6 @@
       "id": "jp-title-abce629ba135be4e",
       "name": "可愛くなれたかな",
       "color": "Normal",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-9852dcc9b5e8dc82",
-      "name": "ハッピーシンセサイザ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-8d02a06b49986d2c",
-      "name": "強風オールバック",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-c19910afb9018070",
-      "name": "寝起きヤシの木",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d4844e0646b160eb",
-      "name": "ラビットホール",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-9a6bcb0d8315e64a",
-      "name": "酔いどれ知らず",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-c3198224b784b778",
-      "name": "新人類",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d16a7e4712c0e08e",
-      "name": "Freak Out Hr.",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0e2cbfd750386a8c",
-      "name": "サイバーサンダーサイダー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-497bdf99ad997d16",
-      "name": "おくすり飲んで寝よう",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6da1cea9fbb27ac7",
-      "name": "匿名M",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3fa2a07bf17f0d48",
-      "name": "ライアーダンサー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-95641b09df2bd3aa",
-      "name": "バカ通信",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-6ca6cf29d9091619",
-      "name": "ラヴィ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-033b395d8d5d8dde",
-      "name": "スティールユー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-9908af9efbd8022a",
-      "name": "オシオキGIMMICK!!",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-263b163ada5c5158",
-      "name": "ザムザ",
-      "color": "Gold",
       "group": "niconicoボーカロイド"
     },
     {
@@ -10120,114 +9166,6 @@
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-e54a5fac766019e7",
-      "name": "One Step Ahead",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-f69341560fa765fe",
-      "name": "病み垢ステロイド",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3fd1dec9873abc75",
-      "name": "ダーリンダンス",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-ad7ef725b512c882",
-      "name": "デビルじゃないもん",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1256e3cf2baa525c",
-      "name": "ずんだパーリナイ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-d0f363e1536acefa",
-      "name": "人マニア",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-734ccd4c664ae6cd",
-      "name": "転生林檎",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-e3eae7f47cee9777",
-      "name": "演劇",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3d51e3b344738299",
-      "name": "snooze",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-b89d52a537c2ff64",
-      "name": "イガク",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-80f968ae1807827b",
-      "name": "てらてら",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-cbe9640c31a87237",
-      "name": "エイプリルスター",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-58a11e1798a1d8f1",
-      "name": "オーバーライド",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-1c8925302523032e",
-      "name": "右に曲ガール",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-3c8a92368f72eafe",
-      "name": "ウルトラトレーラー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-e8a9658066a6d9a2",
-      "name": "バベル",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-84320fb0f6c826b4",
-      "name": "ワールドワイドワンダー",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
-      "id": "jp-title-0d11e36a4ad63af7",
-      "name": "リアライズ",
-      "color": "Gold",
-      "group": "niconicoボーカロイド"
-    },
-    {
       "id": "jp-title-5442ff01341f8966",
       "name": "ちゅ。",
       "color": "Bronze",
@@ -10360,117 +9298,9 @@
       "group": "niconicoボーカロイド"
     },
     {
-      "id": "jp-title-de2d5dacfbe58e98",
-      "name": "患部で止まってすぐ溶ける～狂気の優曇華院",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-178d1e13aa052cfa",
-      "name": "幻想のサテライト",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-25bcb1ec5f42681f",
-      "name": "月に叢雲華に風",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-1ad089b27ce65eb0",
-      "name": "Scream out! -maimai SONIC WASHER Edit-",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-0ca2fe98e8a23a41",
-      "name": "Calamity Fortune",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-eef5c84326bcdf81",
-      "name": "チルノのパーフェクトさんすう教室　⑨周年バージョン",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-2b95cbe0145605a2",
-      "name": "WARNING×WARNING×WARNING",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-b86e110e3dec7863",
-      "name": "ナイト・オブ・ナイツ (Cranky Remix)",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-e68e874758c105c5",
-      "name": "Little \"Sister\" Bitch",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-302e0466926b0981",
-      "name": "Yakumo >>JOINT STRUGGLE (2019 Update)",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-44cf3cbd840dd7a1",
-      "name": "げきオコスティックファイナリアリティぷんぷんマスタースパーク",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
       "id": "jp-title-4fa0e8fd2f071b05",
       "name": "おこだよ",
       "color": "Bronze",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-68f2839fb30e8b7d",
-      "name": "ソリッド",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-3ded2187b1ea716f",
-      "name": "全力ハッピーライフ",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-1ca3fe76a689314d",
-      "name": "Oath Act",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-43d3e5271636a893",
-      "name": "Witches night",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-3d2596c5d79317de",
-      "name": "Drive Your Fire",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-9ffef1264e90f4a5",
-      "name": "wheel",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-1a91a3d87c69680c",
-      "name": "Bad Apple!! feat.nomico (REDALiCE Remix)",
-      "color": "Gold",
       "group": "東方Project"
     },
     {
@@ -10516,48 +9346,6 @@
       "group": "東方Project"
     },
     {
-      "id": "jp-title-214d95d7ea0934ed",
-      "name": "悪戯センセーション",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-6d9137bbed5ae766",
-      "name": "Paranoia",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-d0971f0f63bfc441",
-      "name": "絡繰りドール",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-2673d1942da06403",
-      "name": "物凄いヴァイブスで魔理沙が物凄いラップ",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-ab0c52db45eeb893",
-      "name": "Sweet Requiem",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-116e42d6b882e334",
-      "name": "Dive into The Sky ～initialized～",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-2cb9a32fc2b68c88",
-      "name": "Prismatic",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
       "id": "jp-title-9f4f04c50e6f9508",
       "name": "ハッとなって きゅっとして ドッカーン！",
       "color": "Normal",
@@ -10588,93 +9376,9 @@
       "group": "東方Project"
     },
     {
-      "id": "jp-title-382ba700537c43b7",
-      "name": "ロストワードクロニカル",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-ee8e32177fc74883",
-      "name": "今、誰が為のかがり火へ",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-1763ac2fd1dba39e",
-      "name": "Melody！",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-be81523fcf328aa1",
-      "name": "下克上々",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-215fcfaed98a4439",
-      "name": "ハウリング",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-4f2e8302e5b3c550",
-      "name": "トランスダンスアナーキー",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
       "id": "jp-title-0f094351da5f8bbc",
       "name": "壊して作ってガッチャンコ 壊して作ってガッチャンコ",
       "color": "Silver",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-27afb34d87a96009",
-      "name": "イヤホンロマンス",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-cd6171a958f17f32",
-      "name": "Sweets Time",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-2d2794eae085a11b",
-      "name": "紅星ミゼラブル～廃憶編",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-4190a1c5940db98a",
-      "name": "幻想に咲いた花",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-089634634b5c8065",
-      "name": "マツヨイナイトバグ",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-e16aaca8f4298de5",
-      "name": "響け！CHIREI MY WAY!",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-18a8d0aea635fc73",
-      "name": "神々が恋した幻想郷",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-18631502745b0155",
-      "name": "taboo tears you up",
-      "color": "Gold",
       "group": "東方Project"
     },
     {
@@ -10702,74 +9406,8 @@
       "group": "東方Project"
     },
     {
-      "id": "jp-title-29d97c65a471d628",
-      "name": "Grip & Break down !!",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-5c21f4f7edcde966",
-      "name": "Armageddon",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-51f61edd96a42b07",
-      "name": "Spring of Dreams",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-1115527c3c568482",
-      "name": "大輪の魂 (feat. AO, 司芭扶)",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-2cac99e6da5cfedd",
-      "name": "紅に染まる恋の花",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-a0312d9a0a718d81",
-      "name": "三妖精SAY YA!!!",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
       "id": "jp-title-2e614f037ba4c498",
       "name": "Kyrie",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-6051406b2cd992ca",
-      "name": "ケロ⑨destiny",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-eeddac1862850c5e",
-      "name": "響縁",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-2236fdec31d6135a",
-      "name": "スカーレット警察のゲットーパトロール24時",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-7e1a6b8efc457ef0",
-      "name": "銀のめぐり",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-5e8ab59f1837be36",
-      "name": "Destiny Runner",
       "color": "Gold",
       "group": "東方Project"
     },
@@ -10783,30 +9421,6 @@
       "id": "jp-title-f52c0238532f658f",
       "name": "まどろむ白、現は黒",
       "color": "Normal",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-1ef6e1fba8e0d08f",
-      "name": "ナイト・オブ・ナイツ",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-05d30193a992c749",
-      "name": "リスペク風神",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-7dc250f2d4c464d0",
-      "name": "インターネットサバイバー",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-ceee8b7b39e57952",
-      "name": "つるぺったん",
-      "color": "Gold",
       "group": "東方Project"
     },
     {
@@ -10840,24 +9454,6 @@
       "group": "東方Project"
     },
     {
-      "id": "jp-title-229a2cdff95b480d",
-      "name": "色は匂へど散りぬるを",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-2ad9b807e35e5f1e",
-      "name": "解けないように",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-5efc68dedb780b8f",
-      "name": "HANIPAGANDA",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
       "id": "jp-title-400b49a4538a205b",
       "name": "ワレワレハ ムテキナノダ",
       "color": "Silver",
@@ -10876,36 +9472,6 @@
       "group": "東方Project"
     },
     {
-      "id": "jp-title-e2bf6cdff239fb32",
-      "name": "sweet little sister",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-ba9bbdccc0466b00",
-      "name": "さよならヒストリー",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-900b2466fb5fc4a0",
-      "name": "LOSTPHANTASIA",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-f246339d293919d2",
-      "name": "Bad Apple!! feat.nomico (Tetsuya Komuro Remix)",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-f14fefa8a057c595",
-      "name": "Re:Unknown X",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
       "id": "jp-title-297668846bc73da5",
       "name": "絡みつく絡みつく絡みつく",
       "color": "Normal",
@@ -10914,36 +9480,6 @@
     {
       "id": "jp-title-1140fd9c70e7ca85",
       "name": "この世界が毀れたのは 君のせいなんだよ――。",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-cff3d97b873607c4",
-      "name": "天狗の落とし文 feat. ｙｔｒ",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-f54947e44f2f8caf",
-      "name": "Ultimate taste",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-49d2dad717c9e79b",
-      "name": "ゆけむり魂温泉 II",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-33b6cdea54e4e1b2",
-      "name": "人間が大好きなこわれた妖怪の唄",
-      "color": "Gold",
-      "group": "東方Project"
-    },
-    {
-      "id": "jp-title-958a9951669bf5a8",
-      "name": "無間嫉妬劇場『666』",
       "color": "Gold",
       "group": "東方Project"
     },
@@ -10964,138 +9500,6 @@
       "name": "伝統の幻想ブン屋",
       "color": "Normal",
       "group": "東方Project"
-    },
-    {
-      "id": "jp-title-281192f2be48e209",
-      "name": "Oshama Scramble!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-697e2876ab931dc6",
-      "name": "BLACK ROSE",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-11840e729300507a",
-      "name": "Secret Sleuth",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f9eb364e91dbd661",
-      "name": "でらっくmaimai♪てんてこまい!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-ddd9f54366c7cb95",
-      "name": "MAXRAGE",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-86c1eef027abd621",
-      "name": "バーチャルダム　ネーション",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-bedc636ac3a4831a",
-      "name": "P-qoq",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c4d7ea1bbed63f69",
-      "name": "超常マイマイン",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-cac00f2e14ea575f",
-      "name": "Crazy Circle",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-7e696c02bb715779",
-      "name": "STEREOSCAPE",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-fec0b6c336bb2524",
-      "name": "♡マイマイマイラブ♡",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a382e71047228b54",
-      "name": "一か罰",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-ccc5d27add5d60bd",
-      "name": "キリキリ舞Mine",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-bd7c1705430967b6",
-      "name": "福宿音屋魂音泉",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-391d18ea7eacbc29",
-      "name": "Now or Never",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d02c161e200a2ca0",
-      "name": "Scarlet Wings",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5c4159d52ecc29e2",
-      "name": "Technicians High",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-35e6c9615b822820",
-      "name": "魔ジョ狩リ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-cc0c23c0e2df5f11",
-      "name": "TwisteD! XD",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-9d77f3b95b9cde4b",
-      "name": "Blows Up Everything",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-19c169b369b1d05b",
-      "name": "TEmPTaTiON",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5d759d20f59fe27c",
-      "name": "アポカリプスに反逆の焔を焚べろ",
-      "color": "Gold",
-      "group": "maimai"
     },
     {
       "id": "jp-title-47221ae97af604b6",
@@ -11122,114 +9526,6 @@
       "group": "maimai"
     },
     {
-      "id": "jp-title-f68ac4d3dd128237",
-      "name": "STEEL TRANSONIC",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-2ef02eda321e490c",
-      "name": "Flashkick",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-23f44c8158bf9e55",
-      "name": "Stardust Memories",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-142cfc8bfee6b86e",
-      "name": "My My My",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c85a80ceffdd141a",
-      "name": "UniTas",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-1dafcb14e7029035",
-      "name": "ここからはじまるプロローグ。",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-4c2ef55af9d871c5",
-      "name": "絡めトリック利己ライザー",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-b9a973f789c66505",
-      "name": "モ°ルモ°ル",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-aa1d6e1013eb09ea",
-      "name": "ブレインジャックシンドローム",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-fd925a0c9bf5f9b3",
-      "name": "共鳴",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-bfb658a042b94969",
-      "name": "Ututu",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-cc023cdc188a1ce6",
-      "name": "シエルブルーマルシェ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-b8b42ecb2de67ef9",
-      "name": "GRÄNDIR",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d7682c6a4bdbc82b",
-      "name": "封焔の135秒",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-cca42db28370bc02",
-      "name": "渦状銀河のシンフォニエッタ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3631dae3f4cc5e6a",
-      "name": "ヤミツキ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a05f639b5e2c3858",
-      "name": "ワードワードワード",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-bfafa3a2ddc5df70",
-      "name": "Valsqotch",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
       "id": "jp-title-d3d4618047ea668f",
       "name": "師匠の弟子",
       "color": "Silver",
@@ -11251,132 +9547,6 @@
       "id": "jp-title-817f2ff9d97c29eb",
       "name": "我々は山本真央樹ではない",
       "color": "Normal",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-9db5b9332166d8c1",
-      "name": "ぼくたちいつでも　しゅわっしゅわ！",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-b619c68bbb245747",
-      "name": "Boys O’Clock",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f8f8c8d683a7fcef",
-      "name": "居並ぶ穀物と溜息まじりの運送屋",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-0233bd1d725e9957",
-      "name": "ARAIS",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-179bcce8fd5e15bd",
-      "name": "マイオドレ！舞舞タイム",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8a5e2978372d850d",
-      "name": "Aetheric Energy",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8c499a71879eb899",
-      "name": "Komplexe",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-28d04a92903eec9e",
-      "name": "Beautiful Future",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-028f68d6823e4357",
-      "name": "Mutation",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-feded1dc45b260e4",
-      "name": "オリフィス",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-2919bda202056919",
-      "name": "ユメヒバナ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-9ee1c33928b700ed",
-      "name": "REAL VOICE",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c465b632fdf0fc71",
-      "name": "パラボラ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f769d826d527c0fc",
-      "name": "Regulus",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-64a8bdc3767d90c7",
-      "name": "ワンダーシャッフェンの法則",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-2b421dbbdc0e9df0",
-      "name": "BIRTH",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c083ffd1b00271d8",
-      "name": "シアトリカル・ケース",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-0c20d4f4a173780c",
-      "name": "Jörqer",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-4c7045987604792e",
-      "name": "Sqlupp (Camellia's \"Sqleipd*Hiytex\" Remix)",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3d2c5aa53a244015",
-      "name": "≠彡\"/了→",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-98a6ab0ed0d96cb4",
-      "name": "BREaK! BREaK! BREaK!",
-      "color": "Gold",
       "group": "maimai"
     },
     {
@@ -11512,114 +9682,6 @@
       "group": "maimai"
     },
     {
-      "id": "jp-title-57271e15a5076bac",
-      "name": "Heavenly Blast",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-60343382710c99d3",
-      "name": "Paradisoda",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-65ed8bb4cc5abb69",
-      "name": "VANTABLACK RAVER",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f7d357bc7fafd1da",
-      "name": "時計の国のジェミニ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-58141c53371ad637",
-      "name": "Xenovcipher",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-4cb363cc4bbdbc22",
-      "name": "星めぐり、果ての君へ。",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3ed1122dc01684fd",
-      "name": "スローアライズ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-82d3dc8f41461d75",
-      "name": "チエルカ／エソテリカ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-48da1ee53302d79c",
-      "name": "生命不詳",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-0cf217710df10b28",
-      "name": "Never Give Up!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-000881cdd97f1b95",
-      "name": "Starry Colors",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-810530ca9a9bb523",
-      "name": "ほしぞらスペクタクル",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8394ec8b122d0409",
-      "name": "VIIIbit Explorer",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-dcc92bab235ba5dd",
-      "name": "Last Samurai",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-1b554dc4a12f1928",
-      "name": "蒼穹舞楽",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-7576b96bdebe5a56",
-      "name": "AMABIE",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-091dd0882bf47069",
-      "name": "ステップアンドライム",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f95fa738876f9a80",
-      "name": "届かない花束",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
       "id": "jp-title-1c67b1fd8cf740b0",
       "name": "Heavenly Crown",
       "color": "Gold",
@@ -11640,120 +9702,6 @@
     {
       "id": "jp-title-eaf9d15086a7be90",
       "name": "侍",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-13daec5525d1ca6c",
-      "name": "とびだせ！TO THE COSMIC!!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-809529748ad89391",
-      "name": "噛み係",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5d0d1e89972d1551",
-      "name": "トリアージ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-97ec8ad1619a0dd5",
-      "name": "NAGAREBOSHI☆ROCKET",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-64a6f42319a09373",
-      "name": "U&iVERSE -銀河鸞翔-",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-dab160400d6eb8b0",
-      "name": "華の集落、秋のお届け",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-6c5239112969d4ab",
-      "name": "BLACK SWAN",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d6f7d144f442935e",
-      "name": "星詠みとデスペラード",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f41d5b37522246fc",
-      "name": "Round Round Spinning Around",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-94b7ad12ddd7d693",
-      "name": "Alcyone",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d0c06adb4bf69e8f",
-      "name": "Raven Emperor",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-1339883623aa6725",
-      "name": "Yorugao",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3ed92a90752d1077",
-      "name": "ヨミビトシラズ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8d3081f31124936c",
-      "name": "前衛的Landscape",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a7ec32b8c5aad7d5",
-      "name": "Trick tear",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-1c8b03bda7b8d480",
-      "name": "躯樹の墓守",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5b04fd23ed0b1bcb",
-      "name": "Lia=Fail",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3330c898f244f243",
-      "name": "アンビバレンス",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f81360139d57ab9e",
-      "name": "GIGANTØMAKHIA",
       "color": "Gold",
       "group": "maimai"
     },
@@ -11794,144 +9742,6 @@
       "group": "maimai"
     },
     {
-      "id": "jp-title-b67e256961fe03fb",
-      "name": "Starlight Disco",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-e497f226080e1d92",
-      "name": "ミルキースター・シューティングスター",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d68c1555fc704712",
-      "name": "ｉｓｏｐｈｏｔｅ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-de151c6a60fb52bd",
-      "name": "パラマウント☆ショータイム！！",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-813a8e7a03bbaeb4",
-      "name": "Strive against fate",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f5d91e46cbf83fb9",
-      "name": "sølips",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a2650d40cab2a66c",
-      "name": "パーフェクション",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-df5d576b58ce571a",
-      "name": "デーモンベット",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-6ff43451fa9ed56e",
-      "name": "HECATONCHEIR",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a1b2f043833832de",
-      "name": "Irresistible",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f4115b1cbdb3aa52",
-      "name": "HAGAKIRI",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-78772ba0366721bb",
-      "name": "N3V3R G3T OV3R",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-ae8358dfc3040dec",
-      "name": "Swift Swing",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-6e6a39c2e0997df1",
-      "name": "星空パーティーチューン",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f51d260a60c6f705",
-      "name": "チューリングの跡",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3fb6a360757d5f8f",
-      "name": "Sage",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-67bf4fcc92423ff3",
-      "name": "OTOGEMA",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-924d384b1181bdcf",
-      "name": "WiPE OUT MEMORIES",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-193d12ef8f58807e",
-      "name": "Metamorphosism",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-0f32eda9d51fb0d8",
-      "name": "白花の天使",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f1b4bc4347bbdeb4",
-      "name": "World's end loneliness",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-65d7a21e0c457f76",
-      "name": "Jouez Avec Moi?",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-db41b0d12d9b8fc6",
-      "name": "遺伝子レベル∞スパイラル",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
       "id": "jp-title-e5eccbaba897f6f0",
       "name": "『全ては一つの幸福に集約された。今日と言う日は人類が真の幸福へ舵を切った輝かしい歴史の転換である』",
       "color": "Gold",
@@ -11965,258 +9775,6 @@
       "id": "jp-title-f7370dd599dc9bc9",
       "name": "Be For 舞",
       "color": "Bronze",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-cf934b4cb96e0ff3",
-      "name": "ジングルベル",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-e4aeeda111b0801f",
-      "name": "火炎地獄",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a6e89f22a1d77c03",
-      "name": "ホシシズク",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-789a95b8eaf19557",
-      "name": "Rainbow Rush Story",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c209d9b2c91ecab4",
-      "name": "Tricolor⁂circuS",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-af9234d2a58bf7bc",
-      "name": "[X]",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-ea92a8e0c11cb807",
-      "name": "分解収束テイル",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-e4b8128e7581aafd",
-      "name": "mystique as iris",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3640e81bbbac49f7",
-      "name": "Rising on the horizon",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-feba450a74267ebf",
-      "name": "You Mean the World to Me",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-fa5f44fc05d76a45",
-      "name": "Neon Kingdom",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-7a630af7f41ae5f2",
-      "name": "#狂った民族２ PRAVARGYAZOOQA",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8a470882307a250f",
-      "name": "VSpook!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3245155c21102e95",
-      "name": "RIFFRAIN",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c3cce804eae733c1",
-      "name": "Falling",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f5ce5ddd43d1ba29",
-      "name": "ピリオドサイン",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c5be653a0329722c",
-      "name": "群青シグナル",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-ce86a8951dd106f1",
-      "name": "Beat Opera op.1",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-b0d3b50ce7ad4dd0",
-      "name": "星見草",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8fc970da3c86b45b",
-      "name": "\"411Ψ892\"",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-79ce10bb649104af",
-      "name": "康莊大道",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3990e9e1e87cd2f8",
-      "name": "ViRTUS",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-be30460616492831",
-      "name": "Monochrome Rainbow",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-3fb6ed07cc772d1e",
-      "name": "Selector",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-727610a0fc9b92e3",
-      "name": "トノサマビーム",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d1fa7f0b9ff90b62",
-      "name": "enchanted wanderer",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-2ec6fc2546471b25",
-      "name": "Comet Panto Men!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-eb7d7cedf9593d69",
-      "name": "ツムギボシ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-ed5d9da385790073",
-      "name": "VeRForTe αRtE:VEiN",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-2521546cb7f0796e",
-      "name": "ヱデン",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-751638b20b5dc00a",
-      "name": "にゃーにゃー冒険譚",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-89e176c85405bbe5",
-      "name": "アンバークロニクル",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-144c49ff3aa0f303",
-      "name": "リフヴェイン",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-cea51ab4073cb0dc",
-      "name": "Kairos",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-92ba273a6b825ea2",
-      "name": "宵の鳥",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-58f2c26ca53b216a",
-      "name": "ここからはじまるプロローグ。 (Kanon Remix)",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-109518bbce6efec5",
-      "name": "モ°ルモ°ル (MZK Skippin' Remix)",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-4b886c33522e1d2e",
-      "name": "VERTeX (rintaro soma deconstructed remix)",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-68a0d1629e35d3a3",
-      "name": "隠密あんみつDX",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f466aeefe6b35225",
-      "name": "地球",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-c0fcfa527e46a073",
-      "name": "Churros Parlor",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-b5b27081ea4a2865",
-      "name": "超熊猫的周遊記（ワンダーパンダートラベラー）",
-      "color": "Gold",
       "group": "maimai"
     },
     {
@@ -12259,150 +9817,6 @@
       "id": "jp-title-a1aafb2a95d88c95",
       "name": "地球に行ってきました",
       "color": "Normal",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-29b9cb21be3f7a57",
-      "name": "ナミダと流星",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-4114f835228abbda",
-      "name": "oboro",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5f8b37115be230cd",
-      "name": "The Great Banquet",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-bb3d075d319847ba",
-      "name": "Redemption",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-0642a0e92af30dc4",
-      "name": "Ether Second",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-caf5e03feca13b5c",
-      "name": "Straight into the lights",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5fe1d0bea18ac06a",
-      "name": "NOIZY BOUNCE",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f322f012c6d0becd",
-      "name": "サンバディ！",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-86d03fbf175526bd",
-      "name": "Horoscope Express",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-020050e27b4e364a",
-      "name": "Party☆People☆Princess",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-99d6ec35032e0f75",
-      "name": "Latent Kingdom",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-9715abc81b4e8338",
-      "name": "Mystic Parade",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-efe4e83e8a03572f",
-      "name": "Cry Cry Cry",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-afcfd1bad61fe8a8",
-      "name": "ぽわわん劇場",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-54075a31b5c7fb93",
-      "name": "my flow",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-76ff56575c9c83e3",
-      "name": "POWER OF UNITY",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a60552218159288d",
-      "name": "Energizing Flame",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8b872ec002883cc7",
-      "name": "KHYMΞXΛ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-b6494ca3af87e508",
-      "name": "フェイクフェイス・フェイルセイフ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-07f0df8e2955b00d",
-      "name": "ふらふらふら、",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-0d6405d9219171cd",
-      "name": "シックスプラン",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-34d8480a94667b09",
-      "name": "フタタビ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-fbb626c6b429490c",
-      "name": "raputa",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-374a957cb3193c2e",
-      "name": "系ぎて",
-      "color": "Gold",
       "group": "maimai"
     },
     {
@@ -12472,114 +9886,6 @@
       "group": "maimai"
     },
     {
-      "id": "jp-title-58a34ea49ecbb157",
-      "name": "炎歌 -ほむらうた-",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-7bc56e258fddcca4",
-      "name": "エスオーエス",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-fb405ec98c40e952",
-      "name": "のじゃロリック",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-1d0bfbb419e8284d",
-      "name": "Edelweiss",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-4a2b80cb9ca10981",
-      "name": "QuiQ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-454d15f1647333e7",
-      "name": "IF:U",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-08d39f0a51125f40",
-      "name": "Cider P@rty",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-bf62c2f5172a51d3",
-      "name": "勦滅",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-762eab0913eaeda1",
-      "name": "Lunatic Vibes",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-22666f3944c7a05f",
-      "name": "Bloody Trail",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-522de0910c16f10f",
-      "name": "RE:INCARNATED DRAGNER",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a1aa7ac455b83f12",
-      "name": "Beginning together!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d88aae2cedc935b7",
-      "name": "Shining Ray ～僕らの絆～",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-a64ac6edf6de05d2",
-      "name": "DEVOTION",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-d045564f2b62157e",
-      "name": "Geranium",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-ab3068406a258fd2",
-      "name": "The Cursed Doll",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5cee9be9093c887d",
-      "name": "RondeauX of RagnaroQ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-42027e38eefc9cbb",
-      "name": "ℝ∈Χ LUNATiCA",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
       "id": "jp-title-959c15ce56de6eee",
       "name": "and you",
       "color": "Rainbow",
@@ -12590,138 +9896,6 @@
       "name": "THE LAST",
       "color": "Rainbow",
       "group": "maimai"
-    },
-    {
-      "id": "jp-title-99a8adb5568db1e9",
-      "name": "LANCE",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-e91299fe7f02e800",
-      "name": "Imitation:Loud Lounge",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-5cca91e406a6ce05",
-      "name": "プリズム△▽リズム",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-f992cd53de515821",
-      "name": "パラドクスイヴ",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-49ff528c4d5e80a0",
-      "name": "YKWTD",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-7d456bf335d5175a",
-      "name": "184億回のマルチトニック",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-03c9e514d7f85e34",
-      "name": "果ての空、僕らが見た光。",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-8ae68d0fc1beb865",
-      "name": "Cryptarithm",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-76d8683bb7779b8f",
-      "name": "Ourania",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-7fab8275954da11a",
-      "name": "天蓋",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-03707ebc018d646c",
-      "name": "Deicide",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-e74b0fcd353eab54",
-      "name": "氷滅の135小節",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-347a69466f6690ae",
-      "name": "Divide et impera!",
-      "color": "Gold",
-      "group": "maimai"
-    },
-    {
-      "id": "jp-title-98c16457037ac107",
-      "name": "Change Our MIRAI！",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-57cacc89a194f280",
-      "name": "STARTLINER",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-96e89d7a2b0afb2b",
-      "name": "Agitation！",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-ff64c5b19072340d",
-      "name": "管弦楽組曲 第3番 ニ長調「第2曲（G線上のアリア）」BWV.1068-2",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-8fe7b95a46c02b5f",
-      "name": "玩具狂奏曲 -終焉-",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-bccc6205cee3aa45",
-      "name": "Titania",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-acea79a8d05073b9",
-      "name": "BOKUTO",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-910e89bf55972d7d",
-      "name": "立川浄穢捕物帳",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-68a3c745fe2810d4",
-      "name": "Jump!! Jump!! Jump!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
     },
     {
       "id": "jp-title-615125106831d75c",
@@ -12754,42 +9928,6 @@
       "group": "オンゲキCHUNITHM"
     },
     {
-      "id": "jp-title-3a4cc82c77320787",
-      "name": "最強 the サマータイム!!!!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-f0b3d101fffc5a3d",
-      "name": "UTAKATA",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-dd0603f511bc3147",
-      "name": "タテマエと本心の大乱闘",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-8391594a5140a645",
-      "name": "はちみつアドベンチャー",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-8472de7abc1d49fd",
-      "name": "popcorn",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-925fea3c811df886",
-      "name": "CHOCOLATE BOMB!!!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
       "id": "jp-title-88beab216155c6ee",
       "name": "ずっと夏!!!!!",
       "color": "Normal",
@@ -12805,48 +9943,6 @@
       "id": "jp-title-6b20d08f1f341328",
       "name": "ふふ、構って欲しいの？",
       "color": "Silver",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-9e1cc10fc42c6165",
-      "name": "YURUSHITE",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-4dfbada9147b605a",
-      "name": "ポケットからぬりつぶせ！",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-e31dacb25db91bfc",
-      "name": "トリドリ⇒モリモリ！Lovely fruits☆",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-0d3b3b346fca8573",
-      "name": "Desperado Waltz",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-b4897d9b747c50d7",
-      "name": "宛城、炎上！！",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-c5fa52300c6e19a4",
-      "name": "Climax",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-3797fcdb42cee6e6",
-      "name": "レーイレーイ",
-      "color": "Gold",
       "group": "オンゲキCHUNITHM"
     },
     {
@@ -12892,60 +9988,6 @@
       "group": "オンゲキCHUNITHM"
     },
     {
-      "id": "jp-title-a2d631b040b54b36",
-      "name": "オーケー？　オーライ！",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-389b7a443c026c56",
-      "name": "サヨナラフリーウェイ",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-6036ab99f3708140",
-      "name": "単一指向性オーバーブルーム",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-5cd7c58a26696955",
-      "name": "みなえをチェック！",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-72b240eba310811b",
-      "name": "ハジマリノピアノ",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d377afcd5d4a33a5",
-      "name": "BOUNCE & DANCE",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-0d0074aae7ce4723",
-      "name": "Kiss Me Kiss",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d858c13a87da6906",
-      "name": "MEGATON BLAST",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-17559dfe82182b3c",
-      "name": "Splash Dance!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
       "id": "jp-title-3c5296a26f07ba74",
       "name": "イエー！イエーイエーイエー！！！フゥー↑",
       "color": "Normal",
@@ -12988,66 +10030,6 @@
       "group": "オンゲキCHUNITHM"
     },
     {
-      "id": "jp-title-4effdab6a1f6c1d8",
-      "name": "宿星審判",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-3f6ee9df142668de",
-      "name": "脳天直撃",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-b4a4cf5165aab846",
-      "name": "ぱくぱく☆がーる",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-eb3bdb4afcc243db",
-      "name": "No Limit RED Force",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d82b27a9421f54ef",
-      "name": "LiftOff",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-e4d65422aa7ea0cf",
-      "name": "Falsum Atlantis.",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-80993aeeb050d41b",
-      "name": "We Are Us",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-0cce14dea2176caa",
-      "name": "Limits",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-c1ca253c331156be",
-      "name": "スピカの天秤",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-cb26474fefcdd7a5",
-      "name": "ハードコア・シンドローム",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
       "id": "jp-title-ab77c7937be1edd8",
       "name": "脳天直撃 セガサターン",
       "color": "Normal",
@@ -13080,72 +10062,6 @@
     {
       "id": "jp-title-9783cb55aa62ccc2",
       "name": "テリトリーバトル",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-8f70c4d2fef3fc04",
-      "name": "Good bye, Merry-Go-Round.",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-e9c40fab33313006",
-      "name": "ツクヨミステップ",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-4c364002377a2929",
-      "name": "folern",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-add2a09691f466a9",
-      "name": "コスモポップファンクラブ",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-7c6e27c04a2e8002",
-      "name": "撩乱乙女†無双劇",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-a330efd1d7c2800c",
-      "name": "See The Light",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-ce5cc5352d418808",
-      "name": "エータ・ベータ・イータ",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-6ca8d9969cd4ee81",
-      "name": "8-EM",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-8f6472ab8b3f697f",
-      "name": "otorii INNOVATED -[i]3-",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-ca418d786799b829",
-      "name": "パズルリボン",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-b8752ce88d66ce20",
-      "name": "Transcend Lights",
       "color": "Gold",
       "group": "オンゲキCHUNITHM"
     },
@@ -13198,60 +10114,6 @@
       "group": "オンゲキCHUNITHM"
     },
     {
-      "id": "jp-title-9a751ecbd6b75b03",
-      "name": "蜘蛛の糸",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-73b4886d10f5dedd",
-      "name": "Don't Fight The Music",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-1231ca057f948758",
-      "name": "Catch Me If You Can",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-7b8fb9f02b9e1a8a",
-      "name": "MAGNETAR GIRL",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-a035fa4565b1a1c1",
-      "name": "SUPER AMBULANCE",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-aa66028a218c0ab9",
-      "name": "Ghost Dance",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-7fec14e13b9572da",
-      "name": "ピュグマリオンの咒文",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-8e8180a6215b94bb",
-      "name": "電光石火",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-221f4306c1841e06",
-      "name": "Hainuwele",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
       "id": "jp-title-2526740e9c37dd8e",
       "name": "■◆■◆",
       "color": "Gold",
@@ -13278,60 +10140,6 @@
     {
       "id": "jp-title-6455aecfd2c729fc",
       "name": "憎しみの二重螺旋",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-7cbc4027541c90a2",
-      "name": "Trrricksters!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-c7bff8602e23f1fb",
-      "name": "FLUFFY FLASH",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-0e786105db409ca6",
-      "name": "STARRED HEART",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-cddaf5e474aeb3b2",
-      "name": "Y.Y.Y.計画!!!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-a48191c46531508b",
-      "name": "Last Kingdom",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-70b5879a78fc6649",
-      "name": "LAMIA",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-c00cb1bed4b0acf5",
-      "name": "『ウソテイ』 ～一回戦せりなvsしろなvsなずな～",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-563725f8e7acbe22",
-      "name": "Bad Apple!! feat.nomico ～五十嵐 撫子 Ver.～",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-5da6e293f4534d63",
-      "name": "Snow Colored Score",
       "color": "Gold",
       "group": "オンゲキCHUNITHM"
     },
@@ -13408,48 +10216,6 @@
       "group": "オンゲキCHUNITHM"
     },
     {
-      "id": "jp-title-6f457e245441d076",
-      "name": "SQUAD-Phvntom-",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-39e4b764f5c6b5ac",
-      "name": "GEOMETRIC DANCE",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-2dfeec0350395b63",
-      "name": "Ring",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d4ee70fa77d2a504",
-      "name": "インパアフェクシオン・ホワイトガアル",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-87baeecff58baca9",
-      "name": "WE'RE BACK!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-db3499bfd5f7d7bf",
-      "name": "Apollo",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d55e90039cb7dbe8",
-      "name": "PinqPiq (xovevox Remix)",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
       "id": "jp-title-b2aca81c422ff8c5",
       "name": "我々は山本真央樹ではないし、山本真央樹にはなれない。",
       "color": "Normal",
@@ -13465,48 +10231,6 @@
       "id": "jp-title-3b72ab5c9edfc177",
       "name": "Back-to-BACK-2-BACK!!",
       "color": "Normal",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-cb06a9992ec92cac",
-      "name": "Λzure Vixen",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d2f009db16ff83d1",
-      "name": "MarbleBlue.",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-6e641a2188860651",
-      "name": "まっすぐ→→→ストリーム！",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-693ed8d3a6490975",
-      "name": "最っ高のエンタメだ!!",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-bfaa91f3282bd5e2",
-      "name": "Baqeela",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-48087dc86b4c677a",
-      "name": "Ai C",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-c12c4bbc8ef5e4b9",
-      "name": "MUSIC PЯAYER",
-      "color": "Gold",
       "group": "オンゲキCHUNITHM"
     },
     {
@@ -13564,42 +10288,6 @@
       "group": "オンゲキCHUNITHM"
     },
     {
-      "id": "jp-title-37823ac237403ebc",
-      "name": "Elemental Ethnic",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-bd46e5d14c7a7c9e",
-      "name": "美夜月鏡",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-203f71493bdfbb2a",
-      "name": "Resolution",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d648681cad2f0d05",
-      "name": "いちげき！のテーマ",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-d19af949750c24a3",
-      "name": "Radiance",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
-      "id": "jp-title-91b4f1d7ac703367",
-      "name": "R'N'R Monsta",
-      "color": "Gold",
-      "group": "オンゲキCHUNITHM"
-    },
-    {
       "id": "jp-title-8480702a2c3f5eac",
       "name": "SE～んGA～ん",
       "color": "Normal",
@@ -13642,18 +10330,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-8bf7d1a7e78672e8",
-      "name": "回レ！雪月花",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-62f5479341bb3322",
-      "name": "ようこそジャパリパークへ",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-1ec7a7baf7f216fc",
       "name": "LOSER",
       "color": "Gold",
@@ -13662,12 +10338,6 @@
     {
       "id": "jp-title-e2d42575d7b42b10",
       "name": "U.S.A.",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-960e7d1683f418b9",
-      "name": "HOT LIMIT",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -13692,12 +10362,6 @@
     {
       "id": "jp-title-2e03ba6e2958f3ec",
       "name": "フレ！フレ！ベストフレンズ",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-9f79f328fef584dd",
-      "name": "デビル☆アイドル",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -13750,20 +10414,8 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-f8558db618382be2",
-      "name": "ハム太郎とっとこうた",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-072ef86c07ea0a83",
       "name": "青空のラプソディ",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-15d928a3a6942d50",
-      "name": "だから僕は音楽を辞めた",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -13782,12 +10434,6 @@
     {
       "id": "jp-title-949877ac51075a00",
       "name": "六厘歌",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-4123d8deadcd5878",
-      "name": "ウマイネームイズうまみちゃん",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -14008,12 +10654,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-a5223072be3647f9",
-      "name": "Virtual to LIVE",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-69747951fc1eea5d",
       "name": "Pretender",
       "color": "Gold",
@@ -14062,20 +10702,8 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-3f1db7f1b6c2f7ed",
-      "name": "おジャ魔女カーニバル!!",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-1fcc17a0e93f9bfe",
       "name": "秒針を噛む",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-23af992b74fec99c",
-      "name": "タケモトピアノCMソング",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -14146,12 +10774,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-8d693b5b030667c9",
-      "name": "ドラゴンエネルギー",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-dfdd92e36c64cba0",
       "name": "泥の分際で私だけの大切を奪おうだなんて",
       "color": "Gold",
@@ -14164,20 +10786,8 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-00e24d64e5373631",
-      "name": "インドア系ならトラックメイカー",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-a83dd2f4e08e9afd",
       "name": "veil",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-b66a876874115fb9",
-      "name": "廻廻奇譚",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -14230,12 +10840,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-3fa75374610ffd87",
-      "name": "春を告げる",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-67b6d86ee8a2f5c8",
       "name": "くらべられっ子",
       "color": "Gold",
@@ -14268,18 +10872,6 @@
     {
       "id": "jp-title-70afebee96a9bc45",
       "name": "剣を抜け！GCCX MAX",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-528fdf88c77fdc73",
-      "name": "Princess♂",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-0e803419091a2698",
-      "name": "ヒトガタ",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -14344,12 +10936,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-18228fdc47849e70",
-      "name": "踊",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-526f53163d7fc282",
       "name": "残響散歌",
       "color": "Gold",
@@ -14358,30 +10944,6 @@
     {
       "id": "jp-title-cb3e4a8cfa03daed",
       "name": "アマカミサマ",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-f739b8bf619a3ab3",
-      "name": "モンダイナイトリッパー！",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-50102d68e0473cad",
-      "name": "Baddest",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-7e689591322d5798",
-      "name": "Blank Paper (Prod. TEMPLIME)",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-1abdd9aea08cf15b",
-      "name": "In my world (Prod. KOTONOHOUSE)",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -14461,60 +11023,6 @@
       "id": "jp-title-5867d26ab7ccb017",
       "name": "いつも通勤に使っている電車なのですが、先程から20分くらい駅に停まりません。",
       "color": "Normal",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-02116d94b32213f0",
-      "name": "ヒバリ",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-00a4a7faf00990b2",
-      "name": "Hello, Hologram",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-c7d5c0186da85ba9",
-      "name": "不機嫌なスリーカード",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-3081bdd42af80cd2",
-      "name": "阿修羅ちゃん",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-304a11829ef6d0e5",
-      "name": "おとせサンダー",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-881e272f09e63328",
-      "name": "INTERNET OVERDOSE",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-d7fdea37677416c7",
-      "name": "魂のルフラン",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-f8e02850d68a09a8",
-      "name": "はんぶんこ",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-f1b89baee251c140",
-      "name": "あつすぎの歌",
-      "color": "Gold",
       "group": "POPSアニメ"
     },
     {
@@ -14698,12 +11206,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-75d38603d8d8044f",
-      "name": "さくゆいたいそう",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-6f98ae162fc403d2",
       "name": "Burn My Soul",
       "color": "Gold",
@@ -14712,18 +11214,6 @@
     {
       "id": "jp-title-b3d1e0096c17cd87",
       "name": "story",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-1e25881a085a9252",
-      "name": "HUMANBORG",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-a15d09609b1fdfb8",
-      "name": "ULTRA POWER",
       "color": "Gold",
       "group": "POPSアニメ"
     },
@@ -14857,48 +11347,6 @@
       "id": "jp-title-0bedd14a282d53de",
       "name": "Chops & Roll",
       "color": "Bronze",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-8372072b29dd0bfd",
-      "name": "INTERNET YAMERO",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-dd3324a6d86b2ef0",
-      "name": "過去を喰らう",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-74212eae46a2921b",
-      "name": "アイドル",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-5e1ed58745a7859f",
-      "name": "バラバラ〜仮初レインボーローズ〜",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-6d632d47f9f4581b",
-      "name": "偉大なる悪魔は実は大天使パトラちゃん様なのだ！",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-80b5ac03492c6168",
-      "name": "シュガーホリック",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-5a7cc3e94e8c3431",
-      "name": "壱雫空",
-      "color": "Gold",
       "group": "POPSアニメ"
     },
     {
@@ -15094,54 +11542,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-c30b409edfe25da1",
-      "name": "唱",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-26d509de6dcca3cd",
-      "name": "愛包ダンスホール",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-5163a4b7ab9163ff",
-      "name": "マツケンサンバⅡ",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-7ee48f03eea3a003",
-      "name": "メイトなやつら（FEAT. 天開司, 佐藤ホームズ, あっくん大魔王 & 歌衣メイカ）",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-65bb71676a4d5c51",
-      "name": "モンスターカミング",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-c5f58c101682eeaf",
-      "name": "シリウスの輝きのように",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-958f3d8496dbaea0",
-      "name": "プラネタリウム・レヴュー",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
-      "id": "jp-title-8114b0b1642ff0d5",
-      "name": "夢現妄想世界",
-      "color": "Gold",
-      "group": "POPSアニメ"
-    },
-    {
       "id": "jp-title-c144438bdbfa8c59",
       "name": "一切合切忘れて Shout it out",
       "color": "Normal",
@@ -15238,42 +11638,6 @@
       "group": "POPSアニメ"
     },
     {
-      "id": "jp-title-153f6352bc5c24bc",
-      "name": "conflict",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-a7c5aaecc2dbe152",
-      "name": "ENERGY SYNERGY MATRIX",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-a1afbba58c4f76b8",
-      "name": "Destr0yer",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-40449b1d5095eae1",
-      "name": "プナイプナイせんそう",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-c50c24b9abf68a09",
-      "name": "サンバランド",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-267ad31c1a2f28a9",
-      "name": "Halcyon",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
       "id": "jp-title-506c4fec312fb103",
       "name": "★==============Σ(ﾟдﾟ；)",
       "color": "Gold",
@@ -15286,116 +11650,8 @@
       "group": "ゲームバラエティ"
     },
     {
-      "id": "jp-title-91b7db58aa781946",
-      "name": "Black Lair",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-59b23f449731cd88",
-      "name": "energy trixxx",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-35cde9bdf8333675",
-      "name": "NULCTRL",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-85d6a50c3b55776e",
-      "name": "アトロポスと最果の探究者",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-789177be337b1e06",
-      "name": "Entrance",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-560078ea4642c6f0",
-      "name": "Lunar Mare",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-06a5c6a7412b3951",
-      "name": "Saika",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-93fb26e39d2c31c2",
-      "name": "CHAOS",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-657df748f06b0cab",
-      "name": "Maboroshi",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
       "id": "jp-title-394faf926006fc2c",
       "name": "Can you hear me?",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-f46e55abedc37053",
-      "name": "BATTLE NO.1",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-05655b13a08b9d92",
-      "name": "Ether Strike",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-3273e2cbc266fbf2",
-      "name": "Cyaegha",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-4d3f61e8e40a510c",
-      "name": "Grievous Lady",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-6403cada8ab52a05",
-      "name": "c.s.q.n.",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-282cd56ce9be045f",
-      "name": "カラッポ・ノンフィクション",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-efea71cf5eac1795",
-      "name": "emomomo",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-76a7723b6494d6ce",
-      "name": "Arty Party",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-dc917ef2e81c5fa1",
-      "name": "felys -final remix-",
       "color": "Gold",
       "group": "ゲームバラエティ"
     },
@@ -15430,90 +11686,6 @@
       "group": "ゲームバラエティ"
     },
     {
-      "id": "jp-title-522c46831e3aa749",
-      "name": "キラメキ居残り大戦争",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-c21cb586cfc40fff",
-      "name": "Re：End of a Dream",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-8460286fd782fa41",
-      "name": "もぺもぺ",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-5355ab44b5a3c92e",
-      "name": "Sound Chimera",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-122da1f9dd7d8a0a",
-      "name": "CO5M1C R4ILR0AD",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-68c7093f9a7a2cd5",
-      "name": "MAKE IT FUNKY NOW",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-5e26b63d12e13414",
-      "name": "Rush-More",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-ee61b819ab6af9c2",
-      "name": "Strange Bar",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-76e11d2b7bc81d58",
-      "name": "Big Daddy",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-e3f9e9eb780fae67",
-      "name": "ベースラインやってる？笑",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-c49f6d823d04e59f",
-      "name": "ALiVE",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-0e2a31ccaeef2ac9",
-      "name": "ヒミツCULT",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-b9273a67a0d1529a",
-      "name": "MEGATON KICK",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-9f71f101a4da572c",
-      "name": "LOSE CONTROL",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
       "id": "jp-title-c6b6c0c7f222ecf2",
       "name": "夢の終りは新たな始まり",
       "color": "Silver",
@@ -15544,44 +11716,8 @@
       "group": "ゲームバラエティ"
     },
     {
-      "id": "jp-title-4c9c6d5b64dcd3b4",
-      "name": "竹",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-729b7130e17a27c7",
-      "name": "スーパーシンメトリー",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-6119235f609cb2d4",
-      "name": "Southern Cross",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-55cec15c15292728",
-      "name": "Upshift",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-b1cd984d65d8a70d",
-      "name": "MOBILYS",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
       "id": "jp-title-3e29f572d90e6f10",
       "name": "さんさーら！",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-e31dd48d71982941",
-      "name": "ヒステリックナイトガール",
       "color": "Gold",
       "group": "ゲームバラエティ"
     },
@@ -15625,78 +11761,6 @@
       "id": "jp-title-92d2ef4d534e19a6",
       "name": "最高泣（さいこうきゅう）かい…",
       "color": "Silver",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-69dc67920638a8e6",
-      "name": "Dreadnought",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-9e841580652f3e69",
-      "name": "enchanted love",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-ed4017defc60de92",
-      "name": "Caterpillar Song",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-a2119942c2db15b5",
-      "name": "BLUE ZONE",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-a29b048b887aa78e",
-      "name": "Estahv",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-823e1701a62f74cc",
-      "name": "First Dance",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-ebc1cc9d146d79ea",
-      "name": "Mjölnir",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-50928b846456989e",
-      "name": "Define",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-ded2affaef3265ce",
-      "name": "BANG!",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-723561deb69ce741",
-      "name": "Love's Theme of BADASS ～バッド・アス 愛のテーマ～",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-92c28657e161c735",
-      "name": "Reach For The Stars (Re-Colors)",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-e248692561372c60",
-      "name": "若い力",
-      "color": "Gold",
       "group": "ゲームバラエティ"
     },
     {
@@ -15787,84 +11851,6 @@
       "id": "jp-title-1b57312d9b54bf6a",
       "name": "おもしろmaimai倉庫",
       "color": "Normal",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-842d241afd2a3259",
-      "name": "Maxi",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-69594161fd240f75",
-      "name": "田中",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-ccd75502d7ee5274",
-      "name": "Random",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-032ce1fc9ae76aa0",
-      "name": "Luminaria",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-ff64a89dcf21f760",
-      "name": "エナドリおいしいソング",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-e49b30bd531cdb18",
-      "name": "ばかみたい【Taxi Driver Edition】",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-b6f2dae633be4e42",
-      "name": "れっつ！みらくる☆はーどこあっ！",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-6d0770e87eb6a5e3",
-      "name": "アイム・マイヒーロー",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-14e13dfc3ed8ef82",
-      "name": "NightTheater",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-69e9f95e7ed1074c",
-      "name": "Lost Desire",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-1b2aea5cd4e38c56",
-      "name": "Aegleseeker",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-efbd37d291787686",
-      "name": "最強STRONGER",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-2d0f5369f4c03690",
-      "name": "Alice's Suitcase",
-      "color": "Gold",
       "group": "ゲームバラエティ"
     },
     {
@@ -16024,120 +12010,6 @@
       "group": "ゲームバラエティ"
     },
     {
-      "id": "jp-title-ab4cbb1d76c17a51",
-      "name": "Let you DIVE!",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-a267cf09c90b020b",
-      "name": "Knight Rider",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-3353617c953438f9",
-      "name": "Shooting Shower～DANCE TIME(シンディ)～",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-6870b63a6330fe18",
-      "name": "Lights of Muse",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-cb85daaf35f688b8",
-      "name": "tape/stop/night",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-4a2d68cfcda7f955",
-      "name": "Final Step!",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-c0131252482c4888",
-      "name": "The 90's Decision",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-990610cc69015018",
-      "name": "僕の和風本当上手",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-72c4615c887cfab6",
-      "name": "Cthugha",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-89d8956d50697ef8",
-      "name": "コンティニュー！ feat. 藍月なくる",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-5c972cbb11534c2e",
-      "name": "Sunday Night feat Kanata.N",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-da0a8d19910fea8c",
-      "name": "PERSONA feat. PANXI",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-d3b57b906a31efa6",
-      "name": "Halfway(>∀<)",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-2d54edd806c27db4",
-      "name": "Complex Mind",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-fdd45fa75c324067",
-      "name": "DROPS feat. Such",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-491ff12be25b88fd",
-      "name": "ULTRA SYNERGY MATRIX",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-c1ab62c8f899c7fd",
-      "name": "BULK UP (GAME EXCLUSIVE EDIT)",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-dbdffe4bba4dd3f1",
-      "name": "Vallista",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-233d69f5fd5668b7",
-      "name": "MAGENTA POTION",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
       "id": "jp-title-8cdb0f47ff85028d",
       "name": "このまま、最後まで！",
       "color": "Normal",
@@ -16212,84 +12084,6 @@
     {
       "id": "jp-title-4345af806f82fb5c",
       "name": "ULTRA SUGOIYATU",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-76b565ebf4df2708",
-      "name": "I’m Here (feat. Merry Kirk-Holmes)",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-0d41c84f5c94b78f",
-      "name": "PUPA",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-a2196200ff71f585",
-      "name": "Play merrily NEO",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-774d0bfb818fd340",
-      "name": "OMAKENO Stroke",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-069e0fdf1d5d24b9",
-      "name": "with U",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-f8e629cdde502695",
-      "name": "Love Kills U",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-58b0726b81e62dbd",
-      "name": "DANGEROOOOUS JUNGLE",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-b328c5a7dc561ec0",
-      "name": "天使光輪",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-3bd51defc66fbfd1",
-      "name": "神威",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-d6548e5209e14add",
-      "name": "ozma",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-bba9a36f1165a357",
-      "name": "月面基地",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-defbb44cf3170074",
-      "name": "Rush-Hour",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-b09b4501c7431406",
-      "name": "アルカンシエル",
       "color": "Gold",
       "group": "ゲームバラエティ"
     },
@@ -16402,78 +12196,6 @@
       "group": "ゲームバラエティ"
     },
     {
-      "id": "jp-title-9934d1a9c4052b0e",
-      "name": "御旗のもとに",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-c404f718734f10b6",
-      "name": "New York Back Raise",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-64a158344e34bfd4",
-      "name": "DUAL ROZES",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-d871fa9d1f7cec05",
-      "name": "VOLT",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-341a96ccdf80f843",
-      "name": "tiny tales continue",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-da84378fdad004fd",
-      "name": "ouroboros -twin stroke of the end-",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-6f833a487970b41e",
-      "name": "INFiNiTE ENERZY -Overdoze-",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-254411cb849043fa",
-      "name": "Make Up Your World feat. キョンシーのCiちゃん & らっぷびと",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-8862140da3ecbf51",
-      "name": "BOOM! BOOM!! BOOM!!!",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-5e4a25abf6382078",
-      "name": "Everybody Say HARDCORE TANO*C",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-25e3e67e244e3549",
-      "name": "ミラクルポップ☆アドベンチャー!!!!!",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-93a29fd508a2b4b7",
-      "name": "Trust",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
       "id": "jp-title-d6373c81b3e1ac5d",
       "name": "ウオウオ",
       "color": "Silver",
@@ -16519,78 +12241,6 @@
       "id": "jp-title-999f8f66067a6b8b",
       "name": "街を破壊！！",
       "color": "Normal",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-178b168cf214a839",
-      "name": "Chronomia",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-0e032edc04ee57f2",
-      "name": "Empire of Winter",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-0de5e8edfb605667",
-      "name": "迷える音色は恋の唄",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-837585e891aae3cc",
-      "name": "Löschen",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-99a5711db56952ea",
-      "name": "Abstruse Dilemma",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-89ed5bc371cd1c65",
-      "name": "HYP3RTRIBE",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-ab4e216ffb878419",
-      "name": "はげしこの夜 -Psylent Crazy Night-",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-cbada5970501e60a",
-      "name": "お願い！コンコンお稲荷さま",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-78388edb0072160f",
-      "name": "いっぱい食べる君が好きだよ",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-21721392d9f7ba58",
-      "name": "ピポピポ -People People- feat. ななひら",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-0a67675e7476d028",
-      "name": "MORNINGLOOM",
-      "color": "Gold",
-      "group": "ゲームバラエティ"
-    },
-    {
-      "id": "jp-title-021c63c24ce82c5d",
-      "name": "How To Make 音ゲ～曲！",
-      "color": "Gold",
       "group": "ゲームバラエティ"
     },
     {
@@ -17144,6 +12794,13 @@
       "name": "project raputa completed",
       "color": "Gold",
       "group": "裏 月面ちほー"
+    },
+    {
+      "id": "jp-wirepuller",
+      "name": "WIREPULLER",
+      "color": "Rainbow",
+      "group": "特殊称号"
     }
-  ]
+  ],
+  "count": 2133
 }

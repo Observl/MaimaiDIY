@@ -358,7 +358,7 @@ export function initializePicker({
     activeView = true;
     retryLoad.hidden = true;
     if (picker.dataset) picker.dataset.category = control.category;
-    if (cachedView) {
+    if (cachedView && control.category !== 'titles') {
       pickerState = cachedView.state;
       pickerState.control = control;
       pickerTitle.textContent = `选择${control.label}`;

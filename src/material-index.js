@@ -1,11 +1,23 @@
+import { loadDxTitleCategory } from './dx-song-titles.js';
 import { loadManifest, loadTitleManifest, loadBadgeManifest } from './assets.js';
-import { regionCategory } from './region-catalog.js';
+import { regionCategory, loadRegionCategoryIndex } from './region-catalog.js';
 import { filterMaterialCategory, materialIdentity } from './material-visibility.js';
 
 const indexes = new Map();
 
 async function readCategory(control, region) {
   const id = control.category;
+  if (id === 'titles') return loadDxTitleCategory(region, control.label, {
+    loadSongs: selectedRegion => loadRegionCategoryIndex(selectedRegion, 'songs'),
+    loadBase: async selectedRegion => {
+      if (selectedRegion === 'jp') return (await regionCategory(selectedRegion, control)).items;
+      const raw = (await loadTitleManifest()).items;
+      const visible = await filterMaterialCategory({ id, label: control.label, items: raw }, selectedRegion);
+      // Explicitly requested custom title is not part of the historical LXNS allowlist.
+      return [...visible.items, ...raw.filter(item => item.name === 'WIREPULLER' && item.color === 'Rainbow' &&
+        !visible.items.some(entry => entry.id === item.id))];
+    },
+  });
   let category = await regionCategory(region, control);
   if (category && region === 'jp' && ['titles', 'ranks', 'friend-battles'].includes(id)) return category;
   if (!category) {
@@ -19,6 +31,7 @@ async function readCategory(control, region) {
 }
 
 export async function indexedMaterialCategory(control, region) {
+  if (control.category === 'titles') return readCategory(control, region);
   const key = region + ':' + control.category;
   if (!indexes.has(key)) {
     indexes.set(key, readCategory(control, region).then(category => {

@@ -1,3 +1,4 @@
+import { COS } from './config.js';
 import { jpProfileItems } from './jp-profile-assets.js';
 import { registerRegionCatalog } from './region-profile.js';
 import { createRegionIndexLoader, requireIndexRegion } from './region-index.js';
@@ -6,8 +7,11 @@ const requests = new Map();
 let gamerchRequest;
 let jpTitlesRequest;
 function loadJpTitles() {
-  jpTitlesRequest ||= fetch(new URL('../data/regions/jp-titles.json', import.meta.url))
-    .then(response => response.ok ? response.json() : null)
+  jpTitlesRequest ||= fetch(`${COS.baseUrl}/materials/regions/jp-titles.json`)
+    .then(response => { if (!response.ok) throw new Error('COS 日服称号未就绪'); return response.json(); })
+    .then(data => { if (data?.region !== 'jp' || !Array.isArray(data.items)) throw new Error('COS 日服称号索引无效'); return data; })
+    .catch(() => fetch(new URL('../data/regions/jp-titles.json', import.meta.url))
+      .then(response => response.ok ? response.json() : null))
     .then(data => {
       if (data?.region !== 'jp' || !Array.isArray(data.items)) throw new Error('日服称号索引无效');
       const names = new Set(data.items.map(item => item.name));
