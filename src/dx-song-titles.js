@@ -23,3 +23,12 @@ export async function loadDxTitleCategory(region, label, { loadBase, loadSongs }
   if (songs.region !== region || !Array.isArray(songs.items)) throw new Error('歌曲称号区服索引无效');
   return { id: 'titles', label, items: mergeDxSongTitles(baseItems, songs.items, region) };
 }
+
+// The requested rainbow title is independent of the historical CN trophy allowlist.
+export function withCnWirepuller(visibleItems, rawItems) {
+  const isWirepuller = item => item.name === 'WIREPULLER' && item.color === 'Rainbow';
+  const wirepuller = visibleItems.find(isWirepuller) || rawItems.find(isWirepuller) || {
+    id: 'cn-wirepuller', name: 'WIREPULLER', color: 'Rainbow',
+  };
+  return [...visibleItems.filter(item => !isWirepuller(item)), { ...wirepuller, group: '彩虹' }];
+}

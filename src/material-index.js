@@ -1,4 +1,4 @@
-import { loadDxTitleCategory } from './dx-song-titles.js';
+import { loadDxTitleCategory, withCnWirepuller } from './dx-song-titles.js';
 import { loadManifest, loadTitleManifest, loadBadgeManifest } from './assets.js';
 import { regionCategory, loadRegionCategoryIndex } from './region-catalog.js';
 import { filterMaterialCategory, materialIdentity } from './material-visibility.js';
@@ -14,8 +14,7 @@ async function readCategory(control, region) {
       const raw = (await loadTitleManifest()).items;
       const visible = await filterMaterialCategory({ id, label: control.label, items: raw }, selectedRegion);
       // Explicitly requested custom title is not part of the historical LXNS allowlist.
-      return [...visible.items, ...raw.filter(item => item.name === 'WIREPULLER' && item.color === 'Rainbow' &&
-        !visible.items.some(entry => entry.id === item.id))];
+      return withCnWirepuller(visible.items, raw);
     },
   });
   let category = await regionCategory(region, control);

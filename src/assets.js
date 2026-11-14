@@ -215,7 +215,7 @@ export function assetUrl(item) {
 }
 
 export async function loadTitleManifest() {
-  titleManifest ||= fetchJson(COS.titleManifestUrl)
+  titleManifest ||= fetchJson(COS.titleManifestUrl, true)
     .then((data) => {
       if (
         !Array.isArray(data?.items) ||
