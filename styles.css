@@ -1730,3 +1730,20 @@ html:has(#asset-picker[open]) { overflow:hidden; }
 @media (max-width: 480px) {
   #title-overflow-notice:not([hidden]) { padding: 11px 12px; gap: 9px; font-size: 12px; }
 }
+
+/* Avoid large live backdrop surfaces on touch devices before a pinch starts.
+   Preserve the Soft Glass palette/geometry without a full-panel blur buffer. */
+@media (any-pointer: coarse) {
+  .app-shell > .card,
+  .app-shell > .support-card,
+  .app-shell .component-panel {
+    background: linear-gradient(135deg, #f7f4ff, #ffffff 52%, #eff8fa);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+/* Decoration is expendable during page zoom; content and title scrolling are not.
+   This attribute is temporary and never overwrites the motion preference. */
+html[data-page-zoomed] :is(#circle-background, #magical-background) * {
+  animation-play-state: paused !important;
+}
