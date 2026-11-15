@@ -5,7 +5,7 @@ for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.route('**/app.js*', route => route.abort());
     await page.route('https://**/*', route => route.request().resourceType() === 'image'
-      ? route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="536" height="50"><rect width="536" height="50" fill="gold"/></svg>' })
+      ? route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="536" height="50"><rect width="536" height="50" fill="gold"/></svg>' })
       : route.abort());
     await page.goto('/');
     await page.evaluate(async () => {
@@ -38,8 +38,10 @@ for (const width of [320, 390, 1440]) {
       };
     });
     expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
+    await page.locator('#picker-search').fill('0: VeryLongUnbrokenTitle');
     await grid.locator('[data-asset-id="title-0"]').click();
     await expect(page.locator('#picker-message')).toHaveText('已选择称号');
+    await page.locator('#picker-search').fill('');
     await page.locator('#picker-scroll').evaluate(node => { node.scrollTop = 0; });
     await expect(grid.locator('button').first()).toBeInViewport();
     expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
