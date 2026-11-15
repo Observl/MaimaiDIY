@@ -41,7 +41,7 @@ form.onsubmit=async event=>{
 };
 </script></html>`;
 
-export function setupFeedback(port, env = process.env) {
+export function setupFeedback(port, env = process.env, { clientIp } = {}) {
   const service = env.FEEDBACK_MASTER_KEY && feedbackService({
     database: env.FEEDBACK_DATABASE || '.feedback/feedback.sqlite',
     masterKey: Buffer.from(env.FEEDBACK_MASTER_KEY, 'base64'),
@@ -95,7 +95,10 @@ export function setupFeedback(port, env = process.env) {
     if (request.method !== 'POST') return respond(response, 405, '请通过网站提交反馈。');
     if (!service) return respond(response, 503, '邮件反馈尚未开通，请稍后再试。');
     let address = request.socket.remoteAddress;
-    if (behindProxy) {
+    if (clientIp) {
+      address = clientIp(request);
+      if (!address) return respond(response, 400, '无法识别反馈来源。');
+    } else if (behindProxy) {
       const clientAddress = request.headers['x-maimaidiy-client-ip'];
       if (address !== '127.0.0.1' || typeof clientAddress !== 'string' || !isIP(clientAddress)) {
         return respond(response, 400, '无法识别反馈来源。');
