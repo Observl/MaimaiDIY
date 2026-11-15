@@ -29,6 +29,26 @@ const scoreGlyphBounds = {
     [4, 3, 54, 75], [4, 17, 55, 91], [4, 3, 52, 73], [3, 19, 56, 93], [3, 18, 55, 92]],
 };
 
+// Keep every digit in the same-width cell without stretching its artwork.
+// Anchor both runs to the existing decimal point; narrow digits are centered.
+export function layoutScoreDigits(region, digits, edge, direction) {
+  const { y, height, gap } = songLayout[region].score;
+  const cellWidth = Math.max(...scoreGlyphBounds[region].map(
+    ([left, top, right, bottom]) => (right - left) * height / (bottom - top)
+  ));
+  let cursor = edge;
+  const glyphs = [...digits].map(digit => {
+    const [left, top, right, bottom] = scoreGlyphBounds[region][digit];
+    const scale = height / (bottom - top);
+    const width = (right - left) * scale;
+    const cellX = direction < 0 ? cursor - cellWidth : cursor;
+    const x = cellX + (cellWidth - width) / 2;
+    cursor += direction * (cellWidth + gap);
+    return { digit, x, y, left, top, scale, width, cellX, cellWidth };
+  });
+  return { glyphs, edge: cursor };
+}
+
 function loadLayout(region, refreshId) {
   const cached = layouts.get(region);
   if (cached && (!refreshId || cached.refreshId === refreshId)) return cached.request;
@@ -124,20 +144,13 @@ export async function prepareRegionalDisplay({ region, screenMode, song }, refre
   const dotCenter = dotX + dotWidth / 2;
   const dotGlyph = art('dot').then(image => baselineGlyph(image, dotCenter, y + height, dotHeight));
   const scoreDigits = async (digits, edge, direction) => {
-    const glyphs = await Promise.all([...digits].map(async digit => {
+    const run = layoutScoreDigits(region, digits, edge, direction);
+    const layers = await Promise.all(run.glyphs.map(async ({ digit, x, y, left, top, scale }) => {
       const image = await art(`digit-${digit}`);
-      const [left, top, right, bottom] = scoreGlyphBounds[region][digit];
-      const scale = height / (bottom - top);
-      return { image, left, top, scale, width: (right - left) * scale };
-    }));
-    let cursor = edge;
-    const layers = glyphs.map(({ image, left, top, scale, width }) => {
-      const x = direction < 0 ? cursor - width : cursor;
-      cursor += direction * (width + gap);
       return ctx => ctx.drawImage(image, x - left * scale, y - top * scale,
         image.naturalWidth * scale, image.naturalHeight * scale);
-    });
-    return { layers, edge: cursor };
+    }));
+    return { layers, edge: run.edge };
   };
   const level = /^(\d)?(\d)(\+)?$/.exec(chart.level)?.slice(1) ?? [];
   const difficulty = song.difficulty;
