@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { REGION_BASE_URL, REGION_CATEGORIES } from '../../src/region-index.js';
+import { buildRegionalIndex } from '../../tools/build-region-index.mjs';
 
 // Exercise failures deterministically, without relying on the live COS account.
 test.use({ serviceWorkers: 'block' });
@@ -16,11 +18,24 @@ const badges = {
   schemaVersion: 1,
   categories: ['ranks', 'friend-battles'].map(id => ({ id, items: [entry(id, 'test')] })),
 };
-const titles = { schemaVersion: 1, items: [{ id: 'titles/900003', name: '测试称号', color: 'Silver' }] };
+const releaseDate = '2026-10-28';
+const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
+  schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-08T00:00:00Z', sources: [],
+  availability: { art: 'test' }, ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+}]));
+const { files } = buildRegionalIndex({ catalogs });
+const regionPrefix = new URL(REGION_BASE_URL).pathname;
+const lxnsLists = {
+  '/api/v0/maimai/icon/list': { icons: [
+    {id: 900001, name: 'UI_Icon_900001', genre: '落雪分类', release_date: releaseDate},
+    {id: 900002, name: longAvatarName, genre: '落雪分类', release_date: releaseDate},
+  ] },
+  '/api/v0/maimai/trophy/list': { trophies: [
+    {id: 900003, name: '测试称号', color: 'Silver', release_date: releaseDate},
+  ] },
+};
 const visibility = {
   schemaVersion: 1, snapshotDate: '2026-11-08', sources: [],
-  cnReleased: { frames: {}, plates: {}, icons: {}, titles: {} },
-  cnReviewed: { icons: ['900001', '900002'], titles: ['900003'] },
   jpIdentified: { frames: [], plates: [], icons: [], charas: [] },
 };
 const library = (page, id) => page.locator(`[data-control="${id}"] .library-button`);
@@ -35,6 +50,8 @@ const deferred = () => {
 async function setup(page, context, handle) {
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
+    if (url.hostname === 'maimai.lxns.net' && lxnsLists[url.pathname])
+      return route.fulfill({ json: lxnsLists[url.pathname], headers: { 'access-control-allow-origin': '*' } });
     if (url.hostname === '127.0.0.1') {
       if (url.pathname === '/data/regions/visibility-20261108.json') return route.fulfill({ json: visibility });
       if (/^\/cos-(?:local|index)\//.test(url.pathname)) return route.fulfill({ status: 404 });
@@ -43,11 +60,13 @@ async function setup(page, context, handle) {
     if (url.origin !== host) return route.abort();
     const response = await handle?.(url.pathname, route);
     if (response === 'handled') return;
+    const regionIndex = url.pathname.startsWith(regionPrefix) && files.get(url.pathname.slice(regionPrefix.length));
+    if (regionIndex) return route.fulfill({
+      body: regionIndex, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' },
+    });
     const json = {
       '/materials/manifest.json': manifest,
       '/materials/badges.json': badges,
-      '/materials/titles.json': titles,
-      '/materials/recommendations.json': { version: 1, items: [] },
     }[url.pathname];
     await route.fulfill(response || (json
       ? { json, headers: { 'access-control-allow-origin': '*' } }
@@ -59,6 +78,14 @@ async function setup(page, context, handle) {
   await expect(page.locator('#loading')).toBeHidden();
   await page.locator('.controls-summary').click();
 }
+
+test('CN artwork picker displays the LXNS category for matching COS files', async ({page, context}) => {
+  await setup(page, context);
+  await library(page, 'avatar').click();
+  await expect(page.locator('#picker-filter option')).toHaveText(['全部分类', '落雪分类（2）']);
+  await page.locator('#picker-filter').selectOption({label: '落雪分类（2）'});
+  await expect(item(page, 'avatars/UI_Icon_900002')).toBeVisible();
+});
 
 test('a failed main index does not block independent title and badge libraries', async ({ page, context }) => {
   let mainRequests = 0;

@@ -213,6 +213,50 @@ test('regional song module updates difficulty and score from the cover and expor
 });
 
 
+test('song templates round-trip the chart and score and show the Japanese beta notice only in JP', async ({ page, context }) => {
+  await page.setViewportSize({ width: 963, height: 949 });
+  await setupRegionalCatalogs(page, context);
+  const beta = page.locator('#region-beta');
+  await expect(beta).toBeHidden();
+  await page.getByRole('button', { name: '切换区服展示板' }).click();
+  await expect(beta).toContainText('Beta 测试中');
+  await expect(beta).toBeVisible();
+  await page.getByRole('button', { name: '切换区服展示板' }).click();
+  await expect(beta).toBeHidden();
+  await page.locator('#screen-mode input[value="achievement"]').check();
+  const score = page.locator('#song-achievement');
+  await expect(score).toHaveValue('101.0000');
+  await page.locator('#song-pick').click();
+  await item(page, '1:sd').click();
+  await expect(page.locator('#song-label')).toContainText('测试歌曲');
+  await page.keyboard.press('Escape');
+  await page.locator('#song-chart-type').selectOption('dx');
+  await page.locator('#song-difficulty').selectOption('4');
+  await score.fill('99.1234');
+  await score.press('Tab');
+  const file = page.waitForEvent('download');
+  await page.locator('#template-export').click();
+  const path = await (await file).path();
+  const payload = JSON.parse(await readFile(path, 'utf8'));
+  expect(payload.screenMode).toBe('achievement');
+  expect(payload.state.song).toEqual({id: '1:dx', difficulty: 4, achievement: '99.1234'});
+  await page.locator('#screen-mode input[value="collection"]').check();
+  await page.locator('#template-import').setInputFiles(path);
+  await expect(page.locator('#template-status')).toContainText('已导入');
+  await expect(page.locator('#song-chart-type')).toHaveValue('dx');
+  await expect(page.locator('#song-difficulty')).toHaveValue('4');
+  await expect(score).toHaveValue('99.1234');
+
+  const fits = await page.locator('[data-control="title"]').evaluate(row => {
+    const subtitle = row.querySelector('.control-file');
+    subtitle.textContent = '很长的称号'.repeat(80);
+    const text = subtitle.getBoundingClientRect();
+    const button = row.querySelector('.library-button').getBoundingClientRect();
+    return subtitle.scrollWidth > subtitle.clientWidth && text.right <= button.left;
+  });
+  expect(fits).toBe(true);
+});
+
 test('3D finish protects regional song artwork and leaves uncovered background eligible for glitter', async ({ page, context }) => {
   await setupRegionalCatalogs(page, context);
   const coverage = await page.evaluate(async () => {

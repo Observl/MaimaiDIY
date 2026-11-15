@@ -418,6 +418,19 @@ canvas {
   min-width: 0;
   gap: var(--space-2);
 }
+.control-main > div {
+  min-width: 0;
+}
+.region-beta {
+  margin: 10px 0 0;
+  max-width: fit-content;
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: #fff1cf;
+  color: #714806;
+  font-size: var(--font-caption);
+  line-height: 1.45;
+}
 .control-icon {
   display: grid;
   flex: 0 0 48px;

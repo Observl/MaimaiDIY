@@ -132,14 +132,15 @@ export function initializeTemplates({
       const name = safeTemplateName(
         document.querySelector('#template-name').value || selectedTemplateName()
       );
+      const design = sanitize(snapshotState());
       const payload = {
         format: TEMPLATE_FILE_FORMAT,
         version: TEMPLATE_FILE_VERSION,
         name,
         exportedAt: new Date().toISOString(),
-        region: state.region || 'cn',
-        screenMode: state.screenMode || 'collection',
-        state: sanitize(snapshotState()),
+        region: design.region,
+        screenMode: design.screenMode,
+        state: design,
       };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const link = document.createElement('a');

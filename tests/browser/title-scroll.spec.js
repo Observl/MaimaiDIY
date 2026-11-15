@@ -21,14 +21,16 @@ async function fixtures(context) {
     if (indexed) return route.fulfill({body:indexed,contentType:'application/json',headers:{'access-control-allow-origin':'*'}});
     const json = path.endsWith('/manifest.json') ? {schemaVersion:1,categories:[]}
       :path.endsWith('/badges.json')?{schemaVersion:1,categories:[]}
-        :path.endsWith('/titles.json')?{schemaVersion:1,items:[{id:'titles/900003',name:longTitle,color:'Gold'},{id:'titles/900004',name:'短称号',color:'Gold'}]}
-          :path.endsWith('/recommendations.json')?{version:1,items:[]}:null;
+        :path.endsWith('/trophy/list')?{trophies:[
+          {id:900003,name:longTitle,color:'Gold',release_date:'2026-10-28'},
+          {id:900004,name:'短称号',color:'Gold',release_date:'2026-10-28'},
+        ]}
+          :null;
     return route.fulfill(json ? {json,headers:{'access-control-allow-origin':'*'}}
       :/\.(png|webp|jpg)$/.test(path)?{body:png,contentType:'image/png',headers:{'access-control-allow-origin':'*'}}:{status:404});
   });
   await context.route('**/data/regions/visibility-20261108.json*', route => route.fulfill({json:{
-    schemaVersion:1,snapshotDate:'2026-11-08',sources:[],cnReleased:{frames:{},plates:{},icons:{},titles:{}},
-    cnReviewed:{titles:['900003','900004']},jpIdentified:{frames:[],plates:[],icons:[],charas:[]},
+    schemaVersion:1,snapshotDate:'2026-11-08',sources:[],jpIdentified:{frames:[],plates:[],icons:[],charas:[]},
   }}));
 }
 const titlePixels = page => page.locator('#preview').evaluate(canvas => {

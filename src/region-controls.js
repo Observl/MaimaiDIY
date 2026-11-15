@@ -14,6 +14,7 @@ const difficultyNames = ['BASIC', 'ADVANCED', 'EXPERT', 'MASTER', 'Re:MASTER'];
 export function initializeRegionControls({ state, recordHistory, render, changeRegion, picker }) {
   const regionSelect = document.querySelector('#region-select');
   const regionToggle = document.querySelector('#region-toggle');
+  const regionBeta = document.querySelector('#region-beta');
   const modeSelect = document.querySelector('#screen-mode');
   const modeOptions = modeSelect.querySelectorAll('input');
   const panel = document.querySelector('#region-content');
@@ -176,6 +177,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     }
     applyRegionBackground(state.region);
     regionToggle.textContent = state.region === 'jp' ? '日服展示板' : '国服展示板';
+    regionBeta.hidden = state.region !== 'jp';
     regionSelect.value = state.region;
     for (const option of modeOptions) option.checked = option.value === state.screenMode;
     panel.hidden = state.screenMode === 'collection';

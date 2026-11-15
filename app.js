@@ -468,7 +468,8 @@ function syncControlsFromState() {
     if (visibility) visibility.disabled = state.region === 'jp' &&
       ['rank', 'friendBattle'].includes(control.id) && !state.files[control.target];
     const fallback = control.id === 'avatar' ? '默认素材 · 上传限 1:1，最大 720 × 720' : '默认素材';
-    row.querySelector('.control-file').textContent = state.labels[control.id] || fallback;
+    const label = row.querySelector('.control-file');
+    label.title = label.textContent = state.labels[control.id] || fallback;
   });
   const band = ratingBand(state.ratingValue, state.region);
   document.querySelector('[data-control="rating"] .control-file').textContent =

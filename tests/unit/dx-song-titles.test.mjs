@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { mergeDxSongTitles, loadDxTitleCategory, withCnWirepuller } from '../../src/dx-song-titles.js';
+import { mergeDxSongTitles, loadDxTitleCategory } from '../../src/dx-song-titles.js';
 
 const dx = name => ({ id: `1:dx`, name });
 test('exact DX names get Gold once, preserving special colour and WIREPULLER', () => {
@@ -49,19 +49,6 @@ test('unrelated special titles are preserved even when their labels match', () =
  assert.deepEqual(mergeDxSongTitles(base, [], 'jp'), base);
 });
 
-test('CN WIREPULLER is unique, grouped under rainbow and survives stale catalogs', () => {
- const wire = {id:'custom-wire',name:'WIREPULLER',color:'Rainbow',group:'特殊称号'};
- const special = {id:'special',name:'WIREPULLER',color:'Gold',group:'特殊称号'};
- for (const [visible, raw] of [[[], []], [[], [wire]], [[wire], [wire]], [[wire, {...wire,id:'duplicate'},special],[wire]]]) {
-  const result = withCnWirepuller(visible, raw);
-  const matches = result.filter(item => item.name === 'WIREPULLER' && item.color === 'Rainbow');
-  assert.equal(matches.length,1);
-  assert.equal(matches[0].group,'彩虹');
-  if (!visible.length && !raw.length) assert.equal(matches[0].id,'cn-wirepuller');
-  if (visible.includes(special)) assert(result.includes(special));
- }
- assert.equal(wire.group,'特殊称号');
-});
 test('title manifest first request bypasses stale HTTP cache', async () => {
  const assets = await readFile(new URL('../../src/assets.js',import.meta.url),'utf8');
  assert.match(assets,/titleManifest \|\|= fetchJson\(COS.titleManifestUrl, true\)/);

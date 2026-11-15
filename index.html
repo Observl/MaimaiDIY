@@ -47,6 +47,7 @@
         <p class="eyebrow">MAIMAI DX</p>
         <h1>MaimaiDIY</h1>
         <p class="subtitle">舞萌上屏收藏品展示模拟器</p>
+        <p id="region-beta" class="region-beta" hidden>日服展示板 Beta 测试中，可能出现素材缺失或显示异常。</p>
       </div>
       <div class="hero-side">
         <span id="asset-status" class="status is-loading" role="status"><i></i> 正在读取素材索引</span>
@@ -98,7 +99,7 @@
       <div class="section-head">
         <div>
           <h2>本地模板</h2>
-          <p id="template-storage-note">保存在此浏览器，可通过 JSON 文件迁移。</p>
+          <p id="template-storage-note">模板保存在此浏览器，可通过 JSON 迁移，包含已选曲目、谱面类型、难度和达成率。</p>
         </div>
       </div>
       <div class="template-tools">
@@ -161,7 +162,7 @@
             <div class="region-song-fields">
               <label><span>谱面类型</span><select id="song-chart-type" disabled></select></label>
               <label><span>难度</span><select id="song-difficulty" disabled></select></label>
-              <label class="song-achievement-field"><span>达成率</span><span class="song-percentage"><input id="song-achievement" type="number" min="0" max="101" step="0.0001" value="100.0000" inputmode="decimal"><span aria-hidden="true">%</span></span></label>
+              <label class="song-achievement-field"><span>达成率</span><span class="song-percentage"><input id="song-achievement" type="number" min="0" max="101" step="0.0001" value="101.0000" inputmode="decimal"><span aria-hidden="true">%</span></span></label>
             </div>
           </div>
         </section>

@@ -1,10 +1,20 @@
 import { groupSongCharts } from './song-chart-types.js';
-import { loadDxTitleCategory, withCnWirepuller } from './dx-song-titles.js';
-import { loadManifest, loadTitleManifest, loadBadgeManifest } from './assets.js';
+import { loadDxTitleCategory } from './dx-song-titles.js';
+import { loadManifest, loadBadgeManifest } from './assets.js';
 import { regionCategory, loadRegionCategoryIndex } from './region-catalog.js';
 import { filterMaterialCategory, materialIdentity } from './material-visibility.js';
+import { buildLxnsCollection, isLxnsCollection, loadLxnsCollection } from './lxns-collections.js';
 
 const indexes = new Map();
+
+async function readCnCollection(control) {
+  const [entries, manifest] = await Promise.all([
+    loadLxnsCollection(control.category),
+    control.category === 'titles' ? null : loadManifest(),
+  ]);
+  const artwork = manifest?.categories.find(category => category.id === control.category)?.items || [];
+  return buildLxnsCollection(control, entries, artwork);
+}
 
 async function readCategory(control, region) {
   const id = control.category;
@@ -12,20 +22,15 @@ async function readCategory(control, region) {
     loadSongs: selectedRegion => loadRegionCategoryIndex(selectedRegion, 'songs'),
     loadBase: async selectedRegion => {
       if (selectedRegion === 'jp') return (await regionCategory(selectedRegion, control)).items;
-      const raw = (await loadTitleManifest()).items;
-      const visible = await filterMaterialCategory({ id, label: control.label, items: raw }, selectedRegion);
-      // Explicitly requested custom title is not part of the historical LXNS allowlist.
-      return withCnWirepuller(visible.items, raw);
+      return (await readCnCollection(control)).items;
     },
   });
+  if (region === 'cn' && isLxnsCollection(id)) return readCnCollection(control);
   let category = await regionCategory(region, control);
   if (category && region === 'jp' && ['titles', 'ranks', 'friend-battles'].includes(id)) return category;
-  if (!category) {
-    if (id === 'titles') category = { id, label: control.label, items: (await loadTitleManifest()).items };
-    else {
-      const manifest = await (['ranks', 'friend-battles'].includes(id) ? loadBadgeManifest() : loadManifest());
-      category = manifest.categories.find(entry => entry.id === id);
-    }
+  if (!category && ['ranks', 'friend-battles'].includes(id)) {
+    const manifest = await loadBadgeManifest();
+    category = manifest.categories.find(entry => entry.id === id);
   }
   return filterMaterialCategory(category || { id, label: control.label, items: [] }, region);
 }

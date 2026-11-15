@@ -117,7 +117,7 @@ export function sanitizeRegionFields(input, catalog) {
     seen.add(String(member.id));
     return { id: member.id, level: member.level };
   });
-  const song = input.song ?? { id: '', difficulty: 0, achievement: '100.0000' };
+  const song = input.song ?? { id: '', difficulty: 0, achievement: '101.0000' };
   if (
     !record(song) ||
     !(song.id === '' || safeId(song.id)) ||
