@@ -44,10 +44,26 @@ export function sortedPickerItems(category) {
   return [...category.items].sort((a, b) => comparePickerItems(a, b, category.id));
 }
 
+// The next item goes to the shortest column. DOM/tab order is unchanged and
+// its vertical position never moves backwards; only the final row can be ragged.
+export function titleMasonryLayout(width, heights, gap = 8) {
+  const columns = Math.max(1, Math.floor((width + gap) / 148));
+  const itemWidth = Math.max(0, (width - (columns - 1) * gap) / columns);
+  const bottoms = Array(columns).fill(0);
+  const positions = heights.map(height => {
+    const column = bottoms.indexOf(Math.min(...bottoms));
+    const position = { left: column * (itemWidth + gap), top: bottoms[column] };
+    bottoms[column] += height + gap;
+    return position;
+  });
+  return { itemWidth, positions, height: Math.max(0, ...bottoms) - (heights.length ? gap : 0) };
+}
+
 export function initializePicker({
   state, recordHistory, render, onSelection, resolveCategory,
   filterCategory = (category) => category,
   canOpen = () => true,
+  selectionNotice = () => '',
 }) {
   let manifest;
   const searchText = new WeakMap();
@@ -69,6 +85,32 @@ export function initializePicker({
   const retryLoad = document.querySelector('#picker-retry');
   const pickerViews = new Map();
   const buttonItems = new WeakMap();
+  // Size only the title collection. Other asset grids retain their existing layout.
+  function layoutTitles() {
+    if (pickerState.control?.id !== 'title' || !picker.open) return;
+    const width = pickerGrid.clientWidth;
+    if (!(width > 0)) return;
+    const items = [...pickerGrid.children];
+    const { itemWidth } = titleMasonryLayout(width, []);
+    pickerGrid.dataset.masonry = 'true';
+    for (const item of items) item.style.width = `${itemWidth}px`;
+    const layout = titleMasonryLayout(width, items.map(item => item.offsetHeight));
+    items.forEach((item, index) => {
+      item.style.left = `${layout.positions[index].left}px`;
+      item.style.top = `${layout.positions[index].top}px`;
+    });
+    pickerGrid.style.height = `${layout.height}px`;
+  }
+  if (typeof globalThis.ResizeObserver !== 'undefined') {
+    let previousWidth;
+    new globalThis.ResizeObserver(entries => {
+      const width = entries[0]?.contentRect.width;
+      if (width === previousWidth) return;
+      previousWidth = width;
+      layoutTitles();
+    }).observe(pickerGrid);
+  }
+  document.fonts?.ready?.then(layoutTitles);
   const itemId = item => String(item.id || item.file || item.name);
   function isSelected(control, item) {
     if (control.selectedAssetId) return itemId(item) === control.selectedAssetId();
@@ -172,7 +214,9 @@ export function initializePicker({
       const groupName = itemGroup(item);
       group.textContent = groupName;
       button.title = [item.name, item.description, item.id].filter(Boolean).join('\n');
-      button.append(artwork, name, group);
+      // The title is already readable in its swatch; do not repeat it below.
+      if (control.id === 'title') button.append(artwork, group);
+      else button.append(artwork, name, group);
       let loading = false;
       button.addEventListener('click', async () => {
         if (!isCurrentView(view) || loading) return;
@@ -239,16 +283,22 @@ export function initializePicker({
         showPickerMessage('已选择：' + item.name, 'success');
         control.afterSelect?.();
         await render();
+        if (isCurrentView(view) && version === selectionVersion) {
+          const notice = selectionNotice(control, item);
+          showPickerMessage('已选择：' + item.name + (notice ? '。' + notice : ''), 'success');
+        }
       });
       fragment.appendChild(button);
     });
     if (prepend) {
       pickerGrid.prepend(fragment);
       pickerState.start = start;
+      layoutTitles();
       scroll.scrollTop = oldScroll + scroll.scrollHeight - oldHeight;
     } else {
       pickerGrid.append(fragment);
       pickerState.shown += next.length;
+      layoutTitles();
     }
   }
 
@@ -280,6 +330,7 @@ export function initializePicker({
     pickerState.start = index < 0 ? 0 : Math.floor(index / COS.pageSize) * COS.pageSize;
     pickerState.shown = pickerState.start;
     pickerGrid.replaceChildren();
+    layoutTitles();
     showPickerResultsMessage();
     pickerMeta.textContent = `找到 ${pickerState.items.length} / ${pickerState.category.items.length} 个素材`;
     appendPickerItems();
@@ -358,6 +409,8 @@ export function initializePicker({
     activeView = true;
     retryLoad.hidden = true;
     if (picker.dataset) picker.dataset.category = control.category;
+    if (pickerGrid.dataset) delete pickerGrid.dataset.masonry;
+    if (pickerGrid.style) pickerGrid.style.height = '';
     if (cachedView && control.category !== 'titles') {
       pickerState = cachedView.state;
       pickerState.control = control;

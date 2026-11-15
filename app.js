@@ -9,6 +9,7 @@ import {
 import { loadImage } from './src/assets.js';
 import { resolveAssetUrl } from './src/asset-paths.js';
 import { createRenderer, failedPreviewAssetLabel } from './src/renderer.js';
+import { TITLE_STATIC_NOTICE } from './src/title-layout.js';
 import { initializeImageExport } from './src/image-export.js';
 import { initializePicker } from './src/picker.js';
 import { indexedMaterialCategory } from './src/material-index.js';
@@ -19,7 +20,24 @@ import { initializeRegionControls } from './src/region-controls.js';
 import { songJacketBounds } from './src/regional-display.js';
 import { readCurrentDesign, saveCurrentDesign, readRegionDesign } from './src/current-design.js';
 const canvas = document.querySelector('#preview');
-const renderer = createRenderer(canvas);
+const titleNotice = document.createElement('p');
+titleNotice.id = 'title-overflow-notice';
+titleNotice.className = 'field-help';
+titleNotice.setAttribute('role', 'status');
+titleNotice.hidden = true;
+canvas.closest('.preview-card')?.append(titleNotice);
+const renderer = createRenderer(canvas, {
+  animateTitles: true,
+  onTitleOverflow(overflow) {
+    titleNotice.hidden = !overflow;
+    titleNotice.textContent = overflow ? TITLE_STATIC_NOTICE : '';
+  },
+  onFrame() {
+    if (largePreview.open) renderer.paintPreview(largePreview.querySelector('canvas'));
+  },
+});
+window.addEventListener('pagehide', () => renderer.dispose());
+window.addEventListener('pageshow', event => { if (event.persisted) void render(); });
 const renderCanvas = renderer.renderCanvas;
 const applyRatingBand = () => updateRatingBand(state);
 const loading = document.querySelector('#loading');
@@ -594,6 +612,7 @@ const materialPicker = initializePicker({
   render,
   onSelection: syncControlsFromState,
   resolveCategory: indexedMaterialCategory,
+  selectionNotice: control => control.id === 'title' && renderer.titleOverflow ? TITLE_STATIC_NOTICE : '',
   canOpen: () => !document.querySelector('#region-select').disabled,
 });
 const templates = initializeTemplates({
