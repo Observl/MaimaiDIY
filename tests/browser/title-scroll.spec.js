@@ -125,6 +125,10 @@ for (const width of [320, 390]) {
     await expect(page.getByRole('button', { name: '我知道了' })).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(close).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.getByRole('button', { name: '我知道了' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(close).toBeFocused();
     expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth + 1 && node.getBoundingClientRect().right <= innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`title-warning-${width}.png`) });
     await close.click();

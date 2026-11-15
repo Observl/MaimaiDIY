@@ -21,6 +21,16 @@ import { songJacketBounds } from './src/regional-display.js';
 import { readCurrentDesign, saveCurrentDesign, readRegionDesign } from './src/current-design.js';
 const canvas = document.querySelector('#preview');
 const titleWarning = document.querySelector('#title-warning-dialog');
+// Keep keyboard navigation inside this short notice, including the last Tab.
+titleWarning.addEventListener('keydown', event => {
+  if (event.key !== 'Tab') return;
+  const buttons = [...titleWarning.querySelectorAll('button')];
+  const current = buttons.indexOf(document.activeElement);
+  const next = current < 0 ? (event.shiftKey ? buttons.length - 1 : 0)
+    : (current + (event.shiftKey ? -1 : 1) + buttons.length) % buttons.length;
+  event.preventDefault();
+  buttons[next].focus();
+});
 document.querySelector('#title-warning-description').textContent = TITLE_STATIC_NOTICE;
 const titleNotice = document.createElement('p');
 titleNotice.id = 'title-overflow-notice';
