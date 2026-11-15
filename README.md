@@ -4,6 +4,8 @@
 
 **[打开在线编辑器](https://observl.github.io/MaimaiDIY/)** · [3D 周边预览](https://observl.github.io/MaimaiDIY/custom-order.html) · [v1.3.1 更新公告](https://github.com/Observl/MaimaiDIY/releases/tag/v1.3.1) · [@ObservL](https://github.com/ObservL)
 
+![MaimaiDIY 国服编辑器，显示区服切换、实时预览和 PNG 导出](docs/screenshots/editor-v1.3.1.jpg)
+
 ## 界面与使用方法
 
 1. **选择区服。** 用页眉的展示板按钮切换国服与日服。素材加载成功后，页眉显示当前区服和素材更新时间。旁边的动效按钮控制网页背景动画。
@@ -17,6 +19,8 @@
 ## 3D 周边预览
 
 从编辑器完成搭配后，打开[定制周边页](https://observl.github.io/MaimaiDIY/custom-order.html)查看当前设计在亚克力砖、镭射卡或色纸上的效果。可旋转模型、切换特写／近景／全景、切换款式并拖动光照角度。模型上的设计使用静态画面，超长称号固定在第一帧。材质效果为模拟示意。
+
+![同一份设计在特效款亚克力砖上的 3D 预览，含视角、款式与光照控件](docs/screenshots/product-preview-v1.3.1.jpg)
 
 GitHub Pages 公开版提供设计编辑和 3D 预览。在线下单、支付和订单管理目前未在公开版开放。
 
