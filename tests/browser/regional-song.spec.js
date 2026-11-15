@@ -259,7 +259,7 @@ test('320px regional switching preserves usable dynamic companion controls', asy
 });
 
 
-test('song library merges SD/DX and chart controls preserve independent difficulties and saves', async ({ page, context }) => {
+test('song library merges SD/DX and chart controls preserve independent difficulties and saves', async ({ page, context }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 900 });
   await setupRegionalCatalogs(page, context);
   for (const region of ['cn', 'jp']) {
@@ -290,6 +290,8 @@ test('song library merges SD/DX and chart controls preserve independent difficul
     await page.locator('#song-pick').click();
     await expect(item(page, '1:sd')).toHaveAttribute('aria-pressed', 'true');
     await page.keyboard.press('Escape');
+    await page.locator('#song-controls').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: testInfo.outputPath(`song-chart-type-${region}-320.png`) });
   }
   await page.reload();
   await expect(page.locator('#loading')).toBeHidden();

@@ -1,4 +1,4 @@
-name: Song chart type regression
+name: Song chart mobile screenshot check
 on:
   push:
     branches: [title-preflight-20261115]
@@ -17,8 +17,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npx playwright install --with-deps chromium
-      - run: npx playwright test tests/browser/title-scroll.spec.js tests/browser/title-masonry.spec.js --output=test-results/titles --reporter=list --max-failures=1
-      - run: npx playwright test tests/browser/regional-song.spec.js tests/browser/regional-demand.spec.js tests/browser/ui-standardization.spec.js --output=test-results/regression --reporter=list --max-failures=1
+      - run: npx playwright test tests/browser/regional-song.spec.js --output=test-results/titles --reporter=list --max-failures=1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
