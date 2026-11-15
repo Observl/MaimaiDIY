@@ -1678,3 +1678,23 @@ html:has(#asset-picker[open]) { overflow:hidden; }
 #title-warning-dialog .icon-button { flex-shrink: 0; min-width: 44px; min-height: 44px; }
 #title-warning-description { overflow-wrap: anywhere; line-height: 1.7; margin: 16px 0 20px; }
 #title-warning-dialog .button { width: 100%; min-height: 44px; }
+
+/* Soft Glass: panel surfaces only; preserve existing geometry and controls. */
+.app-shell > .card,
+.app-shell > .support-card,
+.app-shell .component-panel {
+  background: linear-gradient(135deg, rgba(247, 244, 255, 0.82), rgba(255, 255, 255, 0.88) 52%, rgba(239, 248, 250, 0.82));
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 16px 48px rgba(48, 43, 66, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+}
+
+/* Keep text legible when backdrop filtering is unavailable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .app-shell > .card,
+  .app-shell > .support-card,
+  .app-shell .component-panel {
+    background: linear-gradient(135deg, #f7f4ff, #ffffff 52%, #eff8fa);
+  }
+}
