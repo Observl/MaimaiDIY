@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { isIP } from 'node:net';
 import { feedbackService } from '../server/feedback.mjs';
 
 async function readJson(request) {
@@ -51,6 +52,7 @@ export function setupFeedback(port, env = process.env) {
     throw new Error('Invalid FEEDBACK_SILICONFLOW_API_KEY');
   }
   const origins = new Set([`http://127.0.0.1:${port}`, `http://localhost:${port}`, env.FEEDBACK_ORIGIN].filter(Boolean));
+  const behindProxy = env.FEEDBACK_TRUST_LOCAL_PROXY === '1';
 
   // The private settings listener is never routed through the public website.
   if (service && env.FEEDBACK_ADMIN_PORT) {
@@ -92,8 +94,16 @@ export function setupFeedback(port, env = process.env) {
     }
     if (request.method !== 'POST') return respond(response, 405, '请通过网站提交反馈。');
     if (!service) return respond(response, 503, '邮件反馈尚未开通，请稍后再试。');
+    let address = request.socket.remoteAddress;
+    if (behindProxy) {
+      const clientAddress = request.headers['x-maimaidiy-client-ip'];
+      if (address !== '127.0.0.1' || typeof clientAddress !== 'string' || !isIP(clientAddress)) {
+        return respond(response, 400, '无法识别反馈来源。');
+      }
+      address = clientAddress;
+    }
     try {
-      const result = await service.submit(await readJson(request), request.socket.remoteAddress);
+      const result = await service.submit(await readJson(request), address);
       return respond(response, ...result);
     } catch {
       return respond(response, 400, '请检查反馈内容。');
