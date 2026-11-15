@@ -14,6 +14,7 @@ import { initializeImageExport } from './src/image-export.js';
 import { initializePicker } from './src/picker.js';
 import { indexedMaterialCategory } from './src/material-index.js';
 import { initializeTemplates } from './src/templates.js';
+import { createDesignHistory } from './src/design-history.js';
 import { loadRegionCatalog, loadRegionDesign } from './src/region-catalog.js';
 import { initializeRegionControls } from './src/region-controls.js';
 import { songJacketBounds } from './src/regional-display.js';
@@ -54,10 +55,6 @@ const applyRatingBand = () => updateRatingBand(state);
 const loading = document.querySelector('#loading');
 const state = createDefaultState();
 let regionControls;
-const historyByRegion = {
-  cn: { past: [], future: [], transaction: null },
-  jp: { past: [], future: [], transaction: null },
-};
 const largePreview = document.querySelector('#large-preview');
 const previewMode = document.querySelector('#preview-mode');
 const previewRefresh = document.querySelector('#preview-refresh');
@@ -254,63 +251,25 @@ function snapshotState() {
   return JSON.parse(JSON.stringify(state));
 }
 
-function updateHistoryButtons() {
-  const history = historyByRegion[state.region];
-  undoButton.disabled = history.past.length === 0;
-  redoButton.disabled = history.future.length === 0;
-  undoButton.title = history.past.length
-    ? `撤回（剩余 ${history.past.length} 步）`
-    : '没有可撤回的操作';
-  redoButton.title = history.future.length
-    ? `重做（剩余 ${history.future.length} 步）`
-    : '没有可重做的操作';
-}
-
-function recordHistory(transaction = null, region = state.region) {
-  const history = historyByRegion[region];
-  if (transaction && history.transaction === transaction) return;
-  if (region !== state.region) historyByRegion[state.region].transaction = null;
-  history.past.push(region === state.region
-    ? snapshotState() : readRegionDesign(region) || createDefaultState(region));
-  if (history.past.length > HISTORY_LIMIT) history.past.shift();
-  history.future.length = 0;
-  history.transaction = transaction;
-  updateHistoryButtons();
-}
-
-function endHistoryTransaction(transaction) {
-  const history = historyByRegion[state.region];
-  if (history.transaction === transaction) history.transaction = null;
-}
-
-async function restoreHistoryState(snapshot) {
-  Object.assign(state, JSON.parse(JSON.stringify(snapshot)));
-  applyRatingBand();
-  syncControlsFromState();
-  await render();
-}
-
-async function undo() {
-  const history = historyByRegion[state.region];
-  if (!history.past.length) return;
-  history.transaction = null;
-  history.future.push(snapshotState());
-  if (history.future.length > HISTORY_LIMIT) history.future.shift();
-  const snapshot = history.past.pop();
-  updateHistoryButtons();
-  await restoreHistoryState(snapshot);
-}
-
-async function redo() {
-  const history = historyByRegion[state.region];
-  if (!history.future.length) return;
-  history.transaction = null;
-  history.past.push(snapshotState());
-  if (history.past.length > HISTORY_LIMIT) history.past.shift();
-  const snapshot = history.future.pop();
-  updateHistoryButtons();
-  await restoreHistoryState(snapshot);
-}
+const { recordHistory, endHistoryTransaction, clearTransaction, refresh: updateHistoryButtons, undo, redo } =
+  createDesignHistory({
+    currentRegion: () => state.region,
+    snapshot: region => region === state.region
+      ? snapshotState() : readRegionDesign(region) || createDefaultState(region),
+    async restore(snapshot) {
+      Object.assign(state, JSON.parse(JSON.stringify(snapshot)));
+      applyRatingBand();
+      syncControlsFromState();
+      await render();
+    },
+    onChange(past, future) {
+      undoButton.disabled = past === 0;
+      redoButton.disabled = future === 0;
+      undoButton.title = past ? `撤回（剩余 ${past} 步）` : '没有可撤回的操作';
+      redoButton.title = future ? `重做（剩余 ${future} 步）` : '没有可重做的操作';
+    },
+    limit: HISTORY_LIMIT,
+  });
 
 function resetState() {
   Object.assign(state, createDefaultState(state.region));
@@ -651,7 +610,7 @@ regionControls = initializeRegionControls({
     exportRefresh.hidden = true;
     materialPicker.close();
     saveCurrentDesign(snapshotState());
-    historyByRegion[state.region].transaction = null;
+    clearTransaction();
     Object.assign(state, readRegionDesign(region) || createDefaultState(region));
     syncControlsFromState();
     void render();

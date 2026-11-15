@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { captureProductImage, unmatteTransmission } from '../../src/transparent-capture.js';
-import { DEFAULT_LIGHT_ANGLE } from '../../src/finish-settings.js';
+import { DEFAULT_LIGHT_ANGLE, studioLighting } from '../../src/finish-settings.js';
 
 test('glass unmatting preserves clear surroundings, opaque print and partial reflections', () => {
   const black = new Uint8ClampedArray([0,0,0,255, 80,130,210,255, 15,20,25,255]);
@@ -81,8 +81,17 @@ test('failed captures restore the live scene and oversized exports are rejected'
 });
 
 
-test('default studio lighting illuminates the printed front face', () => {
-  const radians = DEFAULT_LIGHT_ANGLE * Math.PI / 180;
-  const windowZ = 8 * Math.sin(radians) + 6 * Math.cos(radians);
-  assert.ok(windowZ > 6, 'do not put the finish light behind the print by default');
+test('studio lights start at the product front and stop at symmetric side angles', () => {
+  assert.equal(DEFAULT_LIGHT_ANGLE, 0);
+  const front = studioLighting(DEFAULT_LIGHT_ANGLE);
+  assert.deepEqual(front.key, [0, 12, 10]);
+  assert.deepEqual(front.window, [0, 7, 10]);
+  for (const [direction, angle] of [[-1, -90], [1, 90]]) {
+    const side = studioLighting(angle);
+    assert.deepEqual(studioLighting(angle * 2), side);
+    for (const position of [side.key, side.window]) {
+      assert.equal(position[0], direction * 10);
+      assert.ok(Math.abs(position[2]) < 1e-10);
+    }
+  }
 });

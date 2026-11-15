@@ -1,3 +1,5 @@
+import { initializePurchaseThumbnails } from './purchase-thumbnails.js';
+
 export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
   const {ACRYLIC_PRODUCTS,ACCESSORIES,COLLECTIBLE_CARD,SHIKISHI_PRODUCT,BUNDLE_PRESETS,quoteProductBundle,buildAcrylicDesignDraft,formatYuan:yuan}=catalog;
   const anchor=document.querySelector('#acrylic-preview-card')||document.querySelector('.preview-card');
@@ -56,56 +58,11 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     button.addEventListener('click',()=>{variant.value=id;variant.dispatchEvent(new window.Event('change',{bubbles:true}));});
     editor.querySelector('.finish-options').append(button);
   }
-  let imageRenderer, imageGeneration=0, sourceGeneration=0;
-  let latestArtwork;
-  let thumbnailsRequested = !window.IntersectionObserver;
-  const thumbnailsObserver = thumbnailsRequested ? null : new window.IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) return;
-    thumbnailsRequested = true;
-    thumbnailsObserver.disconnect();
-    if (latestArtwork) void loadThumbnails(latestArtwork);
-  }, { rootMargin: '320px' });
-  thumbnailsObserver?.observe(section);
-  function requestImages() {
-    if(!imageRenderer)return;
-    const generation=++imageGeneration;
-    void (async()=>{
-      for(const [id,preset] of Object.entries(BUNDLE_PRESETS)) {
-        if(generation!==imageGeneration)return;
-        const saved=configSelections.get(id);
-        const config={...preset,variant:saved?.variant||variant.value,accessory:saved?.accessory??preset.accessory};
-        for(const image of configHeaders.get(id).querySelectorAll('[data-preview-item]')) {
-          const key = image.dataset.previewItem;
-          const source = imageRenderer.render({
-            ...BUNDLE_PRESETS[key],
-            variant: config.variant,
-            accessory: key === 'acrylic' ? config.accessory : 'none',
-          });
-          if(image.src!==source)image.src=source;image.hidden=false;
-        }
-        await new Promise(resolve=>window.requestAnimationFrame(resolve));
-      }
-    })().catch(error=>console.warn('商品图片渲染失败',error));
-  }
-  async function loadThumbnails({source,finishMaps}) {
-    const generation=++sourceGeneration;
-    try {
-      const {createConfigurationImages}=await import('./configuration-images.js');
-      if(generation!==sourceGeneration)return;
-      imageGeneration++;imageRenderer?.dispose();
-      imageRenderer=createConfigurationImages(source,finishMaps);requestImages();
-    }catch(error){console.warn('商品图片暂时不可用',error);}
-  }
-  document.addEventListener('order-render-ready',event=>{
-    latestArtwork = event.detail;
-    if (thumbnailsRequested) void loadThumbnails(latestArtwork);
-  });
-  window.addEventListener('pagehide',event=>{
-    if(event.persisted)return;
-    sourceGeneration++;
-    imageGeneration++;
-    thumbnailsObserver?.disconnect();
-    imageRenderer?.dispose();
+  const requestImages = initializePurchaseThumbnails(section, {
+    presets: BUNDLE_PRESETS,
+    selectionFor: id => configSelections.get(id),
+    imagesFor: id => configHeaders.get(id).querySelectorAll('[data-preview-item]'),
+    defaultVariant: () => variant.value,
   });
   let lastPreviewProduct;
   for(const [id,preset] of Object.entries(BUNDLE_PRESETS)) {

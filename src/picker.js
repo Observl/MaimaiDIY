@@ -1,63 +1,10 @@
-import { COS, TITLE_COLOR_NAMES } from './config.js';
+import { COS } from './config.js';
 import { loadManifest, loadTitleManifest, loadBadgeManifest, loadImage, assetUrl } from './assets.js';
 import { titleAsset } from './model.js';
 import { resolveAssetUrl } from './asset-paths.js';
 
-const normalizeSearch = text => text.normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('zh-CN');
-
-function itemGroup(item) {
-  return item.group || TITLE_COLOR_NAMES[item.color] || '未分类';
-}
-
-function materialNumericId(item) {
-  const gameId = Number(item.gameId);
-  if (item.gameId != null && Number.isFinite(gameId)) return gameId;
-  const matches = String(item.id || item.file || '').match(/\d+/g);
-  return matches ? Number(matches[matches.length - 1]) : Number.MAX_SAFE_INTEGER;
-}
-
-function compareMaterialGroups(a, b, categoryId) {
-  if (categoryId === 'friend-battles') {
-    const order = ['B', 'A', 'S', 'SS', 'SSS', 'LEGEND'];
-    const rank = (value) => {
-      const index = order.indexOf(value.replace(/级$/, '').toUpperCase());
-      return index < 0 ? order.length : index;
-    };
-    const difference = rank(a) - rank(b);
-    if (difference) return difference;
-  }
-  return a.localeCompare(b, 'zh-CN', { numeric: true });
-}
-
-function comparePickerItems(a, b, categoryId) {
-  const byGroup = compareMaterialGroups(itemGroup(a), itemGroup(b), categoryId);
-  return (
-    byGroup ||
-    materialNumericId(a) - materialNumericId(b) ||
-    String(a.id || a.file || '').localeCompare(String(b.id || b.file || ''), 'zh-CN', {
-      numeric: true,
-    })
-  );
-}
-
-export function sortedPickerItems(category) {
-  return [...category.items].sort((a, b) => comparePickerItems(a, b, category.id));
-}
-
-// The next item goes to the shortest column. DOM/tab order is unchanged and
-// its vertical position never moves backwards; only the final row can be ragged.
-export function titleMasonryLayout(width, heights, gap = 8) {
-  const columns = Math.max(1, Math.floor((width + gap) / 148));
-  const itemWidth = Math.max(0, (width - (columns - 1) * gap) / columns);
-  const bottoms = Array(columns).fill(0);
-  const positions = heights.map(height => {
-    const column = bottoms.indexOf(Math.min(...bottoms));
-    const position = { left: column * (itemWidth + gap), top: bottoms[column] };
-    bottoms[column] += height + gap;
-    return position;
-  });
-  return { itemWidth, positions, height: Math.max(0, ...bottoms) - (heights.length ? gap : 0) };
-}
+import { itemGroup, normalizeSearch, sortedPickerItems, titleMasonryLayout, filterPickerItems, pickerGroupCounts } from './picker-catalog.js';
+export { sortedPickerItems, titleMasonryLayout } from './picker-catalog.js';
 
 export function initializePicker({
   state, recordHistory, render, onSelection, resolveCategory,
@@ -315,21 +262,9 @@ export function initializePicker({
     const query = normalizeSearch(pickerSearch.value);
     pickerState.appliedQuery = query;
     const group = pickerFilter.value;
-    pickerState.keywordMatchesElsewhere = 0;
-    pickerState.items = pickerState.sortedItems.filter((item) => {
-      const inGroup = !group || itemGroup(item) === group;
-      if (!query) return inGroup;
-      let searchable = searchText.get(item);
-      if (searchable === undefined) {
-        searchable = normalizeSearch([
-          item.name, item.id, item.description, item.genre, itemGroup(item), item.gameId,
-        ].join(' '));
-        searchText.set(item, searchable);
-      }
-      const matches = searchable.includes(query);
-      if (matches && !inGroup) pickerState.keywordMatchesElsewhere++;
-      return matches && inGroup;
-    });
+    const { items, matchesElsewhere } = filterPickerItems(pickerState.sortedItems, query, group, searchText);
+    pickerState.items = items;
+    pickerState.keywordMatchesElsewhere = matchesElsewhere;
     const index =
       locateSelection === true
         ? pickerState.items.findIndex(item => isSelected(pickerState.control, item))
@@ -351,21 +286,8 @@ export function initializePicker({
   function preparePickerFilters(category) {
     pickerSearch.value = '';
     pickerFilter.replaceChildren(new Option('全部分类', ''));
-    // V2 categories already carry a validated group index. Legacy catalogs are
-    // counted once, rather than rescanning the full library for every group.
-    const counts = new Map();
-    if (Array.isArray(category.groups)) {
-      category.groups.forEach(({ label, count, ids }) =>
-        counts.set(label, Number.isInteger(count) ? count : ids.length));
-    } else {
-      category.items.forEach((item) => {
-        const group = itemGroup(item);
-        counts.set(group, (counts.get(group) || 0) + 1);
-      });
-    }
-    [...counts.keys()].sort((a, b) => compareMaterialGroups(a, b, category.id)).forEach((group) =>
-      pickerFilter.add(new Option(`${group}（${counts.get(group)}）`, group))
-    );
+    for (const [group, count] of pickerGroupCounts(category))
+      pickerFilter.add(new Option(`${group}（${count}）`, group));
   }
 
   function cachePickerView() {

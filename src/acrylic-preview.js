@@ -6,7 +6,7 @@ import { createPaperTexture } from './paper-texture.js';
 import { MeshTransmissionMaterial, getGPUTier } from '../vendor/render-extensions.js';
 import { createFinishMaterial } from './finish-material.js';
 import { previewQuality } from './preview-quality.js';
-import { DEFAULT_LIGHT_ANGLE } from './finish-settings.js';
+import { DEFAULT_LIGHT_ANGLE, studioLighting } from './finish-settings.js';
 import { captureProductImage } from './transparent-capture.js';
 import { nameplateRegion, fitPerspectiveDistance } from './preview-framing.js';
 
@@ -65,7 +65,6 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   environment.traverse((item) => { item.geometry?.dispose(); item.material?.dispose(); });
   scene.add(new THREE.HemisphereLight(0xfffbf1, 0xb7ac94, 1.1));
   const key = new THREE.DirectionalLight(0xfff6e5, 3.2);
-  key.position.set(-8, 12, -6);
   key.castShadow = true;
   key.shadow.mapSize.set(quality.shadowSize,quality.shadowSize);
   Object.assign(key.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12 });
@@ -99,7 +98,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   let componentTexture;
   let badgeTexture;
   let paperSurface, cardSurface;
-  const windowPosition = new THREE.Vector3(-8, 7, 6);
+  const windowPosition = new THREE.Vector3();
   let selection = { variant: 'effect', cardOnly: false, accessory: 'none' };
   let disposed = false;
   let inView = snapshot || !window.IntersectionObserver;
@@ -339,9 +338,9 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     }).catch(()=>{if(!disposed){renderer.resetState();host.dataset.gpuTier='fallback';draw();}});
   }
   function setLightAngle(degrees) {
-    const angle = THREE.MathUtils.degToRad(degrees);
-    key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
-    windowPosition.set(-8, 7, 6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+    const { angle, key: keyPosition, window: fillPosition } = studioLighting(degrees);
+    key.position.set(...keyPosition);
+    windowPosition.set(...fillPosition);
     scene.environmentRotation.set(0, angle, 0);
     renderer.shadowMap.needsUpdate=true;
     draw();

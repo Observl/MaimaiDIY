@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { CURRENT_DESIGN_KEY } from '../../src/current-design.js';
+import { createDefaultState } from '../../src/model.js';
 import { REGION_BASE_URL, REGION_CATEGORIES } from '../../src/region-index.js';
 import { buildRegionalIndex } from '../../tools/build-region-index.mjs';
 
@@ -48,6 +50,9 @@ const deferred = () => {
 };
 
 async function setup(page, context, handle) {
+  await page.addInitScript(({ key, state }) => {
+    localStorage.setItem(key, JSON.stringify({ version: 1, state }));
+  }, { key: CURRENT_DESIGN_KEY, state: createDefaultState() });
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
     if (url.hostname === 'maimai.lxns.net' && lxnsLists[url.pathname])

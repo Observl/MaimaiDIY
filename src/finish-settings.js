@@ -40,6 +40,15 @@ export const MASK_PARAMETERS=Object.freeze({
   "textProtection": 1
 });
 // Keep the printed front face lit when opening a product preview.
-export const DEFAULT_LIGHT_ANGLE=15;
+export const DEFAULT_LIGHT_ANGLE = 0;
+export const MIN_LIGHT_ANGLE = -90;
+export const MAX_LIGHT_ANGLE = 90;
+
+export function studioLighting(degrees) {
+  const angle = Math.max(MIN_LIGHT_ANGLE, Math.min(MAX_LIGHT_ANGLE, degrees)) * Math.PI / 180;
+  // The artwork faces +Z. From the front, positive angles move toward +X.
+  const x = Math.sin(angle), z = Math.cos(angle);
+  return { angle, key: [10 * x, 12, 10 * z], window: [10 * x, 7, 10 * z] };
+}
 export const uniforms=Object.fromEntries(Object.entries(FINISH_PARAMETERS).map(([key,value])=>['lab_'+key,{value}]));
 uniforms.lab_enabled={value:1};
