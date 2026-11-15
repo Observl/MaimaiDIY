@@ -1,26 +1,22 @@
 // Immutable regional index protocol. This module is also used by the offline builder.
-export const REGION_RELEASE_ID = '20261108';
-export const REGION_RELEASE_ROOT =
-  'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/regions/releases/';
-export const REGION_BASE_URL = `${REGION_RELEASE_ROOT}${REGION_RELEASE_ID}/`;
-export const REGION_CATEGORIES = Object.freeze(['frames', 'plates', 'icons', 'charas', 'songs']);
+import {
+  REGION_RELEASE_ID,
+  REGION_RELEASE_ROOT,
+  REGION_BASE_URL,
+  REGION_CATEGORIES,
+  REGION_IDS as REGIONS,
+  LEGACY_JP_ASSET_ROOT as LEGACY_ART_ROOT,
+  LEGACY_SALT_COVER_ROOT as LEGACY_COVER_ROOT,
+} from './regional-config.js';
+export {
+  REGION_RELEASE_ID,
+  REGION_RELEASE_ROOT,
+  REGION_BASE_URL,
+  REGION_CATEGORIES,
+} from './regional-config.js';
 export const REGION_INDEX_CACHE_PREFIX = 'maimai-regional-index-v2:';
-const REGIONS = ['cn', 'jp'];
 const ART_NAMES = { frames: 'Frame', plates: 'Plate', icons: 'Icon', charas: 'Chara' };
-const LEGACY_ART_ROOT =
-  'https://raw.githubusercontent.com/basilomorireal/maimai-asset-browser/0ebcd319585af286bce5c31cc416fcf245e28428/assets/';
-const LEGACY_COVER_ROOT =
-  'https://raw.githubusercontent.com/realtvop/SaltMeta/d327942662643b391b6883ba40dd0b89e9a1d169/covers/';
 
-export function regionalImageFallback(url) {
-  if (typeof url !== 'string' || !url.startsWith(REGION_BASE_URL)) return null;
-  const path = url.slice(REGION_BASE_URL.length);
-  if (/^jp\/collection\/(?:frames\/UI_Frame|plates\/UI_Plate|icons\/UI_Icon|charas\/UI_Chara)_\d{6}\.png$/.test(path))
-    return LEGACY_ART_ROOT + path.slice('jp/collection/'.length);
-  if (/^shared\/saltmeta\/covers\/\d{6}\.png$/.test(path))
-    return LEGACY_COVER_ROOT + path.slice('shared/saltmeta/covers/'.length);
-  return null;
-}
 const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const MAX_JSON_BYTES = 16 * 1024 * 1024;
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);

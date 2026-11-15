@@ -514,7 +514,6 @@ async function initialize() {
   if (savedDesign) Object.assign(state, savedDesign);
   buildControls();
   syncControlsFromState();
-  templates.refresh();
   for (const button of previewHotspots.querySelectorAll('[data-preview-control]')) {
     const control = controls.find(item => item.id === button.dataset.previewControl);
     button.hidden = state.visible[control.target] === false;
@@ -602,7 +601,6 @@ const templates = initializeTemplates({
   state,
   snapshotState,
   recordHistory,
-  applyRatingBand,
   syncControlsFromState,
   render,
 });

@@ -11,7 +11,10 @@
   .icon-button,
   .background-motion,
   .github-profile,
-  .asset-item
+  .asset-item,
+  .order-back,
+  .preview-products button,
+  .acrylic-variants button
 ) {
   transition:
     transform 150ms var(--ui-ease-out),
@@ -30,7 +33,10 @@
   .icon-button,
   .background-motion,
   .github-profile,
-  .asset-item
+  .asset-item,
+  .order-back,
+  .preview-products button,
+  .acrylic-variants button
 ):hover {
   transform: none;
 }
@@ -60,7 +66,10 @@
     .icon-button,
     .background-motion,
     .github-profile,
-    .asset-item
+    .asset-item,
+    .order-back,
+    .preview-products button,
+    .acrylic-variants button
   ):active:not(:disabled) {
   transform: scale(0.975);
   box-shadow: none;
@@ -74,14 +83,17 @@
   .icon-button,
   .background-motion,
   .github-profile,
-  .asset-item
+  .asset-item,
+  .order-back,
+  .preview-products button,
+  .acrylic-variants button
 ):focus-visible {
-  outline: 3px solid #bcb1ff;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 .upload-button:focus-within,
 .template-import-button:focus-within {
-  outline: 3px solid #bcb1ff;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 .switch {
@@ -91,7 +103,7 @@
   transition: transform 180ms var(--ui-ease-out);
 }
 .visibility:focus-visible + .switch {
-  outline: 3px solid #bcb1ff;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -134,7 +146,10 @@ html[data-input-method='keyboard']
     .icon-button,
     .background-motion,
     .github-profile,
-    .asset-item
+    .asset-item,
+    .order-back,
+    .preview-products button,
+    .acrylic-variants button
   ):active {
   transform: none;
 }
@@ -152,7 +167,10 @@ html[data-input-method='keyboard']
     .icon-button,
     .background-motion,
     .github-profile,
-    .asset-item
+    .asset-item,
+    .order-back,
+    .preview-products button,
+    .acrylic-variants button
   ),
   .switch,
   .switch::after {
@@ -166,7 +184,10 @@ html[data-input-method='keyboard']
     .icon-button,
     .background-motion,
     .github-profile,
-    .asset-item
+    .asset-item,
+    .order-back,
+    .preview-products button,
+    .acrylic-variants button
   ):is(:hover, :active) {
     transform: none !important;
   }
