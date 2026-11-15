@@ -57,6 +57,15 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     editor.querySelector('.finish-options').append(button);
   }
   let imageRenderer, imageGeneration=0, sourceGeneration=0;
+  let latestArtwork;
+  let thumbnailsRequested = !window.IntersectionObserver;
+  const thumbnailsObserver = thumbnailsRequested ? null : new window.IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    thumbnailsRequested = true;
+    thumbnailsObserver.disconnect();
+    if (latestArtwork) void loadThumbnails(latestArtwork);
+  }, { rootMargin: '320px' });
+  thumbnailsObserver?.observe(section);
   function requestImages() {
     if(!imageRenderer)return;
     const generation=++imageGeneration;
@@ -78,14 +87,25 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       }
     })().catch(error=>console.warn('商品图片渲染失败',error));
   }
-  document.addEventListener('order-render-ready',async event=>{
+  async function loadThumbnails({source,finishMaps}) {
     const generation=++sourceGeneration;
     try {
       const {createConfigurationImages}=await import('./configuration-images.js');
       if(generation!==sourceGeneration)return;
       imageGeneration++;imageRenderer?.dispose();
-      imageRenderer=createConfigurationImages(event.detail.source,event.detail.finishMaps);requestImages();
+      imageRenderer=createConfigurationImages(source,finishMaps);requestImages();
     }catch(error){console.warn('商品图片暂时不可用',error);}
+  }
+  document.addEventListener('order-render-ready',event=>{
+    latestArtwork = event.detail;
+    if (thumbnailsRequested) void loadThumbnails(latestArtwork);
+  });
+  window.addEventListener('pagehide',event=>{
+    if(event.persisted)return;
+    sourceGeneration++;
+    imageGeneration++;
+    thumbnailsObserver?.disconnect();
+    imageRenderer?.dispose();
   });
   let lastPreviewProduct;
   for(const [id,preset] of Object.entries(BUNDLE_PRESETS)) {

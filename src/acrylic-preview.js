@@ -1,4 +1,3 @@
-import { slots, CANVAS } from './config.js';
 import * as THREE from '../vendor/three.module.js';
 import { OrbitControls } from '../vendor/OrbitControls.js';
 import { RoundedBoxGeometry } from '../vendor/RoundedBoxGeometry.js';
@@ -99,21 +98,29 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   let spotTexture;
   let componentTexture;
   let badgeTexture;
-  const paperSurface=createPaperTexture(),cardSurface=createPaperTexture(true);
+  let paperSurface, cardSurface;
   const windowPosition = new THREE.Vector3(-8, 7, 6);
   let selection = { variant: 'effect', cardOnly: false, accessory: 'none' };
   let disposed = false;
+  let inView = snapshot || !window.IntersectionObserver;
+  const visibilityObserver = !snapshot && window.IntersectionObserver
+    ? new window.IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      if(inView) draw();
+    }, {rootMargin:'160px'})
+    : null;
   let pendingFrame=0;
   const draw = () => {
     host.dataset.cameraDistance=controls.getDistance().toFixed(3);
     host.dataset.orbitTarget=controls.target.toArray().map(value=>value.toFixed(3)).join(',');
-    if(disposed||pendingFrame)return;
+    if(disposed||pendingFrame||!inView)return;
     pendingFrame=window.requestAnimationFrame(()=>{
       pendingFrame=0;
       host.dataset.cameraDistance=controls.getDistance().toFixed(3);
-      if(!disposed&&host.clientWidth)renderer.render(scene,camera);
+      if(!disposed&&inView&&host.clientWidth)renderer.render(scene,camera);
     });
   };
+  visibilityObserver?.observe(host);
   controls.addEventListener('change', draw);
   let viewMode='full';
   function frameView(mode,preserveDirection=false) {
@@ -177,6 +184,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     clearObject();
     if (!designTexture) return;
     const { cardOnly, accessory, shikishi=false } = selection;
+    if(cardOnly) cardSurface ||= createPaperTexture(true);
+    if(shikishi) paperSurface ||= createPaperTexture();
     const variant=cardOnly||shikishi?'effect':selection.variant==='basic'?'basic':'effect';
     contact.scale.set(1,cardOnly?0.3:shikishi?0.5:1,1);
     const depth = cardOnly ? 0.035 : shikishi ? 0.12 : 1.5;
@@ -190,7 +199,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       attenuationColor: new THREE.Color('#e3f5f5'), attenuationDistance: 55,
       clearcoat: 0, clearcoatRoughness: 0.025, envMapIntensity: 0.65,
     });
-    const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, 5, cardOnly ? 0.012 : shikishi?0.035:0.065), acrylic);
+    const brick = new THREE.Mesh(new RoundedBoxGeometry(12, 5, depth, snapshot ? 5 : 3, cardOnly ? 0.012 : shikishi?0.035:0.065), acrylic);
     if(cardOnly||shikishi) {
       acrylic.transmission=0; acrylic.color.set(shikishi?'#f3eee4':'#171717'); acrylic.metalness=0; acrylic.roughness=0.95; acrylic.clearcoat=0; acrylic.envMapIntensity=0.1;
     }
@@ -264,14 +273,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     renderer.shadowMap.needsUpdate=true;
     draw();
   }
-  let titleFinishBase;
   function setDesign(source, finishMaps) {
-    const maskScale = finishMaps.packed.width / CANVAS.width;
-    const x = Math.round(slots.titleBase.x * maskScale), y = Math.round(slots.titleBase.y * maskScale);
-    const width = Math.round(slots.titleBase.width * maskScale), height = Math.round(slots.titleBase.height * maskScale);
-    titleFinishBase = { x, y, width, height,
-      pixels: finishMaps.packed.getContext('2d').getImageData(x, y, width, height).data,
-      components: finishMaps.componentCoverage.getContext('2d').getImageData(x, y, width, height).data };
     designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
@@ -336,51 +338,6 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       resize();rebuild();
     }).catch(()=>{if(!disposed){renderer.resetState();host.dataset.gpuTier='fallback';draw();}});
   }
-  // Refresh only the print image, not geometry or finish masks, for title motion.
-  let lastDesignFrame = 0;
-  function updateDesignFrame(source, titleLayer) {
-    const now = globalThis.performance.now();
-    if (now - lastDesignFrame < 1000 / 15) return;
-    if (disposed || !designTexture || host.hidden || document.hidden) return;
-    lastDesignFrame = now;
-    host.dataset.designFrame = String(now);
-    const image = designTexture.image;
-    const context = image.getContext('2d');
-    context.fillStyle = '#fff';
-    context.fillRect(0, 0, image.width, image.height);
-    context.drawImage(source, 0, 0, image.width, image.height);
-    designTexture.needsUpdate = true;
-    if (titleLayer && titleFinishBase && spotTexture) {
-      const target = spotTexture.image.getContext('2d');
-      const { x, y, width, height } = titleFinishBase;
-      const pixels = new Uint8ClampedArray(titleFinishBase.pixels);
-      const components = new Uint8ClampedArray(titleFinishBase.components);
-      const letters = titleLayer.getContext('2d').getImageData(0, 0, width, height).data;
-      for (let i = 0; i < pixels.length; i += 4) {
-        const alpha = letters[i + 3] / 255;
-        if (!alpha) continue;
-        const baseAlpha = components[i + 3] / 255;
-        const compositeAlpha = alpha + baseAlpha * (1 - alpha);
-        for (let c = 0; c < 3; c++) components[i + c] *= baseAlpha * (1 - alpha) / compositeAlpha;
-        components[i + 3] = 255 * compositeAlpha;
-        const white = letters[i + 3] > 96 && Math.min(letters[i], letters[i + 1], letters[i + 2]) >= 215 &&
-          Math.max(letters[i], letters[i + 1], letters[i + 2]) - Math.min(letters[i], letters[i + 1], letters[i + 2]) <= 22;
-        pixels[i] = white ? 255 * alpha : 0;
-        pixels[i + 1] *= 1 - alpha;
-        if (pixels[i]) pixels[i + 1] = 0;
-        pixels[i + 2] = 255 * alpha * (1 - (white ? alpha : 0));
-      }
-      const patch = target.createImageData(width, height);
-      patch.data.set(pixels);
-      target.putImageData(patch, x, y);
-      spotTexture.needsUpdate = true;
-      const componentContext = componentTexture.image.getContext('2d');
-      patch.data.set(components);
-      componentContext.putImageData(patch, x, y);
-      componentTexture.needsUpdate = true;
-    }
-    draw();
-  }
   function setLightAngle(degrees) {
     const angle = THREE.MathUtils.degToRad(degrees);
     key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
@@ -395,7 +352,6 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   }
   return {
     setDesign,
-    updateDesignFrame,
     setFinishMaps(maps) {
       if(!spotTexture||!componentTexture)return;
       spotTexture.image=maps.packed;spotTexture.needsUpdate=true;
@@ -443,8 +399,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     focusNameplate() {frameView('nameplate');},
     setLightAngle,
     dispose() {
-      disposed = true;window.cancelAnimationFrame(pendingFrame);observer.disconnect(); controls.dispose(); clearObject();
-      designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();paperSurface.dispose();cardSurface.dispose();
+      disposed = true;window.cancelAnimationFrame(pendingFrame);observer.disconnect();visibilityObserver?.disconnect();controls.dispose();clearObject();
+      designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();paperSurface?.dispose();cardSurface?.dispose();
       environmentMap.dispose(); shadowTexture.dispose();
       floor.geometry.dispose(); floor.material.dispose(); contact.geometry.dispose(); contact.material.dispose();
       renderer.dispose(); renderer.domElement.remove();

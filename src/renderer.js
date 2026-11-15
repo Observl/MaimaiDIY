@@ -77,11 +77,11 @@ export function preferredRenderScale({
   return mobile ? Math.min(2, RENDER_SCALE) : RENDER_SCALE;
 }
 
-export function createRenderer(canvas, { scale = preferredRenderScale(), previewExamples = false, animateTitles = false, onFrame, onTitleOverflow } = {}) {
+export function createRenderer(canvas, { scale = preferredRenderScale(), readFrequently = false, previewExamples = false, animateTitles = false, onFrame, onTitleOverflow } = {}) {
   const renderCanvas = document.createElement('canvas');
   renderCanvas.width = CANVAS.width * scale;
   renderCanvas.height = CANVAS.height * scale;
-  const ctx = renderCanvas.getContext('2d');
+  const ctx = renderCanvas.getContext('2d', { willReadFrequently: readFrequently });
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 

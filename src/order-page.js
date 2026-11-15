@@ -1,7 +1,7 @@
 import { applyRegionBackground } from './region-background.js';
 import {DEFAULT_LIGHT_ANGLE} from './finish-settings.js';
 import { DISPLAY_FONT } from './config.js';
-import { readCurrentDesign } from './current-design.js';
+import { CURRENT_DESIGN_KEY, LEGACY_CURRENT_DESIGN_KEY, readCurrentDesign } from './current-design.js';
 import { createRenderer } from './renderer.js';
 import { initializeCustomOrder } from './custom-order.js';
 import { createCollectibleMasks } from './collectible-masks.js';
@@ -21,11 +21,11 @@ const renderer = createRenderer(document.querySelector('#preview'), {
     titleNotice.textContent = overflow ? '此称号超出框宽，定制预览和成图均使用滚动前的第一帧。' : '';
   },
 });
-window.addEventListener('pagehide', () => renderer.dispose());
 let state = null;
 let version = 0;
 let physicalPreview;
 let previewLoading;
+let loadedDesign;
 let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
@@ -51,22 +51,23 @@ async function updatePhysicalPreview(request) {
   physicalStatus.hidden = false;
   physicalStatus.textContent = '正在准备 3D 材质…';
   try {
-    const finishMaps = await createCollectibleMasks(state);
+    previewLoading ||= import('./acrylic-preview.js')
+      .catch(error => { previewLoading = undefined; throw error; });
+    const [{createAcrylicPreview}, finishMaps] = await Promise.all([
+      previewLoading,
+      createCollectibleMasks(state, undefined, {diagnostics:false}),
+    ]);
     if (request !== version) return;
     viewport.hidden = false;
-    previewLoading ||= import('./acrylic-preview.js')
-      .then(({ createAcrylicPreview }) => createAcrylicPreview(viewport))
-      .catch(error => { previewLoading = undefined; throw error; });
-    const viewer = await previewLoading;
-    if (request !== version) return;
-    physicalPreview = viewer;
-    viewer.setDesign(renderer.renderCanvas, finishMaps);
-    document.dispatchEvent(new window.CustomEvent('order-render-ready',{detail:{source:renderer.renderCanvas,finishMaps}}));
+    const viewer = physicalPreview ||= createAcrylicPreview(viewport);
     syncPhysicalSelection();
+    viewer.setDesign(renderer.renderCanvas, finishMaps);
     viewer.setLightAngle(lightDial.value);
     physicalStatus.hidden = true;
+    document.dispatchEvent(new window.CustomEvent('order-render-ready',{detail:{source:renderer.renderCanvas,finishMaps}}));
   } catch (error) {
     if (request !== version) return;
+    loadedDesign = undefined;
     viewport.hidden = true;
     console.warn('3D 预览不可用', error);
     physicalStatus.textContent = '当前设备无法显示 3D 预览，上方设计和商品选配仍可使用。';
@@ -104,6 +105,10 @@ initializeCustomOrder({
 });
 
 async function refreshDesign() {
+  const latest = readCurrentDesign();
+  const designKey = JSON.stringify(latest);
+  if (designKey === loadedDesign) return;
+  loadedDesign = designKey;
   const request = ++version;
   state = null;
   status.hidden = false;
@@ -112,7 +117,6 @@ async function refreshDesign() {
   physicalStatus.hidden = false;
   physicalStatus.textContent = '等待上屏设计';
   document.querySelector('#acrylic-export').disabled = true;
-  const latest = readCurrentDesign();
   applyRegionBackground(latest?.region || 'cn');
   if (!latest) {
     status.textContent = '还没有可用的上屏设计，请返回编辑器完成搭配后再来。';
@@ -137,6 +141,7 @@ async function refreshDesign() {
     updatePhysicalPreview(request);
   } catch (error) {
     if (request !== version) return;
+    loadedDesign = undefined;
     console.warn('上屏设计合成失败', error);
     const slot = /素材未加载完成：([\w-]+)/.exec(error?.message || '')?.[1];
     const labels = {
@@ -155,10 +160,18 @@ async function refreshDesign() {
   }
 }
 window.addEventListener('pageshow',event=>{if(event.persisted)refreshDesign();});
+window.addEventListener('pagehide',event=>{
+  if(event.persisted)return;
+  version++;
+  renderer.dispose();
+  physicalPreview?.dispose();
+});
 // Start immediately; CSS font requests must not postpone initial design loading.
 void refreshDesign();
 
-window.addEventListener('storage', refreshDesign);
+window.addEventListener('storage', event => {
+  if (event.key === null || event.key === CURRENT_DESIGN_KEY || event.key === LEGACY_CURRENT_DESIGN_KEY) refreshDesign();
+});
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) refreshDesign();
 });

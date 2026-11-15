@@ -263,7 +263,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
           {
             // Existing background glitter stays separate from diffuse component powder.
             float density=printFinish>1.5?1.0:0.7;
-            float finishCoverage=1.0-componentPrint;
+            float finishCoverage=(1.0-componentPrint)*(1.0-finish.b);
             if(finishCoverage>0.005 && lab_glitterDensity>0.001 && lab_glitterStrength>0.001) {
               vec2 fineCells=mat2(0.956,-0.292,0.292,0.956)*printPosition*(420.0/11.91);
               float footprint=printFootprint*(420.0/11.91);
@@ -287,7 +287,7 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
                   grainReflection(facet,grainView,grainSun,0.85),glitterLightEntry);
                 glitterResponse+=weight*flake*sparkle;
               }
-              totalSpecular+=grainTint*(1.0-exp(-glitterResponse*lab_glitterStrength))*1.45*(1.0-finish.b)*finishCoverage;
+              totalSpecular+=grainTint*(1.0-exp(-glitterResponse*lab_glitterStrength))*1.45*finishCoverage;
             }
           }
         }
@@ -295,5 +295,5 @@ export function applyPrintOptics(material, mesh, { design, mask, components, bad
     // Run helper patches last, after preserving the physical shader's include hooks.
     previousCompile(shader,renderer);
   };
-  material.customProgramCacheKey = () => 'continuous-glitter-entry-v4-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
+  material.customProgramCacheKey = () => 'continuous-glitter-entry-v5-'+Number(card)+'-'+Number(paper)+'-'+previousCacheKey();
 }

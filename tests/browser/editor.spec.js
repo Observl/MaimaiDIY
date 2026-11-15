@@ -436,7 +436,7 @@ test('purchase presets select products, update newcomer prices and export all it
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('.configuration-panel img')).toHaveCount(0);
   await expect(page.locator('#bundle-presets')).toHaveCount(0);
-  await expect(page.locator('.configuration-image')).toHaveCount(7);
+  await expect(page.locator('.configuration-image')).toHaveCount(12);
   await expect(page.locator('[data-config="display"]')).toHaveCount(0);
   const powderSlots=await page.evaluate(async()=>{
     const {readCurrentDesign}=await import('/src/current-design.js');
@@ -446,6 +446,7 @@ test('purchase presets select products, update newcomer prices and export all it
   });
   for(const slot of ['nameplate','rank','friendBattle'])expect(powderSlots).toContain(slot);
   for(const slot of ['titleBase','ratingFrame'])expect(powderSlots).not.toContain(slot);
+  await page.locator('#custom-order').scrollIntoViewIfNeeded();
   await expect(page.locator('[data-config-image="acrylic"]').first()).toHaveAttribute('src',/^data:image\/png/);
   const complete = page.locator('[data-config="complete"]');
   await expect(complete.locator('.configuration-product > span')).toHaveText(['亚克力砖 · 含托架', '镭射票', '色纸']);

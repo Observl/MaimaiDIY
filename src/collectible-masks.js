@@ -6,32 +6,32 @@ import { createSourceFinishMask } from './source-finish-mask.js';
 import { COLLECTIBLE_PLATES } from './collectible-catalog.js';
 import { createPlateLetteringMask } from './plate-lettering-mask.js';
 import { createRatingInsetMask } from './rating-inset-mask.js';
+import { prepareRegionalDisplay } from './regional-display.js';
 
 function canvas(width, height) {
   const value = document.createElement('canvas'); value.width = width; value.height = height; return value;
 }
 
-export async function createCollectibleMasks(state,options=MASK_PARAMETERS) {
+export async function createCollectibleMasks(state,options=MASK_PARAMETERS,{diagnostics=true}={}) {
   const scale = 2, width = CANVAS.width * scale, height = CANVAS.height * scale;
-  const packed = canvas(width,height), tint = canvas(width,height);
-  const pctx = packed.getContext('2d'), tctx = tint.getContext('2d');
-  const data = pctx.createImageData(width,height), colors = tctx.createImageData(width,height);
-  const owners=new Uint8Array(width*height), entries=[];
-  const letteringOwners=new Uint8Array(width*height);
-  const layerCanvas = canvas(width,height), layerContext = layerCanvas.getContext('2d', { willReadFrequently: true });
+  const packed = canvas(width,height), tint = diagnostics ? canvas(width,height) : null;
+  const pctx = packed.getContext('2d'), tctx = tint?.getContext('2d');
+  const data = pctx.createImageData(width,height), colors = tctx?.createImageData(width,height);
+  const owners=diagnostics ? new Uint8Array(width*height) : null, entries=[];
+  const letteringOwners=diagnostics ? new Uint8Array(width*height) : null;
   const region = canvas(width,height), regionContext = region.getContext('2d', { willReadFrequently: true });
-  const isolated = createRenderer(canvas(CANVAS.width,CANVAS.height));
+  const isolated = createRenderer(canvas(1,1), {scale, readFrequently:true});
+  const layerCanvas = isolated.renderCanvas, layerContext = layerCanvas.getContext('2d');
   const componentCoverage=canvas(width,height);
   const badgeCoverage=canvas(width,height);
   const ordered = COMPOSITION_ORDER;
   for (const id of ordered) {
-    if (!state.visible[id]) continue;
+    // The background is the first layer and carries no authored spot finish.
+    if (id==='background' || !state.visible[id]) continue;
     await new Promise(resolve=>setTimeout(resolve,0));
     const visible = Object.fromEntries(Object.keys(slots).map(key => [key, key === id]));
     await isolated.render({ ...state, visible, screenMode: 'collection' }, { strict: true });
-    layerContext.clearRect(0,0,width,height);
-    layerContext.drawImage(isolated.renderCanvas,0,0,width,height);
-    if(id!=='background') {
+    {
       // Alpha tracks all components; red/green identify visible title/avatar pigment.
       // Later components and text occlude these regions in the same composition order.
       regionContext.clearRect(0,0,width,height);regionContext.drawImage(layerCanvas,0,0);
@@ -92,11 +92,14 @@ export async function createCollectibleMasks(state,options=MASK_PARAMETERS) {
     for (let i=0;i<layer.length;i+=4) {
       const alpha=layer[i+3]/255;
       if (!alpha) continue;
-      if(alpha>0.5) {owners[i/4]=0;letteringOwners[i/4]=0;}
+      if(diagnostics && alpha>0.5) {owners[i/4]=0;letteringOwners[i/4]=0;}
       // Every real layer erases covered effects, including exact text glyphs.
       const textLayer=['playerName','ratingDigits','titleText'].includes(id),exclusion=options.textProtection??1;
       const eraseAlpha=alpha*(textLayer?exclusion:1);
-      for(let c=0;c<3;c++) { data.data[i+c]*=1-eraseAlpha; colors.data[i+c]*=1-eraseAlpha; }
+      for(let c=0;c<3;c++) {
+        data.data[i+c]*=1-eraseAlpha;
+        if(colors) colors.data[i+c]*=1-eraseAlpha;
+      }
       if(['playerName','ratingDigits','titleText'].includes(id))data.data[i+2]=255*alpha*exclusion;
       if (!profile) continue;
       // No full-alpha finish fallback: each component uses its own source-derived contours.
@@ -104,24 +107,48 @@ export async function createCollectibleMasks(state,options=MASK_PARAMETERS) {
       const g=(powderShape?.[i]||0)/255*alpha;
       const lettering=letteringShape?letteringShape[i/4]/255:0;
       const powderStrength=letteringShape?profile.powder+(1-profile.powder)*lettering:profile.powder;
-      if(u>0||g>0) owners[i/4]=entryId;
+      if(diagnostics && (u>0||g>0)) owners[i/4]=entryId;
       data.data[i]=255*profile.uv*u;
       if(id==='titleText')data.data[i+2]*=1-u;
       data.data[i+1]=255*powderStrength*g;
-      if(lettering>0.5)letteringOwners[i/4]=1;
-      for(let c=0;c<3;c++) colors.data[i+c]=profile.tint[c]*Math.max(u,g);
+      if(diagnostics && lettering>0.5)letteringOwners[i/4]=1;
+      if(colors) for(let c=0;c<3;c++) colors.data[i+c]=profile.tint[c]*Math.max(u,g);
     }
   }
-  for(let i=3;i<data.data.length;i+=4) { data.data[i]=255; colors.data[i]=255; }
+  const display = await prepareRegionalDisplay(state);
+  if(display) {
+    regionContext.clearRect(0,0,width,height);
+    regionContext.save();
+    regionContext.imageSmoothingQuality='high';
+    regionContext.scale(scale,scale);
+    display.draw(regionContext);
+    regionContext.restore();
+    const artwork = regionContext.getImageData(0,0,width,height).data;
+    for(let i=0;i<artwork.length;i+=4) {
+      if(!artwork[i+3]) continue;
+      data.data[i]=data.data[i+1]=0;
+      data.data[i+2]=255;
+      if(owners) owners[i/4]=0;
+      if(colors) colors.data[i]=colors.data[i+1]=colors.data[i+2]=0;
+    }
+  }
+  for(let i=3;i<data.data.length;i+=4) {
+    data.data[i]=255;
+    if(colors) colors.data[i]=255;
+  }
   // Alpha-composited edges can otherwise reintroduce powder under white varnish.
   for(let i=0;i<data.data.length;i+=4)if(data.data[i]>0)data.data[i+1]=0;
-  for(let pixel=0;pixel<owners.length;pixel++) {
+  for(let pixel=0;pixel<(owners?.length ?? 0);pixel++) {
     const entry=entries[owners[pixel]-1]; if(!entry) continue;
     if(data.data[pixel*4]>12) entry.uvPixels++;
     if(data.data[pixel*4+1]>12) entry.powderPixels++;
     if(letteringOwners[pixel])entry.letteringPixels++;
   }
-  pctx.putImageData(data,0,0); tctx.putImageData(colors,0,0);
+  pctx.putImageData(data,0,0);
+  // Release the temporary layer buffers before handing the textures to WebGL.
+  isolated.dispose(); layerCanvas.width=1; region.width=1;
+  if(!diagnostics) return { packed,componentCoverage,badgeCoverage };
+  tctx.putImageData(colors,0,0);
   const uv = canvas(width,height), powder = canvas(width,height);
   for(const [target,channel] of [[uv,0],[powder,1]]) {
     const ctx=target.getContext('2d'), pixels=ctx.createImageData(width,height);
@@ -130,7 +157,5 @@ export async function createCollectibleMasks(state,options=MASK_PARAMETERS) {
     }
     ctx.putImageData(pixels,0,0);
   }
-  // Release the temporary 4x renderer buffers after composing the masks.
-  isolated.renderCanvas.width=1; layerCanvas.width=1; region.width=1;
   return { packed,tint,uv,powder,entries,componentCoverage,badgeCoverage };
 }

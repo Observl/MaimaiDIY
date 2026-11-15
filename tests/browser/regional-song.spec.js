@@ -213,6 +213,51 @@ test('regional song module updates difficulty and score from the cover and expor
 });
 
 
+test('3D finish protects regional song artwork and leaves uncovered background eligible for glitter', async ({ page, context }) => {
+  await setupRegionalCatalogs(page, context);
+  const coverage = await page.evaluate(async () => {
+    const { createCollectibleMasks } = await import('/src/collectible-masks.js');
+    const { prepareRegionalDisplay } = await import('/src/regional-display.js');
+    const { createDefaultState } = await import('/src/model.js');
+    return Promise.all(['cn', 'jp'].map(async region => {
+      const state = createDefaultState(region);
+      state.visible = {};
+      state.screenMode = 'achievement';
+      state.song = { id: '1:dx', difficulty: 0, achievement: 100 };
+      const [display, maps] = await Promise.all([
+        prepareRegionalDisplay(state), createCollectibleMasks(state, undefined, {diagnostics:false}),
+      ]);
+      const { packed } = maps;
+      const artwork = document.createElement('canvas');
+      artwork.width = packed.width;
+      artwork.height = packed.height;
+      const context = artwork.getContext('2d', {willReadFrequently:true});
+      context.imageSmoothingQuality = 'high';
+      context.scale(2, 2);
+      display.draw(context);
+      const pixels = context.getImageData(0, 0, packed.width, packed.height).data;
+      const mask = packed.getContext('2d').getImageData(0, 0, packed.width, packed.height).data;
+      let covered = 0, uncovered = 0, mismatches = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3]) {
+          covered++;
+          if (mask[i + 2] !== 255 || mask[i] !== 0 || mask[i + 1] !== 0) mismatches++;
+        } else {
+          uncovered++;
+          if (mask[i + 2] !== 0) mismatches++;
+        }
+      }
+      return { region, covered, uncovered, mismatches, diagnostics: Boolean(maps.uv) };
+    }));
+  });
+  for (const result of coverage) {
+    expect(result.covered, result.region).toBeGreaterThan(100000);
+    expect(result.uncovered, result.region).toBeGreaterThan(100000);
+    expect(result.mismatches, result.region).toBe(0);
+    expect(result.diagnostics, result.region).toBe(false);
+  }
+});
+
 test('320px regional switching preserves usable dynamic companion controls', async ({ page, context }) => {
   await page.setViewportSize({ width: 320, height: 900 });
   await setupRegionalCatalogs(page, context);
