@@ -1,8 +1,7 @@
 import { applyRegionBackground } from './region-background.js';
-import { loadRegionCatalog } from './region-catalog.js';
+import { loadRegionMetadata, loadRegionCategoryIndex } from './region-catalog.js';
 import { getRegionCatalogItem } from './region-profile.js';
 import { loadManifest, manifestSource } from './assets.js';
-import { REGION_CATEGORIES } from './region-index.js';
 const difficultyNames = ['BASIC', 'ADVANCED', 'EXPERT', 'MASTER', 'Re:MASTER'];
 export function initializeRegionControls({ state, recordHistory, render, changeRegion, picker }) {
   const regionSelect = document.querySelector('#region-select');
@@ -95,7 +94,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
         recordHistory(); state.companions[index].level = Math.min(999, Math.max(1, Math.trunc(Number(level.value)) || 1));
         level.value = String(state.companions[index].level); render();
       });
-      const pick = document.createElement('button'); pick.className = 'library-button'; pick.type = 'button'; pick.textContent = '素材库'; pick.disabled = !catalog?.charas.length;
+      const pick = document.createElement('button'); pick.className = 'library-button'; pick.type = 'button'; pick.textContent = '素材库'; pick.disabled = catalog?.category !== 'charas' || !catalog.items.length;
       pick.addEventListener('click', () => picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas', select(selected) {
         // Fill slots in order, preserving a compact, independently saved party.
         const slot = Math.min(index, state.companions.length);
@@ -152,9 +151,15 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     status.textContent = `${state.region === 'jp' ? '日服' : '国服'} · ${ui} 网页背景`;
     note.textContent = state.screenMode === 'companions'
       ? (state.region === 'cn' ? '国服 CN1.55 原版素材包尚未取得，旅行伙伴暂不可选。' : '旅行伙伴可保存到模板。') : '';
-    if (readyRegion !== state.region) {
-      catalog = undefined; paintFields();
-      try { const next = await loadRegionCatalog(state.region); if (version !== requestVersion) return; catalog = next; readyRegion = state.region; }
+    const category = state.screenMode === 'companions' ? 'charas' : state.screenMode === 'achievement' ? 'songs' : null;
+    const readyKey = `${state.region}:${category || 'metadata'}`;
+    if (readyRegion !== readyKey) {
+      catalog = undefined; readyRegion = ''; paintFields();
+      try {
+        const next = category ? await loadRegionCategoryIndex(state.region, category) : await loadRegionMetadata(state.region);
+        if (version !== requestVersion) return;
+        catalog = next; readyRegion = readyKey;
+      }
       catch (error) {
         if (version === requestVersion) {
           note.textContent = `地区曲库加载失败：${error.message}`;
@@ -169,12 +174,13 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       const label = source === 'v1-fallback' ? '日服兼容素材索引'
         : source === 'v2-cache' ? '日服缓存素材索引'
         : local ? '日服本地素材索引' : '日服云端素材索引';
-      const count = REGION_CATEGORIES.reduce((total, category) => total + catalog[category].length, 0);
-      showAssetStatus(source === 'v2-network' && !local ? 'is-online' : 'is-offline', `${label} · ${count} 项`);
+      const count = catalog.items?.length;
+      const scope = category ? `${category === 'charas' ? '旅行伙伴' : '歌曲'} ${count} 项` : '分类目录就绪，素材按需读取';
+      showAssetStatus(['v2-network', 'v2-cache'].includes(source) && !local ? 'is-online' : 'is-offline', `${label} · ${scope}`);
     }
     if (source) status.textContent += source === 'v1-fallback'
       ? ' 当前使用兼容索引，COS 新索引暂不可用。'
-      : source === 'v2-cache' ? ' 当前使用已校验的本版本离线索引。'
+      : source === 'v2-cache' ? ' 当前使用已校验的本版本缓存索引。'
       : local ? ' 已加载经校验的本地 COS v2 索引。' : ' 已加载 COS v2 分类索引。';
     paintFields();
   }

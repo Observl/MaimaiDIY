@@ -290,6 +290,7 @@ export function createRegionIndexLoader({
   validateReleaseLocation(releaseId, baseUrl);
   const resources = new Map();
   const catalogs = new Map();
+  const regions = new Map();
   const categories = new Map();
   const cacheName = `${REGION_INDEX_CACHE_PREFIX}${releaseId}`;
   let cachePromise;
@@ -379,11 +380,19 @@ export function createRegionIndexLoader({
       sourceStatus: { kind: `v2-${mode}`, releaseId, ...(local ? { local: true } : {}) } };
   }
   async function withFallback(region, requested) {
+    // Release URLs are immutable. A complete requested chain is revalidated
+    // before use, so warm loads need no network round trip. A cache miss falls
+    // back as a whole. Corrupt cache can be repaired only by a fully verified
+    // network chain; it cannot authorize legacy fallback or partial mixing.
+    let cacheIntegrityError;
+    try { return await transaction(region, requested, 'cache'); }
+    catch (error) {
+      if (error.code !== 'INDEX_UNAVAILABLE') cacheIntegrityError = error;
+    }
     let cause;
     try { return await transaction(region, requested, 'network'); }
     catch (error) { if (error.code !== 'INDEX_UNAVAILABLE') throw error; cause = error; }
-    try { return await transaction(region, requested, 'cache'); }
-    catch (error) { if (error.code !== 'INDEX_UNAVAILABLE') throw error; }
+    if (cacheIntegrityError) throw cacheIntegrityError;
     if (!allowLegacy) throw cause;
     const { bytes } = await networkBytes(`./data/regions/${region}.json`);
     const legacy = validateLegacyCatalog(await decode(bytes), { region, releaseId, baseUrl, reason: cause.message });
@@ -391,6 +400,19 @@ export function createRegionIndexLoader({
   }
   return Object.freeze({
     cacheName,
+    loadRegion(region) {
+      requireIndexRegion(region);
+      return shared(regions, `${releaseId}:${region}`, async () => {
+        const result = await withFallback(region, []);
+        if (!result.legacy) return freezeTree({ ...result.index, sourceStatus: result.sourceStatus });
+        // Metadata-only callers must not receive a partial object posing as a
+        // complete catalog. Legacy is validated in full before projecting it.
+        const { indexes, ...meta } = result.legacy;
+        const counts = Object.fromEntries(REGION_CATEGORIES.map(category => [category, { count: indexes[category].order.length }]));
+        for (const category of REGION_CATEGORIES) delete meta[category];
+        return freezeTree({ ...meta, categories: counts });
+      });
+    },
     loadCatalog(region) {
       requireIndexRegion(region);
       return shared(catalogs, `${releaseId}:${region}`, async () => {

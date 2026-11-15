@@ -14,7 +14,7 @@ import { initializePicker } from './src/picker.js';
 import { indexedMaterialCategory } from './src/material-index.js';
 import { initializeTemplates } from './src/templates.js';
 import { initializeRecommendations } from './author-recommendations.js';
-import { loadRegionCatalog } from './src/region-catalog.js';
+import { loadRegionCatalog, loadRegionDesign } from './src/region-catalog.js';
 import { initializeRegionControls } from './src/region-controls.js';
 import { songJacketBounds } from './src/regional-display.js';
 import { readCurrentDesign, saveCurrentDesign, readRegionDesign } from './src/current-design.js';
@@ -609,7 +609,8 @@ regionControls = initializeRegionControls({
   state, recordHistory, render: () => { templates.refresh(); return render(); }, picker: materialPicker,
   async changeRegion(region) {
     if (region === state.region) return;
-    await loadRegionCatalog(region);
+    const nextDesign = readRegionDesign(region) || createDefaultState(region);
+    await loadRegionDesign(nextDesign);
     previewRegionVersion++;
     previewRefreshStatus.textContent = '';
     exportStatus.textContent = '';

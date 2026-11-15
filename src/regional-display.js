@@ -1,5 +1,5 @@
 import { loadImage } from './assets.js';
-import { loadRegionCatalog, getRegionCatalogItem } from './region-catalog.js';
+import { loadRegionCategoryIndex, getRegionCatalogItem } from './region-catalog.js';
 import { validateRegionalDisplayLayout } from './regional-display-layout.js';
 
 const layouts = new Map();
@@ -121,7 +121,7 @@ function baselineGlyph(image, center, baseline, height) {
 export async function prepareRegionalDisplay({ region, screenMode, song }, refreshId) {
   if (screenMode !== 'achievement' || !song.id) return null;
 
-  const [, layout] = await Promise.all([loadRegionCatalog(region), loadLayout(region, refreshId)]);
+  const [, layout] = await Promise.all([loadRegionCategoryIndex(region, 'songs'), loadLayout(region, refreshId)]);
   const art = name => loadImage(`regional-display/${region}/${name}.webp`, refreshId);
   const stamp = async (name, bounds = layout[name], fitted = false) => {
     const image = await art(name);

@@ -318,7 +318,7 @@ test('fully validated same-release CacheStorage works offline across loader inst
   const cached = await offline.loadCatalog('jp');
   assert.equal(cached.sourceStatus.kind, 'v2-cache');
   assert.deepEqual(cached.frames, online.frames);
-  assert.equal(offlineCalls.length, 1);
+  assert.equal(offlineCalls.length, 0);
   assert.deepEqual([...storage.stores.keys()], [`${REGION_INDEX_CACHE_PREFIX}${REGION_RELEASE_ID}`]);
 });
 
@@ -331,7 +331,7 @@ test('an old release cache cannot satisfy a newer release or wrong-region reques
   await assert.rejects(loader(offline, { cacheStorage: storage, allowLegacy: false }).loadCatalog('cn'), { code: 'INDEX_UNAVAILABLE' });
 });
 
-test('corrupt same-release cache is fatal; incomplete cache can use complete v1 compatibility', async () => {
+test('offline corrupt cache fails closed; incomplete cache can use complete v1 compatibility', async () => {
   for (const corrupt of [true, false]) {
     const storage = new MemoryCacheStorage();
     await loader(testNetwork(), { cacheStorage: storage }).loadCatalog('jp');
@@ -406,5 +406,106 @@ test('optional UI metadata rejects malformed aliases, artist, groups and classif
   for (const aliases of [[], ['literal', '日本語', '中文'], Array(256).fill('x'), ['x'.repeat(1024)]]) {
     const song = clone(sampleCatalogs().jp.songs[0]); song.aliases = aliases;
     assert.deepEqual(makeCategoryIndex([song], { region: 'jp', category: 'songs' }).byId['8:sd'].aliases, aliases);
+  }
+});
+
+
+test('warm complete category chain is cache-first even with a working network', async () => {
+  const storage = new MemoryCacheStorage();
+  const cold = testNetwork();
+  const first = await loader(cold, { cacheStorage: storage }).loadCategory('jp', 'charas');
+  assert.equal(cold.calls.length, 3);
+  const warm = testNetwork();
+  const second = await loader(warm, { cacheStorage: storage }).loadCategory('jp', 'charas');
+  assert.equal(second.sourceStatus.kind, 'v2-cache');
+  assert.deepEqual(second.items, first.items);
+  assert.equal(warm.calls.length, 0);
+});
+
+test('partial category cache does not masquerade as a complete catalog or mix network chains', async () => {
+  const storage = new MemoryCacheStorage();
+  await loader(testNetwork(), { cacheStorage: storage }).loadCategory('jp', 'charas');
+  const network = testNetwork();
+  const catalog = await loader(network, { cacheStorage: storage }).loadCatalog('jp');
+  assert.equal(catalog.sourceStatus.kind, 'v2-network');
+  assert.equal(network.calls.length, 7);
+  assert.ok(REGION_CATEGORIES.every(category => catalog[category].length === 1));
+  const cached = testNetwork();
+  assert.equal((await loader(cached, { cacheStorage: storage }).loadCatalog('jp')).sourceStatus.kind, 'v2-cache');
+  assert.equal(cached.calls.length, 0);
+});
+
+test('corrupt cache and a missing sibling are repaired only by a complete verified network chain', async () => {
+  const storage = new MemoryCacheStorage();
+  await loader(testNetwork(), { cacheStorage: storage }).loadCatalog('jp');
+  const store = storage.stores.get(`${REGION_INDEX_CACHE_PREFIX}${REGION_RELEASE_ID}`);
+  store.delete(`${REGION_BASE_URL}catalogs/v2/jp/icons.json`);
+  store.set(`${REGION_BASE_URL}catalogs/v2/jp/charas.json`, new Response('{'));
+  const network = testNetwork();
+  const recovered = await loader(network, { cacheStorage: storage }).loadCatalog('jp');
+  assert.equal(recovered.sourceStatus.kind, 'v2-network');
+  assert.equal(network.calls.length, 7);
+  const warm = testNetwork();
+  assert.equal((await loader(warm, { cacheStorage: storage }).loadCatalog('jp')).sourceStatus.kind, 'v2-cache');
+  assert.equal(warm.calls.length, 0);
+});
+
+test('missing category cache still rejects denied network access without legacy fallback', async () => {
+  const storage = new MemoryCacheStorage();
+  await loader(testNetwork(), { cacheStorage: storage }).loadCategory('jp', 'charas');
+  const network = testNetwork();
+  network.overrides.set(`${REGION_BASE_URL}catalogs/v2/jp/songs.json`, () => new Response('denied', { status: 403 }));
+  await assert.rejects(loader(network, { cacheStorage: storage }).loadCategory('jp', 'songs'), { code: 'ACCESS_DENIED' });
+  assert.equal(network.calls.length, 3);
+  assert.ok(network.calls.every(call => !call.url.startsWith('./data/')));
+});
+
+
+test('region metadata loads only root and regional index and cannot masquerade as a catalog', async () => {
+  const storage = new MemoryCacheStorage();
+  const network = testNetwork();
+  const api = loader(network, { cacheStorage: storage });
+  const region = await api.loadRegion('jp');
+  assert.equal(network.calls.length, 2);
+  assert.equal(region.kind, 'region-index');
+  assert.equal(region.categories.charas.count, 1);
+  assert.equal(region.charas, undefined);
+  assert.equal(region.indexes, undefined);
+  assert.ok(Object.isFrozen(region));
+  assert.strictEqual(await api.loadRegion('jp'), region);
+  const warmNetwork = testNetwork();
+  const warm = loader(warmNetwork, { cacheStorage: storage });
+  assert.equal((await warm.loadRegion('jp')).sourceStatus.kind, 'v2-cache');
+  assert.equal(warmNetwork.calls.length, 0);
+  // A category miss requests a whole network chain, not a cache/network mix.
+  assert.equal((await warm.loadCategory('jp', 'charas')).sourceStatus.kind, 'v2-network');
+  assert.equal(warmNetwork.calls.length, 3);
+  assert.equal((await warm.loadCatalog('jp')).sourceStatus.kind, 'v2-network');
+  assert.equal(warmNetwork.calls.length, 7);
+});
+
+test('metadata compatibility projects validated legacy counts without full catalog fields', async () => {
+  const network = testNetwork(new Map());
+  const region = await loader(network).loadRegion('jp');
+  assert.equal(region.sourceStatus.kind, 'v1-fallback');
+  assert.equal(region.categories.charas.count, 1);
+  assert.equal(region.charas, undefined);
+  assert.equal(region.indexes, undefined);
+  assert.ok(Object.isFrozen(region));
+});
+
+
+test('corrupt cache cannot mask tampered or access-denied network content with legacy fallback', async () => {
+  for (const status of ['tampered', 403]) {
+    const storage = new MemoryCacheStorage();
+    await loader(testNetwork(), { cacheStorage: storage }).loadCategory('jp', 'charas');
+    const key = `${REGION_BASE_URL}catalogs/v2/jp/charas.json`;
+    storage.stores.get(`${REGION_INDEX_CACHE_PREFIX}${REGION_RELEASE_ID}`).set(key, new Response('{'));
+    const network = testNetwork();
+    network.overrides.set(key, () => new Response('{', { status: status === 'tampered' ? 200 : status }));
+    await assert.rejects(loader(network, { cacheStorage: storage }).loadCategory('jp', 'charas'),
+      { code: status === 'tampered' ? 'INVALID_INDEX' : 'ACCESS_DENIED' });
+    assert.equal(network.calls.length, 3);
+    assert.ok(network.calls.every(call => !call.url.startsWith('./data/')));
   }
 });
