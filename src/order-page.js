@@ -1,18 +1,37 @@
 import { applyRegionBackground } from './region-background.js';
 import {DEFAULT_LIGHT_ANGLE} from './finish-settings.js';
-import { DISPLAY_FONT } from './config.js';
+import { DISPLAY_FONT, slots } from './config.js';
 import { readCurrentDesign } from './current-design.js';
 import { createRenderer } from './renderer.js';
+import { TITLE_STATIC_NOTICE } from './title-layout.js';
 import { initializeCustomOrder } from './custom-order.js';
 import { createCollectibleMasks } from './collectible-masks.js';
 import { initializeLightDial } from './light-dial.js';
 
 const status = document.querySelector('#design-status');
 const preview = document.querySelector('#order-preview-shell');
-const renderer = createRenderer(document.querySelector('#preview'));
+const titleNotice = document.createElement('p');
+titleNotice.className = 'field-help';
+titleNotice.id = 'title-overflow-notice';
+titleNotice.setAttribute('role', 'status');
+titleNotice.hidden = true;
+preview.after(titleNotice);
+const renderer = createRenderer(document.querySelector('#preview'), {
+  animateTitles: true,
+  onTitleOverflow(overflow) {
+    titleNotice.hidden = !overflow;
+    titleNotice.textContent = overflow ? TITLE_STATIC_NOTICE : '';
+  },
+  onFrame: source => {
+    if (physicalPreview && titleMask) renderer.paintTitleLayer(titleMask);
+    physicalPreview?.updateDesignFrame(source, titleMask);
+  },
+});
+window.addEventListener('pagehide', () => renderer.dispose());
 let state = null;
 let version = 0;
 let physicalPreview;
+let titleMask;
 let previewLoading;
 let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
@@ -39,12 +58,23 @@ async function updatePhysicalPreview(request) {
   physicalStatus.hidden = false;
   physicalStatus.textContent = '正在准备 3D 材质…';
   try {
-    const finishMaps = await createCollectibleMasks(structuredClone(state));
+    const finishState = structuredClone(state);
+    // Build the underlying finish once; animated lettering is composited over
+    // this clean base so stationary embossed ghosts cannot remain behind.
+    if (renderer.titleOverflow) finishState.visible.titleText = false;
+    const finishMaps = await createCollectibleMasks(finishState);
     if (request !== version) return;
     previewLoading ||= import('./acrylic-preview.js').then(({ createAcrylicPreview }) => createAcrylicPreview(viewport));
     const viewer = await previewLoading;
     if (request !== version) return;
     physicalPreview = viewer;
+    titleMask = null;
+    if (renderer.titleOverflow) {
+      titleMask = document.createElement('canvas');
+      titleMask.width = slots.titleBase.width * 2;
+      titleMask.height = slots.titleBase.height * 2;
+      renderer.paintTitleLayer(titleMask);
+    }
     viewer.setDesign(renderer.renderCanvas, finishMaps);
     document.dispatchEvent(new window.CustomEvent('order-render-ready',{detail:{source:renderer.renderCanvas,finishMaps}}));
     syncPhysicalSelection();

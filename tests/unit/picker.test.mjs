@@ -12,7 +12,7 @@ const deferred = () => {
   return { promise, resolve };
 };
 
-async function setup(context, { fetch, image = () => true, resolveCategory, filterCategory, canOpen } = {}) {
+async function setup(context, { fetch, image = () => true, resolveCategory, filterCategory, canOpen, selectionNotice, render } = {}) {
   const id = ++serial;
   const dom = pickerDOM();
   const storage = new Map();
@@ -53,9 +53,9 @@ async function setup(context, { fetch, image = () => true, resolveCategory, filt
   const calls = { history: 0, render: 0, selected: 0 };
   const picker = initializePicker({ state,
     recordHistory: () => { calls.history++; },
-    render: async () => { calls.render++; },
+    render: async () => { calls.render++; await render?.(); },
     onSelection: () => { calls.selected++; },
-    resolveCategory, filterCategory, canOpen,
+    resolveCategory, filterCategory, canOpen, selectionNotice,
   });
   return { ...dom, id, state, calls, storage, requests,
     open: id => picker.open(controls.find(control => control.id === id)),
@@ -511,4 +511,62 @@ test('region-transition gate blocks both fresh and cached lists and stale select
   await ui.open('avatar');
   assert.equal(ui.get('#asset-picker').open, true);
   assert.equal(ui.items().length, 2);
+});
+
+
+test('title selection notice is shown only after the matching render completes', async context => {
+  const rendering = deferred();
+  const ui = await setup(context, {
+    resolveCategory: () => ({ id: 'titles', items: [{ id: 'long-title', name: '很长的称号', color: 'Gold' }] }),
+    render: () => rendering.promise,
+    selectionNotice: () => '静态图片无法完整展示。',
+  });
+  await ui.open('title');
+  const selecting = ui.items()[0].emit('click');
+  await new Promise(resolve => globalThis.setImmediate(resolve));
+  assert.doesNotMatch(ui.get('#picker-message').textContent, /静态图片/);
+  rendering.resolve();
+  await selecting;
+  assert.match(ui.get('#picker-message').textContent, /静态图片无法完整展示/);
+});
+
+test('late title render notice cannot overwrite a newly opened picker', async context => {
+  const rendering = deferred();
+  const ui = await setup(context, {
+    resolveCategory: control => ({ id: control.category, items: [{ id: 'test', name: '测试', color: 'Gold', file: 'test.png' }] }),
+    render: () => rendering.promise,
+    selectionNotice: () => '静态图片无法完整展示。',
+  });
+  await ui.open('title');
+  const selecting = ui.items()[0].emit('click');
+  await new Promise(resolve => globalThis.setImmediate(resolve));
+  ui.close();
+  await ui.open('avatar');
+  rendering.resolve();
+  await selecting;
+  assert.doesNotMatch(ui.get('#picker-message').textContent, /静态图片/);
+});
+
+
+test('prepending title masonry preserves the old item rather than total height delta', async context => {
+  const items = Array.from({ length: COS.pageSize * 3 }, (_, i) => ({ id: `title-${i}`, name: `称号${i}`, color: 'Gold' }));
+  const ui = await setup(context, { resolveCategory: () => ({ id: 'titles', items }) });
+  ui.state.titleName = items[COS.pageSize + 2].name;
+  ui.state.titleColor = 'Gold';
+  await ui.open('title');
+  const grid = ui.get('#picker-grid');
+  const scroll = ui.get('#picker-scroll');
+  const anchor = grid.childNodes[0];
+  let anchorTop = 5;
+  anchor.getBoundingClientRect = () => ({ top: anchorTop, height: 50 });
+  const prepend = grid.prepend.bind(grid);
+  grid.prepend = fragment => {
+    prepend(fragment);
+    anchorTop += 150;
+    scroll.scrollHeight += 200;
+  };
+  Object.assign(scroll, { scrollHeight: 1000, clientHeight: 400, scrollTop: 10 });
+  await scroll.emit('scroll');
+  assert.equal(scroll.scrollTop, 160);
+  assert.equal(grid.childNodes.length, COS.pageSize * 2);
 });

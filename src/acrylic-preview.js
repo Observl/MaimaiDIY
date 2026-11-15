@@ -1,3 +1,4 @@
+import { slots, CANVAS } from './config.js';
 import * as THREE from '../vendor/three.module.js';
 import { OrbitControls } from '../vendor/OrbitControls.js';
 import { RoundedBoxGeometry } from '../vendor/RoundedBoxGeometry.js';
@@ -263,7 +264,14 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     renderer.shadowMap.needsUpdate=true;
     draw();
   }
+  let titleFinishBase;
   function setDesign(source, finishMaps) {
+    const maskScale = finishMaps.packed.width / CANVAS.width;
+    const x = Math.round(slots.titleBase.x * maskScale), y = Math.round(slots.titleBase.y * maskScale);
+    const width = Math.round(slots.titleBase.width * maskScale), height = Math.round(slots.titleBase.height * maskScale);
+    titleFinishBase = { x, y, width, height,
+      pixels: finishMaps.packed.getContext('2d').getImageData(x, y, width, height).data,
+      components: finishMaps.componentCoverage.getContext('2d').getImageData(x, y, width, height).data };
     designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
@@ -328,6 +336,51 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       resize();rebuild();
     }).catch(()=>{if(!disposed){renderer.resetState();host.dataset.gpuTier='fallback';draw();}});
   }
+  // Refresh only the print image, not geometry or finish masks, for title motion.
+  let lastDesignFrame = 0;
+  function updateDesignFrame(source, titleLayer) {
+    const now = globalThis.performance.now();
+    if (now - lastDesignFrame < 1000 / 15) return;
+    if (disposed || !designTexture || host.hidden || document.hidden) return;
+    lastDesignFrame = now;
+    host.dataset.designFrame = String(now);
+    const image = designTexture.image;
+    const context = image.getContext('2d');
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, image.width, image.height);
+    context.drawImage(source, 0, 0, image.width, image.height);
+    designTexture.needsUpdate = true;
+    if (titleLayer && titleFinishBase && spotTexture) {
+      const target = spotTexture.image.getContext('2d');
+      const { x, y, width, height } = titleFinishBase;
+      const pixels = new Uint8ClampedArray(titleFinishBase.pixels);
+      const components = new Uint8ClampedArray(titleFinishBase.components);
+      const letters = titleLayer.getContext('2d').getImageData(0, 0, width, height).data;
+      for (let i = 0; i < pixels.length; i += 4) {
+        const alpha = letters[i + 3] / 255;
+        if (!alpha) continue;
+        const baseAlpha = components[i + 3] / 255;
+        const compositeAlpha = alpha + baseAlpha * (1 - alpha);
+        for (let c = 0; c < 3; c++) components[i + c] *= baseAlpha * (1 - alpha) / compositeAlpha;
+        components[i + 3] = 255 * compositeAlpha;
+        const white = letters[i + 3] > 96 && Math.min(letters[i], letters[i + 1], letters[i + 2]) >= 215 &&
+          Math.max(letters[i], letters[i + 1], letters[i + 2]) - Math.min(letters[i], letters[i + 1], letters[i + 2]) <= 22;
+        pixels[i] = white ? 255 * alpha : 0;
+        pixels[i + 1] *= 1 - alpha;
+        if (pixels[i]) pixels[i + 1] = 0;
+        pixels[i + 2] = 255 * alpha * (1 - (white ? alpha : 0));
+      }
+      const patch = target.createImageData(width, height);
+      patch.data.set(pixels);
+      target.putImageData(patch, x, y);
+      spotTexture.needsUpdate = true;
+      const componentContext = componentTexture.image.getContext('2d');
+      patch.data.set(components);
+      componentContext.putImageData(patch, x, y);
+      componentTexture.needsUpdate = true;
+    }
+    draw();
+  }
   function setLightAngle(degrees) {
     const angle = THREE.MathUtils.degToRad(degrees);
     key.position.set(-8, 12, -6).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
@@ -342,6 +395,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
   }
   return {
     setDesign,
+    updateDesignFrame,
     setFinishMaps(maps) {
       if(!spotTexture||!componentTexture)return;
       spotTexture.image=maps.packed;spotTexture.needsUpdate=true;

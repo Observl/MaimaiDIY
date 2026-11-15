@@ -176,7 +176,7 @@ export function sanitizeImportedState(value, baseState = createDefaultState(), c
   if (value.labels && typeof value.labels === 'object') {
     controls.forEach((control) => {
       if (typeof value.labels[control.id] === 'string')
-        next.labels[control.id] = value.labels[control.id].slice(0, 120);
+        next.labels[control.id] = value.labels[control.id].slice(0, control.id === 'title' ? 1024 : 120);
     });
   }
   const rating = Number(value.ratingValue);
@@ -186,7 +186,7 @@ export function sanitizeImportedState(value, baseState = createDefaultState(), c
       throw new Error('模板名称字段中的玩家名称超过八个字符');
     next.playerName = value.playerName;
   }
-  if (typeof value.titleName === 'string') next.titleName = value.titleName.slice(0, 100);
+  if (typeof value.titleName === 'string') next.titleName = value.titleName.slice(0, 1024);
   if (Object.hasOwn(TITLE_COLOR_NAMES, value.titleColor)) next.titleColor = value.titleColor;
   next.files.titleBase = titleAsset(next.titleColor, next.region);
   applyRatingBand(next);

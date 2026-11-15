@@ -3,6 +3,7 @@ import { nameCharacterCount } from './model.js';
 import { layoutPlayerName } from './player-name.js';
 import { loadImage } from './assets.js';
 import { prepareRegionalDisplay } from './regional-display.js';
+import { TITLE_FONT_SIZE, TITLE_SPACING, titleTextWidth, titleScrollOffset } from './title-layout.js';
 
 export function failedPreviewAssetLabel(error) {
   const slot = error?.assetSlot;
@@ -76,7 +77,7 @@ export function preferredRenderScale({
   return mobile ? Math.min(2, RENDER_SCALE) : RENDER_SCALE;
 }
 
-export function createRenderer(canvas, { scale = preferredRenderScale(), previewExamples = false } = {}) {
+export function createRenderer(canvas, { scale = preferredRenderScale(), previewExamples = false, animateTitles = false, onFrame, onTitleOverflow } = {}) {
   const renderCanvas = document.createElement('canvas');
   renderCanvas.width = CANVAS.width * scale;
   renderCanvas.height = CANVAS.height * scale;
@@ -87,6 +88,41 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), preview
   let renderVersion = 0;
   let state;
   let previewOverlay;
+  let titleWidth = 0;
+  let titleOffset = 0;
+  let titleOverflow = false;
+  let titleBacking;
+  let animationFrame = 0;
+  let animationStart = 0;
+  let lastFrame = 0;
+  const titleSlot = slots.titleBase;
+  const titleAvailable = titleSlot.width - 20;
+  function stopAnimation() {
+    if (animationFrame) globalThis.cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+  }
+  function animate(now) {
+    animationFrame = 0;
+    if (!titleOverflow || !animateTitles) return;
+    if (!document.hidden && now - lastFrame >= 1000 / 30) {
+      lastFrame = now;
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(titleSlot.x * scale, titleSlot.y * scale, titleSlot.width * scale, titleSlot.height * scale);
+      ctx.drawImage(titleBacking, titleSlot.x * scale, titleSlot.y * scale);
+      ctx.restore();
+      titleOffset = titleScrollOffset(titleWidth, titleAvailable, now - animationStart);
+      drawTitleText(titleOffset);
+      paintPreview();
+      onFrame?.(renderCanvas);
+    }
+    animationFrame = requestAnimationFrame(animate);
+  }
+  function dispose() {
+    stopAnimation();
+    titleBacking = null;
+    renderVersion++;
+  }
 
   function paintPreview(target = canvas) {
     const preview = target.getContext('2d');
@@ -100,29 +136,29 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), preview
     previewOverlay(preview);
     preview.restore();
   }
-  function textWidth(text, spacing) {
+  function textWidth(text, spacing, context = ctx) {
     return [...text].reduce(
-      (width, char, index) => width + ctx.measureText(char).width + (index ? spacing : 0),
+      (width, char, index) => width + context.measureText(char).width + (index ? spacing : 0),
       0
     );
   }
 
-  function drawSpacedText(text, x, y, spacing, maxWidth, align = 'left', stroke = false) {
+  function drawSpacedText(text, x, y, spacing, maxWidth, align = 'left', stroke = false, context = ctx) {
     const chars = [...text];
-    const naturalWidth = textWidth(text, spacing);
+    const naturalWidth = textWidth(text, spacing, context);
     const scale = maxWidth && naturalWidth > maxWidth ? maxWidth / naturalWidth : 1;
     const visualWidth = naturalWidth * scale;
     let cursor = align === 'right' ? x - visualWidth : align === 'center' ? x - visualWidth / 2 : x;
-    ctx.save();
-    ctx.translate(cursor, y);
-    ctx.scale(scale, 1);
+    context.save();
+    context.translate(cursor, y);
+    context.scale(scale, 1);
     chars.forEach((char, index) => {
-      if (stroke) ctx.strokeText(char, 0, 0);
-      ctx.fillText(char, 0, 0);
-      cursor = ctx.measureText(char).width + (index < chars.length - 1 ? spacing : 0);
-      ctx.translate(cursor, 0);
+      if (stroke) context.strokeText(char, 0, 0);
+      context.fillText(char, 0, 0);
+      cursor = context.measureText(char).width + (index < chars.length - 1 ? spacing : 0);
+      context.translate(cursor, 0);
     });
-    ctx.restore();
+    context.restore();
   }
 
   function drawRatingValue(frameImage) {
@@ -177,29 +213,35 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), preview
     ctx.restore();
   }
 
-  function drawTitleText() {
+  function drawTitleText(offset = 0, context = ctx) {
     const slot = slots.titleBase;
-    ctx.save();
-    ctx.font = `600 13.33333px ${DISPLAY_FONT}, sans-serif`;
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
-    ctx.lineJoin = 'round';
+    context.save();
+    context.font = `600 ${TITLE_FONT_SIZE}px ${DISPLAY_FONT}, sans-serif`;
+    context.textAlign = 'left';
+    context.textBaseline = 'alphabetic';
+    context.lineJoin = 'round';
     const normal = state.titleColor === 'Normal';
     // Canvas strokes are centered on the glyph edge. Drawing twice the desired
     // outer width and then filling the glyph leaves a true outside-only outline.
-    ctx.lineWidth = normal ? 2 : 2.4;
-    ctx.strokeStyle = normal ? 'rgba(35, 39, 52, .92)' : 'rgba(42, 31, 5, .9)';
-    ctx.fillStyle = '#ffffff';
+    context.lineWidth = normal ? 2 : 2.4;
+    context.strokeStyle = normal ? 'rgba(35, 39, 52, .92)' : 'rgba(42, 31, 5, .9)';
+    context.fillStyle = '#ffffff';
+    // Clip to the inner text window. Long titles are never squeezed horizontally.
+    const left = 272.2223658521258 - (slot.width - 20) / 2;
+    context.beginPath();
+    context.rect(left, slot.y, slot.width - 20, slot.height);
+    context.clip();
     drawSpacedText(
       state.titleName,
-      272.2223658521258,
+      titleOverflow ? left - offset : 272.2223658521258,
       126.44731107159686,
-      0.2666666,
-      slot.width - 20,
-      'center',
-      true
+      TITLE_SPACING,
+      undefined,
+      titleOverflow ? 'left' : 'center',
+      true,
+      context
     );
-    ctx.restore();
+    context.restore();
   }
 
   function drawTitleBase(image, slot) {
@@ -257,7 +299,18 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), preview
     drawable.push(...images.filter(Boolean));
     if (version !== renderVersion) return false;
     onRegionalDisplayError?.(regionalDisplayFailure);
+    stopAnimation();
     state = snapshot;
+    titleWidth = 0;
+    titleOffset = 0;
+    if (state.visible.titleText) {
+      ctx.save();
+      ctx.font = `600 ${TITLE_FONT_SIZE}px ${DISPLAY_FONT}, sans-serif`;
+      titleWidth = titleTextWidth(state.titleName, char => ctx.measureText(char).width);
+      ctx.restore();
+    }
+    titleOverflow = Boolean(state.visible.titleText && titleWidth > titleAvailable);
+    onTitleOverflow?.(titleOverflow);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
@@ -272,7 +325,6 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), preview
         continue;
       }
       if (id === 'titleText') {
-        drawTitleText();
         continue;
       }
       if (id === 'titleBase' && state.titleColor === 'Bronze' && state.region !== 'jp') {
@@ -294,9 +346,34 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), preview
     }
     display?.draw(ctx);
     previewOverlay = display?.preview;
+    if (state.visible.titleText) {
+      if (animateTitles && titleOverflow) {
+        titleBacking ||= document.createElement('canvas');
+        titleBacking.width = titleSlot.width * scale;
+        titleBacking.height = titleSlot.height * scale;
+        titleBacking.getContext('2d').drawImage(renderCanvas,
+          titleSlot.x * scale, titleSlot.y * scale, titleSlot.width * scale, titleSlot.height * scale,
+          0, 0, titleBacking.width, titleBacking.height);
+      }
+      drawTitleText();
+    }
     paintPreview();
+    if (animateTitles && titleOverflow) {
+      animationStart = globalThis.performance.now();
+      lastFrame = animationStart;
+      animationFrame = requestAnimationFrame(animate);
+    }
     return true;
   }
 
-  return { render, renderCanvas, paintPreview };
+  function paintTitleLayer(target) {
+    const context = target.getContext('2d');
+    context.clearRect(0, 0, target.width, target.height);
+    context.save();
+    context.scale(target.width / titleSlot.width, target.height / titleSlot.height);
+    context.translate(-titleSlot.x, -titleSlot.y);
+    if (state?.visible.titleText) drawTitleText(titleOffset, context);
+    context.restore();
+  }
+  return { render, renderCanvas, paintPreview, paintTitleLayer, dispose, get titleOverflow() { return titleOverflow; } };
 }

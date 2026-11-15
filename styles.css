@@ -1650,3 +1650,22 @@ html:has(#asset-picker[open]) { overflow:hidden; }
   .hero-background-controls { position:static; justify-content:flex-start; }
   .control-actions .library-button, .control-actions .upload-button { white-space:nowrap; }
 }
+
+/* Collection titles have content-sized cards instead of stretched grid rows.
+   Wrapping the swatch fixes the long unbroken text that expanded the dialog
+   and produced a blank, horizontally scrollable area on phones. */
+#asset-picker[data-category="titles"] :is(.picker-sticky, .picker-scroll, .picker-tools,
+  .picker-search-wrap, .picker-filter-wrap, .picker-head > div) { min-width: 0; max-width: 100%; }
+#asset-picker[data-category="titles"] .picker-head .icon-button { flex: 0 0 40px; }
+#asset-picker[data-category="titles"] .picker-grid { gap: 8px; }
+#asset-picker[data-category="titles"] .title-swatch {
+  min-width: 0;
+  min-height: 36px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#asset-picker[data-category="titles"] .asset-item { max-width: 100%; }
+#asset-picker[data-category="titles"] .asset-item small { white-space: normal; overflow-wrap: anywhere; }
+#asset-picker[data-category="titles"] .picker-grid[data-masonry="true"] { display: block; position: relative; }
+#asset-picker[data-category="titles"] .picker-grid[data-masonry="true"] > .asset-item { position: absolute; }
+#asset-picker[data-category="titles"] .picker-message { min-width: 0; overflow-wrap: anywhere; }
