@@ -74,6 +74,10 @@ async function setupRegionalCatalogs(page, context) {
   for (const catalog of Object.values(catalogs))
     catalog.songs.push({ ...song, id: '2:dx', musicId: 2, name: '替换歌曲',
       image: REGION_BASE_URL + 'shared/saltmeta/covers/000002.png' });
+  for (const catalog of Object.values(catalogs)) {
+    catalog.songs.push({ ...song, id: '1:sd', charts: [{ difficulty: 0, level: '4', version: null },
+      { difficulty: 3, level: '12', version: null }] });
+  }
   const { files } = buildRegionalIndex({ catalogs });
   const prefix = new URL(REGION_BASE_URL).pathname;
   await page.route('**/data/regions/visibility-20261108.json', route => route.fulfill({
@@ -123,11 +127,12 @@ test('regional song module updates difficulty and score from the cover and expor
     };
     await mode('achievement');
     await songs.click();
-    await item(page, '1:dx').click();
+    await item(page, '1:sd').click();
     await expect(page.locator('#song-label')).toContainText('测试歌曲');
-    await expect(page.locator('#song-difficulty option')).toHaveText(['BASIC', 'ADVANCED', 'Re:MASTER']);
     await page.keyboard.press('Escape');
     await expect(songs).toBeFocused();
+    await page.locator('#song-chart-type').selectOption('dx');
+    await expect(page.locator('#song-difficulty option')).toHaveText(['BASIC', 'ADVANCED', 'Re:MASTER']);
     await expect.poll(preview).not.toBe(collection);
     const result = await preview();
     const readFramePixel = image => page.evaluate(async ({ image, x }) => {
@@ -155,8 +160,8 @@ test('regional song module updates difficulty and score from the cover and expor
     await score.press('Tab');
     await expect(score).toHaveValue('98.1234');
     await songs.click();
-    await expect(item(page, '1:dx')).toHaveAttribute('aria-pressed', 'true');
-    await item(page, '1:dx').press('Enter');
+    await expect(item(page, '1:sd')).toHaveAttribute('aria-pressed', 'true');
+    await item(page, '1:sd').press('Enter');
     await expect(page.locator('#picker-message')).toHaveText('当前已选择「测试歌曲」。');
     await page.keyboard.press('Escape');
     await expect(page.locator('#song-difficulty')).toHaveValue('1');
@@ -251,4 +256,46 @@ test('320px regional switching preserves usable dynamic companion controls', asy
   await expect(firstRow.getByRole('button', { name: '素材库' })).toBeDisabled();
   await expect(firstRow.locator('.companion-level')).toBeDisabled();
   await noOverflow();
+});
+
+
+test('song library merges SD/DX and chart controls preserve independent difficulties and saves', async ({ page, context }, testInfo) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await setupRegionalCatalogs(page, context);
+  for (const region of ['cn', 'jp']) {
+    if (region === 'jp') await page.getByRole('button', { name: '切换区服展示板' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-region', region);
+    await page.locator('#screen-mode input[value="achievement"]').check();
+    await page.locator('#song-pick').click();
+    await page.locator('#picker-search').fill('测试歌曲');
+    await expect(page.locator('#picker-grid [data-asset-id]')).toHaveCount(1);
+    await item(page, '1:sd').click();
+    await expect(page.locator('#song-label')).toContainText('测试歌曲');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#song-chart-type option')).toHaveText(['标准', 'DX']);
+    await page.locator('#song-chart-type').selectOption('sd');
+    await expect(page.locator('#song-difficulty option')).toHaveText(['BASIC', 'MASTER']);
+    await page.locator('#song-difficulty').selectOption('3');
+    await page.locator('#song-chart-type').selectOption('dx');
+    await expect(page.locator('#song-difficulty option')).toHaveText(['BASIC', 'ADVANCED', 'Re:MASTER']);
+    await expect(page.locator('#song-difficulty')).toHaveValue('0');
+    await page.locator('#undo').click();
+    await expect(page.locator('#song-chart-type')).toHaveValue('sd');
+    await expect(page.locator('#song-difficulty')).toHaveValue('3');
+    await page.locator('#redo').click();
+    await expect(page.locator('#song-chart-type')).toHaveValue('dx');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    await page.locator('#song-difficulty').selectOption('4');
+    await expect.poll(async () => (await savedState(page)).song.id).toBe('1:dx');
+    await page.locator('#song-pick').click();
+    await expect(item(page, '1:sd')).toHaveAttribute('aria-pressed', 'true');
+    await page.keyboard.press('Escape');
+    await page.locator('#song-controls').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: testInfo.outputPath(`song-chart-type-${region}-320.png`) });
+  }
+  await page.reload();
+  await expect(page.locator('#loading')).toBeHidden();
+  await page.locator('.controls-summary').click();
+  await expect(page.locator('#song-chart-type')).toHaveValue('dx');
+  await expect(page.locator('#song-difficulty')).toHaveValue('4');
 });

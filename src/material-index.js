@@ -1,3 +1,4 @@
+import { groupSongCharts } from './song-chart-types.js';
 import { loadDxTitleCategory, withCnWirepuller } from './dx-song-titles.js';
 import { loadManifest, loadTitleManifest, loadBadgeManifest } from './assets.js';
 import { regionCategory, loadRegionCategoryIndex } from './region-catalog.js';
@@ -34,6 +35,7 @@ export async function indexedMaterialCategory(control, region) {
   const key = region + ':' + control.category;
   if (!indexes.has(key)) {
     indexes.set(key, readCategory(control, region).then(category => {
+      if (category.id === 'songs') return { ...category, groups: undefined, items: groupSongCharts(category.items) };
       const seen = new Set();
       const items = category.items.filter(item => {
         const id = materialIdentity(item, category.id);
