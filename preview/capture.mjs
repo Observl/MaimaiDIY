@@ -11,6 +11,7 @@ for (const width of [1440,390]) {
  await page.locator('#loading').waitFor({state:'hidden',timeout:90000});
  await page.locator('#asset-status').filter({hasText:/云端|缓存/}).waitFor({timeout:90000});
  await page.locator('.controls-summary').click();
+ if(await page.locator('#background-motion').getAttribute('aria-pressed')==='true') await page.locator('#background-motion').click();
  await page.evaluate(()=>document.fonts.ready);
  await page.waitForTimeout(2500);
  for (const version of ['before','after']) {
