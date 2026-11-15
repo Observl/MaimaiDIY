@@ -1,4 +1,10 @@
-import { COS } from './config.js';
+import {
+  REGION_BASE_URL,
+  REGION_CATEGORIES,
+  LEGACY_JP_ASSET_ROOT,
+  LEGACY_SALT_COVER_ROOT,
+} from './regional-config.js';
+export { LEGACY_JP_ASSET_ROOT, LEGACY_SALT_COVER_ROOT } from './regional-config.js';
 
 // Regional metadata extends the original editor; it never reads standalone studio state.
 export const REGIONS = Object.freeze({
@@ -6,16 +12,12 @@ export const REGIONS = Object.freeze({
   jp: { id: 'jp', label: 'MAGiCAL' },
 });
 export const SCREEN_MODES = Object.freeze(['collection', 'companions', 'achievement']);
-export const REGION_ASSET_ROOT = `${COS.baseUrl}/materials/regions/releases/20261108/`;
+export const REGION_ASSET_ROOT = REGION_BASE_URL;
 export const JP_ASSET_ROOT = `${REGION_ASSET_ROOT}jp/collection/`;
 export const SALT_COVER_ROOT = `${REGION_ASSET_ROOT}shared/saltmeta/covers/`;
-export const LEGACY_JP_ASSET_ROOT =
-  'https://raw.githubusercontent.com/basilomorireal/maimai-asset-browser/0ebcd319585af286bce5c31cc416fcf245e28428/assets/';
-export const LEGACY_SALT_COVER_ROOT =
-  'https://raw.githubusercontent.com/realtvop/SaltMeta/d327942662643b391b6883ba40dd0b89e9a1d169/covers/';
 const catalogs = new Map();
 const catalogIndexes = new WeakMap();
-const catalogCategories = ['frames', 'plates', 'icons', 'charas', 'songs'];
+const catalogCategories = REGION_CATEGORIES;
 const record = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const safeId = (v) =>
   (typeof v === 'string' && /^[A-Za-z0-9_-]{1,100}(?::(?:dx|sd|std))?$/.test(v)) ||

@@ -234,7 +234,12 @@ test('320px regional switching preserves usable dynamic companion controls', asy
   await noOverflow();
   await firstRow.getByRole('button', { name: '素材库' }).click();
   await item(page, '000101').click();
+  // Selection awaits image decoding; closing early intentionally cancels it.
+  await expect(page.locator('#picker-message')).toHaveText('已选择：测试伙伴');
+  await expect(item(page, '000101')).toHaveAttribute('aria-pressed', 'true');
+  await expect(firstRow.locator('.control-file')).toHaveText('测试伙伴');
   await page.keyboard.press('Escape');
+  await expect(page.locator('#asset-picker')).toBeHidden();
   await expect(firstRow.locator('.control-file')).toHaveText('测试伙伴');
   await firstRow.locator('.companion-level').fill('12');
   await firstRow.locator('.companion-level').press('Tab');

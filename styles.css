@@ -199,9 +199,6 @@ button:disabled { cursor: default; }
 #recommendations-admin input {
   width: 100%;
   margin: 8px 0;
-  padding: 10px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
 }
 #recommendations-admin .button {
   padding: 10px;
@@ -1625,7 +1622,7 @@ html:has(#asset-picker[open]) { overflow:hidden; }
 
 #region-toggle[hidden] { display: none; }
 
-#image-export-dialog { width: min(860px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto; border: 0; border-radius: 20px; padding: 22px; color: var(--ink); }
+#image-export-dialog { width: min(860px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto; border: 0; border-radius: var(--radius-panel); padding: var(--space-6); color: var(--ink); }
 #image-export-dialog::backdrop { background: #17182199; }
 #image-export-dialog > .section-head { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 8px; margin-bottom: 16px; }
 #image-export-title { grid-column: 2; text-align: center; line-height: 1.4; }
@@ -1648,7 +1645,8 @@ html:has(#asset-picker[open]) { overflow:hidden; }
 /* Narrow phones need one ControlRow per line, not squeezed two-column cards. */
 @media (max-width: 480px) {
   #input-controls, #material-controls, .region-song-fields { grid-template-columns:minmax(0,1fr); }
-  #input-controls [data-control='avatar'] { flex-wrap:wrap; }
+  #input-controls [data-control='avatar'] { flex-direction:column; align-items:stretch; }
+  .version-link { position:static; min-height:32px; }
   .hero-background-controls { position:static; justify-content:flex-start; }
   .control-actions .library-button, .control-actions .upload-button { white-space:nowrap; }
 }
