@@ -89,6 +89,12 @@ test('product page continues scrolling the design and updates its live 3D textur
   await page.goto('/custom-order.html');
   await expect(page.locator('#acrylic-preview-status')).toBeHidden();
   await expect(page.locator('#title-overflow-notice')).toBeVisible();
+  await page.locator('#title-overflow-notice').scrollIntoViewIfNeeded();
+  await expect(page.locator('#title-overflow-notice')).toBeInViewport();
+  expect(await page.locator('#title-overflow-notice').evaluate(node => {
+    const shell = document.querySelector('#order-preview-shell');
+    return !shell.contains(node) && node.getBoundingClientRect().top >= shell.getBoundingClientRect().bottom;
+  })).toBe(true);
   const a=await titlePixels(page);await expect.poll(()=>titlePixels(page),{timeout:6000}).not.toBe(a);
   const viewport=page.locator('#acrylic-viewport');
   await expect.poll(()=>viewport.getAttribute('data-design-frame'),{timeout:6000}).not.toBe(null);

@@ -36,10 +36,9 @@ for (const width of [320, 390, 1440]) {
       };
     });
     expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
-    await page.locator('#picker-message').evaluate(node => {
-      node.hidden = false;
-      node.textContent = 'SelectedLongTitleWithoutSpaces'.repeat(20);
-    });
+    await grid.locator('button').first().click();
+    await expect(page.locator('#picker-message')).toHaveText('已选择称号');
+    await expect(grid.locator('button').first()).toBeInViewport();
     expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
     await page.screenshot({ path: info.outputPath(`titles-${width}.png`) });
     await page.locator('#picker-search').fill('no such title');

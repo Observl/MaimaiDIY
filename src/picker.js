@@ -282,12 +282,13 @@ export function initializePicker({
           document.querySelector(`[data-control="${control.id}"] .control-file`).textContent = item.name;
         }
         onSelection();
-        showPickerMessage('已选择：' + item.name, 'success');
+        const selectedMessage = control.id === 'title' ? '已选择称号' : '已选择：' + item.name;
+        showPickerMessage(selectedMessage, 'success');
         control.afterSelect?.();
         await render();
         if (isCurrentView(view) && version === selectionVersion) {
           const notice = selectionNotice(control, item);
-          showPickerMessage('已选择：' + item.name + (notice ? '。' + notice : ''), 'success');
+          showPickerMessage(selectedMessage + (notice ? '。' + notice : ''), 'success');
         }
       });
       fragment.appendChild(button);

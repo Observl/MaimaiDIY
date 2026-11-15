@@ -15,7 +15,7 @@ titleNotice.className = 'field-help';
 titleNotice.id = 'title-overflow-notice';
 titleNotice.setAttribute('role', 'status');
 titleNotice.hidden = true;
-preview.append(titleNotice);
+preview.after(titleNotice);
 const renderer = createRenderer(document.querySelector('#preview'), {
   animateTitles: true,
   onTitleOverflow(overflow) {
