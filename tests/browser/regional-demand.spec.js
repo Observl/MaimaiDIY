@@ -58,7 +58,8 @@ async function setup(page, context, intercept) {
   return { requests, errors };
 }
 async function switchRegion(page, region) {
-  await page.locator('#region-select').selectOption(region);
+  if (await page.locator('html').getAttribute('data-region') !== region)
+    await page.locator('#region-toggle').click();
   await expect(page.locator('html')).toHaveAttribute('data-region', region);
   await expect(page.locator('#region-select')).toBeEnabled();
 }
@@ -128,7 +129,7 @@ test('denied region metadata preserves active region and does not request catego
     return true;
   });
   const before = (await exported(page)).state;
-  await page.locator('#region-select').selectOption('jp');
+  await page.locator('#region-toggle').click();
   await expect(page.locator('#region-status')).toContainText('当前搭配已保留');
   await expect(page.locator('#region-select')).toHaveValue('cn');
   await expect(page.locator('#region-select')).toBeEnabled();
@@ -144,7 +145,7 @@ test('pending region switch cannot open a picker for the old region', async ({ p
     if (path === 'catalogs/v2/jp/index.json') await gate;
     return false;
   });
-  await page.locator('#region-select').selectOption('jp');
+  await page.locator('#region-toggle').click();
   try {
     await expect(page.locator('#region-select')).toBeDisabled();
     await page.locator('[data-control="avatar"] .library-button').click();
