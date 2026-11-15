@@ -1,6 +1,6 @@
 import { COS } from './config.js';
 import { jpProfileItems } from './jp-profile-assets.js';
-import { registerRegionCatalog } from './region-profile.js';
+import { registerRegionCatalog, registerRegionCategory } from './region-profile.js';
 import { createRegionIndexLoader, requireIndexRegion } from './region-index.js';
 const loader = createRegionIndexLoader({ allowLegacy: false });
 const requests = new Map();
@@ -38,7 +38,21 @@ export function loadRegionCatalog(region) {
   }).catch(error => { requests.delete(region); throw error; }));
   return requests.get(region);
 }
-export const loadRegionCategoryIndex = (region, category) => loader.loadCategory(region, category);
+export const loadRegionMetadata = region => loader.loadRegion(region);
+export const loadRegionCategoryIndex = (region, category) =>
+  loader.loadCategory(region, category).then(registerRegionCategory);
+// Prepare only what a saved design references, plus its currently visible mode.
+// Template import still uses loadRegionCatalog for full membership validation.
+export async function loadRegionDesign(state) {
+  const requested = new Set();
+  if (state.screenMode === 'companions' || state.companions?.length) requested.add('charas');
+  if (state.screenMode === 'achievement' || state.song?.id) requested.add('songs');
+  const [metadata] = await Promise.all([
+    loadRegionMetadata(state.region),
+    ...[...requested].map(category => loadRegionCategoryIndex(state.region, category)),
+  ]);
+  return metadata;
+}
 export { getRegionCatalogItem } from './region-profile.js';
 export async function regionCategory(region, control) {
   requireIndexRegion(region);

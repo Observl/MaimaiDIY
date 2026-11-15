@@ -16,6 +16,8 @@ export const REGION_ASSET_ROOT = REGION_BASE_URL;
 export const JP_ASSET_ROOT = `${REGION_ASSET_ROOT}jp/collection/`;
 export const SALT_COVER_ROOT = `${REGION_ASSET_ROOT}shared/saltmeta/covers/`;
 const catalogs = new Map();
+// Category views are independently loaded; never expose them as a complete catalog.
+const categoryIndexes = new Map();
 const catalogIndexes = new WeakMap();
 const catalogCategories = REGION_CATEGORIES;
 const record = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -69,19 +71,34 @@ export function registerRegionCatalog(catalog) {
   catalogs.set(catalog.region, catalog);
   return catalog;
 }
+export function registerRegionCategory(index) {
+  const region = requireRegion(index?.region);
+  if (!catalogCategories.includes(index.category) || !Array.isArray(index.items))
+    throw new Error('素材分类无效');
+  const entries = new Map();
+  for (const entry of index.items) {
+    if (!record(entry) || !safeId(entry.id) || entries.has(String(entry.id)) ||
+        (Object.hasOwn(entry, 'region') && entry.region !== region))
+      throw new Error('素材目录地区或编号无效');
+    entries.set(String(entry.id), entry);
+  }
+  if (!categoryIndexes.has(region)) categoryIndexes.set(region, new Map());
+  categoryIndexes.get(region).set(index.category, entries);
+  return index;
+}
 export function getRegionCatalog(region) {
   return catalogs.get(requireRegion(region));
 }
 export function getRegionCatalogItem(region, category, id) {
   const catalog = getRegionCatalog(region);
-  return catalog && catalogIndexes.get(catalog)?.get(category)?.get(String(id));
+  return (catalog ? catalogIndexes.get(catalog) : categoryIndexes.get(region))?.get(category)?.get(String(id));
 }
 export function sanitizeRegionFields(input, catalog) {
   const region = requireRegion(input.region ?? 'cn');
   const screenMode = requireScreenMode(input.screenMode ?? 'collection');
   catalog ||= catalogs.get(region);
   if (catalog && catalog.region !== region) throw new Error('模板与素材目录地区不一致');
-  const indexes = catalog && (catalogIndexes.get(catalog) || indexRegionCatalog(catalog));
+  const indexes = catalog ? (catalogIndexes.get(catalog) || indexRegionCatalog(catalog)) : categoryIndexes.get(region);
   const companions = input.companions ?? [];
   if (!Array.isArray(companions) || companions.length > 5) throw new Error('旅行伙伴最多五位');
   const seen = new Set();
@@ -95,7 +112,7 @@ export function sanitizeRegionFields(input, catalog) {
       seen.has(String(member.id))
     )
       throw new Error('旅行伙伴编号或等级无效');
-    if (indexes && !indexes.get('charas').has(String(member.id)))
+    if (indexes?.has('charas') && !indexes.get('charas').has(String(member.id)))
       throw new Error('旅行伙伴不属于所选地区目录');
     seen.add(String(member.id));
     return { id: member.id, level: member.level };
@@ -116,7 +133,7 @@ export function sanitizeRegionFields(input, catalog) {
     Number(song.achievement) > 101
   )
     throw new Error('曲目、难度或达成率无效');
-  if (catalog && song.id !== '') {
+  if (indexes?.has('songs') && song.id !== '') {
     const entry = indexes.get('songs').get(String(song.id));
     if (!entry || !availableDifficulties(entry).includes(song.difficulty))
       throw new Error('曲目或难度不属于所选地区目录');
