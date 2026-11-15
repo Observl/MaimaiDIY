@@ -146,3 +146,25 @@ for (const width of [320, 390]) {
     await expect(page.locator('#asset-picker')).toBeVisible();
   });
 }
+
+for (const width of [320, 390, 1440]) {
+  test(`notice card visual check at ${width}px`, async ({ page, context }, info) => {
+    await page.setViewportSize({ width, height: 900 });
+    await fixtures(context);
+    await page.goto('/');
+    await expect(page.locator('#loading')).toBeHidden();
+    await page.locator('.controls-summary').click();
+    await page.locator('[data-control="title"] .library-button').click();
+    await page.locator('[data-asset-id="titles/900003"]').click();
+    await page.getByRole('button', { name: '关闭称号提示' }).click();
+    await page.locator('#picker-close').click();
+    const notice = page.locator('#title-overflow-notice');
+    await notice.scrollIntoViewIfNeeded();
+    await expect(notice).toBeInViewport();
+    expect(await notice.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return el.scrollWidth <= el.clientWidth + 1 && r.left >= 0 && r.right <= innerWidth;
+    })).toBe(true);
+    await page.screenshot({ path: info.outputPath(`notice-card-${width}.png`) });
+  });
+}

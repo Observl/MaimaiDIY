@@ -1678,3 +1678,55 @@ html:has(#asset-picker[open]) { overflow:hidden; }
 #title-warning-dialog .icon-button { flex-shrink: 0; min-width: 44px; min-height: 44px; }
 #title-warning-description { overflow-wrap: anywhere; line-height: 1.7; margin: 16px 0 20px; }
 #title-warning-dialog .button { width: 100%; min-height: 44px; }
+
+/* Soft Glass: panel surfaces only; preserve existing geometry and controls. */
+.app-shell > .card,
+.app-shell > .support-card,
+.app-shell .component-panel {
+  background: linear-gradient(135deg, rgba(247, 244, 255, 0.82), rgba(255, 255, 255, 0.88) 52%, rgba(239, 248, 250, 0.82));
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 16px 48px rgba(48, 43, 66, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+}
+
+/* Keep text legible when backdrop filtering is unavailable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .app-shell > .card,
+  .app-shell > .support-card,
+  .app-shell .component-panel {
+    background: linear-gradient(135deg, #f7f4ff, #ffffff 52%, #eff8fa);
+  }
+}
+
+/* A quiet, readable status card beneath the render, separate from the modal. */
+#title-overflow-notice:not([hidden]) {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid #dcd6f5;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #f3efff, #faf9ff);
+  color: #514775;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+#title-overflow-notice:not([hidden])::before {
+  content: '';
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: #e5defa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M10 9v5' stroke='%235d4cd0' stroke-width='1.7' stroke-linecap='round'/%3E%3Ccircle cx='10' cy='6' r='1' fill='%235d4cd0'/%3E%3C/svg%3E") center / 20px no-repeat;
+}
+@media (max-width: 480px) {
+  #title-overflow-notice:not([hidden]) { padding: 11px 12px; gap: 9px; font-size: 12px; }
+}
