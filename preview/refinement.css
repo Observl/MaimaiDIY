@@ -1,0 +1,17 @@
+/* UI UX Pro Max refinement. Existing DOM, layout and control order stay unchanged. */
+:root{--ink:#232338;--muted:#666579;--accent:#6c5ce7;--accent-soft:#efecff;--accent-text:#5846c7;--line:#e5e3ee;--border:#d8d5e5;--secondary:#f0eff6;--secondary-text:#484358;--focus-ring:#b6a8f4}
+.preview-card,.template-card,.controls-card,.support-card{border:1px solid #e8e4f2;box-shadow:0 8px 28px rgba(46,31,92,.045)}
+.preview-card h2,.template-card h2,.controls-summary,.component-panel h3{color:#262139;letter-spacing:-.02em}
+.component-panel{background:#fbfaff;border-color:#e9e5f3}
+.control-row{background:#fff;border-color:#e8e4f0}
+.library-button,.upload-button,.template-button{box-shadow:none;border:1px solid transparent}
+.library-button{background:#eee9ff;color:#5943c1;border-color:#e2dafb;font-weight:600}
+.upload-button{background:#f4f2f8;color:#585167;border-color:#e9e5ef}
+#export,#template-save{background:#6c5ce7;color:#fff;box-shadow:0 4px 12px rgba(108,92,231,.16)}
+.name-input,.rating-input,.template-input,.template-select{background:#fff;border-color:#d9d3e8}
+:is(button,input,select):focus-visible{outline:3px solid #b6a8f4;outline-offset:3px}
+.control-file,.template-description,.preview-info{color:#6f677f}
+.support-card{background:#fff}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+#template-name,#template-list,.region-song-fields input,.region-song-fields select{background:#fff;border-color:#d9d3e8}
+.template-card .section-head p,.preview-caption,.region-note{color:#6f677f}
