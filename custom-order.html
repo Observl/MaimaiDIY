@@ -43,6 +43,7 @@
     <header class="hero">
       <div>
         <h1>定制周边</h1>
+        <p class="beta-notice">定制页 Beta 测试中，部分预览可能出现显示异常。</p>
       </div>
       <div class="hero-side">
         <button id="background-motion" class="background-motion" type="button" aria-pressed="true">关闭动效</button>
@@ -57,21 +58,43 @@
       </div>
     </section>
     <section id="acrylic-preview-card" class="card acrylic-preview-card" aria-labelledby="acrylic-preview-title">
-      <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2><div class="acrylic-view-tools"><button id="acrylic-view-closeup" class="button secondary" type="button">特写</button><button id="acrylic-view-detail" class="button secondary" type="button">近景</button><button id="acrylic-view-reset" class="button secondary" type="button">全景</button></div></div>
-      <div class="preview-products" role="group" aria-label="展示产品">
-        <button type="button" data-preview-product="acrylic" aria-pressed="true">亚克力砖</button>
-        <button type="button" data-preview-product="card" aria-pressed="false">镭射卡</button>
-        <button type="button" data-preview-product="shikishi" aria-pressed="false">色纸</button>
+      <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2></div>
+      <div class="acrylic-options">
+        <div class="acrylic-option" role="group" aria-labelledby="acrylic-product-label">
+          <span id="acrylic-product-label">商品</span>
+          <div class="preview-products">
+            <button type="button" data-preview-product="acrylic" aria-pressed="true">亚克力砖</button>
+            <button type="button" data-preview-product="card" aria-pressed="false">镭射卡</button>
+            <button type="button" data-preview-product="shikishi" aria-pressed="false">色纸</button>
+          </div>
+        </div>
+        <div class="acrylic-option acrylic-variants" role="group" aria-labelledby="acrylic-variant-label">
+          <span id="acrylic-variant-label">款式</span>
+          <div>
+            <button type="button" data-preview-variant="basic" aria-pressed="false">基础款</button>
+            <button type="button" data-preview-variant="effect" aria-pressed="true">特效款</button>
+          </div>
+        </div>
       </div>
-      <div class="acrylic-variants" role="group" aria-label="预览款式">
-        <button type="button" data-preview-variant="basic" aria-pressed="false">基础款</button>
-        <button type="button" data-preview-variant="effect" aria-pressed="true">特效款</button>
+      <div class="acrylic-stage">
+        <div id="acrylic-viewport" class="acrylic-viewport" hidden></div>
+        <div id="acrylic-stage-message" class="acrylic-stage-message">
+          <p id="acrylic-preview-status" role="status">等待上屏设计</p>
+          <button id="acrylic-preview-retry" class="button secondary" type="button" hidden>重试 3D 预览</button>
+        </div>
+        <div id="acrylic-stage-controls" class="acrylic-stage-controls" hidden>
+          <div class="acrylic-view-tools" role="group" aria-label="预览视角">
+            <button id="acrylic-view-closeup" class="button secondary" type="button" aria-pressed="false">特写</button>
+            <button id="acrylic-view-detail" class="button secondary" type="button" aria-pressed="false">近景</button>
+            <button id="acrylic-view-reset" class="button secondary" type="button" aria-pressed="true">全景</button>
+          </div>
+          <div class="acrylic-light-control"><span id="acrylic-light-label">光照角度</span><div id="acrylic-light-angle" class="light-angle-dial" role="slider" tabindex="0" aria-labelledby="acrylic-light-label" aria-orientation="horizontal" aria-valuemin="-150" aria-valuemax="150" aria-valuenow="0"><span class="light-angle-ticks" aria-hidden="true"></span><span class="light-angle-indicator" aria-hidden="true"></span></div><output id="acrylic-light-value">0°</output></div>
+        </div>
       </div>
-      <div id="acrylic-viewport" class="acrylic-viewport"></div>
-      <div class="acrylic-light-control"><span id="acrylic-light-label">光照角度</span><div id="acrylic-light-angle" class="light-angle-dial" role="slider" tabindex="0" aria-labelledby="acrylic-light-label" aria-orientation="horizontal" aria-valuemin="-150" aria-valuemax="150" aria-valuenow="0"><span class="light-angle-ticks" aria-hidden="true"></span><span class="light-angle-indicator" aria-hidden="true"></span></div><output id="acrylic-light-value">0°</output></div>
-      <p class="acrylic-preview-detail">材质效果为模拟示意，非实物保证。</p>
-      <p id="acrylic-preview-status" role="status">等待上屏设计</p>
-      <p class="acrylic-preview-detail"><span id="acrylic-material-detail">背面彩印 · 白墨</span><span>120 × 50 × 15 mm · 材质示意</span></p>
+      <div class="acrylic-preview-detail">
+        <span id="acrylic-material-detail">背面彩印 · 白墨</span>
+        <span><span id="acrylic-product-spec">120 × 50 × 15 mm</span> · 材质模拟</span>
+      </div>
     </section>
   </main>
   <script type="module" src="src/order-page.js"></script>

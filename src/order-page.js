@@ -29,6 +29,10 @@ let loadedDesign;
 let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
 const physicalStatus = document.querySelector('#acrylic-preview-status');
+const stageMessage = document.querySelector('#acrylic-stage-message');
+const stageControls = document.querySelector('#acrylic-stage-controls');
+const retryPreview = document.querySelector('#acrylic-preview-retry');
+const viewButtons = [...stageControls.querySelectorAll('.acrylic-view-tools button')];
 const lightDial=initializeLightDial(document.querySelector('#acrylic-light-angle'),angle=>physicalPreview?.setLightAngle(angle));
 lightDial.set(DEFAULT_LIGHT_ANGLE);
 const details = { basic: '背面彩印 · 白墨', effect: '单层双面印刷 · 彩色细粉 · 白色描边 UV · 珠光' };
@@ -43,13 +47,20 @@ function syncPhysicalSelection() {
   document.querySelectorAll('[data-preview-product]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.previewProduct===previewProduct)));
   document.querySelector('.acrylic-variants').hidden=cardOnly||shikishi;
   document.querySelector('#acrylic-material-detail').textContent = cardOnly ? '镭射票 · 彩色镭射覆膜' : shikishi?'色纸 · 彩色细粉 · 白色描边 UV':details[variant];
-  document.querySelector('.acrylic-preview-detail > span:last-child').textContent = cardOnly
-    ? '随角度变色 · 无镜面高光' : shikishi?'图案展示':'120 × 50 × 15 mm · 材质示意';
+  document.querySelector('#acrylic-product-spec').textContent = cardOnly
+    ? '随角度变色 · 无镜面高光' : shikishi?'图案展示':'120 × 50 × 15 mm';
   physicalPreview?.setSelection({ variant:cardOnly?'effect':variant, cardOnly, shikishi, accessory });
 }
+function showPhysicalStatus(message, allowRetry = false) {
+  viewport.hidden = true;
+  stageControls.hidden = true;
+  stageMessage.hidden = physicalStatus.hidden = false;
+  physicalStatus.textContent = message;
+  retryPreview.hidden = !allowRetry;
+}
+
 async function updatePhysicalPreview(request) {
-  physicalStatus.hidden = false;
-  physicalStatus.textContent = '正在准备 3D 材质…';
+  showPhysicalStatus('正在准备 3D 材质…');
   try {
     previewLoading ||= import('./acrylic-preview.js')
       .catch(error => { previewLoading = undefined; throw error; });
@@ -63,23 +74,39 @@ async function updatePhysicalPreview(request) {
     syncPhysicalSelection();
     viewer.setDesign(renderer.renderCanvas, finishMaps);
     viewer.setLightAngle(lightDial.value);
-    physicalStatus.hidden = true;
+    stageMessage.hidden = physicalStatus.hidden = true;
+    stageControls.hidden = false;
     document.dispatchEvent(new window.CustomEvent('order-render-ready',{detail:{source:renderer.renderCanvas,finishMaps}}));
   } catch (error) {
     if (request !== version) return;
     loadedDesign = undefined;
-    viewport.hidden = true;
+    physicalPreview?.dispose();
+    physicalPreview = undefined;
     console.warn('3D 预览不可用', error);
-    physicalStatus.textContent = '当前设备无法显示 3D 预览，上方设计和商品选配仍可使用。';
+    showPhysicalStatus('3D 预览暂时不可用。你仍可查看上方的设计图并选择商品。', true);
   }
 }
 viewport.addEventListener('preview-unavailable', () => {
-  physicalStatus.hidden = false;
-  physicalStatus.textContent = '3D 画面已暂停，请刷新页面重试。';
+  showPhysicalStatus('3D 预览已暂停，可以重新加载。', true);
 });
-document.querySelector('#acrylic-view-reset').addEventListener('click', () => physicalPreview?.reset());
-document.querySelector('#acrylic-view-closeup').addEventListener('click', () => physicalPreview?.focusNameplate());
-document.querySelector('#acrylic-view-detail').addEventListener('click', () => physicalPreview?.focusCollectibles());
+retryPreview.addEventListener('click', () => {
+  if (!state) return;
+  physicalPreview?.dispose();
+  physicalPreview = undefined;
+  viewButtons.forEach(button => button.setAttribute('aria-pressed', String(button.id === 'acrylic-view-reset')));
+  void updatePhysicalPreview(++version);
+});
+const viewActions = {
+  'acrylic-view-reset': 'reset',
+  'acrylic-view-closeup': 'focusNameplate',
+  'acrylic-view-detail': 'focusCollectibles',
+};
+for (const button of viewButtons) {
+  button.addEventListener('click', () => {
+    physicalPreview?.[viewActions[button.id]]();
+    viewButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+  });
+}
 document.querySelectorAll('[data-preview-product]').forEach(button=>button.addEventListener('click',()=>{
   previewProduct=button.dataset.previewProduct;
   syncPhysicalSelection();
@@ -113,9 +140,7 @@ async function refreshDesign() {
   state = null;
   status.hidden = false;
   preview.hidden = true;
-  viewport.hidden = true;
-  physicalStatus.hidden = false;
-  physicalStatus.textContent = '等待上屏设计';
+  showPhysicalStatus('等待上屏设计');
   document.querySelector('#acrylic-export').disabled = true;
   applyRegionBackground(latest?.region || 'cn');
   if (!latest) {
