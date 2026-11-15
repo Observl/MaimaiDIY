@@ -546,3 +546,27 @@ test('late title render notice cannot overwrite a newly opened picker', async co
   await selecting;
   assert.doesNotMatch(ui.get('#picker-message').textContent, /静态图片/);
 });
+
+
+test('prepending title masonry preserves the old item rather than total height delta', async context => {
+  const items = Array.from({ length: COS.pageSize * 3 }, (_, i) => ({ id: `title-${i}`, name: `称号${i}`, color: 'Gold' }));
+  const ui = await setup(context, { resolveCategory: () => ({ id: 'titles', items }) });
+  ui.state.titleName = items[COS.pageSize + 2].name;
+  ui.state.titleColor = 'Gold';
+  await ui.open('title');
+  const grid = ui.get('#picker-grid');
+  const scroll = ui.get('#picker-scroll');
+  const anchor = grid.childNodes[0];
+  let anchorTop = 5;
+  anchor.getBoundingClientRect = () => ({ top: anchorTop, height: 50 });
+  const prepend = grid.prepend.bind(grid);
+  grid.prepend = fragment => {
+    prepend(fragment);
+    anchorTop += 150;
+    scroll.scrollHeight += 200;
+  };
+  Object.assign(scroll, { scrollHeight: 1000, clientHeight: 400, scrollTop: 10 });
+  await scroll.emit('scroll');
+  assert.equal(scroll.scrollTop, 160);
+  assert.equal(grid.childNodes.length, COS.pageSize * 2);
+});

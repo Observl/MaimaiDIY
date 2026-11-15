@@ -270,7 +270,8 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
     const x = Math.round(slots.titleBase.x * maskScale), y = Math.round(slots.titleBase.y * maskScale);
     const width = Math.round(slots.titleBase.width * maskScale), height = Math.round(slots.titleBase.height * maskScale);
     titleFinishBase = { x, y, width, height,
-      pixels: finishMaps.packed.getContext('2d').getImageData(x, y, width, height).data };
+      pixels: finishMaps.packed.getContext('2d').getImageData(x, y, width, height).data,
+      components: finishMaps.componentCoverage.getContext('2d').getImageData(x, y, width, height).data };
     designTexture?.dispose(); spotTexture?.dispose();componentTexture?.dispose();badgeTexture?.dispose();
     const image = document.createElement('canvas');
     const limit = Math.min(renderer.capabilities.maxTextureSize, 4096);
@@ -353,10 +354,15 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       const target = spotTexture.image.getContext('2d');
       const { x, y, width, height } = titleFinishBase;
       const pixels = new Uint8ClampedArray(titleFinishBase.pixels);
+      const components = new Uint8ClampedArray(titleFinishBase.components);
       const letters = titleLayer.getContext('2d').getImageData(0, 0, width, height).data;
       for (let i = 0; i < pixels.length; i += 4) {
         const alpha = letters[i + 3] / 255;
         if (!alpha) continue;
+        const baseAlpha = components[i + 3] / 255;
+        const compositeAlpha = alpha + baseAlpha * (1 - alpha);
+        for (let c = 0; c < 3; c++) components[i + c] *= baseAlpha * (1 - alpha) / compositeAlpha;
+        components[i + 3] = 255 * compositeAlpha;
         const white = letters[i + 3] > 96 && Math.min(letters[i], letters[i + 1], letters[i + 2]) >= 215 &&
           Math.max(letters[i], letters[i + 1], letters[i + 2]) - Math.min(letters[i], letters[i + 1], letters[i + 2]) <= 22;
         pixels[i] = white ? 255 * alpha : 0;
@@ -368,6 +374,10 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       patch.data.set(pixels);
       target.putImageData(patch, x, y);
       spotTexture.needsUpdate = true;
+      const componentContext = componentTexture.image.getContext('2d');
+      patch.data.set(components);
+      componentContext.putImageData(patch, x, y);
+      componentTexture.needsUpdate = true;
     }
     draw();
   }

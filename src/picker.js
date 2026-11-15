@@ -157,6 +157,8 @@ export function initializePicker({
     const fragment = document.createDocumentFragment();
     const oldHeight = scroll.scrollHeight;
     const oldScroll = scroll.scrollTop;
+    const anchor = prepend && control.id === 'title' ? pickerGrid.childNodes[0] : null;
+    const anchorTop = anchor?.getBoundingClientRect().top;
     next.forEach((item) => {
       const button = document.createElement('button');
       button.className = 'asset-item';
@@ -294,7 +296,11 @@ export function initializePicker({
       pickerGrid.prepend(fragment);
       pickerState.start = start;
       layoutTitles();
-      scroll.scrollTop = oldScroll + scroll.scrollHeight - oldHeight;
+      // Masonry columns can grow by different amounts. Preserve the actual
+      // first visible batch item, not the unrelated total container height.
+      scroll.scrollTop = oldScroll + (anchor
+        ? anchor.getBoundingClientRect().top - anchorTop
+        : scroll.scrollHeight - oldHeight);
     } else {
       pickerGrid.append(fragment);
       pickerState.shown += next.length;

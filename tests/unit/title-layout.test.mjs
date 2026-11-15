@@ -22,3 +22,15 @@ test('long titles pause, move at constant speed, show end, then loop', () => {
   assert.equal(titleScrollOffset(296, 248, 4800), 0);
   assert.equal(titleScrollOffset(296, 248, -100), 0);
 });
+
+
+test('long catalog titles survive template and draft sanitizing within a bounded limit', async () => {
+  const { createDefaultState, sanitizeImportedState } = await import('../../src/model.js');
+  const state = createDefaultState();
+  state.titleName = state.labels.title = '称号'.repeat(100);
+  const restored = sanitizeImportedState(state);
+  assert.equal(restored.titleName, state.titleName);
+  assert.equal(restored.labels.title, state.labels.title);
+  state.titleName = 'a'.repeat(2000);
+  assert.equal(sanitizeImportedState(state).titleName.length, 1024);
+});
