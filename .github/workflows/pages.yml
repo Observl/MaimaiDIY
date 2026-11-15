@@ -35,7 +35,7 @@ jobs:
       - name: Build site
         run: npm run build
         env:
-          FEEDBACK_ENDPOINT: ${{ vars.FEEDBACK_ENDPOINT }}
+          FEEDBACK_ENDPOINT: ${{ vars.FEEDBACK_ENDPOINT || 'https://maimaidiy-feedback-348217-10-1517578456.sh.run.tcloudbase.com/api/feedback' }}
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
