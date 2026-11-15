@@ -182,6 +182,16 @@
       <p>该网站向所有访客开放，若您通过付费渠道进入该网站，请在对应平台投诉并申请退款。</p>
     </footer>
   </main>
+  <dialog id="title-warning-dialog" aria-labelledby="title-warning-title" aria-describedby="title-warning-description">
+    <form method="dialog">
+      <div class="section-head">
+        <h2 id="title-warning-title">超长称号提示</h2>
+        <button class="icon-button" aria-label="关闭称号提示" value="close" autofocus>×</button>
+      </div>
+      <p id="title-warning-description"></p>
+      <button class="button primary" value="acknowledge">我知道了</button>
+    </form>
+  </dialog>
   <dialog id="preview-value-dialog" aria-labelledby="preview-value-title">
     <form method="dialog">
       <div class="section-head">

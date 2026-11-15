@@ -42,6 +42,8 @@ test('long titles scroll, enlarged preview moves, selection warns, PNG stays a s
   await page.locator('.controls-summary').click();
   await page.locator('[data-control="title"] .library-button').click();
   await page.locator('[data-asset-id="titles/900003"]').click();
+  await expect(page.getByRole('dialog', { name: '超长称号提示' })).toBeVisible();
+  await page.getByRole('button', { name: '关闭称号提示' }).click();
   await expect(page.locator('#picker-message')).toContainText('静态图片');
   await expect(page.locator('#title-overflow-notice')).toBeVisible();
   await page.locator('#picker-close').click();
@@ -60,6 +62,7 @@ test('long titles scroll, enlarged preview moves, selection warns, PNG stays a s
   await page.locator('[data-control="title"] .library-button').click();
   await page.locator('[data-asset-id="titles/900004"]').click();
   await expect(page.locator('#title-overflow-notice')).toBeHidden();
+  await expect(page.locator('#title-warning-dialog')).not.toBeVisible();
   await page.locator('#picker-close').click();
   const short=await titlePixels(page);await page.waitForTimeout(1800);expect(await titlePixels(page)).toBe(short);
 });
@@ -102,3 +105,40 @@ test('product page continues scrolling the design and updates its live 3D textur
   await expect.poll(()=>viewport.getAttribute('data-design-frame'),{timeout:6000}).not.toBe(frame);
   await page.screenshot({path:info.outputPath('title-product.png'),fullPage:true});
 });
+
+for (const width of [320, 390]) {
+  test(`long title warning is dismissible and accessible at ${width}px`, async ({ page, context }, info) => {
+    await page.setViewportSize({ width, height: 800 });
+    await fixtures(context);
+    await page.goto('/');
+    await expect(page.locator('#loading')).toBeHidden();
+    await page.locator('.controls-summary').click();
+    await page.locator('[data-control="title"] .library-button').click();
+    const selected = page.locator('[data-asset-id="titles/900003"]');
+    await selected.click();
+    const dialog = page.getByRole('dialog', { name: '超长称号提示' });
+    await expect(dialog).toBeInViewport();
+    await expect(dialog).toContainText('静态图片只保留当前一帧');
+    const close = page.getByRole('button', { name: '关闭称号提示' });
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name: '我知道了' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(close).toBeFocused();
+    expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth + 1 && node.getBoundingClientRect().right <= innerWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath(`title-warning-${width}.png`) });
+    await close.click();
+    await expect(dialog).not.toBeVisible();
+    await expect(selected).toBeFocused();
+    await expect(selected).toHaveAttribute('aria-pressed', 'true');
+    await selected.click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+    await expect(page.locator('#asset-picker')).toBeVisible();
+    await selected.click();
+    await page.getByRole('button', { name: '我知道了' }).click();
+    await expect(dialog).not.toBeVisible();
+    await expect(page.locator('#asset-picker')).toBeVisible();
+  });
+}

@@ -20,6 +20,8 @@ import { initializeRegionControls } from './src/region-controls.js';
 import { songJacketBounds } from './src/regional-display.js';
 import { readCurrentDesign, saveCurrentDesign, readRegionDesign } from './src/current-design.js';
 const canvas = document.querySelector('#preview');
+const titleWarning = document.querySelector('#title-warning-dialog');
+document.querySelector('#title-warning-description').textContent = TITLE_STATIC_NOTICE;
 const titleNotice = document.createElement('p');
 titleNotice.id = 'title-overflow-notice';
 titleNotice.className = 'field-help';
@@ -612,7 +614,11 @@ const materialPicker = initializePicker({
   render,
   onSelection: syncControlsFromState,
   resolveCategory: indexedMaterialCategory,
-  selectionNotice: control => control.id === 'title' && renderer.titleOverflow ? TITLE_STATIC_NOTICE : '',
+  selectionNotice: control => {
+    if (control.id !== 'title' || !renderer.titleOverflow) return '';
+    if (!titleWarning.open) titleWarning.showModal();
+    return TITLE_STATIC_NOTICE;
+  },
   canOpen: () => !document.querySelector('#region-select').disabled,
 });
 const templates = initializeTemplates({

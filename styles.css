@@ -1669,3 +1669,12 @@ html:has(#asset-picker[open]) { overflow:hidden; }
 #asset-picker[data-category="titles"] .picker-grid[data-masonry="true"] { display: block; position: relative; }
 #asset-picker[data-category="titles"] .picker-grid[data-masonry="true"] > .asset-item { position: absolute; }
 #asset-picker[data-category="titles"] .picker-message { min-width: 0; overflow-wrap: anywhere; }
+
+/* Native modal keeps focus inside the warning and restores the selected title. */
+#title-warning-dialog { width: min(420px, calc(100% - 32px)); max-height: calc(100dvh - 32px); box-sizing: border-box; overflow: auto; border: 0; border-radius: var(--radius-panel); padding: 20px; color: var(--ink); }
+#title-warning-dialog::backdrop { background: #17182199; }
+#title-warning-dialog .section-head { gap: 12px; }
+#title-warning-dialog h2 { min-width: 0; font-size: 18px; }
+#title-warning-dialog .icon-button { flex-shrink: 0; min-width: 44px; min-height: 44px; }
+#title-warning-description { overflow-wrap: anywhere; line-height: 1.7; margin: 16px 0 20px; }
+#title-warning-dialog .button { width: 100%; min-height: 44px; }
