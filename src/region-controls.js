@@ -1,3 +1,4 @@
+import { SONG_CHART_TYPES, songChartType, songIdentity, groupSongCharts, songSelection } from './song-chart-types.js';
 import { applyRegionBackground } from './region-background.js';
 import { loadRegionMetadata, loadRegionCategoryIndex } from './region-catalog.js';
 import { getRegionCatalogItem } from './region-profile.js';
@@ -14,6 +15,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
   const companions = document.querySelector('#companion-controls');
   const songs = document.querySelector('#song-controls');
   const difficulty = document.querySelector('#song-difficulty');
+  const chartType = document.querySelector('#song-chart-type');
   const achievement = document.querySelector('#song-achievement');
   const status = document.querySelector('#region-status');
   const indicator = document.querySelector('#asset-status');
@@ -51,13 +53,37 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
   const songPick = document.querySelector('#song-pick');
   const openSongPicker = (trigger, afterSelect) => picker.open({
     id: 'region-song', label: '歌曲', category: 'songs',
-    selectedAssetId: () => state.song.id,
+    selectedAssetId: () => {
+      const selected = getRegionCatalogItem(state.region, 'songs', state.song.id);
+      return songGroups().find(item => songIdentity(item) === songIdentity(selected))?.id || state.song.id;
+    },
     select(item) {
-      state.song = { ...state.song, id: item.id, difficulty: item.charts[0]?.difficulty ?? 0 };
+      state.song = songSelection(item.songVariants || [item], state.song);
     },
     afterSelect,
   }, trigger);
   songPick.addEventListener('click', () => openSongPicker(songPick));
+  let groupedCatalog;
+  let groupedSongs = [];
+  function songGroups() {
+    if (groupedCatalog !== catalog) {
+      groupedCatalog = catalog;
+      groupedSongs = catalog?.category === 'songs' ? groupSongCharts(catalog.items) : [];
+    }
+    return groupedSongs;
+  }
+  function currentVariants() {
+    const selected = getRegionCatalogItem(state.region, 'songs', state.song.id);
+    return songGroups().find(item => songIdentity(item) === songIdentity(selected))?.songVariants || [];
+  }
+  chartType.addEventListener('change', () => {
+    const selected = currentVariants().find(item => songChartType(item) === chartType.value);
+    if (!selected || selected.id === state.song.id) return;
+    recordHistory();
+    state.song = songSelection([selected], state.song);
+    paintFields();
+    render();
+  });
   function applySongSettings(chart, value) {
     const nextChart = [...difficulty.options].some(option => Number(option.value) === chart)
       ? chart : state.song.difficulty;
@@ -113,6 +139,10 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     document.querySelector('#song-label').textContent = song ? `${song.name} · ${song.id.endsWith(':dx') ? 'DX' : '标准'}` : '未选择歌曲';
     const cover = document.querySelector('#song-cover'); cover.replaceChildren();
     if (song) { const image = new Image(); image.src = song.image; image.alt = ''; cover.append(image); }
+    chartType.replaceChildren();
+    for (const variant of currentVariants()) chartType.add(new Option(SONG_CHART_TYPES[songChartType(variant)], songChartType(variant)));
+    chartType.value = songChartType(song);
+    chartType.disabled = chartType.options.length < 2;
     difficulty.replaceChildren();
     for (const chart of song?.charts || []) {
       const option = new Option(difficultyNames[chart.difficulty], String(chart.difficulty));
