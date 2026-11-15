@@ -13,7 +13,6 @@ export const ACCESSORIES = Object.freeze({
 });
 export const COLLECTIBLE_CARD = Object.freeze({ label: '镭射收藏卡', priceFen: 1490 });
 export const SHIKISHI_PRODUCT = Object.freeze({ label: '色纸', priceFen: 2490 });
-export const SHIKISHI_SHIPPING_POLICY = 'shared';
 export const BUNDLE_PRESETS = Object.freeze({
   acrylic: Object.freeze({ label:'亚克力砖单品', quantity:1, cardQuantity:0, shikishiQuantity:0, accessory:'none' }),
   shikishi: Object.freeze({ label:'色纸单品', description:'1 张色纸', quantity:0, cardQuantity:0, shikishiQuantity:1, accessory:'none' }),

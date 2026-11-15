@@ -12,15 +12,6 @@ const LEGACY_ART_ROOT =
 const LEGACY_COVER_ROOT =
   'https://raw.githubusercontent.com/realtvop/SaltMeta/d327942662643b391b6883ba40dd0b89e9a1d169/covers/';
 
-export function regionalImageFallback(url) {
-  if (typeof url !== 'string' || !url.startsWith(REGION_BASE_URL)) return null;
-  const path = url.slice(REGION_BASE_URL.length);
-  if (/^jp\/collection\/(?:frames\/UI_Frame|plates\/UI_Plate|icons\/UI_Icon|charas\/UI_Chara)_\d{6}\.png$/.test(path))
-    return LEGACY_ART_ROOT + path.slice('jp/collection/'.length);
-  if (/^shared\/saltmeta\/covers\/\d{6}\.png$/.test(path))
-    return LEGACY_COVER_ROOT + path.slice('shared/saltmeta/covers/'.length);
-  return null;
-}
 const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const MAX_JSON_BYTES = 16 * 1024 * 1024;
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
