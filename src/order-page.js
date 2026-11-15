@@ -1,9 +1,8 @@
 import { applyRegionBackground } from './region-background.js';
 import {DEFAULT_LIGHT_ANGLE} from './finish-settings.js';
-import { DISPLAY_FONT, slots } from './config.js';
+import { DISPLAY_FONT } from './config.js';
 import { readCurrentDesign } from './current-design.js';
 import { createRenderer } from './renderer.js';
-import { TITLE_STATIC_NOTICE } from './title-layout.js';
 import { initializeCustomOrder } from './custom-order.js';
 import { createCollectibleMasks } from './collectible-masks.js';
 import { initializeLightDial } from './light-dial.js';
@@ -17,21 +16,15 @@ titleNotice.setAttribute('role', 'status');
 titleNotice.hidden = true;
 preview.after(titleNotice);
 const renderer = createRenderer(document.querySelector('#preview'), {
-  animateTitles: true,
   onTitleOverflow(overflow) {
     titleNotice.hidden = !overflow;
-    titleNotice.textContent = overflow ? TITLE_STATIC_NOTICE : '';
-  },
-  onFrame: source => {
-    if (physicalPreview && titleMask) renderer.paintTitleLayer(titleMask);
-    physicalPreview?.updateDesignFrame(source, titleMask);
+    titleNotice.textContent = overflow ? '此称号超出框宽，定制预览和成图均使用滚动前的第一帧。' : '';
   },
 });
 window.addEventListener('pagehide', () => renderer.dispose());
 let state = null;
 let version = 0;
 let physicalPreview;
-let titleMask;
 let previewLoading;
 let previewProduct='acrylic';
 const viewport = document.querySelector('#acrylic-viewport');
@@ -58,30 +51,23 @@ async function updatePhysicalPreview(request) {
   physicalStatus.hidden = false;
   physicalStatus.textContent = '正在准备 3D 材质…';
   try {
-    const finishState = structuredClone(state);
-    // Build the underlying finish once; animated lettering is composited over
-    // this clean base so stationary embossed ghosts cannot remain behind.
-    if (renderer.titleOverflow) finishState.visible.titleText = false;
-    const finishMaps = await createCollectibleMasks(finishState);
+    const finishMaps = await createCollectibleMasks(state);
     if (request !== version) return;
-    previewLoading ||= import('./acrylic-preview.js').then(({ createAcrylicPreview }) => createAcrylicPreview(viewport));
+    viewport.hidden = false;
+    previewLoading ||= import('./acrylic-preview.js')
+      .then(({ createAcrylicPreview }) => createAcrylicPreview(viewport))
+      .catch(error => { previewLoading = undefined; throw error; });
     const viewer = await previewLoading;
     if (request !== version) return;
     physicalPreview = viewer;
-    titleMask = null;
-    if (renderer.titleOverflow) {
-      titleMask = document.createElement('canvas');
-      titleMask.width = slots.titleBase.width * 2;
-      titleMask.height = slots.titleBase.height * 2;
-      renderer.paintTitleLayer(titleMask);
-    }
     viewer.setDesign(renderer.renderCanvas, finishMaps);
     document.dispatchEvent(new window.CustomEvent('order-render-ready',{detail:{source:renderer.renderCanvas,finishMaps}}));
     syncPhysicalSelection();
     viewer.setLightAngle(lightDial.value);
-    viewport.hidden = false;
     physicalStatus.hidden = true;
   } catch (error) {
+    if (request !== version) return;
+    viewport.hidden = true;
     console.warn('3D 预览不可用', error);
     physicalStatus.textContent = '当前设备无法显示 3D 预览，上方设计和商品选配仍可使用。';
   }
@@ -171,6 +157,7 @@ async function refreshDesign() {
 window.addEventListener('pageshow',event=>{if(event.persisted)refreshDesign();});
 // Start immediately; CSS font requests must not postpone initial design loading.
 void refreshDesign();
+
 window.addEventListener('storage', refreshDesign);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) refreshDesign();

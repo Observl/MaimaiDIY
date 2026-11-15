@@ -104,7 +104,7 @@ test('original layout region isolation, modes, pickers, templates and screenshot
   await save(page, 'CN COMPANIONS');
   await expect(page.locator('#template-list')).not.toContainText('CN COLLECTION');
   await region(page, 'jp');
-  await expect(page.locator('#asset-status')).toContainText('日服云端素材索引');
+  await expect(page.locator('#asset-status')).toHaveText(/日服素材 · \d{4}\/\d{2}\/\d{2} 更新/);
   await name(page).fill('JP TEST');
   await name(page).press('Tab');
   if (!(await page.locator('#screen-mode').isVisible())) await page.locator('.controls-summary').click();

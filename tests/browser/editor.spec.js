@@ -219,43 +219,6 @@ test('picker reuse, refresh location, search and classification for every materi
   expect(state.state.visible.titleBase).toBe(true);
 });
 
-test('all author combinations preserve player information and remain undoable', async ({
-  page,
-}) => {
-  await ready(page);
-  await name(page).fill('MYNAME');
-  await name(page).blur();
-  await rating(page).fill('14567');
-  await rating(page).blur();
-  await page.locator('[data-control="rank"] .switch-wrap').click();
-  await page.locator('[data-control="friendBattle"] .switch-wrap').click();
-  const initial = (await exportState(page)).state;
-  const protectedFields = (value) => ({
-    playerName: value.playerName,
-    ratingValue: value.ratingValue,
-    rank: value.files.rank,
-    friend: value.files.friendBattle,
-    visible: value.visible,
-  });
-  const recommendationCount=await page.evaluate(async()=>{
-    const {COS}=await import('/src/config.js');
-    const {fetchJson}=await import('/src/assets.js');
-    const data=await fetchJson(COS.recommendationsUrl);
-    return new Set(['author-default',...data.items.map(item=>item.id)]).size;
-  });
-  expect(recommendationCount).toBeGreaterThan(1);
-  for (let i = 0; i < recommendationCount; i++) {
-    await page.locator('#author-recommendations').click();
-    await expect(page.locator('.recommendation-card')).toHaveCount(recommendationCount);
-    await page.locator('.recommendation-card .primary').nth(i).click();
-    await expect(page.locator('#loading')).toBeHidden();
-    const applied = (await exportState(page)).state;
-    expect(protectedFields(applied)).toEqual(protectedFields(initial));
-    await page.locator('#undo').click();
-    await expect(page.locator('#loading')).toBeHidden();
-  }
-});
-
 test('mobile layout, motion preference and avatar upload constraints', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 });
   await ready(page);
@@ -265,13 +228,7 @@ test('mobile layout, motion preference and avatar upload constraints', async ({ 
   await page.locator('.controls-card:not([open]) > summary').click();
   await expect(page.locator('#background-motion')).toHaveText('开启动效');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.locator('#author-recommendations').click();
-  expect(
-    await page
-      .locator('#recommendations-dialog')
-      .evaluate((el) => getComputedStyle(el).animationName)
-  ).toBe('none');
-  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: '作者推荐' })).toHaveCount(0);
   const image = await page.evaluate(() => {
     const c = document.createElement('canvas');
     c.width = 721;
@@ -490,9 +447,12 @@ test('purchase presets select products, update newcomer prices and export all it
   for(const slot of ['nameplate','rank','friendBattle'])expect(powderSlots).toContain(slot);
   for(const slot of ['titleBase','ratingFrame'])expect(powderSlots).not.toContain(slot);
   await expect(page.locator('[data-config-image="acrylic"]').first()).toHaveAttribute('src',/^data:image\/png/);
-  await expect(page.locator('[data-config-image="complete"]').first()).toHaveAttribute('data-products','acrylic,card,shikishi');
-  await expect(page.locator('[data-config-image="shikishi"]').first()).toHaveAttribute('data-products','shikishi');
-  const transparentProduct=await page.locator('[data-config-image="complete"]').evaluate(async image=>{
+  const complete = page.locator('[data-config="complete"]');
+  await expect(complete.locator('.configuration-product > span')).toHaveText(['亚克力砖 · 含托架', '镭射票', '色纸']);
+  for (const key of ['acrylic', 'card', 'shikishi'])
+    await expect(complete.locator(`[data-preview-item="${key}"]`)).toHaveAttribute('src', /^data:image\/png/);
+  await expect(page.locator('[data-config="shikishi"] .configuration-products')).toHaveAttribute('data-products','shikishi');
+  const transparentProduct=await complete.locator('[data-preview-item="acrylic"]').evaluate(async image=>{
     await image.decode();const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
     const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
     let visible=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>128)visible++;
@@ -530,6 +490,7 @@ test('purchase presets select products, update newcomer prices and export all it
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-light-angle.png'});
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-material','ivory-paper');
   await expect(page.locator('#acrylic-viewport')).toHaveAttribute('data-reverse-texture','paper-fibers');
+  await page.getByRole('button',{name:'全景'}).click();
   await page.locator('#acrylic-viewport canvas').focus();
   for(let i=0;i<26;i++)await page.keyboard.press('ArrowLeft');
   await page.locator('#acrylic-preview-card').screenshot({path:'output/playwright/shikishi-paper-reverse.png'});

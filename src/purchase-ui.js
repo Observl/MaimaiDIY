@@ -27,6 +27,11 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
   const get=id=>section.querySelector('#'+id);
   const variant=get('acrylic-variant'),accessory=get('acrylic-accessory');
   const products=[{key:'acrylic',check:get('buy-acrylic'),input:get('acrylic-quantity')},{key:'card',check:get('buy-card'),input:get('acrylic-cards')},{key:'shikishi',check:get('buy-shikishi'),input:get('shikishi-quantity')}];
+  const productPreviews = [
+    { key: 'acrylic', count: 'quantity', label: '亚克力砖' },
+    { key: 'card', count: 'cardQuantity', label: '镭射票' },
+    { key: 'shikishi', count: 'shikishiQuantity', label: '色纸' },
+  ];
   const configHeaders=new Map(),configPanels=new Map(),configSelections=new Map();
   let activeId='acrylic';
   const editor=section.querySelector('.purchase-products');
@@ -60,10 +65,14 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
         if(generation!==imageGeneration)return;
         const saved=configSelections.get(id);
         const config={...preset,variant:saved?.variant||variant.value,accessory:saved?.accessory??preset.accessory};
-        const source=imageRenderer.render(config);
-        for(const image of section.querySelectorAll(`[data-config-image="${id}"]`)) {
+        for(const image of configHeaders.get(id).querySelectorAll('[data-preview-item]')) {
+          const key = image.dataset.previewItem;
+          const source = imageRenderer.render({
+            ...BUNDLE_PRESETS[key],
+            variant: config.variant,
+            accessory: key === 'acrylic' ? config.accessory : 'none',
+          });
           if(image.src!==source)image.src=source;image.hidden=false;
-          image.dataset.products=[config.quantity>0?'acrylic':'',config.cardQuantity>0?'card':'',config.shikishiQuantity>0?'shikishi':''].filter(Boolean).join(',');
         }
         await new Promise(resolve=>window.requestAnimationFrame(resolve));
       }
@@ -83,7 +92,14 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
     const row=document.createElement('article');row.className='configuration-row';
     const header=document.createElement('button');header.type='button';header.className='configuration-choice';header.dataset.config=id;
     header.id='config-choice-'+id;header.setAttribute('aria-expanded','false');header.setAttribute('aria-controls','config-panel-'+id);
-    header.innerHTML=`<img class="configuration-image" data-config-image="${id}" alt="${preset.label}商品渲染图" width="560" height="340" hidden><strong>${preset.label}</strong><span class="config-price"></span><span class="config-expander" aria-hidden="true">＋</span>`;
+    const included = productPreviews.filter(product => preset[product.count] > 0);
+    const previews = included.map(({ key, label }) => `
+      <span class="configuration-product" data-product-preview="${key}">
+        <img class="configuration-image" data-config-image="${id}" data-preview-item="${key}" alt="" width="560" height="340" hidden>
+        <span>${label}${key === 'acrylic' && preset.accessory === 'clearStand' ? ' · 含托架' : ''}</span>
+      </span>`).join('');
+    header.classList.toggle('configuration-choice-bundle', included.length > 1);
+    header.innerHTML=`<span class="configuration-products" aria-hidden="true" data-products="${included.map(product => product.key).join(',')}">${previews}</span><strong>${preset.label}</strong><span class="config-price"></span><span class="config-expander" aria-hidden="true">＋</span>`;
     const panel=document.createElement('div');panel.className='configuration-panel';panel.id='config-panel-'+id;panel.hidden=true;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby',header.id);
     row.append(header,panel);configList.append(row);configHeaders.set(id,header);configPanels.set(id,panel);
     header.addEventListener('click',()=>activate(id,true));

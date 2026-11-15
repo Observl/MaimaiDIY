@@ -85,7 +85,7 @@ test('isolated static renderers never animate and animated renderers stop after 
   expect(result.staticFrames).toBe(0);expect(result.stopped).toBeGreaterThan(0);expect(result.final).toBe(result.stopped);expect(result.overflow).toBe(true);
 });
 
-test('product page continues scrolling the design and updates its live 3D texture',async({page,context},info)=>{
+test('product page freezes the first title frame and keeps the print still while the 3D view rotates',async({page,context},info)=>{
   await fixtures(context);
   const state=createDefaultState();state.titleName=longTitle;
   await context.addInitScript(({key,state})=>localStorage.setItem(key,JSON.stringify({version:1,state})),{key:CURRENT_DESIGN_KEY,state});
@@ -98,11 +98,17 @@ test('product page continues scrolling the design and updates its live 3D textur
     const shell = document.querySelector('#order-preview-shell');
     return !shell.contains(node) && node.getBoundingClientRect().top >= shell.getBoundingClientRect().bottom;
   })).toBe(true);
-  const a=await titlePixels(page);await expect.poll(()=>titlePixels(page),{timeout:6000}).not.toBe(a);
   const viewport=page.locator('#acrylic-viewport');
-  await expect.poll(()=>viewport.getAttribute('data-design-frame'),{timeout:6000}).not.toBe(null);
-  const frame=await viewport.getAttribute('data-design-frame');
-  await expect.poll(()=>viewport.getAttribute('data-design-frame'),{timeout:6000}).not.toBe(frame);
+  const model = viewport.locator('canvas');
+  await expect(model).toBeVisible();
+  const first = await titlePixels(page);
+  await page.waitForTimeout(1800);
+  expect(await titlePixels(page)).toBe(first);
+  await expect(viewport).not.toHaveAttribute('data-design-frame', /.+/);
+  const originalView = await model.screenshot();
+  await model.press('ArrowLeft');
+  await expect.poll(async () => (await model.screenshot()).equals(originalView)).toBe(false);
+  await expect(viewport).not.toHaveAttribute('data-design-frame', /.+/);
   await page.screenshot({path:info.outputPath('title-product.png'),fullPage:true});
 });
 

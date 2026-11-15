@@ -14,7 +14,6 @@ import { initializeImageExport } from './src/image-export.js';
 import { initializePicker } from './src/picker.js';
 import { indexedMaterialCategory } from './src/material-index.js';
 import { initializeTemplates } from './src/templates.js';
-import { initializeRecommendations } from './author-recommendations.js';
 import { loadRegionCatalog, loadRegionDesign } from './src/region-catalog.js';
 import { initializeRegionControls } from './src/region-controls.js';
 import { songJacketBounds } from './src/regional-display.js';
@@ -478,7 +477,6 @@ function syncControlsFromState() {
     state.playerName || '未输入名称';
   regionControls?.sync();
   templates.refresh();
-  document.querySelector('#author-recommendations').disabled = state.region === 'jp';
 }
 
 document.querySelector('#reset').addEventListener('click', () => {
@@ -659,12 +657,4 @@ regionControls = initializeRegionControls({
   },
 });
 if (location.hash === '#custom-order') location.replace('./custom-order.html');
-initializeRecommendations({
-  state,
-  snapshotState,
-  recordHistory,
-  render,
-  renderCanvas,
-  syncControlsFromState,
-});
 void initialize();

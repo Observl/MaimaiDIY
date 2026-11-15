@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node tools/serve.mjs",
-    "lint": "eslint app.js src author-recommendations.js background-motion.js ui-motion.js sw.js tools/*.mjs tests",
+    "lint": "eslint app.js src background-motion.js ui-motion.js sw.js tools/*.mjs tests",
     "test": "node --test tests/unit/*.test.mjs",
     "test:e2e": "playwright test",
     "build": "node tools/build.mjs",
@@ -22,5 +22,5 @@
     "three": "^0.180.0",
     "three-custom-shader-material": "6.4.0"
   },
-  "version": "1.3.0"
+  "version": "1.3.1"
 }

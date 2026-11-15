@@ -426,7 +426,7 @@ export function createRegionIndexLoader({
       return shared(categories, `${releaseId}:${region}:${category}`, async () => {
         const result = await withFallback(region, [category]);
         const view = result.legacy ? result.legacy.indexes[category] : categoryView(result.shards[category], baseUrl);
-        return freezeTree({ region, category, ...view, items: view.order.map(id => view.byId[id]), sourceStatus: result.legacy?.sourceStatus || result.sourceStatus });
+        return freezeTree({ region, category, ...view, generatedAt: (result.legacy || result.index).generatedAt, items: view.order.map(id => view.byId[id]), sourceStatus: result.legacy?.sourceStatus || result.sourceStatus });
       });
     },
   });

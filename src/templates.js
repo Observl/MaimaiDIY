@@ -76,6 +76,13 @@ export function initializeTemplates({
     templates.forEach((template) => list.add(new Option(template.name, template.id)));
     if (selectedId && templates.some((template) => template.id === selectedId))
       list.value = selectedId;
+    updateTemplateActions();
+  }
+
+  function updateTemplateActions() {
+    const list = document.querySelector('#template-list');
+    document.querySelector('#template-load').disabled = !list.value;
+    document.querySelector('#template-delete').disabled = !list.value || list.value.startsWith('legacy:');
   }
 
   function saveTemplate() {
@@ -264,6 +271,7 @@ export function initializeTemplates({
   }
 
   document.querySelector('#template-save').addEventListener('click', saveTemplate);
+  document.querySelector('#template-list').addEventListener('change', updateTemplateActions);
   document.querySelector('#template-load').addEventListener('click', loadTemplate);
   document.querySelector('#template-delete').addEventListener('click', deleteTemplate);
   document.querySelector('#template-export').addEventListener('click', exportTemplateFile);

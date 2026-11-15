@@ -295,7 +295,7 @@ test('regional visibility keeps only evidenced new choices and preserves shared 
   await expect(page.locator('#picker-message')).toContainText('不混用国服称号');
   for (const id of ['409000', '509000']) await find(id, 0);
   await close();
-  await expect(page.locator('#author-recommendations')).toBeDisabled();
+  await expect(page.locator('#author-recommendations')).toHaveCount(0);
   await page.locator('#screen-mode').selectOption('companions');
   await page.locator('#companion-controls .library-button').first().click();
   await expect(page.locator('#picker-meta')).toHaveText('找到 1082 / 1082 个素材');

@@ -43,7 +43,6 @@ for (const file of [
   'ui-motion.css',
   'ui-motion.js',
   'app.js',
-  'author-recommendations.js',
   'background-motion.js',
   'sw.js',
   'fonts/rating-digits-extrabold.ttf',

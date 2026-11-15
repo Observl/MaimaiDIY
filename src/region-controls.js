@@ -2,7 +2,14 @@ import { SONG_CHART_TYPES, songChartType, songIdentity, groupSongCharts, songSel
 import { applyRegionBackground } from './region-background.js';
 import { loadRegionMetadata, loadRegionCategoryIndex } from './region-catalog.js';
 import { getRegionCatalogItem } from './region-profile.js';
-import { loadManifest, manifestSource } from './assets.js';
+import { loadManifest } from './assets.js';
+const materialDate = new Intl.DateTimeFormat('zh-CN', {
+  timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit',
+});
+function materialStatus(region, updatedAt) {
+  const date = Date.parse(updatedAt);
+  return region + '素材 · ' + (Number.isFinite(date) ? materialDate.format(date) + ' 更新' : '更新时间未知');
+}
 const difficultyNames = ['BASIC', 'ADVANCED', 'EXPERT', 'MASTER', 'Re:MASTER'];
 export function initializeRegionControls({ state, recordHistory, render, changeRegion, picker }) {
   const regionSelect = document.querySelector('#region-select');
@@ -161,10 +168,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       if (state.region === 'cn') {
         loadManifest().then(data => {
           if (stamp !== indicatorVersion) return;
-          const source = manifestSource(data);
-          const label = source === 'local' ? '国服本地素材索引' : source === 'cache' ? '国服缓存素材索引' : '国服云端素材索引';
-          const count = data.summary?.items ?? data.categories.reduce((total, item) => total + item.items.length, 0);
-          showAssetStatus(source === 'network' ? 'is-online' : 'is-offline', `${label} · ${count} 项`);
+          showAssetStatus('is-online', materialStatus('国服', data.generatedAt));
         }).catch(() => {
           if (stamp === indicatorVersion) showAssetStatus('is-offline', '国服素材索引暂不可用，部分云端图片可能无法加载');
         });
@@ -201,12 +205,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     const source = catalog?.sourceStatus?.kind;
     const local = catalog?.sourceStatus?.local;
     if (source && state.region === 'jp') {
-      const label = source === 'v1-fallback' ? '日服兼容素材索引'
-        : source === 'v2-cache' ? '日服缓存素材索引'
-        : local ? '日服本地素材索引' : '日服云端素材索引';
-      const count = catalog.items?.length;
-      const scope = category ? `${category === 'charas' ? '旅行伙伴' : '歌曲'} ${count} 项` : '分类目录就绪，素材按需读取';
-      showAssetStatus(['v2-network', 'v2-cache'].includes(source) && !local ? 'is-online' : 'is-offline', `${label} · ${scope}`);
+      showAssetStatus('is-online', materialStatus('日服', catalog.generatedAt));
     }
     if (source) status.textContent += source === 'v1-fallback'
       ? ' 当前使用兼容索引，COS 新索引暂不可用。'
