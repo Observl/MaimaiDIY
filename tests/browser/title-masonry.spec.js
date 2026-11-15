@@ -4,14 +4,16 @@ for (const width of [320, 390, 1440]) {
   test(`title masonry wraps and reflows without hidden right-side content at ${width}px`, async ({ page }, info) => {
     await page.setViewportSize({ width, height: 900 });
     await page.route('**/app.js*', route => route.abort());
-    await page.route('https://**/*', route => route.abort());
+    await page.route('https://**/*', route => route.request().resourceType() === 'image'
+      ? route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="536" height="50"><rect width="536" height="50" fill="gold"/></svg>' })
+      : route.abort());
     await page.goto('/');
     await page.evaluate(async () => {
       const { initializePicker } = await import('/src/picker.js');
       const { createDefaultState } = await import('/src/model.js');
       const { controls } = await import('/src/config.js');
       const existing = document.querySelector('#asset-picker').outerHTML;
-      document.body.innerHTML = existing;
+      document.body.innerHTML = existing + '<div data-control="title" hidden><span class="control-file"></span></div>';
       const items = Array.from({ length: 110 }, (_, i) => ({
         id: `title-${i}`, name: `${i}: ${i % 4 === 0 ? 'VeryLongUnbrokenTitle'.repeat(12) : '短称号'.repeat(i % 5 + 1)}`,
         color: 'Gold', group: i % 2 ? '测试分类' : 'LongUnbrokenCategory'.repeat(8),
@@ -36,8 +38,9 @@ for (const width of [320, 390, 1440]) {
       };
     });
     expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
-    await grid.locator('button').first().click();
+    await grid.locator('[data-asset-id="title-0"]').click();
     await expect(page.locator('#picker-message')).toHaveText('已选择称号');
+    await page.locator('#picker-scroll').evaluate(node => { node.scrollTop = 0; });
     await expect(grid.locator('button').first()).toBeInViewport();
     expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
     await page.screenshot({ path: info.outputPath(`titles-${width}.png`) });
