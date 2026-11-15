@@ -36,6 +36,11 @@ for (const width of [320, 390, 1440]) {
       };
     });
     expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
+    await page.locator('#picker-message').evaluate(node => {
+      node.hidden = false;
+      node.textContent = 'SelectedLongTitleWithoutSpaces'.repeat(20);
+    });
+    expect(await check()).toEqual({ overflow: false, out: false, backwards: false, overlap: false });
     await page.screenshot({ path: info.outputPath(`titles-${width}.png`) });
     await page.locator('#picker-search').fill('no such title');
     await expect(grid.locator('button')).toHaveCount(0);

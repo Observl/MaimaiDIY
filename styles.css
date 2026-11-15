@@ -1668,3 +1668,4 @@ html:has(#asset-picker[open]) { overflow:hidden; }
 #asset-picker[data-category="titles"] .asset-item small { white-space: normal; overflow-wrap: anywhere; }
 #asset-picker[data-category="titles"] .picker-grid[data-masonry="true"] { display: block; position: relative; }
 #asset-picker[data-category="titles"] .picker-grid[data-masonry="true"] > .asset-item { position: absolute; }
+#asset-picker[data-category="titles"] .picker-message { min-width: 0; overflow-wrap: anywhere; }

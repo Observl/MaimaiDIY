@@ -2,13 +2,23 @@ import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { createDefaultState } from '../../src/model.js';
 import { CURRENT_DESIGN_KEY } from '../../src/current-design.js';
+import { REGION_BASE_URL, REGION_CATEGORIES } from '../../src/region-index.js';
+import { buildRegionalIndex } from '../../tools/build-region-index.mjs';
 
 test.use({ serviceWorkers: 'block' });
 const longTitle = '这是一个超出称号框宽度需要滚动播放才能完整看清的很长称号 ABCDEFG';
 const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGP4DwQACfsD/fteaysAAAAASUVORK5CYII=', 'base64');
 async function fixtures(context) {
+  const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
+    schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-08T00:00:00Z', sources: [],
+    availability: { art: 'test' }, ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+  }]));
+  const { files } = buildRegionalIndex({ catalogs });
+  const prefix = new URL(REGION_BASE_URL).pathname;
   await context.route('https://**/*', route => {
     const path = new URL(route.request().url()).pathname;
+    const indexed = path.startsWith(prefix) && files.get(path.slice(prefix.length));
+    if (indexed) return route.fulfill({body:indexed,contentType:'application/json',headers:{'access-control-allow-origin':'*'}});
     const json = path.endsWith('/manifest.json') ? {schemaVersion:1,categories:[]}
       :path.endsWith('/badges.json')?{schemaVersion:1,categories:[]}
         :path.endsWith('/titles.json')?{schemaVersion:1,items:[{id:'titles/900003',name:longTitle,color:'Gold'},{id:'titles/900004',name:'短称号',color:'Gold'}]}

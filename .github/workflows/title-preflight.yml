@@ -17,7 +17,8 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npx playwright install --with-deps chromium
-      - run: npx playwright test tests/browser/title-masonry.spec.js tests/browser/title-scroll.spec.js tests/browser/ui-standardization.spec.js tests/browser/regional-song.spec.js tests/browser/closeup-view.spec.js --reporter=list --max-failures=1
+      - run: npx playwright test tests/browser/title-scroll.spec.js tests/browser/title-masonry.spec.js --reporter=list --max-failures=1
+      - run: npx playwright test tests/browser/ui-standardization.spec.js tests/browser/regional-song.spec.js tests/browser/closeup-view.spec.js --reporter=list --max-failures=1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
