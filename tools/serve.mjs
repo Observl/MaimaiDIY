@@ -1,9 +1,11 @@
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
-import { resolve, extname, sep } from 'node:path';
+import { readFile, realpath, stat } from 'node:fs/promises';
+import { resolve, extname, relative, sep } from 'node:path';
+import { setupFeedback } from './feedback-http.mjs';
 
-const root = resolve(process.argv[2] || '.');
+const root = await realpath(resolve(process.argv[2] || 'dist'));
 const port = Number(process.env.PORT || 4173);
+const feedback = setupFeedback(port);
 const types = {
   '.html': 'text/html',
   '.js': 'text/javascript',
@@ -17,13 +19,18 @@ const types = {
   '.otf': 'font/otf',
 };
 createServer(async (request, response) => {
+  if (request.url === '/api/feedback') return feedback(request, response);
   try {
     const path = resolve(
       root,
       '.' + decodeURIComponent(new URL(request.url, 'http://localhost').pathname)
     );
-    if (path !== root && !path.startsWith(root + sep)) throw new Error('Outside root');
-    const file = (await stat(path)).isDirectory() ? resolve(path, 'index.html') : path;
+    if (relative(root, path).split(sep).some((segment) => segment.startsWith('.')) ||
+        (path !== root && !path.startsWith(root + sep))) throw new Error('Invalid path');
+    const file = await realpath((await stat(path)).isDirectory() ? resolve(path, 'index.html') : path);
+    if (!file.startsWith(root + sep) || relative(root, file).split(sep).some((segment) => segment.startsWith('.'))) {
+      throw new Error('Invalid file');
+    }
     const body = await readFile(file);
     response.writeHead(200, {
       'Content-Type': types[extname(file)] || 'application/octet-stream',

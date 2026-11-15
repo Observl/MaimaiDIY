@@ -181,6 +181,7 @@
         <img src="https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/support-qr.jpg" width="1152" height="1152" alt="用于支持 MaimaiDIY 服务器维护的赞赏二维码">
         <figcaption>使用微信扫描二维码进行赞赏</figcaption>
       </figure>
+      <button id="feedback-open" class="button secondary support-feedback" type="button" aria-haspopup="dialog">提交网站反馈</button>
     </section>
     <footer class="material-disclaimer" aria-label="素材免责声明">
       <p>该网站向所有访客开放，若您通过付费渠道进入该网站，请在对应平台投诉并申请退款。</p>
@@ -326,6 +327,26 @@
   </dialog>
 
   <script data-goatcounter="https://observl.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  <dialog id="feedback-dialog" aria-labelledby="feedback-title">
+    <div class="section-head">
+      <h2 id="feedback-title">网站反馈</h2>
+      <button id="feedback-close" class="icon-button" type="button" aria-label="关闭反馈">×</button>
+    </div>
+    <form id="feedback-form" data-endpoint="" method="post">
+      <label>反馈类型
+        <select name="type"><option>网站问题</option><option>改进建议</option></select>
+      </label>
+      <label>反馈内容
+        <textarea name="message" rows="5" maxlength="2000" required placeholder="描述遇到的问题或希望改进的地方"></textarea>
+      </label>
+      <label>联系邮箱（选填）
+        <input type="email" name="email" autocomplete="email" maxlength="254">
+      </label>
+      <p id="feedback-status" role="status"></p>
+      <button class="button primary" type="submit">发送反馈</button>
+    </form>
+  </dialog>
+  <script type="module" src="src/feedback.js"></script>
   <script type="module" src="app.js?v=cleanup-1"></script>
 </body>
 </html>

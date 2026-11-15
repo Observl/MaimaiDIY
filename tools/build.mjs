@@ -6,6 +6,9 @@ import { build } from 'esbuild';
 import { validateRegionalDisplayLayout } from '../src/regional-display-layout.js';
 
 const root = process.cwd();
+const feedbackEndpoint = process.env.FEEDBACK_ENDPOINT?.trim() || '';
+if (feedbackEndpoint && !/^https:\/\/[a-z0-9.-]+(?::\d+)?\/api\/feedback$/i.test(feedbackEndpoint))
+  throw new Error('Invalid FEEDBACK_ENDPOINT');
 const dist = resolve(root, 'dist');
 if (relative(root, dist) !== 'dist' || !dist.startsWith(root + sep))
   throw Error('Invalid build directory');
@@ -72,7 +75,9 @@ for (const file of files) {
         .replace(/(\bimport\(\s*['"])(\.[^'"]+\.js)(?:\?[^'"]*)?(['"]\s*\))/g, `$1$2?v=${revision}$3`)
     );
   } else if (file.endsWith('.html')) {
-    const source = await readFile(destination, 'utf8');
+    let source = await readFile(destination, 'utf8');
+    if (file === 'index.html')
+      source = source.replace('data-endpoint=""', `data-endpoint="${feedbackEndpoint}"`);
     await writeFile(
       destination,
       source.replace(
@@ -108,9 +113,6 @@ for(const [name,path] of [['custom-shader-material','three-custom-shader-materia
   await writeFile(resolve(dist,`vendor/${name}-LICENSE.txt`),notice);
 }
 await writeFile(resolve(dist, '.nojekyll'), '');
-if (process.env.LOCAL_COS_INDEX === '1') {
-  await cp(resolve(root, 'output/cos-index'), resolve(dist, 'cos-index'), { recursive: true });
-}
 const html = await readFile(resolve(dist, 'index.html'), 'utf8');
 for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
   if (/^(?:https?:|data:)/.test(match[1])) continue;
