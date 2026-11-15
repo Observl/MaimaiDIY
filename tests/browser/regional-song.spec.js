@@ -57,7 +57,7 @@ async function setup(page, context, handle) {
   await page.locator('.controls-summary').click();
 }
 
-test('regional song module updates difficulty and score from the cover and exports', async ({ page, context }) => {
+async function setupRegionalCatalogs(page, context) {
   const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
     schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-08T00:00:00Z', sources: [],
     availability: { art: 'test' },
@@ -84,6 +84,18 @@ test('regional song module updates difficulty and score from the cover and expor
     if (body) return { body, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' } };
     if (path.endsWith('.webp')) return { body: png, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' } };
   });
+}
+
+// WebP decoders can round RGB channels differently; alpha must remain opaque.
+function expectFrameColor(actual, expected) {
+  expect(actual).toHaveLength(4);
+  for (let channel = 0; channel < 3; channel++)
+    expect(Math.abs(actual[channel] - expected[channel])).toBeLessThanOrEqual(2);
+  expect(actual[3]).toBe(255);
+}
+
+test('regional song module updates difficulty and score from the cover and exports', async ({ page, context }) => {
+  await setupRegionalCatalogs(page, context);
   const mode = value => page.locator(`#screen-mode input[value="${value}"]`).check();
   const preview = () => page.locator('#preview').evaluate(canvas => canvas.toDataURL());
   const renderSavedOrderArtwork = async () => page.evaluate(async design => {
@@ -129,13 +141,13 @@ test('regional song module updates difficulty and score from the cover and expor
       ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
       return [...ctx.getImageData(x, 189, 1, 1).data];
     }, { image, x: region === 'cn' ? 46 : 43 });
-    expect(await readFramePixel(await readLargePreview())).toEqual([69, 193, 36, 255]);
+    expectFrameColor(await readFramePixel(await readLargePreview()), [69, 193, 36]);
     const advancedLabel = page.waitForResponse(response =>
       new URL(response.url()).pathname.endsWith(`/regional-display/${region}/level-label-1.webp`) && response.ok());
     await page.locator('#song-difficulty').selectOption('1');
     await advancedLabel;
     await expect.poll(preview).not.toBe(result);
-    expect(await readFramePixel(await readLargePreview())).toEqual([255, 186, 1, 255]);
+    expectFrameColor(await readFramePixel(await readLargePreview()), [255, 186, 1]);
     const score = page.locator('#song-achievement');
     await score.fill('98.1234');
     await score.press('Tab');
@@ -181,7 +193,7 @@ test('regional song module updates difficulty and score from the cover and expor
     await score.press('Tab');
     await expect(page.locator('#loading')).toBeHidden();
     const reMasterPreview = await readLargePreview();
-    expect(await readFramePixel(reMasterPreview)).toEqual([219, 170, 255, 255]);
+    expectFrameColor(await readFramePixel(reMasterPreview), [219, 170, 255]);
     const pngDownload = page.waitForEvent('download');
     await page.getByRole('button', { name: '导出高清 PNG' }).click();
     const reMasterExport = await pngDownload;
@@ -193,4 +205,45 @@ test('regional song module updates difficulty and score from the cover and expor
   await expect(page.locator('#magical-background')).toHaveCSS('opacity', '0');
   await expect(page.locator('#song-achievement')).toHaveValue('100.1000');
   await expect(page.locator('#song-difficulty')).toHaveValue('4');
+});
+
+
+test('320px regional switching preserves usable dynamic companion controls', async ({ page, context }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await setupRegionalCatalogs(page, context);
+  const regionToggle = page.getByRole('button', { name: '切换区服展示板' });
+  const firstRow = page.locator('#companion-controls .control-row').first();
+  const noOverflow = async () => {
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  };
+  await expect(page.locator('html')).toHaveAttribute('data-region', 'cn');
+  await page.locator('#screen-mode input[value="companions"]').check();
+  await expect(firstRow.getByRole('button', { name: '素材库' })).toBeDisabled();
+  await noOverflow();
+  await regionToggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-region', 'jp');
+  await page.locator('#screen-mode input[value="companions"]').check();
+  await expect(page.locator('#companion-controls .control-row')).toHaveCount(5);
+  await expect(firstRow.getByRole('button', { name: '素材库' })).toBeEnabled();
+  for (const level of await page.locator('.companion-level').all()) {
+    expect(await level.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16);
+    expect((await level.boundingBox()).height).toBeGreaterThanOrEqual(44);
+  }
+  for (const button of await page.locator('#companion-controls button').all())
+    expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(44);
+  await noOverflow();
+  await firstRow.getByRole('button', { name: '素材库' }).click();
+  await item(page, '000101').click();
+  await page.keyboard.press('Escape');
+  await expect(firstRow.locator('.control-file')).toHaveText('测试伙伴');
+  await firstRow.locator('.companion-level').fill('12');
+  await firstRow.locator('.companion-level').press('Tab');
+  await expect(firstRow.locator('.companion-level')).toHaveValue('12');
+  await noOverflow();
+  await regionToggle.click();
+  await expect(page.locator('html')).toHaveAttribute('data-region', 'cn');
+  await page.locator('#screen-mode input[value="companions"]').check();
+  await expect(firstRow.getByRole('button', { name: '素材库' })).toBeDisabled();
+  await expect(firstRow.locator('.companion-level')).toBeDisabled();
+  await noOverflow();
 });
