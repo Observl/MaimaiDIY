@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {collectibleFinish} from '../../src/collectible-finishes.js';
 import {COLLECTIBLE_PLATES} from '../../src/collectible-catalog.js';
+import { jpBadges, jpProfileItems } from '../../src/jp-profile-assets.js';
 const state=(slot,file,extra={})=>({visible:{[slot]:true},files:{[slot]:file},...extra});
 test('rating has no powder at any value while white varnish remains available',()=>{
   for(const ratingValue of [0,10000,13999,14000,14500,16411]){
@@ -41,4 +42,13 @@ test('beginner rank and A/B battles have no powder while other ranks retain it',
     const profile=collectibleFinish(state('friendBattle','/cos/materials/friend-battles/'+String(level).padStart(2,'0')+'.png'),'friendBattle');
     assert.equal(profile.powder>0,level>=10);assert.equal(profile.uv,0.9);
   }
+});
+test('Japanese ranks use the same powder policy including the legacy True Second Dan', () => {
+  for (const { id, file, name } of jpProfileItems.ranks) {
+    const localRank = '/materials/ranks/' + id.slice('jp-rank-'.length) + '.png';
+    assert.deepEqual(collectibleFinish(state('rank', file), 'rank'),
+      collectibleFinish(state('rank', localRank), 'rank'), name);
+  }
+  assert.deepEqual(collectibleFinish(state('rank', jpBadges.rank), 'rank'),
+    collectibleFinish(state('rank', '/materials/ranks/13.png'), 'rank'));
 });

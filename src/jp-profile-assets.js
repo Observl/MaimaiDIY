@@ -23,6 +23,11 @@ const ranks = rankNames.flatMap((name, index) => {
     group: index >= 12 ? '真段位' : '普通段位', local: true }];
 });
 export const isJpRankAsset = value => value === jpBadges.rank || ranks.some(item => item.file === value);
+export function jpRankLevel(value) {
+  if (value === jpBadges.rank) return 13; // Legacy 真二段 artwork.
+  const rank = ranks.find(item => item.file === value);
+  return rank ? Number(rank.id.slice('jp-rank-'.length)) : -1;
+}
 const titles = [
   ['debut', 'でびゅー', 'Normal', '默认与成就'],
   ['welcome', 'maimai でらっくすへようこそ！', 'Normal', '默认与成就'],

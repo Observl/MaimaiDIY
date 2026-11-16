@@ -1,4 +1,5 @@
 import { COLLECTIBLE_PLATES } from './collectible-catalog.js';
+import { jpRankLevel } from './jp-profile-assets.js';
 
 const silver = [212, 229, 255], gold = [255, 216, 134], prism = [235, 215, 255];
 export function collectibleFinish(state, slot) {
@@ -6,7 +7,7 @@ export function collectibleFinish(state, slot) {
   const file = state.files[slot] || '';
   if (slot === 'rank') {
     const match = file.match(/(?:^|\/)ranks\/(\d{2})\.png(?:[?#]|$)/);
-    const level = match ? Number(match[1]) : -1;
+    const level = match ? Number(match[1]) : jpRankLevel(file);
     if (level < 0 || level > 23) return null;
     return { shape: level >= 22 ? 'rank-emblems' : 'rank-border', uv: 0.8,
       powder: level === 0 ? 0 : level < 16 ? 0.82 : level < 19 ? 0.9 : 0.96,
