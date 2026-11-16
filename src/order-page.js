@@ -32,6 +32,7 @@ initializeCustomOrder({
     return structuredClone(state);
   },
   renderCanvas: renderer.renderCanvas,
+  getFinishMaps: physicalPreview.getFinishMaps,
 });
 
 async function refreshDesign() {
@@ -41,6 +42,7 @@ async function refreshDesign() {
   loadedDesign = designKey;
   const request = ++version;
   state = null;
+  document.dispatchEvent(new window.Event('order-design-reset'));
   status.hidden = false;
   preview.hidden = true;
   physicalPreview.reset();
@@ -61,12 +63,12 @@ async function refreshDesign() {
     const rendered = await renderer.render(latest, { strict: true });
     if (request !== version || !rendered) return;
     state = latest;
-    document.dispatchEvent(new window.Event('order-design-ready'));
     preview.hidden = false;
     status.textContent = '已自动载入你最近编辑的上屏设计。';
     status.hidden = true;
     document.querySelector('#acrylic-export').disabled = false;
     physicalPreview.show(latest, renderer.renderCanvas);
+    document.dispatchEvent(new window.Event('order-design-ready'));
   } catch (error) {
     if (request !== version) return;
     loadedDesign = undefined;

@@ -3,6 +3,7 @@ import { initializeLightDial } from './light-dial.js';
 
 export function initializeOrderPreview({ onFailure }) {
   let artwork;
+  let masks;
   let version = 0;
   let physicalPreview;
   let previewLoading;
@@ -38,6 +39,19 @@ export function initializeOrderPreview({ onFailure }) {
     retryPreview.hidden = !allowRetry;
   }
 
+  function getFinishMaps() {
+    if (!artwork) return Promise.reject(new Error('请先载入上屏设计。'));
+    if (!masks) {
+      const request = createCollectibleMasks(artwork.state, undefined, { diagnostics: false })
+        .catch(error => {
+          if (masks === request) masks = undefined;
+          throw error;
+        });
+      masks = request;
+    }
+    return masks;
+  }
+
   async function updatePhysicalPreview() {
     const currentArtwork = artwork;
     const request = ++version;
@@ -47,7 +61,7 @@ export function initializeOrderPreview({ onFailure }) {
         .catch(error => { previewLoading = undefined; throw error; });
       const [{createAcrylicPreview}, finishMaps] = await Promise.all([
         previewLoading,
-        createCollectibleMasks(currentArtwork.state, undefined, {diagnostics:false}),
+        getFinishMaps(),
       ]);
       if (request !== version) return;
       viewport.hidden = false;
@@ -105,13 +119,16 @@ export function initializeOrderPreview({ onFailure }) {
   });
 
   return {
+    getFinishMaps,
     show(state, source) {
       artwork = { state, source };
+      masks = undefined;
       void updatePhysicalPreview();
     },
     reset() {
       version++;
       artwork = undefined;
+      masks = undefined;
       showPhysicalStatus('等待上屏设计');
     },
     dispose() {

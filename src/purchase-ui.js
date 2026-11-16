@@ -1,6 +1,7 @@
 import { initializePurchaseThumbnails } from './purchase-thumbnails.js';
+import { createOrderArtworkZip } from './order-artwork-export.js';
 
-export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
+export function initializePurchaseUI({snapshotState,renderCanvas,getFinishMaps}, catalog) {
   const {ACRYLIC_PRODUCTS,ACCESSORIES,COLLECTIBLE_CARD,SHIKISHI_PRODUCT,BUNDLE_PRESETS,quoteProductBundle,buildAcrylicDesignDraft,formatYuan:yuan}=catalog;
   const anchor=document.querySelector('#acrylic-preview-card')||document.querySelector('.preview-card');
   if(!anchor)return;
@@ -23,10 +24,23 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       <p id="acrylic-discount" class="purchase-savings"></p>
       <div class="purchase-total"><span id="purchase-total-label">参考合计</span><strong id="acrylic-total" aria-live="polite"></strong></div>
       <p id="purchase-message" class="purchase-message" role="status"></p>
-      <div class="custom-order-actions"><button id="acrylic-export" class="button primary" type="button">保存定制方案</button><button class="button secondary" type="button" disabled>在线下单尚未开放</button></div>
+      <div class="custom-order-actions">
+        <button id="acrylic-export" class="button primary" type="button">保存定制方案</button>
+        <button id="acrylic-export-zip" class="button secondary" type="button" disabled aria-describedby="acrylic-zip-status">导出设计 ZIP</button>
+        <p id="acrylic-zip-status" class="purchase-message" role="status"></p>
+        <button class="button secondary" type="button" disabled>在线下单尚未开放</button>
+      </div>
     </aside></div>`;
   anchor.insertAdjacentElement('afterend',section);
   const get=id=>section.querySelector('#'+id);
+  const zipButton = get('acrylic-export-zip');
+  const zipStatus = get('acrylic-zip-status');
+  let designReady = false;
+  let canExportSelection = false;
+  let exporting = false;
+  const syncZipButton = () => { zipButton.disabled = !designReady || !canExportSelection || exporting; };
+  document.addEventListener('order-design-ready', () => { designReady = true; syncZipButton(); });
+  document.addEventListener('order-design-reset', () => { designReady = false; syncZipButton(); });
   const variant=get('acrylic-variant'),accessory=get('acrylic-accessory');
   const products=[{key:'acrylic',check:get('buy-acrylic'),input:get('acrylic-quantity')},{key:'card',check:get('buy-card'),input:get('acrylic-cards')},{key:'shikishi',check:get('buy-shikishi'),input:get('shikishi-quantity')}];
   const productPreviews = [
@@ -164,10 +178,13 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       get('acrylic-discount').textContent='';
       get('purchase-message').textContent=quote.shippingPending?'色纸单独寄送的运费待确认，以上为商品金额。':'';
       get('acrylic-export').disabled=false;
+      canExportSelection = true;
     } catch(error) {
       get('purchase-item-count').textContent='尚未选择商品';get('acrylic-total').textContent='—';get('acrylic-discount').textContent='';get('purchase-message').textContent=error.message;
       get('acrylic-export').disabled=true;
+      canExportSelection = false;
     }
+    syncZipButton();
     requestImages();
   }
   for(const control of new Set([...section.querySelectorAll('input,select'),...editor.querySelectorAll('input,select')])) {control.addEventListener('input',refresh);control.addEventListener('change',refresh);}
@@ -179,6 +196,31 @@ export function initializePurchaseUI({snapshotState,renderCanvas}, catalog) {
       const link=document.createElement('a');link.href=url;link.download='maimaidiy-custom-draft.json';link.click();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
     }catch(error){get('purchase-message').textContent=error.message||'无法保存定制方案';}
+  });
+  zipButton.addEventListener('click', async () => {
+    if (zipButton.disabled) return;
+    exporting = true;
+    syncZipButton();
+    zipStatus.textContent = '正在生成设计压缩包…';
+    try {
+      const draft = buildAcrylicDesignDraft({ state: snapshotState(), ...selection() });
+      const zip = await createOrderArtworkZip({ draft, artwork: renderCanvas, finishMaps: getFinishMaps() });
+      const url = URL.createObjectURL(zip);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'maimaidiy-custom-design.zip';
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      zipStatus.textContent = '设计压缩包已生成。';
+    } catch (error) {
+      console.warn('定制设计压缩包生成失败', error);
+      zipStatus.textContent = '无法生成设计压缩包，请检查素材加载后重试。';
+    } finally {
+      exporting = false;
+      syncZipButton();
+    }
   });
   activate('acrylic');
 }
