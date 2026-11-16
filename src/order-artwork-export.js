@@ -1,4 +1,3 @@
-import { ACRYLIC_PRINT_MM } from './config.js';
 import { createPngBlob } from './image-export.js';
 import { createZip } from './zip.js';
 
@@ -33,10 +32,12 @@ async function encodeFinishMasks({ packed, componentCoverage }, width, height) {
 }
 
 export async function createOrderArtworkZip({ draft, artwork, finishMaps }) {
-  // Export the whole canvas at the physical print aspect ratio, with no cropping.
+  // Match the full 120 × 50 mm brick face, without cropping the artwork.
+  const printWidthMm = 120;
+  const printHeightMm = 50;
   const pixelsPerMm = 20;
-  const width = Math.round(ACRYLIC_PRINT_MM.width * pixelsPerMm);
-  const height = Math.round(ACRYLIC_PRINT_MM.height * pixelsPerMm);
+  const width = printWidthMm * pixelsPerMm;
+  const height = printHeightMm * pixelsPerMm;
   const [original, masks] = await Promise.all([
     Promise.resolve().then(() => createPngBlob(artwork, width, height)),
     finishMaps.then(maps => encodeFinishMasks(maps, width, height)),
@@ -46,8 +47,8 @@ export async function createOrderArtworkZip({ draft, artwork, finishMaps }) {
     artwork: {
       width,
       height,
-      printWidthMm: ACRYLIC_PRINT_MM.width,
-      printHeightMm: ACRYLIC_PRINT_MM.height,
+      printWidthMm,
+      printHeightMm,
       original: 'design.png',
       glitterMask: 'glitter-mask.png',
       finePowderMask: 'fine-powder-mask.png',
