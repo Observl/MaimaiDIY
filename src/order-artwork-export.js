@@ -13,7 +13,6 @@ async function encodeFinishMasks({ packed, componentCoverage }) {
   const files = [];
   // Match the effect coverage in acrylic-optics.js, before lighting and particle noise.
   const layers = [
-    ['white-effect-mask.png', i => finish[i]],
     ['glitter-mask.png', i => (255 - components[i + 3]) * (1 - finish[i + 2] / 255)],
     ['fine-powder-mask.png', i => finish[i + 1] * (1 - finish[i + 2] / 255)],
   ];
@@ -46,7 +45,6 @@ export async function createOrderArtworkZip({ draft, artwork, finishMaps }) {
       width,
       height,
       original: 'design.png',
-      whiteEffectMask: 'white-effect-mask.png',
       glitterMask: 'glitter-mask.png',
       finePowderMask: 'fine-powder-mask.png',
       maskEncoding: 'grayscale: black = no effect, white = full coverage',

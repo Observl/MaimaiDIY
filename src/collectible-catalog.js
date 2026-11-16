@@ -1,5 +1,21 @@
 // Explicit IDs from the project collectible manifest. Labels never grant effects.
 export const COLLECTIBLE_PLATES = {
+  "UI_Plate_609101.png": {
+    "name": "彩極",
+    "kind": "kiwami"
+  },
+  "UI_Plate_609102.png": {
+    "name": "彩将",
+    "kind": "shogun"
+  },
+  "UI_Plate_609103.png": {
+    "name": "彩神",
+    "kind": "god"
+  },
+  "UI_Plate_609104.png": {
+    "name": "彩舞舞",
+    "kind": "maimai"
+  },
   "UI_Plate_359104.png": {
     "name": "祭舞舞",
     "kind": "maimai"

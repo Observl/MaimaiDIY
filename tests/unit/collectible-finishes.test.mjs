@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import {collectibleFinish} from '../../src/collectible-finishes.js';
 import {COLLECTIBLE_PLATES} from '../../src/collectible-catalog.js';
 const state=(slot,file,extra={})=>({visible:{[slot]:true},files:{[slot]:file},...extra});
@@ -21,6 +22,14 @@ test('all title colors have no powder and preserve white varnish',()=>{
   for(const color of ['Normal','Bronze','Gold','Silver','Rainbow']){
     const profile=collectibleFinish(state('titleBase','unused',{titleColor:color}),'titleBase');
     assert.equal(profile.powder,0);assert.equal(profile.uv,1);
+  }
+});
+test('every verified Japanese conquest nameplate in the four families receives fine powder', () => {
+  const { plates } = JSON.parse(readFileSync(new URL('../../data/regions/jp-gamerch.json', import.meta.url)));
+  for (const [id, { name, category }] of Object.entries(plates)) {
+    if (category !== '制覇系' || !/(将|極|神|舞舞)$/.test(name)) continue;
+    const file = '/materials/regions/releases/20261108/jp/collection/plates/UI_Plate_' + id + '.png';
+    assert.equal(collectibleFinish(state('nameplate', file, { region: 'jp' }), 'nameplate')?.powder, 1, name);
   }
 });
 test('beginner rank and A/B battles have no powder while other ranks retain it',()=>{
