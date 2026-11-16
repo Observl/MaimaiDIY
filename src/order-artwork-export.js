@@ -1,8 +1,8 @@
-import { OUTPUT } from './config.js';
+import { ACRYLIC_PRINT_MM } from './config.js';
 import { createPngBlob } from './image-export.js';
 import { createZip } from './zip.js';
 
-async function encodeFinishMasks({ packed, componentCoverage }) {
+async function encodeFinishMasks({ packed, componentCoverage }, width, height) {
   const mask = document.createElement('canvas');
   mask.width = packed.width;
   mask.height = packed.height;
@@ -23,8 +23,7 @@ async function encodeFinishMasks({ packed, componentCoverage }) {
         output.data[i + 3] = 255;
       }
       ctx.putImageData(output, 0, 0);
-      const blob = await new Promise(resolve => mask.toBlob(resolve, 'image/png'));
-      if (!blob?.size) throw new Error(`蒙版编码失败：${name}`);
+      const blob = await createPngBlob(mask, width, height);
       files.push({ name, blob });
     }
     return files;
@@ -34,16 +33,21 @@ async function encodeFinishMasks({ packed, componentCoverage }) {
 }
 
 export async function createOrderArtworkZip({ draft, artwork, finishMaps }) {
-  const { width, height } = OUTPUT;
+  // Export the whole canvas at the physical print aspect ratio, with no cropping.
+  const pixelsPerMm = 20;
+  const width = Math.round(ACRYLIC_PRINT_MM.width * pixelsPerMm);
+  const height = Math.round(ACRYLIC_PRINT_MM.height * pixelsPerMm);
   const [original, masks] = await Promise.all([
     Promise.resolve().then(() => createPngBlob(artwork, width, height)),
-    finishMaps.then(encodeFinishMasks),
+    finishMaps.then(maps => encodeFinishMasks(maps, width, height)),
   ]);
   const config = {
     ...draft,
     artwork: {
       width,
       height,
+      printWidthMm: ACRYLIC_PRINT_MM.width,
+      printHeightMm: ACRYLIC_PRINT_MM.height,
       original: 'design.png',
       glitterMask: 'glitter-mask.png',
       finePowderMask: 'fine-powder-mask.png',

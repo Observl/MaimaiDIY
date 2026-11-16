@@ -9,6 +9,7 @@ import { previewQuality } from './preview-quality.js';
 import { DEFAULT_LIGHT_ANGLE, studioLighting } from './finish-settings.js';
 import { captureProductImage } from './transparent-capture.js';
 import { nameplateRegion, fitPerspectiveDistance } from './preview-framing.js';
+import { ACRYLIC_PRINT_MM } from './config.js';
 
 export function createAcrylicPreview(host,{snapshot=false}={}) {
   let quality=previewQuality({isMobile:window.matchMedia('(pointer: coarse)').matches},snapshot);
@@ -213,7 +214,9 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       iridescenceThicknessRange: [180, 500], metalness: cardOnly ? 0.2 : 0,
     },spotTexture,{paper:shikishi});
     if(cardOnly||shikishi) { print.clearcoat=0;print.clearcoatMap=null;print.metalness=0;print.roughness=shikishi?0.62:0.42;print.envMapIntensity=0;print.specularIntensity=0; }
-    const art = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), print);
+    const printWidth = ACRYLIC_PRINT_MM.width / 10;
+    const printHeight = ACRYLIC_PRINT_MM.height / 10;
+    const art = new THREE.Mesh(new THREE.PlaneGeometry(printWidth, printHeight), print);
     art.name='single-composited-design';
     art.position.set(0, 2.5, cardOnly||shikishi ? depth/2+0.004 : -depth / 2 + 0.004);
     art.castShadow = true;
@@ -233,7 +236,7 @@ export function createAcrylicPreview(host,{snapshot=false}={}) {
       ? new THREE.MeshStandardMaterial({color:cardOnly?'#080808':'#f3eee4',roughness:cardOnly?0.85:0.96,metalness:0,envMapIntensity:cardOnly?0.2:0.1,
         map:cardOnly?cardSurface.color:paperSurface.color,bumpMap:cardOnly?cardSurface.bump:paperSurface.bump,bumpScale:cardOnly?0.018:0.07,roughnessMap:cardOnly?cardSurface.roughness:paperSurface.roughness})
       : new THREE.MeshStandardMaterial({ color: '#e8ddc5', roughness: 0.88, metalness:0, transparent:false });
-    const reverse = new THREE.Mesh(new THREE.PlaneGeometry(11.91, 4.91), reverseMaterial);
+    const reverse = new THREE.Mesh(new THREE.PlaneGeometry(printWidth, printHeight), reverseMaterial);
     reverse.rotation.y = Math.PI;
     reverse.position.set(0, 2.5, -depth / 2 - 0.004);
     reverse.name=cardOnly?'card-reverse':shikishi?'paper-reverse':'opaque-ivory-acrylic-reverse';

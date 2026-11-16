@@ -4,6 +4,7 @@ export const DISPLAY_FONT = '"SEGA Maru Gothic DB"';
 export const RATING_FONT = '"Maimai Rating Digits"';
 export const RENDER_SCALE = 4;
 export const OUTPUT = { width: 2160, height: 904 };
+export const ACRYLIC_PRINT_MM = { width: 119.1, height: 49.1 };
 export const DEFAULT_BACKGROUND = 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/backgrounds/UI_Frame_200402.png';
 // Back to front. Both artwork and effect-mask occlusion use this exact order.
 export const COMPOSITION_ORDER = Object.freeze([
