@@ -1,3 +1,5 @@
+import { countExport } from './usage-stats.js';
+
 // iPadOS can advertise a desktop Mac user agent. Do not use screen size: it
 // would miss large iPads and change the desktop download flow on small windows.
 export function isIosSafari(device = globalThis.navigator) {
@@ -151,6 +153,8 @@ export function initializeImageExport({
     if (!preferPreview) {
       try {
         downloadPng(renderCanvas, width, height, filename);
+        countExport('generate');
+        countExport('download');
       } catch (error) {
         setStatus(exportErrorMessage(error));
         dialog.showModal();
@@ -173,6 +177,7 @@ export function initializeImageExport({
           current.file = file;
       } catch { /* Use the preview and download fallback. */ }
       showPreview();
+      countExport('generate');
     } catch (error) {
       if (version !== generation) return;
       setStatus(exportErrorMessage(error));
@@ -183,6 +188,10 @@ export function initializeImageExport({
         updateAvailability();
       }
     }
+  });
+
+  download.addEventListener('click', () => {
+    if (current) countExport('download');
   });
 
   // The file is ready before this second, explicit tap. Do not await encoding,

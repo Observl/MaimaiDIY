@@ -54,4 +54,4 @@ Rating 数字使用 Roboto ExtraBold 字形近似呈现，许可见 [SIL OFL 1.1
 
 ![最近 30 天的 MaimaiDIY 网站访问趋势](docs/traffic/daily.svg)
 
-图表来自 GoatCounter，每日更新，按 UTC 统计最近 30 个完整日的网站访问次数。
+图表来自 GoatCounter，每日更新，按 UTC 统计最近 30 个完整日的访问、文件生成及下载发起次数。生成与下载统计包含高清 PNG 和定制设计 ZIP，从上线后开始记录。系统相册长按保存和分享菜单的保存结果无法由网页统计。

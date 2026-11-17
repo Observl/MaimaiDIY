@@ -1,5 +1,6 @@
 import { initializePurchaseThumbnails } from './purchase-thumbnails.js';
 import { createOrderArtworkZip } from './order-artwork-export.js';
+import { countExport } from './usage-stats.js';
 
 export function initializePurchaseUI({snapshotState,renderCanvas,getFinishMaps}, catalog) {
   const {ACRYLIC_PRODUCTS,ACCESSORIES,COLLECTIBLE_CARD,SHIKISHI_PRODUCT,BUNDLE_PRESETS,quoteProductBundle,buildAcrylicDesignDraft,formatYuan:yuan}=catalog;
@@ -212,6 +213,8 @@ export function initializePurchaseUI({snapshotState,renderCanvas,getFinishMaps},
       document.body.append(link);
       link.click();
       link.remove();
+      countExport('generate');
+      countExport('download');
       setTimeout(() => URL.revokeObjectURL(url), 60_000);
       zipStatus.textContent = '设计压缩包已生成。';
     } catch (error) {
