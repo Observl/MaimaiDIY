@@ -3,12 +3,6 @@
   "timezone": "UTC",
   "days": [
     {
-      "day": "2026-10-18",
-      "visits": 0,
-      "generated": 0,
-      "downloads": 0
-    },
-    {
       "day": "2026-10-19",
       "visits": 0,
       "generated": 0,
@@ -181,6 +175,12 @@
       "visits": 16,
       "generated": 0,
       "downloads": 0
+    },
+    {
+      "day": "2026-11-17",
+      "visits": 10,
+      "generated": 10,
+      "downloads": 10
     }
   ]
 }
