@@ -87,6 +87,10 @@ for (const file of files) {
     );
   }
 }
+await mkdir(resolve(dist, 'vendor'), { recursive: true });
+await cp(resolve(root, 'node_modules/lcms-wasm/dist/lcms.js'), resolve(dist, 'vendor/lcms.js'));
+await cp(resolve(root, 'node_modules/lcms-wasm/dist/lcms.wasm'), resolve(dist, 'vendor/lcms.wasm'));
+await cp(resolve(root, 'node_modules/lcms-wasm/LICENSE.md'), resolve(dist, 'vendor/lcms-LICENSE.txt'));
 // Ship the pinned 3D runtime on our own origin.
 await mkdir(resolve(dist, 'vendor'), { recursive: true });
 for (const [source, target] of [

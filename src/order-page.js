@@ -20,6 +20,10 @@ const renderer = createRenderer(document.querySelector('#preview'), {
   },
 });
 let state = null;
+const printExport = document.querySelector('#order-export-cmyk');
+const printProfile = document.querySelector('#order-cmyk-profile');
+const printStatus = document.querySelector('#order-export-status');
+let exportingPrint = false;
 let version = 0;
 let loadedDesign;
 const physicalPreview = initializeOrderPreview({
@@ -43,6 +47,7 @@ async function refreshDesign() {
   const request = ++version;
   state = null;
   document.dispatchEvent(new window.Event('order-design-reset'));
+  printExport.disabled = true;
   status.hidden = false;
   preview.hidden = true;
   physicalPreview.reset();
@@ -63,6 +68,7 @@ async function refreshDesign() {
     const rendered = await renderer.render(latest, { strict: true });
     if (request !== version || !rendered) return;
     state = latest;
+    printExport.disabled = exportingPrint;
     preview.hidden = false;
     status.textContent = '已自动载入你最近编辑的上屏设计。';
     status.hidden = true;
@@ -106,3 +112,46 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden) refreshDesign();
 });
 
+
+printExport.addEventListener('click', () => {
+  printStatus.textContent = '请选择厂家提供的 CMYK ICC 配置文件。';
+  printProfile.value = '';
+  printProfile.click();
+});
+printProfile.addEventListener('change', async () => {
+  if (!printProfile.files.length || !state || exportingPrint) return;
+  const profile = printProfile.files[0];
+  const currentVersion = version;
+  const design = state;
+  exportingPrint = true;
+  printExport.disabled = true;
+  printStatus.textContent = '正在生成 CMYK 印刷文件…';
+  try {
+    const canvas = document.createElement('canvas');
+    const printRenderer = createRenderer(canvas, { scale: 2 });
+    const rendered = await printRenderer.render(design, { strict: true });
+    if (!rendered || currentVersion !== version)
+      throw new Error('设计已变化，请重新导出。');
+    const { exportCmykTiff } = await import('./cmyk-export.js');
+    canvas.width = 2400;
+    canvas.height = 1000;
+    canvas.getContext('2d').drawImage(printRenderer.renderCanvas, 0, 0, canvas.width, canvas.height);
+    const blob = await exportCmykTiff(canvas, profile);
+    printRenderer.dispose();
+    if (currentVersion !== version) throw new Error('设计已变化，请重新导出。');
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'maimai-diy-print-' + canvas.width + 'x' + canvas.height + '-' + Date.now() + '.tif';
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+    printStatus.textContent = '已生成 CMYK 印刷文件，请查看浏览器下载。';
+  } catch (error) {
+    printStatus.textContent = '印刷文件导出失败：' + error.message;
+  } finally {
+    exportingPrint = false;
+    printExport.disabled = !state;
+  }
+});

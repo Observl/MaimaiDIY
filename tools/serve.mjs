@@ -9,6 +9,7 @@ const feedback = setupFeedback(port);
 const types = {
   '.html': 'text/html',
   '.js': 'text/javascript',
+  '.wasm': 'application/wasm',
   '.css': 'text/css',
   '.json': 'application/json',
   '.png': 'image/png',

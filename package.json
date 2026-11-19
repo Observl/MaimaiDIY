@@ -20,7 +20,8 @@
     "@pmndrs/detect-gpu": "6.0.29",
     "@pmndrs/vanilla": "1.25.0",
     "three": "^0.180.0",
-    "three-custom-shader-material": "6.4.0"
+    "three-custom-shader-material": "6.4.0",
+    "lcms-wasm": "1.0.5"
   },
   "version": "1.3.1"
 }

@@ -56,6 +56,9 @@
       <div class="canvas-shell" id="order-preview-shell" hidden>
         <canvas id="preview" width="1080" height="452" aria-label="用于定制周边的最新上屏设计"></canvas>
       </div>
+      <button id="order-export-cmyk" class="button secondary" type="button" aria-describedby="order-export-status" disabled>导出印刷 CMYK TIFF</button>
+      <input id="order-cmyk-profile" class="file-input" type="file" accept=".icc,.icm" aria-label="选择厂家 CMYK ICC 配置">
+      <p id="order-export-status" class="template-status" role="status"></p>
     </section>
     <section id="acrylic-preview-card" class="card acrylic-preview-card" aria-labelledby="acrylic-preview-title">
       <div class="section-head"><h2 id="acrylic-preview-title">3D 实物预览</h2></div>
