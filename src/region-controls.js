@@ -163,6 +163,8 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       pick.addEventListener('click', () => picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas',
         selectedAssetId: () => state.companions[index]?.id,
         selectionError(selected) {
+          if (selected.companionColorKnown === false)
+            return '此角色图片已收录，边框配色尚未核实，暂不能加入展示。';
           if (!state.companions[index] && state.companions.some(member => String(member.id) === String(selected.id)))
             return '这位伙伴已在队伍中，请为此位置选择另一位伙伴。';
         },

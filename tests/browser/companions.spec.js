@@ -200,3 +200,34 @@ test('both regional companions use confirmed character frames and match download
     await compareDownload();
   }
 });
+
+
+test('JP characters without verified frame colors remain visible with accurate category counts', async ({ page, context }) => {
+  const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
+    schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-08T00:00:00Z', sources: [],
+    availability: { art: 'test' }, ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+  }]));
+  catalogs.jp.charas = [
+    { id: '000101', name: '已核实伙伴', group: '已核实区域', image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_000101.png' },
+    { id: '450101', name: '待核实伙伴', group: '新区域', image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_450101.png' },
+  ];
+  const { files } = buildRegionalIndex({ catalogs });
+  const prefix = new URL(REGION_BASE_URL).pathname;
+  await page.addInitScript(({ key, state }) => localStorage.setItem(key, JSON.stringify({ version: 1, state })),
+    { key: CURRENT_DESIGN_KEY, state: { ...createDefaultState('jp'), region: 'jp', screenMode: 'companions' } });
+  await setup(page, context, path => {
+    const body = path.startsWith(prefix) && files.get(path.slice(prefix.length));
+    if (body) return { body, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' } };
+    if (path.endsWith('.webp')) return { body: png, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' } };
+  });
+  await expect(page.locator('#regional-display-error')).toHaveText('');
+  await page.getByRole('button', { name: '选择队长素材', exact: true }).click();
+  await expect(item(page, '450101')).toBeVisible();
+  await expect(item(page, '450101').locator('img')).toHaveJSProperty('naturalWidth', 1);
+  await page.locator('#picker-filter').selectOption({ label: '新区域（1）' });
+  await expect(item(page, '450101')).toBeVisible();
+  await expect(item(page, '000101')).toHaveCount(0);
+  await item(page, '450101').click();
+  await expect(page.locator('#picker-message')).toContainText('边框配色尚未核实');
+  expect((await savedState(page)).companions).toEqual([]);
+});

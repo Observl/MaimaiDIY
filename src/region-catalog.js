@@ -79,8 +79,9 @@ export async function loadRegionCategoryIndex(region, category) {
     region === 'cn' ? loadCnCompanions().then(items => ({ region, category, items })) : loader.loadCategory(region, category),
     loadConfirmedCompanions(),
   ]);
-  return registerRegionCategory({ ...index, items: index.items.filter(item =>
-    Object.hasOwn(confirmed.characters, String(item.id).padStart(6, '0'))) });
+  return registerRegionCategory({ ...index, groups: undefined, items: index.items
+    .map(item => ({ ...item, companionColorKnown: Object.hasOwn(confirmed.characters, String(item.id).padStart(6, '0')) }))
+    .filter(item => region === 'jp' || item.companionColorKnown) });
 }
 // Prepare only what a saved design references, plus its currently visible mode.
 // Template import still uses loadRegionCatalog for full membership validation.

@@ -7,7 +7,7 @@ import { sortedPickerItems } from './picker.js';
 
 export async function companionPlaceholders(region) {
   const category = await indexedMaterialCategory({ category: 'charas', label: '旅行伙伴' }, region);
-  return sortedPickerItems(category).slice(0, 5);
+  return sortedPickerItems(category).filter(item => item.companionColorKnown !== false).slice(0, 5);
 }
 
 export function unusedCompanionPlaceholders(items, companions) {
