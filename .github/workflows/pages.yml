@@ -44,6 +44,24 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+          name: pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Wait for artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: pages-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          for attempt in $(seq 1 12); do
+            count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" | jq --arg name "$ARTIFACT_NAME" '[.artifacts[] | select(.name == $name)] | length')
+            if [ "$count" -eq 1 ]; then
+              sleep 2
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::Uploaded Pages artifact metadata is unavailable."
+          exit 1
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: pages-${{ github.run_id }}-${{ github.run_attempt }}
