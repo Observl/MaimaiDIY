@@ -130,7 +130,7 @@ test('both regional companions use confirmed character frames and match download
     const levelFrames = await page.evaluate(async design => {
       const { createRenderer } = await import('/src/renderer.js');
       const results = [];
-      for (const awakened of [false, true]) for (const level of [9, 10, 99, 100, 999, 1000, 9999]) {
+      for (const awakened of [false, true]) for (const level of [1, 9, 10, 99, 100, 999, 1000, 9999]) {
         const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 452;
         await createRenderer(canvas).render({ ...design, companions: design.companions.map(member => ({ ...member, level, awakened })) }, { strict: true });
         const ctx = canvas.getContext('2d');
@@ -139,13 +139,16 @@ test('both regional companions use confirmed character frames and match download
       }
       return results;
     }, await savedState(page));
-    for (const offset of [0, 7]) for (let slot = 0; slot < 5; slot++) {
-      expect(levelFrames[offset + 1][slot]).not.toBe(levelFrames[offset][slot]);
-      expect(levelFrames[offset + 2][slot]).toBe(levelFrames[offset + 1][slot]);
-      expect(levelFrames[offset + 3][slot]).not.toBe(levelFrames[offset + 2][slot]);
-      expect(levelFrames[offset + 4][slot]).toBe(levelFrames[offset + 3][slot]);
-      expect(levelFrames[offset + 5][slot]).not.toBe(levelFrames[offset + 4][slot]);
-      expect(levelFrames[offset + 6][slot]).toBe(levelFrames[offset + 5][slot]);
+    for (let slot = 0; slot < 5; slot++) {
+      expect(levelFrames[1][slot]).toBe(levelFrames[0][slot]);
+      expect(levelFrames[2][slot]).not.toBe(levelFrames[1][slot]);
+      expect(levelFrames[3][slot]).toBe(levelFrames[2][slot]);
+      expect(levelFrames[4][slot]).not.toBe(levelFrames[3][slot]);
+      expect(levelFrames[5][slot]).toBe(levelFrames[4][slot]);
+      expect(levelFrames[6][slot]).not.toBe(levelFrames[5][slot]);
+      expect(levelFrames[7][slot]).toBe(levelFrames[6][slot]);
+      expect(levelFrames[8][slot]).not.toBe(levelFrames[0][slot]);
+      for (let index = 9; index < 16; index++) expect(levelFrames[index][slot]).toBe(levelFrames[8][slot]);
     }
     for (const frame of levelFrames) expect(frame[5]).toBe(levelFrames[0][5]);
     const earnedStars = await page.evaluate(async design => {

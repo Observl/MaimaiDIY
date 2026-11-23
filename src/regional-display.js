@@ -222,7 +222,7 @@ export async function prepareRegionalDisplay({ region, screenMode, song, compani
         source.mask ? art(source.mask) : null,
         member.awakened ? (style.background ? stamp(style.background) : null) :
           (index ? texture(set.base).then(image => ctx => ctx.drawImage(image, ...profile.baseBounds)) : null),
-        Promise.all([texture(levelFrame || (index ? set.frame : set.leader)), texture(profile.caption)])
+        member.awakened ? stamp(style.frame) : Promise.all([texture(levelFrame || (index ? set.frame : set.leader)), texture(profile.caption)])
           .then(([frame, caption]) => ctx => { ctx.drawImage(frame, ...profile.frameBounds); ctx.drawImage(caption, ...profile.captionBounds); }),
         prepareStars(source, member, bounds, set, profile),
         Promise.all([...String(member.level)].map(async (digit, offset) => {
