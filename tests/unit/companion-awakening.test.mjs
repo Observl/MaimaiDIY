@@ -55,12 +55,12 @@ test('mai_draw characters share the same color data when they belong to one pale
 
 
 test('ordinary member frames change exactly at levels 10, 100 and 1000', () => {
-  for (const [level, expected] of [[1, null], [9, null], [10, 'level-frame-bronze'], [99, 'level-frame-bronze'], [100, 'level-frame-gold'], [999, 'level-frame-gold'], [1000, 'level-frame-silver'], [9999, 'level-frame-silver']])
+  for (const [level, expected] of [[1, null], [9, null], [10, 'level-frame-bronze'], [99, 'level-frame-bronze'], [100, 'level-frame-silver'], [999, 'level-frame-silver'], [1000, 'level-frame-gold'], [9999, 'level-frame-gold']])
     assert.equal(companionLevelFrame(level), expected);
 });
 
 
 test('leader level labels follow the same thresholds without adding a portrait frame', () => {
-  for (const [level, expected] of [[9, null], [10, 'level-leader-bronze'], [99, 'level-leader-bronze'], [100, 'level-leader-gold'], [999, 'level-leader-gold'], [1000, 'level-leader-silver'], [9999, 'level-leader-silver']])
+  for (const [level, expected] of [[9, null], [10, 'level-leader-bronze'], [99, 'level-leader-bronze'], [100, 'level-leader-silver'], [999, 'level-leader-silver'], [1000, 'level-leader-gold'], [9999, 'level-leader-gold']])
     assert.equal(companionLevelFrame(level, true), expected);
 });

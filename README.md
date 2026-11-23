@@ -2,7 +2,7 @@
 
 在浏览器里搭配国服和日服的舞萌收藏品，实时预览并导出 **2160 × 904 PNG**。支持电脑和手机，无需安装。
 
-**[打开在线编辑器](https://observl.github.io/MaimaiDIY/)** · [3D 周边预览](https://observl.github.io/MaimaiDIY/custom-order.html) · [v1.3.1 更新公告](https://github.com/Observl/MaimaiDIY/releases/tag/v1.3.1) · [@ObservL](https://github.com/ObservL)
+**[打开在线编辑器](https://observl.github.io/MaimaiDIY/)** · [3D 周边预览](https://observl.github.io/MaimaiDIY/custom-order.html) · [MaimaiDIY v1.4.0 更新公告](https://github.com/Observl/MaimaiDIY/releases/tag/v1.4.0) · [@ObservL](https://github.com/ObservL)
 
 ![MaimaiDIY 国服编辑器，显示区服切换、实时预览和 PNG 导出](docs/screenshots/editor-v1.3.1.jpg)
 

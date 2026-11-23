@@ -49,7 +49,7 @@ jobs:
             if (!body) throw new Error('The version PR or release commit must contain the announcement');
             const { data: release } = await github.rest.repos.createRelease({
               owner, repo, tag_name: tag, target_commitish: context.sha,
-              name: announcement?.title.replace(/^Release\s+/i, '') || tag,
+              name: 'MaimaiDIY ' + tag,
               body, draft: false, prerelease: false,
               generate_release_notes: false, make_latest: 'true'
             });
