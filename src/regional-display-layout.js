@@ -1,3 +1,8 @@
+export function companionLevelFrame(level, leader = false) {
+  const color = level >= 1000 ? 'silver' : level >= 100 ? 'gold' : level >= 10 ? 'bronze' : null;
+  return color ? `level-${leader ? 'leader' : 'frame'}-${color}` : null;
+}
+
 const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 
 export function validateConfirmedCompanionSets(data) {

@@ -27,6 +27,9 @@ const confirmed = validateConfirmedCompanionSets(JSON.parse(await readFile('regi
 for (const directory of ['regional-display', 'regional-display/charas', 'regional-display/companion-sets'])
   for (const file of await readdir(directory))
     if (/^[\w-]+\.(?:json|webp)$/.test(file)) files.add(`${directory}/${file}`);
+for (const role of ['frame', 'leader'])
+  for (const name of ['bronze', 'gold', 'silver'])
+    if (!files.has(`regional-display/companion-sets/level-${role}-${name}.webp`)) throw Error(`Missing level frame: ${role}/${name}`);
 for (const names of [...Object.values(confirmed.sets).map(Object.values),
   ...Object.values(confirmed.regions).flat().map(slot => [slot.caption, slot.starOverlay])])
   for (const name of names)

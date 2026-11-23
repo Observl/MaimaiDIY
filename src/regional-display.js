@@ -1,6 +1,6 @@
 import { loadImage } from './assets.js';
 import { loadRegionCategoryIndex, getRegionCatalogItem } from './region-catalog.js';
-import { companionAwakeningTier, validateCompanionDisplay, validateCompanionPalettes, validateConfirmedCompanionSets, validateRegionalDisplayLayout } from './regional-display-layout.js';
+import { companionLevelFrame, companionAwakeningTier, validateCompanionDisplay, validateCompanionPalettes, validateConfirmedCompanionSets, validateRegionalDisplayLayout } from './regional-display-layout.js';
 
 import { indexedMaterialCategory } from './material-index.js';
 import { sortedPickerItems } from './picker.js';
@@ -22,7 +22,7 @@ function loadCompanionPalettes(refreshId) {
   const entry = { refreshId };
   const read = async file => {
     const response = await fetch(new URL(`../regional-display/${file}.json`, import.meta.url),
-      refreshId ? { cache: 'reload' } : undefined);
+      { cache: refreshId ? 'reload' : 'no-cache' });
     if (!response.ok) throw new Error('伙伴配色目录暂不可用');
     return response.json();
   };
@@ -214,6 +214,7 @@ export async function prepareRegionalDisplay({ region, screenMode, song, compani
       const set = confirmed.sets[assignment.setId];
       const profile = confirmed.regions[region][index];
       const source = display.slots[index];
+      const levelFrame = companionLevelFrame(member.level, index === 0);
       const style = member.awakened ? source.superAwakening : source.normal;
       const bounds = name => layout[name];
       const [image, mask, back, front, stars, levels] = await Promise.all([
@@ -221,7 +222,7 @@ export async function prepareRegionalDisplay({ region, screenMode, song, compani
         source.mask ? art(source.mask) : null,
         member.awakened ? (style.background ? stamp(style.background) : null) :
           (index ? texture(set.base).then(image => ctx => ctx.drawImage(image, ...profile.baseBounds)) : null),
-        member.awakened ? stamp(style.frame) : Promise.all([texture(index ? set.frame : set.leader), texture(profile.caption)])
+        Promise.all([texture(levelFrame || (index ? set.frame : set.leader)), texture(profile.caption)])
           .then(([frame, caption]) => ctx => { ctx.drawImage(frame, ...profile.frameBounds); ctx.drawImage(caption, ...profile.captionBounds); }),
         prepareStars(source, member, bounds, set, profile),
         Promise.all([...String(member.level)].map(async (digit, offset) => {

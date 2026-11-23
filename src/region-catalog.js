@@ -57,7 +57,7 @@ function loadCnCompanions() {
 }
 let confirmedCompanions;
 function loadConfirmedCompanions() {
-  confirmedCompanions ||= fetch(new URL('../regional-display/confirmed-companion-sets.json', import.meta.url))
+  confirmedCompanions ||= fetch(new URL('../regional-display/confirmed-companion-sets.json', import.meta.url), { cache: 'no-cache' })
     .then(response => { if (!response.ok) throw new Error('旅行伙伴配色索引加载失败'); return response.json(); })
     .catch(error => { confirmedCompanions = undefined; throw error; });
   return confirmedCompanions;

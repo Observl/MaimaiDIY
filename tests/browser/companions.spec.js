@@ -81,7 +81,7 @@ test('both regional companions use confirmed character frames and match download
     key: CURRENT_DESIGN_KEY,
     designs: ['cn', 'jp'].map(region => ({
       ...createDefaultState(region), region, screenMode: 'companions',
-      companions: ids.slice(2).map(id => ({ id, level: 29, awakened: false })),
+      companions: ids.slice(2).map(id => ({ id, level: 1, awakened: false })),
     })),
   });
   await setup(page, context, path => {
@@ -127,6 +127,27 @@ test('both regional companions use confirmed character frames and match download
     await pick(1, '100301');
     const afterMember = await sample(memberLayers);
     afterMember.forEach((pixels, index) => expect(pixels !== beforeMember[index]).toBe(true));
+    const levelFrames = await page.evaluate(async design => {
+      const { createRenderer } = await import('/src/renderer.js');
+      const results = [];
+      for (const awakened of [false, true]) for (const level of [9, 10, 99, 100, 999, 1000, 9999]) {
+        const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 452;
+        await createRenderer(canvas).render({ ...design, companions: design.companions.map(member => ({ ...member, level, awakened })) }, { strict: true });
+        const ctx = canvas.getContext('2d');
+        results.push([[80, 371, 60, 3], ...[215, 354, 493, 633].map(x => [x, 240, 6, 70]), [70, 250, 25, 60]]
+          .map(box => Array.from(ctx.getImageData(...box).data).join(',')));
+      }
+      return results;
+    }, await savedState(page));
+    for (const offset of [0, 7]) for (let slot = 0; slot < 5; slot++) {
+      expect(levelFrames[offset + 1][slot]).not.toBe(levelFrames[offset][slot]);
+      expect(levelFrames[offset + 2][slot]).toBe(levelFrames[offset + 1][slot]);
+      expect(levelFrames[offset + 3][slot]).not.toBe(levelFrames[offset + 2][slot]);
+      expect(levelFrames[offset + 4][slot]).toBe(levelFrames[offset + 3][slot]);
+      expect(levelFrames[offset + 5][slot]).not.toBe(levelFrames[offset + 4][slot]);
+      expect(levelFrames[offset + 6][slot]).toBe(levelFrames[offset + 5][slot]);
+    }
+    for (const frame of levelFrames) expect(frame[5]).toBe(levelFrames[0][5]);
     const earnedStars = await page.evaluate(async design => {
       const { createRenderer } = await import('/src/renderer.js');
       const confirmed = await fetch('/regional-display/confirmed-companion-sets.json').then(response => response.json());
@@ -138,7 +159,8 @@ test('both regional companions use confirmed character frames and match download
         results.push(confirmed.regions[design.region].map(slot => {
           let gold = 0;
           for (const rect of slot.starBounds) {
-            const pixels = ctx.getImageData(...rect.map(Math.round)).data;
+            const [x, y, width, height] = rect;
+            const pixels = ctx.getImageData(Math.round(x + width * .4), Math.round(y + height * .4), Math.round(width * .2), Math.round(height * .2)).data;
             for (let i = 0; i < pixels.length; i += 4)
               if (pixels[i] > 160 && pixels[i + 1] > 100 && pixels[i + 2] < 100) gold++;
           }
@@ -209,7 +231,7 @@ test('JP characters without verified frame colors remain visible with accurate c
   }]));
   catalogs.jp.charas = [
     { id: '000101', name: '已核实伙伴', group: '已核实区域', image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_000101.png' },
-    { id: '450101', name: '待核实伙伴', group: '新区域', image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_450101.png' },
+    { id: '999998', name: '待核实伙伴', group: '新区域', image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_999998.png' },
   ];
   const { files } = buildRegionalIndex({ catalogs });
   const prefix = new URL(REGION_BASE_URL).pathname;
@@ -222,12 +244,35 @@ test('JP characters without verified frame colors remain visible with accurate c
   });
   await expect(page.locator('#regional-display-error')).toHaveText('');
   await page.getByRole('button', { name: '选择队长素材', exact: true }).click();
-  await expect(item(page, '450101')).toBeVisible();
-  await expect(item(page, '450101').locator('img')).toHaveJSProperty('naturalWidth', 1);
+  await expect(item(page, '999998')).toBeVisible();
+  await expect(item(page, '999998').locator('img')).toHaveJSProperty('naturalWidth', 1);
   await page.locator('#picker-filter').selectOption({ label: '新区域（1）' });
-  await expect(item(page, '450101')).toBeVisible();
+  await expect(item(page, '999998')).toBeVisible();
   await expect(item(page, '000101')).toHaveCount(0);
-  await item(page, '450101').click();
+  await item(page, '999998').click();
   await expect(page.locator('#picker-message')).toContainText('边框配色尚未核实');
   expect((await savedState(page)).companions).toEqual([]);
+});
+
+
+test('a newly confirmed series character can be selected and rendered', async ({ page, context }) => {
+  const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
+    schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-08T00:00:00Z', sources: [],
+    availability: { art: 'test' }, ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+  }]));
+  catalogs.jp.charas = [{ id: '450201', name: '黒楼十夜子', group: 'メトロポリスちほー8', image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_450201.png' }];
+  const { files } = buildRegionalIndex({ catalogs });
+  const prefix = new URL(REGION_BASE_URL).pathname;
+  await page.addInitScript(({ key, state }) => localStorage.setItem(key, JSON.stringify({ version: 1, state })),
+    { key: CURRENT_DESIGN_KEY, state: { ...createDefaultState('jp'), region: 'jp', screenMode: 'companions' } });
+  await setup(page, context, path => {
+    const body = path.startsWith(prefix) && files.get(path.slice(prefix.length));
+    if (body) return { body, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' } };
+  });
+  await page.getByRole('button', { name: '选择队长素材', exact: true }).click();
+  await item(page, '450201').click();
+  await expect.poll(async () => (await savedState(page)).companions[0]?.id).toBe('450201');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#loading')).toBeHidden();
+  await expect(page.locator('#regional-display-error')).toHaveText('');
 });

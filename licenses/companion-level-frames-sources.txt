@@ -1,0 +1,7 @@
+Companion level frame sources
+
+Member frames: embedded UI_CMN_Chara_RFrame_04/05/06.png from the user's local PSD, exported losslessly without tinting.
+
+Leader level panels: UI_CMN_Chara_LFrame_04/05/06.png from:
+https://github.com/NightmareDreemurr/image-generator/tree/4c0aba481fa669023873ad45ad52309fac0ef0bf/maimai_image_generating_module/assets
+Converted from PNG to lossless WebP without color changes. These are small level panels, not portrait frames.

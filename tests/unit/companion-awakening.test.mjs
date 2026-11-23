@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { companionAwakeningProgress, companionAwakeningTier, companionPaletteSlot, maiDrawPaletteForCharacter, validateCompanionPalettes, validateMaiDrawPalettes } from '../../src/regional-display-layout.js';
+import { companionLevelFrame, companionAwakeningProgress, companionAwakeningTier, companionPaletteSlot, maiDrawPaletteForCharacter, validateCompanionPalettes, validateMaiDrawPalettes } from '../../src/regional-display-layout.js';
 import { companionIdLabel } from '../../src/region-profile.js';
 
 const file = new URL('../../regional-display/companion-palettes.json', import.meta.url);
@@ -51,4 +51,16 @@ test('mai_draw characters share the same color data when they belong to one pale
   assert.notDeepEqual(palette('100104'), palette('100301'));
   assert.deepEqual(palette(101), palette('000101'));
   assert.equal(palette('999999'), null);
+});
+
+
+test('ordinary member frames change exactly at levels 10, 100 and 1000', () => {
+  for (const [level, expected] of [[1, null], [9, null], [10, 'level-frame-bronze'], [99, 'level-frame-bronze'], [100, 'level-frame-gold'], [999, 'level-frame-gold'], [1000, 'level-frame-silver'], [9999, 'level-frame-silver']])
+    assert.equal(companionLevelFrame(level), expected);
+});
+
+
+test('leader level labels follow the same thresholds without adding a portrait frame', () => {
+  for (const [level, expected] of [[9, null], [10, 'level-leader-bronze'], [99, 'level-leader-bronze'], [100, 'level-leader-gold'], [999, 'level-leader-gold'], [1000, 'level-leader-silver'], [9999, 'level-leader-silver']])
+    assert.equal(companionLevelFrame(level, true), expected);
 });

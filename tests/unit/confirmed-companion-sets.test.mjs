@@ -41,3 +41,20 @@ test('level 9999 and explicit awakening survive template sanitization independen
     assert.deepEqual(sanitizeRegionFields({ region: 'cn', screenMode: 'companions', companions: [member] }).companions, [member]);
   }
 });
+
+
+test('all confirmed series share their selected native combination', () => {
+  const series = read('../../regional-display/confirmed-companion-series.json').series;
+  assert.equal(Object.keys(series).length, 11);
+  const ids = new Set();
+  for (const [name, selection] of Object.entries(series)) {
+    assert.ok(confirmed.sets[selection.setId]);
+    for (const id of selection.characterIds) {
+      assert.equal(confirmed.characters[id].setId, selection.setId);
+      assert.equal(confirmed.characters[id].series, name);
+      assert.equal(confirmed.characters[id].source, 'confirmed-series');
+      assert.equal(ids.has(id), false); ids.add(id);
+    }
+  }
+  assert.equal(ids.size, 70);
+});

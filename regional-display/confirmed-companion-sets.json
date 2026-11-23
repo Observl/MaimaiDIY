@@ -3671,6 +3671,426 @@
       "setId": "1f0790f7ce0d6bc0b343",
       "source": "mai_draw"
     },
+    "450101": {
+      "colorId": null,
+      "setId": "ca4bb90cc56b2f90f936",
+      "source": "confirmed-series",
+      "series": "原创地区 · パーリィちほー"
+    },
+    "450102": {
+      "colorId": null,
+      "setId": "ca4bb90cc56b2f90f936",
+      "source": "confirmed-series",
+      "series": "原创地区 · パーリィちほー"
+    },
+    "450103": {
+      "colorId": null,
+      "setId": "ca4bb90cc56b2f90f936",
+      "source": "confirmed-series",
+      "series": "原创地区 · パーリィちほー"
+    },
+    "450104": {
+      "colorId": null,
+      "setId": "ca4bb90cc56b2f90f936",
+      "source": "confirmed-series",
+      "series": "原创地区 · パーリィちほー"
+    },
+    "450301": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "450302": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "450303": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "450304": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "550201": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "550202": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "550203": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "550204": {
+      "colorId": null,
+      "setId": "6c00af33c5db63d4a154",
+      "source": "confirmed-series",
+      "series": "原创地区 · ドラゴンちほー"
+    },
+    "500301": {
+      "colorId": null,
+      "setId": "154d2e96ae6b22b6d0f2",
+      "source": "confirmed-series",
+      "series": "原创地区 · BLACK ROSEちほー"
+    },
+    "500302": {
+      "colorId": null,
+      "setId": "154d2e96ae6b22b6d0f2",
+      "source": "confirmed-series",
+      "series": "原创地区 · BLACK ROSEちほー"
+    },
+    "500303": {
+      "colorId": null,
+      "setId": "154d2e96ae6b22b6d0f2",
+      "source": "confirmed-series",
+      "series": "原创地区 · BLACK ROSEちほー"
+    },
+    "500304": {
+      "colorId": null,
+      "setId": "154d2e96ae6b22b6d0f2",
+      "source": "confirmed-series",
+      "series": "原创地区 · BLACK ROSEちほー"
+    },
+    "500305": {
+      "colorId": null,
+      "setId": "154d2e96ae6b22b6d0f2",
+      "source": "confirmed-series",
+      "series": "原创地区 · BLACK ROSEちほー"
+    },
+    "600201": {
+      "colorId": null,
+      "setId": "7cd1b39834c7a1976d89",
+      "source": "confirmed-series",
+      "series": "原创地区 · kawaiiちほー"
+    },
+    "600202": {
+      "colorId": null,
+      "setId": "7cd1b39834c7a1976d89",
+      "source": "confirmed-series",
+      "series": "原创地区 · kawaiiちほー"
+    },
+    "600203": {
+      "colorId": null,
+      "setId": "7cd1b39834c7a1976d89",
+      "source": "confirmed-series",
+      "series": "原创地区 · kawaiiちほー"
+    },
+    "600204": {
+      "colorId": null,
+      "setId": "7cd1b39834c7a1976d89",
+      "source": "confirmed-series",
+      "series": "原创地区 · kawaiiちほー"
+    },
+    "600301": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · 高天原ちほー"
+    },
+    "600302": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · 高天原ちほー"
+    },
+    "600303": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · 高天原ちほー"
+    },
+    "600304": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · 高天原ちほー"
+    },
+    "004101": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "004102": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "004103": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "004104": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "450201": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "450202": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "450203": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "450204": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "500401": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "500402": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "500403": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "500404": {
+      "colorId": null,
+      "setId": "c5a9a3811fd2818689a9",
+      "source": "confirmed-series",
+      "series": "原创地区 · メトロポリスちほー"
+    },
+    "450401": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "450402": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "450403": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "450404": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "450405": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "500201": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "500202": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "500203": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "500204": {
+      "colorId": null,
+      "setId": "853d00f05355144ce7e0",
+      "source": "confirmed-series",
+      "series": "原创地区 · 天界ちほー"
+    },
+    "500101": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "500102": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "500103": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "500104": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "600401": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "600402": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "600403": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "600404": {
+      "colorId": null,
+      "setId": "fccd2a1e2cfee6c61856",
+      "source": "confirmed-series",
+      "series": "原创地区 · スカイストリートちほー"
+    },
+    "550301": {
+      "colorId": null,
+      "setId": "0297ddf82c3a2f653a40",
+      "source": "confirmed-series",
+      "series": "原创地区 · 7sRefちほー"
+    },
+    "550302": {
+      "colorId": null,
+      "setId": "0297ddf82c3a2f653a40",
+      "source": "confirmed-series",
+      "series": "原创地区 · 7sRefちほー"
+    },
+    "550303": {
+      "colorId": null,
+      "setId": "0297ddf82c3a2f653a40",
+      "source": "confirmed-series",
+      "series": "原创地区 · 7sRefちほー"
+    },
+    "600101": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · トリコロちほー"
+    },
+    "600102": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · トリコロちほー"
+    },
+    "600103": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · トリコロちほー"
+    },
+    "600104": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · トリコロちほー"
+    },
+    "600105": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · トリコロちほー"
+    },
+    "600106": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · トリコロちほー"
+    },
+    "600107": {
+      "colorId": null,
+      "setId": "deb7c1484cb33e9feedf",
+      "source": "confirmed-series",
+      "series": "原创地区 · トリコロちほー"
+    },
+    "550101": {
+      "colorId": null,
+      "setId": "89453f93180f7f7446c8",
+      "source": "confirmed-series",
+      "series": "原创地区 · なないろちほー"
+    },
+    "550102": {
+      "colorId": null,
+      "setId": "89453f93180f7f7446c8",
+      "source": "confirmed-series",
+      "series": "原创地区 · なないろちほー"
+    },
+    "550103": {
+      "colorId": null,
+      "setId": "89453f93180f7f7446c8",
+      "source": "confirmed-series",
+      "series": "原创地区 · なないろちほー"
+    },
+    "550104": {
+      "colorId": null,
+      "setId": "89453f93180f7f7446c8",
+      "source": "confirmed-series",
+      "series": "原创地区 · なないろちほー"
+    },
+    "550105": {
+      "colorId": null,
+      "setId": "89453f93180f7f7446c8",
+      "source": "confirmed-series",
+      "series": "原创地区 · なないろちほー"
+    },
+    "550106": {
+      "colorId": null,
+      "setId": "89453f93180f7f7446c8",
+      "source": "confirmed-series",
+      "series": "原创地区 · なないろちほー"
+    },
     "105801": {
       "colorId": null,
       "setId": "1f0790f7ce0d6bc0b343",
@@ -5930,10 +6350,6 @@
       "003803",
       "003804",
       "003805",
-      "004101",
-      "004102",
-      "004103",
-      "004104",
       "004105",
       "004106",
       "004107",
@@ -6071,29 +6487,12 @@
       "405507",
       "405508",
       "405509",
-      "450101",
-      "450102",
-      "450103",
-      "450104",
       "450105",
       "450106",
       "450107",
       "450108",
-      "450201",
-      "450202",
-      "450203",
-      "450204",
       "450205",
-      "450301",
-      "450302",
-      "450303",
-      "450304",
       "450305",
-      "450401",
-      "450402",
-      "450403",
-      "450404",
-      "450405",
       "455501",
       "455502",
       "455503",
@@ -6120,23 +6519,6 @@
       "455906",
       "455907",
       "455908",
-      "500101",
-      "500102",
-      "500103",
-      "500104",
-      "500201",
-      "500202",
-      "500203",
-      "500204",
-      "500301",
-      "500302",
-      "500303",
-      "500304",
-      "500305",
-      "500401",
-      "500402",
-      "500403",
-      "500404",
       "505101",
       "505102",
       "505103",
@@ -6148,19 +6530,6 @@
       "505109",
       "505110",
       "505111",
-      "550101",
-      "550102",
-      "550103",
-      "550104",
-      "550105",
-      "550106",
-      "550201",
-      "550202",
-      "550203",
-      "550204",
-      "550301",
-      "550302",
-      "550303",
       "555206",
       "555207",
       "555208",
@@ -6177,25 +6546,6 @@
       "555309",
       "555310",
       "555807",
-      "600101",
-      "600102",
-      "600103",
-      "600104",
-      "600105",
-      "600106",
-      "600107",
-      "600201",
-      "600202",
-      "600203",
-      "600204",
-      "600301",
-      "600302",
-      "600303",
-      "600304",
-      "600401",
-      "600402",
-      "600403",
-      "600404",
       "605301",
       "605302",
       "605303",
