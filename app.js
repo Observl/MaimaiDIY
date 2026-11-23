@@ -40,6 +40,7 @@ titleNotice.hidden = true;
 canvas.closest('.preview-card')?.append(titleNotice);
 const renderer = createRenderer(canvas, {
   animateTitles: true,
+  previewExamples: true,
   onTitleOverflow(overflow) {
     titleNotice.hidden = !overflow;
     titleNotice.textContent = overflow ? TITLE_STATIC_NOTICE : '';
@@ -536,7 +537,7 @@ async function render(options) {
       onRegionalDisplayError(error) {
         const asset = failedPreviewAssetLabel(error);
         regionalDisplayError.textContent = error
-          ? `${asset || '展示'}素材暂时无法加载。已保留你的选择，可以重试。` : '';
+          ? (error.cause?.code === 'COMPANION_COLOR_UNKNOWN' ? error.cause.message : `${asset || '展示'}素材暂时无法加载。已保留你的选择，可以重试。`) : '';
         regionalDisplayRetry.hidden = !error;
       },
     });

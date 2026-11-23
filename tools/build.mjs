@@ -3,7 +3,7 @@ import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promi
 import { resolve, relative, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { build } from 'esbuild';
-import { validateRegionalDisplayLayout } from '../src/regional-display-layout.js';
+import { validateCompanionDisplay, validateCompanionPalettes, validateConfirmedCompanionSets, validateRegionalDisplayLayout } from '../src/regional-display-layout.js';
 
 const root = process.cwd();
 const feedbackEndpoint = process.env.FEEDBACK_ENDPOINT?.trim() || '';
@@ -22,11 +22,22 @@ const publicFile = (path) =>
     path
   );
 const files = new Set(tracked.filter(publicFile));
+const palettes = validateCompanionPalettes(JSON.parse(await readFile('regional-display/companion-palettes.json', 'utf8')));
+const confirmed = validateConfirmedCompanionSets(JSON.parse(await readFile('regional-display/confirmed-companion-sets.json', 'utf8')));
+for (const directory of ['regional-display', 'regional-display/charas', 'regional-display/companion-sets'])
+  for (const file of await readdir(directory))
+    if (/^[\w-]+\.(?:json|webp)$/.test(file)) files.add(`${directory}/${file}`);
+for (const names of [...Object.values(confirmed.sets).map(Object.values),
+  ...Object.values(confirmed.regions).flat().map(slot => [slot.caption, slot.starOverlay])])
+  for (const name of names)
+    if (!files.has(`regional-display/companion-sets/${name}.webp`)) throw Error(`Missing companion texture: ${name}`);
 for (const region of ['cn', 'jp']) {
   const directory = `regional-display/${region}`;
   const layoutFile = `${directory}/layout.json`;
-  const layers = validateRegionalDisplayLayout(JSON.parse(await readFile(layoutFile, 'utf8')), region);
+  const layout = JSON.parse(await readFile(layoutFile, 'utf8'));
+  const layers = new Set([...validateRegionalDisplayLayout(layout, region), ...validateCompanionDisplay(palettes.regions[region].display, layout, region)]);
   files.add(layoutFile);
+  for (const file of await readdir(directory)) if (/^party-[\w-]+\.webp$/.test(file)) files.add(`${directory}/${file}`);
   for (const name of layers) {
     const file = `${directory}/${name}.webp`;
     if (!(await stat(file)).isFile()) throw Error(`Invalid song asset: ${file}`);

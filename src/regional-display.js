@@ -1,7 +1,42 @@
 import { loadImage } from './assets.js';
 import { loadRegionCategoryIndex, getRegionCatalogItem } from './region-catalog.js';
-import { validateRegionalDisplayLayout } from './regional-display-layout.js';
+import { companionAwakeningTier, validateCompanionDisplay, validateCompanionPalettes, validateConfirmedCompanionSets, validateRegionalDisplayLayout } from './regional-display-layout.js';
 
+import { indexedMaterialCategory } from './material-index.js';
+import { sortedPickerItems } from './picker.js';
+
+export async function companionPlaceholders(region) {
+  const category = await indexedMaterialCategory({ category: 'charas', label: '旅行伙伴' }, region);
+  return sortedPickerItems(category).slice(0, 5);
+}
+
+export function unusedCompanionPlaceholders(items, companions) {
+  const selected = new Set(companions.map(member => String(member.id)));
+  return items.filter(item => !selected.has(String(item.id))).slice(0, 5 - companions.length);
+}
+
+let paletteEntry;
+
+function loadCompanionPalettes(refreshId) {
+  if (paletteEntry && (!refreshId || paletteEntry.refreshId === refreshId)) return paletteEntry.request;
+  const entry = { refreshId };
+  const read = async file => {
+    const response = await fetch(new URL(`../regional-display/${file}.json`, import.meta.url),
+      refreshId ? { cache: 'reload' } : undefined);
+    if (!response.ok) throw new Error('伙伴配色目录暂不可用');
+    return response.json();
+  };
+  entry.request = Promise.all([
+    read('companion-palettes').then(validateCompanionPalettes),
+    read('confirmed-companion-sets').then(validateConfirmedCompanionSets),
+  ])
+    .catch(error => {
+      if (paletteEntry === entry) paletteEntry = undefined;
+      throw error;
+    });
+  paletteEntry = entry;
+  return entry.request;
+}
 const layouts = new Map();
 const songLayout = {
   cn: { base: [299, 156, 757, 275], cover: [16, 159, 279, 287], jacket: [48, 195],
@@ -118,10 +153,26 @@ function baselineGlyph(image, center, baseline, height) {
   };
 }
 
-export async function prepareRegionalDisplay({ region, screenMode, song }, refreshId) {
-  if (screenMode !== 'achievement' || !song.id) return null;
+function preparePortrait(image, mask, portraitBounds, maskBounds) {
+  if (!mask) return ctx => ctx.drawImage(image, ...portraitBounds);
+  const [x, y, width, height] = maskBounds;
+  const portrait = document.createElement('canvas');
+  portrait.width = width * 2;
+  portrait.height = height * 2;
+  const layer = portrait.getContext('2d');
+  layer.scale(2, 2);
+  layer.imageSmoothingQuality = 'high';
+  layer.drawImage(image, portraitBounds[0] - x, portraitBounds[1] - y, ...portraitBounds.slice(2));
+  layer.globalCompositeOperation = 'destination-in';
+  layer.drawImage(mask, 0, 0, width, height);
+  return ctx => ctx.drawImage(portrait, x, y, width, height);
+}
 
-  const [, layout] = await Promise.all([loadRegionCategoryIndex(region, 'songs'), loadLayout(region, refreshId)]);
+export async function prepareRegionalDisplay({ region, screenMode, song, companions }, refreshId, previewExamples) {
+  if (screenMode === 'collection' || (screenMode === 'achievement' && !song.id) ||
+      (screenMode === 'companions' && !previewExamples && !companions.length)) return null;
+
+  const [, layout] = await Promise.all([loadRegionCategoryIndex(region, screenMode === 'companions' ? 'charas' : 'songs'), loadLayout(region, refreshId)]);
   const art = name => loadImage(`regional-display/${region}/${name}.webp`, refreshId);
   const stamp = async (name, bounds = layout[name], fitted = false) => {
     const image = await art(name);
@@ -133,6 +184,79 @@ export async function prepareRegionalDisplay({ region, screenMode, song }, refre
     return loadImage(item.image, refreshId);
   };
   const draw = layers => ctx => { for (const layer of layers) layer(ctx); };
+
+  if (screenMode === 'companions') {
+    const [{ regions, awakeningLevels }, confirmed] = await loadCompanionPalettes(refreshId);
+    const palette = regions[region];
+    const { display } = palette;
+    validateCompanionDisplay(display, layout, region);
+    const texture = name => loadImage(`regional-display/companion-sets/${name}.webp`, refreshId);
+    async function prepareStars(slot, member, bounds, set, profile) {
+      const tier = Math.min(companionAwakeningTier(member.level, awakeningLevels), awakeningLevels.length - 1);
+      if (member.awakened) {
+        const name = slot.superAwakening.starBase;
+        return stamp(name, bounds(name));
+      }
+      const name = slot.normal.starBase;
+      const [x, y, width, height] = bounds(name);
+      const [source, socket] = await Promise.all([texture(profile.starOverlay), texture(set.star)]);
+      if (source.naturalWidth !== width || source.naturalHeight !== height * awakeningLevels.length)
+        throw new Error('旅行伙伴星星素材尺寸无效');
+      const image = source;
+      return ctx => {
+        for (const rect of profile.starBounds) ctx.drawImage(socket, ...rect);
+        ctx.drawImage(image, 0, tier * height, width, height, x, y, width, height);
+      };
+    }
+    async function prepareMember(imageRequest, member, index) {
+      const assignment = confirmed.characters[String(member.id).padStart(6, '0')];
+      if (!assignment) throw Object.assign(new Error(`旅行伙伴 ${member.id} 尚无已核实的配色索引，请更换伙伴。`), { code: 'COMPANION_COLOR_UNKNOWN' });
+      const set = confirmed.sets[assignment.setId];
+      const profile = confirmed.regions[region][index];
+      const source = display.slots[index];
+      const style = member.awakened ? source.superAwakening : source.normal;
+      const bounds = name => layout[name];
+      const [image, mask, back, front, stars, levels] = await Promise.all([
+        imageRequest,
+        source.mask ? art(source.mask) : null,
+        member.awakened ? (style.background ? stamp(style.background) : null) :
+          (index ? texture(set.base).then(image => ctx => ctx.drawImage(image, ...profile.baseBounds)) : null),
+        member.awakened ? stamp(style.frame) : Promise.all([texture(index ? set.frame : set.leader), texture(profile.caption)])
+          .then(([frame, caption]) => ctx => { ctx.drawImage(frame, ...profile.frameBounds); ctx.drawImage(caption, ...profile.captionBounds); }),
+        prepareStars(source, member, bounds, set, profile),
+        Promise.all([...String(member.level)].map(async (digit, offset) => {
+          const glyph = await art(display.levelDigits[Number(digit)]);
+          const transform = source.levelTransforms[offset];
+          return ctx => {
+            ctx.save();
+            ctx.transform(...transform);
+            ctx.drawImage(glyph, 0, 0);
+            ctx.restore();
+          };
+        })),
+      ]);
+      const portrait = preparePortrait(image, mask, source.portraitBounds, source.mask ? bounds(source.mask) : null);
+      return ctx => {
+        back?.(ctx);
+        portrait(ctx);
+        front(ctx);
+        stars(ctx);
+        levels.forEach(layer => layer(ctx));
+      };
+    }
+    const selected = Promise.all(companions.map((member, index) =>
+      prepareMember(itemImage('charas', member.id), member, index)));
+    const emptySlots = previewExamples && companions.length < 5
+      ? companionPlaceholders(region)
+      : [];
+    const [members, examples] = await Promise.all([selected, emptySlots]);
+    const placeholders = await Promise.all(unusedCompanionPlaceholders(examples, companions).map((item, offset) =>
+      prepareMember(loadImage(item.image, refreshId), { id: item.id, level: 1 }, companions.length + offset)));
+    return {
+      draw: draw(members),
+      preview: draw(placeholders.filter(Boolean)),
+    };
+  }
 
   const item = getRegionCatalogItem(region, 'songs', song.id);
   const chart = item?.charts.find(chart => chart.difficulty === song.difficulty);

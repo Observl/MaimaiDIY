@@ -312,13 +312,13 @@ test('320px regional switching preserves usable dynamic companion controls', asy
   };
   await expect(page.locator('html')).toHaveAttribute('data-region', 'cn');
   await page.locator('#screen-mode input[value="companions"]').check();
-  await expect(firstRow.getByRole('button', { name: '素材库' })).toBeDisabled();
+  await expect(firstRow.getByRole('button', { name: '选择队长素材' })).toBeEnabled();
   await noOverflow();
   await regionToggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-region', 'jp');
   await page.locator('#screen-mode input[value="companions"]').check();
   await expect(page.locator('#companion-controls .control-row')).toHaveCount(5);
-  await expect(firstRow.getByRole('button', { name: '素材库' })).toBeEnabled();
+  await expect(firstRow.getByRole('button', { name: '选择队长素材' })).toBeEnabled();
   for (const level of await page.locator('.companion-level').all()) {
     expect(await level.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16);
     expect((await level.boundingBox()).height).toBeGreaterThanOrEqual(44);
@@ -326,15 +326,15 @@ test('320px regional switching preserves usable dynamic companion controls', asy
   for (const button of await page.locator('#companion-controls button').all())
     expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(44);
   await noOverflow();
-  await firstRow.getByRole('button', { name: '素材库' }).click();
+  await firstRow.getByRole('button', { name: '选择队长素材' }).click();
   await item(page, '000101').click();
   // Selection awaits image decoding; closing early intentionally cancels it.
   await expect(page.locator('#picker-message')).toHaveText('已选择：测试伙伴');
   await expect(item(page, '000101')).toHaveAttribute('aria-pressed', 'true');
-  await expect(firstRow.locator('.control-file')).toHaveText('测试伙伴');
+  await expect(firstRow.locator('.control-file')).toHaveText('测试伙伴 · ID 000101');
   await page.keyboard.press('Escape');
   await expect(page.locator('#asset-picker')).toBeHidden();
-  await expect(firstRow.locator('.control-file')).toHaveText('测试伙伴');
+  await expect(firstRow.locator('.control-file')).toHaveText('测试伙伴 · ID 000101');
   await firstRow.locator('.companion-level').fill('12');
   await firstRow.locator('.companion-level').press('Tab');
   await expect(firstRow.locator('.companion-level')).toHaveValue('12');
@@ -342,7 +342,7 @@ test('320px regional switching preserves usable dynamic companion controls', asy
   await regionToggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-region', 'cn');
   await page.locator('#screen-mode input[value="companions"]').check();
-  await expect(firstRow.getByRole('button', { name: '素材库' })).toBeDisabled();
+  await expect(firstRow.getByRole('button', { name: '选择队长素材' })).toBeEnabled();
   await expect(firstRow.locator('.companion-level')).toBeDisabled();
   await noOverflow();
 });

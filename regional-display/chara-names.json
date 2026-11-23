@@ -1,0 +1,5832 @@
+{
+  "source": "https://github.com/TrueRou/maimai.py/tree/f88d3a9c48103111c9c94c942b5f44fea736263e/maimai_py/providers/local",
+  "entries": {
+    "100101": {
+      "name": "らいむっくま",
+      "group": "原创地区 · しゅわしゅわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100102": {
+      "name": "れもんっくま",
+      "group": "原创地区 · しゅわしゅわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100103": {
+      "name": "でらっくま",
+      "group": "原创地区 · しゅわしゅわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100104": {
+      "name": "らん",
+      "group": "しゅわしゅわちほー"
+    },
+    "100105": {
+      "name": "どりー",
+      "group": "しゅわしゅわちほー"
+    },
+    "100301": {
+      "name": "壱王",
+      "group": "メトロポリスちほー3"
+    },
+    "100302": {
+      "name": "仁王",
+      "group": "メトロポリスちほー3"
+    },
+    "100303": {
+      "name": "雷天",
+      "group": "メトロポリスちほー3"
+    },
+    "100304": {
+      "name": "焔天",
+      "group": "メトロポリスちほー3"
+    },
+    "100305": {
+      "name": "黒姫",
+      "group": "原创地区 · メトロポリスちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100401": {
+      "name": "モモ",
+      "group": "原创地区 · スカイストリートちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100402": {
+      "name": "アカツキ",
+      "group": "原创地区 · スカイストリートちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100403": {
+      "name": "ナノハ",
+      "group": "原创地区 · スカイストリートちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100404": {
+      "name": "ソウ",
+      "group": "原创地区 · スカイストリートちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100405": {
+      "name": "ノア",
+      "group": "原创地区 · スカイストリートちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100501": {
+      "name": "百合咲ミカ",
+      "group": "原创地区 · 天界ちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100502": {
+      "name": "八剱月アルマ",
+      "group": "原创地区 · 天界ちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100503": {
+      "name": "白銅寺アズリ",
+      "group": "原创地区 · 天界ちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100504": {
+      "name": "白法院ラグ",
+      "group": "原创地区 · 天界ちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100505": {
+      "name": "八剱月アルマ（堕天）",
+      "group": "原创地区 · 天界ちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100601": {
+      "name": "ロー",
+      "group": "BLACK ROSEちほー3"
+    },
+    "100602": {
+      "name": "マリー",
+      "group": "BLACK ROSEちほー3"
+    },
+    "100603": {
+      "name": "ハンナ",
+      "group": "BLACK ROSEちほー3"
+    },
+    "100604": {
+      "name": "トリスタン",
+      "group": "原创地区 · BLACK ROSEちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "100605": {
+      "name": "クレメンス（悪魔）",
+      "group": "BLACK ROSEちほー3"
+    },
+    "105301": {
+      "name": "アンドロメダ子",
+      "group": "联动地区 · ナユタン星人ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105302": {
+      "name": "アンドロメダ男",
+      "group": "联动地区 · ナユタン星人ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105303": {
+      "name": "チビキャラA",
+      "group": "联动地区 · ナユタン星人ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105304": {
+      "name": "チビキャラB",
+      "group": "联动地区 · ナユタン星人ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105305": {
+      "name": "チビキャラC",
+      "group": "联动地区 · ナユタン星人ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105306": {
+      "name": "チビキャラD",
+      "group": "联动地区 · ナユタン星人ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105401": {
+      "name": "琴葉　葵 チョコミント（Ice!）",
+      "group": "联动地区 · GYARIちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105402": {
+      "name": "琴葉　葵 チョコミント（慈悲）",
+      "group": "联动地区 · GYARIちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105403": {
+      "name": "琴葉　茜 チョコミント（？）",
+      "group": "联动地区 · GYARIちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105404": {
+      "name": "琴葉　茜 チョコミント（おかわりや）",
+      "group": "联动地区 · GYARIちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105405": {
+      "name": "チョコミン党",
+      "group": "联动地区 · GYARIちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105501": {
+      "name": "アリス・マーガトロイド",
+      "group": "联动地区 · 東方Projectリバイバルちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105502": {
+      "name": "霧雨魔理沙",
+      "group": "联动地区 · 東方Projectリバイバルちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105503": {
+      "name": "チルノ",
+      "group": "联动地区 · 東方Projectリバイバルちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105504": {
+      "name": "博麗霊夢",
+      "group": "联动地区 · 東方Projectリバイバルちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105505": {
+      "name": "射命丸文",
+      "group": "联动地区 · 東方Projectリバイバルちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105601": {
+      "name": "光／サマー",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105602": {
+      "name": "対立／サマー",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105603": {
+      "name": "サヤ",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105604": {
+      "name": "叶永",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105605": {
+      "name": "エト",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105606": {
+      "name": "ルナ",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105607": {
+      "name": "紅",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105608": {
+      "name": "レーテー",
+      "group": "联动地区 · Arcaeaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105701": {
+      "name": "v flower/ベノム",
+      "group": "联动地区 · かいりきベアちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105702": {
+      "name": "GUMI/マネマネサイコトロピック",
+      "group": "联动地区 · かいりきベアちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105703": {
+      "name": "魔法少女リリカ/アルカリレットウセイ",
+      "group": "联动地区 · かいりきベアちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105704": {
+      "name": "かいりきベア",
+      "group": "联动地区 · かいりきベアちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105705": {
+      "name": "宍戸 美鈴",
+      "group": "联动地区 · かいりきベアちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105901": {
+      "name": "える",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105902": {
+      "name": "シスター・クレア",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105903": {
+      "name": "ジョー・力一",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105904": {
+      "name": "ドーラ",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105905": {
+      "name": "月ノ美兎",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105906": {
+      "name": "剣持刀也",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105907": {
+      "name": "森中花咲",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105908": {
+      "name": "静凛",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105909": {
+      "name": "鷹宮リオン",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105910": {
+      "name": "樋口楓",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105911": {
+      "name": "本間ひまわり",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "105912": {
+      "name": "緑仙",
+      "group": "联动地区 · にじさんじちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106001": {
+      "name": "踊っているくまのイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106002": {
+      "name": "踊っているいぬのイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106003": {
+      "name": "踊っているねこのイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106004": {
+      "name": "踊っているうさぎのイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106005": {
+      "name": "元気な男性のイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106006": {
+      "name": "元気な女性のイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106007": {
+      "name": "ドラム式洗濯機のイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106008": {
+      "name": "コウテイペンギンのイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106009": {
+      "name": "コウテイペンギンのヒナのイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106010": {
+      "name": "バナナボートに乗る人たちのイラスト",
+      "group": "联动地区 · いらすとやちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106101": {
+      "name": "柏木 美亜",
+      "group": "联动地区 · オンゲキちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106102": {
+      "name": "東雲 つむぎ",
+      "group": "联动地区 · オンゲキちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106103": {
+      "name": "高瀬 梨緒",
+      "group": "联动地区 · オンゲキちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106104": {
+      "name": "逢坂 茜",
+      "group": "联动地区 · オンゲキちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "106105": {
+      "name": "珠洲島 有栖",
+      "group": "联动地区 · オンゲキちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150101": {
+      "name": "乙姫",
+      "group": "しゅわしゅわちほー2"
+    },
+    "150102": {
+      "name": "ラズ",
+      "group": "原创地区 · しゅわしゅわちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150103": {
+      "name": "シフォン",
+      "group": "原创地区 · しゅわしゅわちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150104": {
+      "name": "ソルト",
+      "group": "原创地区 · しゅわしゅわちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150105": {
+      "name": "しゃま",
+      "group": "原创地区 · しゅわしゅわちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150106": {
+      "name": "みるく",
+      "group": "原创地区 · しゅわしゅわちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150201": {
+      "name": "アウル(幼少期)",
+      "group": "BLACK ROSEちほー4"
+    },
+    "150202": {
+      "name": "トリスタン",
+      "group": "原创地区 · BLACK ROSEちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150203": {
+      "name": "アウル",
+      "group": "原创地区 · BLACK ROSEちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150301": {
+      "name": "モモ",
+      "group": "原创地区 · スカイストリートちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150302": {
+      "name": "トキヤ",
+      "group": "原创地区 · スカイストリートちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150303": {
+      "name": "コハク",
+      "group": "原创地区 · スカイストリートちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150304": {
+      "name": "ノア",
+      "group": "原创地区 · スカイストリートちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150305": {
+      "name": "アカツキ",
+      "group": "原创地区 · スカイストリートちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "150401": {
+      "name": "ナノ",
+      "group": "kawaiiちほー"
+    },
+    "150402": {
+      "name": "アサド",
+      "group": "kawaiiちほー"
+    },
+    "150403": {
+      "name": "ローヴェ",
+      "group": "kawaiiちほー"
+    },
+    "150404": {
+      "name": "ドメニカ",
+      "group": "kawaiiちほー"
+    },
+    "150405": {
+      "name": "テルス",
+      "group": "kawaiiちほー"
+    },
+    "150501": {
+      "name": "ニギ",
+      "group": "高天原ちほー"
+    },
+    "150502": {
+      "name": "シンキョウ",
+      "group": "高天原ちほー"
+    },
+    "150503": {
+      "name": "メノウ",
+      "group": "高天原ちほー"
+    },
+    "150504": {
+      "name": "アマヒコ",
+      "group": "高天原ちほー"
+    },
+    "150505": {
+      "name": "オオヒメ",
+      "group": "高天原ちほー"
+    },
+    "155201": {
+      "name": "ひよこ？",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155202": {
+      "name": "しろくま",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155203": {
+      "name": "ぺんぎん？",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155204": {
+      "name": "とんかつ",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155205": {
+      "name": "ねこ",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155206": {
+      "name": "とかげ",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155207": {
+      "name": "ざっそう",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155208": {
+      "name": "えびふらいのしっぽ",
+      "group": "联动地区 · すみっコぐらしちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155301": {
+      "name": "五十嵐 撫子（決意の夏合宿編）",
+      "group": "联动地区 · HaNaMiNaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155302": {
+      "name": "萩原 七々瀬（決意の夏合宿編）",
+      "group": "联动地区 · HaNaMiNaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155303": {
+      "name": "葛城 華",
+      "group": "联动地区 · HaNaMiNaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155304": {
+      "name": "小野 美苗",
+      "group": "联动地区 · HaNaMiNaちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155401": {
+      "name": "t+pazolite",
+      "group": "联动地区 · HARDCORE TANO*Cちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155402": {
+      "name": "REDALiCE",
+      "group": "联动地区 · HARDCORE TANO*Cちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155403": {
+      "name": "DJ Myosuke",
+      "group": "联动地区 · HARDCORE TANO*Cちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155404": {
+      "name": "USAO",
+      "group": "联动地区 · HARDCORE TANO*Cちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155405": {
+      "name": "Massive New Krew",
+      "group": "联动地区 · HARDCORE TANO*Cちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155406": {
+      "name": "Laur",
+      "group": "联动地区 · HARDCORE TANO*Cちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155407": {
+      "name": "DORO*C",
+      "group": "联动地区 · HARDCORE TANO*Cちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155501": {
+      "name": "メルラン・プリズムリバー",
+      "group": "联动地区 · 東方Projectリバイバルちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155502": {
+      "name": "ルナサ・プリズムリバー",
+      "group": "联动地区 · 東方Projectリバイバルちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155503": {
+      "name": "リリカ・プリズムリバー",
+      "group": "联动地区 · 東方Projectリバイバルちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155504": {
+      "name": "丁礼田舞",
+      "group": "联动地区 · 東方Projectリバイバルちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155505": {
+      "name": "爾子田里乃",
+      "group": "联动地区 · 東方Projectリバイバルちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155506": {
+      "name": "ミスティア・ローレライ",
+      "group": "联动地区 · 東方Projectリバイバルちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155507": {
+      "name": "鬼人正邪",
+      "group": "联动地区 · 東方Projectリバイバルちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155901": {
+      "name": "メルティ",
+      "group": "联动地区 · はるまきごはんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155902": {
+      "name": "青い子",
+      "group": "联动地区 · はるまきごはんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155903": {
+      "name": "ナナ",
+      "group": "联动地区 · はるまきごはんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155904": {
+      "name": "リリ",
+      "group": "联动地区 · はるまきごはんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "155905": {
+      "name": "マカロン",
+      "group": "联动地区 · はるまきごはんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "156001": {
+      "name": "桜井 春菜",
+      "group": "联动地区 · オンゲキちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "156002": {
+      "name": "早乙女 彩華",
+      "group": "联动地区 · オンゲキちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "156003": {
+      "name": "井之原 小星",
+      "group": "联动地区 · オンゲキちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "156004": {
+      "name": "柏木 咲姫",
+      "group": "联动地区 · オンゲキちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "156005": {
+      "name": "結城 莉玖",
+      "group": "联动地区 · オンゲキちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200101": {
+      "name": "でらっくま（ゆにばーす）",
+      "group": "原创地区 · 宇宙すてーしょんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200102": {
+      "name": "れもんっくま（ゆにばーす）",
+      "group": "原创地区 · 宇宙すてーしょんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200103": {
+      "name": "らいむっくま（ゆにばーす）",
+      "group": "原创地区 · 宇宙すてーしょんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200104": {
+      "name": "しゃま（ゆにばーす）",
+      "group": "原创地区 · 宇宙すてーしょんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200105": {
+      "name": "みるく（ゆにばーす）",
+      "group": "原创地区 · 宇宙すてーしょんちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200201": {
+      "name": "ルキ",
+      "group": "原创地区 · 天界ちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200202": {
+      "name": "ラキ",
+      "group": "天界ちほー4"
+    },
+    "200203": {
+      "name": "アトロ",
+      "group": "天界ちほー4"
+    },
+    "200204": {
+      "name": "クロト",
+      "group": "天界ちほー4"
+    },
+    "200205": {
+      "name": "ルシファー",
+      "group": "原创地区 · 天界ちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200301": {
+      "name": "濡羽",
+      "group": "原创地区 · メトロポリスちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200302": {
+      "name": "高麗",
+      "group": "原创地区 · メトロポリスちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200303": {
+      "name": "黒橡",
+      "group": "メトロポリスちほー4"
+    },
+    "200304": {
+      "name": "赤墨",
+      "group": "メトロポリスちほー4"
+    },
+    "200305": {
+      "name": "紫黒",
+      "group": "原创地区 · メトロポリスちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200401": {
+      "name": "リズ",
+      "group": "原创地区 · 7sRefちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200402": {
+      "name": "シュトルツ",
+      "group": "7sRef"
+    },
+    "200403": {
+      "name": "リヒティカイト",
+      "group": "7sRef"
+    },
+    "200404": {
+      "name": "エーペルージュ",
+      "group": "7sRef"
+    },
+    "200405": {
+      "name": "アシッド",
+      "group": "原创地区 · 7sRefちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "200601": {
+      "name": "エリザ",
+      "group": "BLACK ROSEちほー5"
+    },
+    "200602": {
+      "name": "カイン",
+      "group": "BLACK ROSEちほー5"
+    },
+    "200603": {
+      "name": "ジャック",
+      "group": "BLACK ROSEちほー5"
+    },
+    "200604": {
+      "name": "アナスタシア",
+      "group": "BLACK ROSEちほー5"
+    },
+    "200605": {
+      "name": "ラルフ(悪魔憑き)",
+      "group": "BLACK ROSEちほー5"
+    },
+    "205101": {
+      "name": "最上 静香",
+      "group": "联动地区 · アイドルマスター ミリオンライブ！ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205102": {
+      "name": "箱崎 星梨花",
+      "group": "联动地区 · アイドルマスター ミリオンライブ！ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205103": {
+      "name": "野々原 茜",
+      "group": "联动地区 · アイドルマスター ミリオンライブ！ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205104": {
+      "name": "北沢 志保",
+      "group": "联动地区 · アイドルマスター ミリオンライブ！ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205105": {
+      "name": "北上 麗花",
+      "group": "联动地区 · アイドルマスター ミリオンライブ！ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205201": {
+      "name": "天道 輝",
+      "group": "联动地区 · アイドルマスター SideMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205202": {
+      "name": "桜庭 薫",
+      "group": "联动地区 · アイドルマスター SideMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205203": {
+      "name": "柏木 翼",
+      "group": "联动地区 · アイドルマスター SideMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205301": {
+      "name": "cosMo＠暴走P",
+      "group": "联动地区 · cosMo@暴走Pちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205302": {
+      "name": "cosMo＠暴走P（バ美肉）",
+      "group": "联动地区 · cosMo@暴走Pちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205303": {
+      "name": "空気が嫁ないBoy",
+      "group": "联动地区 · cosMo@暴走Pちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205304": {
+      "name": "空気が嫁ないGirl",
+      "group": "联动地区 · cosMo@暴走Pちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205305": {
+      "name": "GOBOU",
+      "group": "联动地区 · cosMo@暴走Pちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205306": {
+      "name": "HACKPSY",
+      "group": "联动地区 · cosMo@暴走Pちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205307": {
+      "name": "うさぎのもちよ",
+      "group": "联动地区 · cosMo@暴走Pちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205401": {
+      "name": "オーイシマサヨシ",
+      "group": "联动地区 · オーイシ×加藤のピザラジオちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205402": {
+      "name": "加藤純一",
+      "group": "联动地区 · オーイシ×加藤のピザラジオちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205501": {
+      "name": "博麗 霊夢",
+      "group": "联动地区 · 東方ダンマクカグラちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205502": {
+      "name": "霧雨 魔理沙",
+      "group": "联动地区 · 東方ダンマクカグラちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205503": {
+      "name": "八雲 紫",
+      "group": "联动地区 · 東方ダンマクカグラちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205504": {
+      "name": "宇佐見 菫子",
+      "group": "联动地区 · 東方ダンマクカグラちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205505": {
+      "name": "魂魄 妖夢",
+      "group": "联动地区 · 東方ダンマクカグラちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205601": {
+      "name": "キノシタ",
+      "group": "联动地区 · キノシタちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205602": {
+      "name": "鏡音リン（ポッピンキャンディ☆フィーバー！）",
+      "group": "联动地区 · キノシタちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205603": {
+      "name": "音街ウナ（ポッピンキャンディ☆フィーバー！）",
+      "group": "联动地区 · キノシタちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205604": {
+      "name": "音街ウナ（どぅーまいべすと！）",
+      "group": "联动地区 · キノシタちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205605": {
+      "name": "鏡音リン（スターリースカイ☆パレード）",
+      "group": "联动地区 · キノシタちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205606": {
+      "name": "音街ウナ（スターリースカイ☆パレード）",
+      "group": "联动地区 · キノシタちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205607": {
+      "name": "音街ウナ（はやくそれになりたい！）",
+      "group": "联动地区 · キノシタちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205901": {
+      "name": "緑仙",
+      "group": "联动地区 · Rain Dropsちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205902": {
+      "name": "三枝明那",
+      "group": "联动地区 · Rain Dropsちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205903": {
+      "name": "童田明治",
+      "group": "联动地区 · Rain Dropsちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "205904": {
+      "name": "鈴木勝"
+    },
+    "205905": {
+      "name": "える"
+    },
+    "205906": {
+      "name": "ジョー・力一"
+    },
+    "206101": {
+      "name": "DIVA 初音ミク/アバンガード",
+      "group": "联动地区 · Project DIVAちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206102": {
+      "name": "DIVA 巡音ルカ/サクセサー",
+      "group": "联动地区 · Project DIVAちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206103": {
+      "name": "DIVA 鏡音リン/トランスミッター",
+      "group": "联动地区 · Project DIVAちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206104": {
+      "name": "DIVA 鏡音レン/レシーバー",
+      "group": "联动地区 · Project DIVAちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206105": {
+      "name": "DIVA KAITO/オンザロック",
+      "group": "联动地区 · Project DIVAちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206106": {
+      "name": "DIVA MEIKO/スカーレット",
+      "group": "联动地区 · Project DIVAちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206201": {
+      "name": "星咲 あかり（No Limit RED Force）",
+      "group": "联动地区 · オンゲキちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206202": {
+      "name": "藤沢 柚子（No Limit RED Force）",
+      "group": "联动地区 · オンゲキちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206203": {
+      "name": "三角 葵（No Limit RED Force）",
+      "group": "联动地区 · オンゲキちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206204": {
+      "name": "皇城 セツナ",
+      "group": "联动地区 · オンゲキちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206205": {
+      "name": "珠洲島 有栖（ぱくぱく☆がーる）",
+      "group": "联动地区 · オンゲキちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206301": {
+      "name": "藤堂 陽南袴",
+      "group": "联动地区 · 舞ヶ原シンセ研究会ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206302": {
+      "name": "桔梗 小夜曲",
+      "group": "联动地区 · 舞ヶ原シンセ研究会ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "206303": {
+      "name": "芒崎 奏",
+      "group": "联动地区 · 舞ヶ原シンセ研究会ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250101": {
+      "name": "ちびみるく",
+      "group": "宇宙すてーしょん2"
+    },
+    "250102": {
+      "name": "SDしゃま",
+      "group": "原创地区 · 宇宙すてーしょんちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250103": {
+      "name": "SDみるく",
+      "group": "原创地区 · 宇宙すてーしょんちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250104": {
+      "name": "金の牛乳瓶",
+      "group": "宇宙すてーしょん2"
+    },
+    "250105": {
+      "name": "Joker",
+      "group": "宇宙すてーしょん2"
+    },
+    "250201": {
+      "name": "家菊",
+      "group": "メトロポリスちほー5"
+    },
+    "250202": {
+      "name": "橘花",
+      "group": "メトロポリスちほー5"
+    },
+    "250203": {
+      "name": "黒桜",
+      "group": "メトロポリスちほー5"
+    },
+    "250204": {
+      "name": "紫藤",
+      "group": "メトロポリスちほー5"
+    },
+    "250205": {
+      "name": "藪椿",
+      "group": "メトロポリスちほー5"
+    },
+    "250301": {
+      "name": "百合咲ミカ",
+      "group": "原创地区 · 天界ちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250302": {
+      "name": "白銅寺アズリ",
+      "group": "原创地区 · 天界ちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250303": {
+      "name": "白法院ラグ",
+      "group": "原创地区 · 天界ちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250304": {
+      "name": "兎花宮イオフィ",
+      "group": "天界ちほー5"
+    },
+    "250305": {
+      "name": "庭白ガヴィ",
+      "group": "天界ちほー5"
+    },
+    "250401": {
+      "name": "リズ",
+      "group": "原创地区 · 7sRefちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250402": {
+      "name": "アシッド",
+      "group": "原创地区 · 7sRefちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "250403": {
+      "name": "ゲルプテディ",
+      "group": "7sRefちほー2"
+    },
+    "250404": {
+      "name": "オーランジェット",
+      "group": "7sRefちほー2"
+    },
+    "250405": {
+      "name": "W?K?Y?",
+      "group": "7sRefちほー2"
+    },
+    "250601": {
+      "name": "クレメンス",
+      "group": "BLACK ROSEちほー6"
+    },
+    "250602": {
+      "name": "バイロン",
+      "group": "BLACK ROSEちほー6"
+    },
+    "250603": {
+      "name": "エリー",
+      "group": "BLACK ROSEちほー7"
+    },
+    "255201": {
+      "name": "くらべられっ子ちゃん",
+      "group": "联动地区 · ツユちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255202": {
+      "name": "あのバスちゃん",
+      "group": "联动地区 · ツユちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255203": {
+      "name": "天使ちゃん",
+      "group": "联动地区 · ツユちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255204": {
+      "name": "ナイ",
+      "group": "联动地区 · ツユちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255301": {
+      "name": "出雲咲姫",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255302": {
+      "name": "新島衣舞紀",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255303": {
+      "name": "花巻乙和",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255304": {
+      "name": "福島ノア",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255305": {
+      "name": "桜田美夢",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255306": {
+      "name": "春日春奈",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255307": {
+      "name": "白鳥胡桃",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255308": {
+      "name": "竹下みいこ",
+      "group": "联动地区 · D4DJ Groovy Mixちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255401": {
+      "name": "大空 彩",
+      "group": "联动地区 · Diverse Systemちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255402": {
+      "name": "白戒",
+      "group": "联动地区 · Diverse Systemちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255403": {
+      "name": "silky6",
+      "group": "联动地区 · Diverse Systemちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255404": {
+      "name": "削除",
+      "group": "联动地区 · Diverse Systemちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255405": {
+      "name": "BADASS",
+      "group": "联动地区 · Diverse Systemちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255601": {
+      "name": "有野課長",
+      "group": "联动地区 · ゲームセンターCXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255602": {
+      "name": "12代目AD松井",
+      "group": "联动地区 · ゲームセンターCXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255603": {
+      "name": "16代目AD加賀",
+      "group": "联动地区 · ゲームセンターCXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255604": {
+      "name": "MA谷澤＆14代目AD大須賀",
+      "group": "联动地区 · ゲームセンターCXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255605": {
+      "name": "カメラマン阿部",
+      "group": "联动地区 · ゲームセンターCXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255606": {
+      "name": "王様",
+      "group": "联动地区 · ゲームセンターCXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255801": {
+      "name": "No.9_ニナ",
+      "group": "联动地区 · CHUNITHMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255802": {
+      "name": "シルヴィアス",
+      "group": "联动地区 · CHUNITHMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255803": {
+      "name": "マゼラン・マゼラン",
+      "group": "联动地区 · CHUNITHMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255804": {
+      "name": "ミゼラン・ミゼラン",
+      "group": "联动地区 · CHUNITHMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255805": {
+      "name": "チュウニペンギン",
+      "group": "联动地区 · CHUNITHMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255806": {
+      "name": "ショウニペンギン",
+      "group": "联动地区 · CHUNITHMちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255901": {
+      "name": "すりぃ",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255902": {
+      "name": "ナース",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255903": {
+      "name": "ボーイ",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255904": {
+      "name": "ガール",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255905": {
+      "name": "審査員",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255906": {
+      "name": "親衛隊",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255907": {
+      "name": "ひょっとこJK",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255908": {
+      "name": "ピエロ",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255909": {
+      "name": "侍",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255910": {
+      "name": "牛男",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255911": {
+      "name": "舞踏会の姉貴",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "255912": {
+      "name": "黒須 紘",
+      "group": "联动地区 · すりぃちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256001": {
+      "name": "星咲 あかり（Transcend Lights）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256002": {
+      "name": "藤沢 柚子（Transcend Lights）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256003": {
+      "name": "三角 葵（Transcend Lights）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256004": {
+      "name": "日向 千夏（Transcend Lights）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256005": {
+      "name": "皇城 セツナ（Transcend Lights）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256006": {
+      "name": "高瀬 梨緒（シュータードレス）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256007": {
+      "name": "結城 莉玖（シュータードレス）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "256008": {
+      "name": "藍原 椿（シュータードレス）",
+      "group": "联动地区 · オンゲキちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300101": {
+      "name": "ラズ（ふぇすてぃばる）",
+      "group": "原创地区 · ハピフェスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300102": {
+      "name": "シフォン（ふぇすてぃばる）",
+      "group": "原创地区 · ハピフェスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300103": {
+      "name": "ソルト（ふぇすてぃばる）",
+      "group": "原创地区 · ハピフェスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300104": {
+      "name": "でらっくま（ふぇすてぃばる）",
+      "group": "原创地区 · ハピフェスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300105": {
+      "name": "らいむっくま（ふぇすてぃばる）",
+      "group": "原创地区 · ハピフェスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300106": {
+      "name": "れもんっくま（ふぇすてぃばる）",
+      "group": "原创地区 · ハピフェスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300201": {
+      "name": "黒姫",
+      "group": "原创地区 · メトロポリスちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300202": {
+      "name": "紫黒",
+      "group": "原创地区 · メトロポリスちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300203": {
+      "name": "高麗",
+      "group": "原创地区 · メトロポリスちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300204": {
+      "name": "濡羽",
+      "group": "原创地区 · メトロポリスちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300205": {
+      "name": "イーシュ",
+      "group": "メトロポリスちほー6"
+    },
+    "300301": {
+      "name": "アカツキ",
+      "group": "原创地区 · スカイストリートちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300302": {
+      "name": "コハク",
+      "group": "原创地区 · スカイストリートちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300303": {
+      "name": "暁",
+      "group": "スカイストリートちほー3"
+    },
+    "300304": {
+      "name": "ノア",
+      "group": "原创地区 · スカイストリートちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300305": {
+      "name": "ソウ",
+      "group": "原创地区 · スカイストリートちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300401": {
+      "name": "ディアン",
+      "group": "天界ちほー6"
+    },
+    "300402": {
+      "name": "レヌス",
+      "group": "天界ちほー6"
+    },
+    "300403": {
+      "name": "ルフタ",
+      "group": "天界ちほー6"
+    },
+    "300404": {
+      "name": "ヴァハ",
+      "group": "天界ちほー6"
+    },
+    "300405": {
+      "name": "ブリギット",
+      "group": "天界ちほー6"
+    },
+    "300601": {
+      "name": "アウル",
+      "group": "原创地区 · BLACK ROSEちほー7",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "300602": {
+      "name": "ヒュド・ルー",
+      "group": "BLACK ROSEちほー7"
+    },
+    "300603": {
+      "name": "エリー",
+      "group": "BLACK ROSEちほー7"
+    },
+    "300604": {
+      "name": "マスティマ",
+      "group": "BLACK ROSEちほー7"
+    },
+    "300605": {
+      "name": "バイロン(堕天使)",
+      "group": "BLACK ROSEちほー7"
+    },
+    "305201": {
+      "name": "初音ミク（ヴァンパイア）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305202": {
+      "name": "初音ミク（アニマル）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305203": {
+      "name": "初音ミク（状態異常彼女）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305204": {
+      "name": "初音ミク（U）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305205": {
+      "name": "初音ミク（シンデレラ）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305206": {
+      "name": "初音ミク（ケサランパサラン）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305207": {
+      "name": "初音ミク（ギフト）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305208": {
+      "name": "初音ミク（パラサイト）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305209": {
+      "name": "初音ミク（ジレンマ）",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305210": {
+      "name": "DECO*27",
+      "group": "联动地区 · DECO*27ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305401": {
+      "name": "博麗 霊夢",
+      "group": "联动地区 · 東方Project×オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305402": {
+      "name": "霧雨 魔理沙",
+      "group": "联动地区 · 東方Project×オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305403": {
+      "name": "チルノ",
+      "group": "联动地区 · 東方Project×オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305404": {
+      "name": "レミリア・スカーレット",
+      "group": "联动地区 · 東方Project×オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305405": {
+      "name": "フランドール・スカーレット",
+      "group": "联动地区 · 東方Project×オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305501": {
+      "name": "名取さな（パレードコーデ）",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305502": {
+      "name": "名取さな（制服さん）",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305503": {
+      "name": "名取さな（いつものお洋服）",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305504": {
+      "name": "名取さな（さなちゃんねる王）",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305505": {
+      "name": "名取さな（ていねいな王様）",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305506": {
+      "name": "うさちゃんせんせえ",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305507": {
+      "name": "ねこちゃんせんせえ",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305508": {
+      "name": "サーナくん",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305509": {
+      "name": "アヘエビ",
+      "group": "联动地区 · さなちゃんねるちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305701": {
+      "name": "樋口楓",
+      "group": "联动地区 · 樋口楓ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305702": {
+      "name": "樋口楓（AIM）",
+      "group": "联动地区 · 樋口楓ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305703": {
+      "name": "樋口楓（アーティスト衣装）",
+      "group": "联动地区 · 樋口楓ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305704": {
+      "name": "ぷち樋口楓",
+      "group": "联动地区 · 樋口楓ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305705": {
+      "name": "ぷち樋口楓（自転車通学）",
+      "group": "联动地区 · 樋口楓ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305706": {
+      "name": "ぷち樋口楓（アーティスト衣装）",
+      "group": "联动地区 · 樋口楓ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305707": {
+      "name": "ささみちゃん",
+      "group": "联动地区 · 樋口楓ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305801": {
+      "name": "日高零奈",
+      "group": "联动地区 · 電音部ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305802": {
+      "name": "東雲和音",
+      "group": "联动地区 · 電音部ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305803": {
+      "name": "茅野ふたば",
+      "group": "联动地区 · 電音部ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305804": {
+      "name": "鳳凰火凛",
+      "group": "联动地区 · 電音部ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305805": {
+      "name": "瀬戸海月",
+      "group": "联动地区 · 電音部ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305806": {
+      "name": "大賀ルキア",
+      "group": "联动地区 · 電音部ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305901": {
+      "name": "クラウン",
+      "group": "联动地区 · CHUNITHMちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305902": {
+      "name": "哲学主 ジェフティ",
+      "group": "联动地区 · CHUNITHMちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305903": {
+      "name": "憎悪の始まりたる古竜",
+      "group": "联动地区 · CHUNITHMちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305904": {
+      "name": "七海 あおい",
+      "group": "联动地区 · CHUNITHMちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305905": {
+      "name": "高砂 瑞穂",
+      "group": "联动地区 · CHUNITHMちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305906": {
+      "name": "アストライア",
+      "group": "联动地区 · CHUNITHMちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "305907": {
+      "name": "メリム",
+      "group": "联动地区 · CHUNITHMちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306001": {
+      "name": "キュートなカノジョ",
+      "group": "联动地区 · syudouちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306002": {
+      "name": "ユウヤ",
+      "group": "联动地区 · syudouちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306003": {
+      "name": "アマノ ダイキ",
+      "group": "联动地区 · syudouちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306004": {
+      "name": "ユウヤ（へべれけ）",
+      "group": "联动地区 · syudouちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306005": {
+      "name": "syudou",
+      "group": "联动地区 · syudouちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306101": {
+      "name": "光／Fracture",
+      "group": "联动地区 · Arcaeaちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306102": {
+      "name": "対立／Tempest",
+      "group": "联动地区 · Arcaeaちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306103": {
+      "name": "アリス&テニエル",
+      "group": "联动地区 · Arcaeaちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "306104": {
+      "name": "ラグランジュ",
+      "group": "联动地区 · Arcaeaちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350101": {
+      "name": "ラズ（ツムギボシ）",
+      "group": "ハピフェスちほー2"
+    },
+    "350102": {
+      "name": "シフォン（ツムギボシ）",
+      "group": "ハピフェスちほー2"
+    },
+    "350103": {
+      "name": "ソルト（ツムギボシ）",
+      "group": "ハピフェスちほー2"
+    },
+    "350104": {
+      "name": "ダンディ・ダン（ツムギボシ）",
+      "group": "ハピフェスちほー2"
+    },
+    "350105": {
+      "name": "エリザビー（ツムギボシ）",
+      "group": "ハピフェスちほー2"
+    },
+    "350301": {
+      "name": "アカツキ",
+      "group": "原创地区 · スカイストリートちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350302": {
+      "name": "ノア（過去）",
+      "group": "スカイストリートちほー4"
+    },
+    "350303": {
+      "name": "コハク",
+      "group": "原创地区 · スカイストリートちほー4",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350304": {
+      "name": "アカツキ（正装）",
+      "group": "スカイストリートちほー4"
+    },
+    "350401": {
+      "name": "アスク",
+      "group": "原创地区 · ドラゴンちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350402": {
+      "name": "LED",
+      "group": "ドラゴンちほー2"
+    },
+    "350403": {
+      "name": "エムブラ",
+      "group": "原创地区 · ドラゴンちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350601": {
+      "name": "ルイ（幼少期）",
+      "group": "BLACK ROSEちほー8"
+    },
+    "350602": {
+      "name": "SDニック",
+      "group": "BLACK ROSEちほー8"
+    },
+    "350603": {
+      "name": "SDブラット",
+      "group": "BLACK ROSEちほー8"
+    },
+    "350604": {
+      "name": "SDアウル",
+      "group": "BLACK ROSEちほー8"
+    },
+    "350605": {
+      "name": "ニック＆ブラット",
+      "group": "BLACK ROSEちほー8"
+    },
+    "350701": {
+      "name": "でらっくま（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350702": {
+      "name": "らいむっくま（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350703": {
+      "name": "れもんっくま（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350704": {
+      "name": "ラズ（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350705": {
+      "name": "シフォン（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350706": {
+      "name": "ソルト（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350707": {
+      "name": "乙姫（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350708": {
+      "name": "みるく（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350709": {
+      "name": "しゃま（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350710": {
+      "name": "maimaiちゃん（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350711": {
+      "name": "はっぴー（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350712": {
+      "name": "カメ（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350713": {
+      "name": "タイ（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350714": {
+      "name": "ニャイン（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350715": {
+      "name": "ナカムラさん（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350716": {
+      "name": "ブクロ（10周年）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350717": {
+      "name": "maimai筐体",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350718": {
+      "name": "maimai筐体（GreeN）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350719": {
+      "name": "maimai筐体（ORANGE）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350720": {
+      "name": "maimai筐体（PiNK）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350721": {
+      "name": "maimai筐体（MURASAKi）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350722": {
+      "name": "maimai筐体（MiLK）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350723": {
+      "name": "maimai筐体（FiNALE）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350724": {
+      "name": "maimai筐体（でらっくす）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350725": {
+      "name": "maimai筐体（Splash）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350726": {
+      "name": "maimai筐体（UNiVERSE）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "350727": {
+      "name": "maimai筐体（FESTiVAL）",
+      "group": "原创地区 · 10周年記念ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355101": {
+      "name": "田中ヒメ",
+      "group": "联动地区 · ヒメヒナちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355102": {
+      "name": "田中ヒメ（藍の華）",
+      "group": "联动地区 · ヒメヒナちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355103": {
+      "name": "田中ヒメ（希織歌）",
+      "group": "联动地区 · ヒメヒナちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355104": {
+      "name": "鈴木ヒナ",
+      "group": "联动地区 · ヒメヒナちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355105": {
+      "name": "鈴木ヒナ（藍の華）",
+      "group": "联动地区 · ヒメヒナちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355106": {
+      "name": "鈴木ヒナ（希織歌）",
+      "group": "联动地区 · ヒメヒナちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355201": {
+      "name": "シスター（神っぽいな）",
+      "group": "联动地区 · ピノキオピーちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355202": {
+      "name": "魔法少女（魔法少女とチョコレゐト）",
+      "group": "联动地区 · ピノキオピーちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355203": {
+      "name": "アイマイナ",
+      "group": "联动地区 · ピノキオピーちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355204": {
+      "name": "どうしてちゃん",
+      "group": "联动地区 · ピノキオピーちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355205": {
+      "name": "アルティメットセンパイ",
+      "group": "联动地区 · ピノキオピーちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355206": {
+      "name": "ピノキオピー",
+      "group": "联动地区 · ピノキオピーちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355301": {
+      "name": "リン（ベーシスト）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355302": {
+      "name": "リン（不良少女）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355303": {
+      "name": "ブロウ（パイロット）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355304": {
+      "name": "ブロウ（ゾンビガール）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355305": {
+      "name": "マリヤ（バイオリニスト）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355306": {
+      "name": "マリヤ（小悪魔）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355307": {
+      "name": "リン（ニャ宇宙！）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355308": {
+      "name": "ブロウ（ニャ宇宙！）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355309": {
+      "name": "マリヤ（ニャ宇宙！）",
+      "group": "联动地区 · Muse Dashちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355401": {
+      "name": "明坂 芹菜（東方Project：射命丸 文）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355402": {
+      "name": "御形 アリシアナ（東方Project：小野塚 小町）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355403": {
+      "name": "天王洲 なずな（東方Project：風見 幽香）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355404": {
+      "name": "小仏 凪（東方Project：四季映姫・ヤマザナドゥ）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355405": {
+      "name": "箱部 なる（東方Project：チルノ　ウソテイver.）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355406": {
+      "name": "月鈴 那知（東方Project：因幡 てゐ）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355407": {
+      "name": "月鈴 白奈（東方Project：鈴仙・優曇華院・イナバ）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355408": {
+      "name": "明坂 芹菜（東方Project：蓬莱山 輝夜）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355409": {
+      "name": "御形 アリシアナ（東方Project：八意 永琳）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355410": {
+      "name": "天王洲 なずな（東方Project：因幡 てゐ）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355411": {
+      "name": "小仏 凪（東方Project：博麗 霊夢）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355412": {
+      "name": "箱部 なる（東方Project：チルノ）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355413": {
+      "name": "月鈴 那知（東方Project：伊吹 萃香）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355414": {
+      "name": "月鈴 白奈（東方Project：霧雨 魔理沙）",
+      "group": "联动地区 · 東方Project×イロドリミドリちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355501": {
+      "name": "御伽野ひめ",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355502": {
+      "name": "ハイテックニンジャ",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355503": {
+      "name": "ぱんしー",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355504": {
+      "name": "まめゆ",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355505": {
+      "name": "ダッコ & パンセ",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355506": {
+      "name": "ナーガ・ネギ",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355507": {
+      "name": "ネコらぴす",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355508": {
+      "name": "ネコまめゆねこ",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355509": {
+      "name": "ネコぽよし",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355510": {
+      "name": "ジン・スサノ",
+      "group": "联动地区 · MEGAREXちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355601": {
+      "name": "ねこ",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355602": {
+      "name": "ぐるん",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355603": {
+      "name": "ペンギン",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355604": {
+      "name": "ウーパールーパー",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355605": {
+      "name": "デンゲンくん",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355606": {
+      "name": "うさぎくん",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355607": {
+      "name": "いぬくん",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355608": {
+      "name": "あんはっぴーちゃん",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355609": {
+      "name": "野生のでらっくま",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355610": {
+      "name": "右肩",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355611": {
+      "name": "真ん中",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355612": {
+      "name": "左肩",
+      "group": "联动地区 · からめるちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355701": {
+      "name": "可不",
+      "group": "联动地区 · 音楽的同位体　可不ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355702": {
+      "name": "可不（花となれ）",
+      "group": "联动地区 · 音楽的同位体　可不ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355703": {
+      "name": "可不（私のドッペルゲンガー）",
+      "group": "联动地区 · 音楽的同位体　可不ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355801": {
+      "name": "星咲 あかり（STARRED HEART）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355802": {
+      "name": "結城 莉玖（STARRED HEART）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355803": {
+      "name": "珠洲島 有栖（STARRED HEART）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355804": {
+      "name": "九條 楓（STARRED HEART）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355805": {
+      "name": "東雲 つむぎ（STARRED HEART）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355806": {
+      "name": "逢坂 茜（シュータードレス）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355807": {
+      "name": "珠洲島 有栖（シュータードレス）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355808": {
+      "name": "九條 楓（シュータードレス）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "355809": {
+      "name": "皇城 セツナ（シュータードレス）",
+      "group": "联动地区 · オンゲキちほー6",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400101": {
+      "name": "乙姫（ばでぃーず）",
+      "group": "パーリィ区域ー"
+    },
+    "400102": {
+      "name": "ラズ（ばでぃーず）",
+      "group": "パーリィ区域ー"
+    },
+    "400103": {
+      "name": "SDダンディ・ダン",
+      "group": "パーリィ区域ー"
+    },
+    "400104": {
+      "name": "SD亀",
+      "group": "パーリィ区域ー"
+    },
+    "400105": {
+      "name": "SD鯛",
+      "group": "パーリィ区域ー"
+    },
+    "400106": {
+      "name": "SD光吉 猛修",
+      "group": "パーリィ区域ー"
+    },
+    "400107": {
+      "name": "しゃま（Party☆People☆Princess）",
+      "group": "パーリィ区域ー"
+    },
+    "400108": {
+      "name": "みるく（Party☆People☆Princess）",
+      "group": "パーリィ区域ー"
+    },
+    "400201": {
+      "name": "プロトタイプI",
+      "group": "原创地区 · メトロポリスちほー7",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400202": {
+      "name": "ケファ",
+      "group": "メトロポリス区域ー7"
+    },
+    "400203": {
+      "name": "バルトルメ",
+      "group": "メトロポリス区域ー7"
+    },
+    "400204": {
+      "name": "マトフェイ",
+      "group": "メトロポリス区域ー7"
+    },
+    "400205": {
+      "name": "黒姫",
+      "group": "原创地区 · メトロポリスちほー7",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400301": {
+      "name": "ノア",
+      "group": "原创地区 · スカイストリートちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400302": {
+      "name": "ソウ",
+      "group": "原创地区 · スカイストリートちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400303": {
+      "name": "トキヤ",
+      "group": "原创地区 · スカイストリートちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400304": {
+      "name": "ナノハ",
+      "group": "原创地区 · スカイストリートちほー5",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400305": {
+      "name": "ユウキ",
+      "group": "スカイストリートちほー5"
+    },
+    "400401": {
+      "name": "リズ",
+      "group": "原创地区 · 7sRefちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "400402": {
+      "name": "フルーンシュピラー",
+      "group": "7sRef区域ー3"
+    },
+    "400403": {
+      "name": "シュヴァルツローゼ",
+      "group": "7sRef区域ー3"
+    },
+    "400404": {
+      "name": "ヘルブラオ",
+      "group": "7sRef区域ー3"
+    },
+    "400405": {
+      "name": "アシッド（幼少期）",
+      "group": "7sRef区域ー3"
+    },
+    "400601": {
+      "name": "フィッツ公",
+      "group": "BLACK ROSE区域ー9"
+    },
+    "400602": {
+      "name": "マティルダ",
+      "group": "BLACK ROSE区域ー9"
+    },
+    "400603": {
+      "name": "クリーノス",
+      "group": "BLACK ROSE区域ー9"
+    },
+    "400604": {
+      "name": "クリーノス（天使）",
+      "group": "BLACK ROSE区域ー9"
+    },
+    "400605": {
+      "name": "リッツ（悪魔）",
+      "group": "BLACK ROSE区域ー9"
+    },
+    "405101": {
+      "name": "くらりちゃん",
+      "group": "联动地区 · いよわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405102": {
+      "name": "いまわさん",
+      "group": "联动地区 · いよわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405103": {
+      "name": "1000年ちゃん",
+      "group": "联动地区 · いよわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405104": {
+      "name": "足立レイ",
+      "group": "联动地区 · いよわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405105": {
+      "name": "いよわ",
+      "group": "联动地区 · いよわちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405201": {
+      "name": "リンカ",
+      "group": "联动地区 · グルーヴコースターちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405202": {
+      "name": "セイネ",
+      "group": "联动地区 · グルーヴコースターちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405203": {
+      "name": "ユメ",
+      "group": "联动地区 · グルーヴコースターちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405204": {
+      "name": "ユウ",
+      "group": "联动地区 · グルーヴコースターちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405205": {
+      "name": "グルーヴコースター筐体",
+      "group": "联动地区 · グルーヴコースターちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405206": {
+      "name": "HEADPHONE CRAB",
+      "group": "联动地区 · グルーヴコースターちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405301": {
+      "name": "茅森月歌",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405302": {
+      "name": "和泉ユキ",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405303": {
+      "name": "逢川めぐみ",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405304": {
+      "name": "東城つかさ",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405305": {
+      "name": "朝倉可憐",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405306": {
+      "name": "國見タマ",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405307": {
+      "name": "蒼井えりか",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405308": {
+      "name": "水瀬いちご",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405309": {
+      "name": "水瀬すもも",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405310": {
+      "name": "樋口聖華",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405311": {
+      "name": "柊木梢",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405312": {
+      "name": "ビャッコ",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405313": {
+      "name": "七瀬七海",
+      "group": "联动地区 · ヘブンバーンズレッドちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405401": {
+      "name": "エリザベス",
+      "group": "联动地区 · WACCAちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405402": {
+      "name": "リリィ",
+      "group": "联动地区 · WACCAちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405403": {
+      "name": "ルーン",
+      "group": "联动地区 · WACCAちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405404": {
+      "name": "【裏】ルーン",
+      "group": "联动地区 · WACCAちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405405": {
+      "name": "WACCA筐体",
+      "group": "联动地区 · WACCAちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405601": {
+      "name": "sasakure.UK",
+      "group": "联动地区 · sasakure.UKちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405602": {
+      "name": "テラ（トンデモワンダーズ）",
+      "group": "联动地区 · sasakure.UKちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405603": {
+      "name": "カラス（トンデモワンダーズ）",
+      "group": "联动地区 · sasakure.UKちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405604": {
+      "name": "初音ミク（＊ハロー、プラネット。）",
+      "group": "联动地区 · sasakure.UKちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405701": {
+      "name": "TJ.hangneil",
+      "group": "联动地区 · TJ.hangneilちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405702": {
+      "name": "男の子（神威）",
+      "group": "联动地区 · TJ.hangneilちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405703": {
+      "name": "女の子（神威）",
+      "group": "联动地区 · TJ.hangneilちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "405901": {
+      "name": "宇宙飛行士（Apollo）",
+      "group": "联动地区 · 裏 月面ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406101": {
+      "name": "東北ずん子",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406102": {
+      "name": "東北ずん子（チア）",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406103": {
+      "name": "東北イタコ",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406104": {
+      "name": "東北イタコ（チア）",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406105": {
+      "name": "東北きりたん",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406106": {
+      "name": "東北きりたん（チア）",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406107": {
+      "name": "四国めたん",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406108": {
+      "name": "九州そら",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406109": {
+      "name": "ずんだもん",
+      "group": "联动地区 · 東北ずん子ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406201": {
+      "name": "縁​",
+      "group": "联动地区 · CHUNITHMちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406202": {
+      "name": "冴川 芽依",
+      "group": "联动地区 · CHUNITHMちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406203": {
+      "name": "ロト・トゥエルヴ",
+      "group": "联动地区 · CHUNITHMちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406204": {
+      "name": "不来方 とあ​",
+      "group": "联动地区 · CHUNITHMちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406205": {
+      "name": "ヴェルゼビュートネメシス​",
+      "group": "联动地区 · CHUNITHMちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "406206": {
+      "name": "リヒトシュッツェ​",
+      "group": "联动地区 · CHUNITHMちほー3",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "000101": {
+      "name": "でらっくま"
+    },
+    "000102": {
+      "name": "いえてぃっくま"
+    },
+    "000103": {
+      "name": "りすっくま"
+    },
+    "000104": {
+      "name": "ぱんだっくま"
+    },
+    "000105": {
+      "name": "みつよしっくま"
+    },
+    "000201": {
+      "name": "水野舞衣"
+    },
+    "000202": {
+      "name": "青沼優"
+    },
+    "000203": {
+      "name": "葵巴"
+    },
+    "000204": {
+      "name": "花田美空"
+    },
+    "000205": {
+      "name": "浅葱光一"
+    },
+    "000301": {
+      "name": "ラズ"
+    },
+    "000302": {
+      "name": "ソルト"
+    },
+    "000303": {
+      "name": "シフォン"
+    },
+    "000304": {
+      "name": "乙姫",
+      "group": "しゅわしゅわちほー2"
+    },
+    "000305": {
+      "name": "しゃま"
+    },
+    "000306": {
+      "name": "みるく"
+    },
+    "000392": {
+      "name": "たぬっくま"
+    },
+    "000393": {
+      "name": "ひげっくま"
+    },
+    "000394": {
+      "name": "おねむっくま"
+    },
+    "000395": {
+      "name": "めがねっくま"
+    },
+    "000401": {
+      "name": "SAM_RAI"
+    },
+    "000402": {
+      "name": "BEN_KEI"
+    },
+    "000403": {
+      "name": "SIN_BA"
+    },
+    "000404": {
+      "name": "TO_KI"
+    },
+    "000405": {
+      "name": "黒姫"
+    },
+    "000501": {
+      "name": "バハムート"
+    },
+    "000502": {
+      "name": "ニーズヘッグ"
+    },
+    "000503": {
+      "name": "ファフニール"
+    },
+    "000504": {
+      "name": "ラタトスク"
+    },
+    "000505": {
+      "name": "フレーズベルグ"
+    },
+    "000601": {
+      "name": "百合咲ミカ"
+    },
+    "000602": {
+      "name": "白銅寺アズリ"
+    },
+    "000603": {
+      "name": "兎花宮イオフィ",
+      "group": "天界ちほー5"
+    },
+    "000604": {
+      "name": "白王院ラグ"
+    },
+    "000605": {
+      "name": "兎花宮サラ"
+    },
+    "000701": {
+      "name": "アウル"
+    },
+    "000702": {
+      "name": "リッツ"
+    },
+    "000703": {
+      "name": "ニック"
+    },
+    "000704": {
+      "name": "エリー",
+      "group": "BLACK ROSEちほー7"
+    },
+    "000705": {
+      "name": "ヒュド・ルー",
+      "group": "BLACK ROSEちほー7"
+    },
+    "000706": {
+      "name": "クレメンス",
+      "group": "BLACK ROSEちほー6"
+    },
+    "000707": {
+      "name": "ラルフ"
+    },
+    "000708": {
+      "name": "バイロン",
+      "group": "BLACK ROSEちほー6"
+    },
+    "000709": {
+      "name": "マスティマ",
+      "group": "BLACK ROSEちほー7"
+    },
+    "003301": {
+      "name": "紲星あかり"
+    },
+    "003302": {
+      "name": "結月ゆかり"
+    },
+    "003303": {
+      "name": "弦巻マキ"
+    },
+    "003304": {
+      "name": "琴葉　茜"
+    },
+    "003305": {
+      "name": "琴葉　葵"
+    },
+    "003306": {
+      "name": "GYARI"
+    },
+    "003401": {
+      "name": "博麗霊夢"
+    },
+    "003402": {
+      "name": "霧雨魔理沙"
+    },
+    "003403": {
+      "name": "十六夜咲夜"
+    },
+    "003404": {
+      "name": "レミリア・スカーレット"
+    },
+    "003405": {
+      "name": "フランドール・スカーレット"
+    },
+    "003406": {
+      "name": "魂魄妖夢"
+    },
+    "003407": {
+      "name": "八雲紫"
+    },
+    "003408": {
+      "name": "鈴仙・優曇華院・イナバ"
+    },
+    "003409": {
+      "name": "蓬莱山輝夜"
+    },
+    "003410": {
+      "name": "藤原妹紅"
+    },
+    "003501": {
+      "name": "初音ミク"
+    },
+    "003502": {
+      "name": "初音ミクV3"
+    },
+    "003503": {
+      "name": "エトワール"
+    },
+    "003504": {
+      "name": "天袖"
+    },
+    "003505": {
+      "name": "巡音ルカ"
+    },
+    "003506": {
+      "name": "鏡音リン"
+    },
+    "003507": {
+      "name": "鏡音レン"
+    },
+    "003508": {
+      "name": "MEIKO"
+    },
+    "003509": {
+      "name": "KAITO"
+    },
+    "003901": {
+      "name": "からめる/ねこ/ラーメン"
+    },
+    "003902": {
+      "name": "からめる/ねこ/DJ"
+    },
+    "003903": {
+      "name": "からめる/人/まいった"
+    },
+    "003904": {
+      "name": "からめる/人/刺身"
+    },
+    "003905": {
+      "name": "からめる/レース"
+    },
+    "004001": {
+      "name": "明坂 芹菜"
+    },
+    "004002": {
+      "name": "御形 アリシアナ"
+    },
+    "004003": {
+      "name": "天王洲 なずな"
+    },
+    "004004": {
+      "name": "小仏 凪"
+    },
+    "004005": {
+      "name": "箱部 なる"
+    },
+    "004006": {
+      "name": "月鈴 那知"
+    },
+    "004007": {
+      "name": "月鈴 白奈"
+    },
+    "004008": {
+      "name": "五十嵐 撫子"
+    },
+    "004009": {
+      "name": "萩原 七々瀬"
+    },
+    "004201": {
+      "name": "結月ゆかり/幾望の月",
+      "group": "原创地区 · メトロポリスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "004202": {
+      "name": "結月ゆかり/フリィダム ロリィタ",
+      "group": "原创地区 · メトロポリスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "004203": {
+      "name": "結月ゆかり/チュルリラ・チュルリラ・ダッダッダ！",
+      "group": "原创地区 · メトロポリスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "004204": {
+      "name": "結月ゆかり/幸せになれる隠しコマンドがあるらしい",
+      "group": "原创地区 · メトロポリスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "004205": {
+      "name": "結月ゆかり/サヨナラチェーンソー",
+      "group": "原创地区 · メトロポリスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050101": {
+      "name": "あおはるっくま",
+      "group": "原创地区 · はじまりのちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050102": {
+      "name": "にんじゃっくま",
+      "group": "原创地区 · はじまりのちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050103": {
+      "name": "どらごっくま",
+      "group": "原创地区 · はじまりのちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050104": {
+      "name": "えんじぇっくま",
+      "group": "原创地区 · はじまりのちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050105": {
+      "name": "くろばらっくま",
+      "group": "原创地区 · はじまりのちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050201": {
+      "name": "ピリポ",
+      "group": "原创地区 · メトロポリスちほー2 イーシュ襲来",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050202": {
+      "name": "ケファ",
+      "group": "メトロポリス区域ー7"
+    },
+    "050203": {
+      "name": "バルトルメ",
+      "group": "メトロポリス区域ー7"
+    },
+    "050204": {
+      "name": "アンドレアス"
+    },
+    "050205": {
+      "name": "イーシュ",
+      "group": "メトロポリスちほー6"
+    },
+    "050401": {
+      "name": "萌木ゆずか",
+      "group": "原创地区 · みかんヶ岡ちほー 朝焼け通り",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050402": {
+      "name": "萌木ほのか",
+      "group": "原创地区 · みかんヶ岡ちほー 朝焼け通り",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050403": {
+      "name": "萌木はるか",
+      "group": "原创地区 · みかんヶ岡ちほー 朝焼け通り",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050404": {
+      "name": "萌木いよか"
+    },
+    "050405": {
+      "name": "萌木せとか"
+    },
+    "050601": {
+      "name": "ブリュンヒルデ",
+      "group": "原创地区 · 天界ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050602": {
+      "name": "ジグニュー",
+      "group": "原创地区 · 天界ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050603": {
+      "name": "ジークルーネ",
+      "group": "原创地区 · 天界ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050604": {
+      "name": "グリムゲルデ",
+      "group": "原创地区 · 天界ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050605": {
+      "name": "シュヴェルトライテ",
+      "group": "原创地区 · 天界ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050606": {
+      "name": "ヴァルトラウテ",
+      "group": "原创地区 · 天界ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050607": {
+      "name": "オーディン",
+      "group": "原创地区 · 天界ちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050701": {
+      "name": "maimaiちゃん"
+    },
+    "050702": {
+      "name": "はっぴー"
+    },
+    "050703": {
+      "name": "カメ"
+    },
+    "050704": {
+      "name": "タイ"
+    },
+    "050705": {
+      "name": "エリザビー"
+    },
+    "050801": {
+      "name": "ルイ",
+      "group": "原创地区 · BLACK ROSEちほー2 黒薔薇病篇",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050802": {
+      "name": "ニック（悪魔憑き）",
+      "group": "原创地区 · BLACK ROSEちほー2 黒薔薇病篇",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "050803": {
+      "name": "ティノ"
+    },
+    "050804": {
+      "name": "エレノラ"
+    },
+    "053301": {
+      "name": "星咲 あかり",
+      "group": "联动地区 · オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053302": {
+      "name": "藤沢 柚子",
+      "group": "联动地区 · オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053303": {
+      "name": "三角 葵",
+      "group": "联动地区 · オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053304": {
+      "name": "日向 千夏",
+      "group": "联动地区 · オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053305": {
+      "name": "藍原 椿",
+      "group": "联动地区 · オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053306": {
+      "name": "九條 楓",
+      "group": "联动地区 · オンゲキちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053401": {
+      "name": "グスタフ ハイドリヒ",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053402": {
+      "name": "マリア=S=レオンブルク",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053403": {
+      "name": "ヴィーナス ポロロッチョ",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053404": {
+      "name": "メグメグ",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053405": {
+      "name": "Voidoll",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053406": {
+      "name": "リリカ",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053407": {
+      "name": "ルチアーノ",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053408": {
+      "name": "双挽 乃保",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053409": {
+      "name": "桜華 忠臣",
+      "group": "联动地区 · ＃コンパスちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053601": {
+      "name": "カク",
+      "group": "联动地区 · ポンコツクエストちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053602": {
+      "name": "イムラ",
+      "group": "联动地区 · ポンコツクエストちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053603": {
+      "name": "ミツイ",
+      "group": "联动地区 · ポンコツクエストちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053604": {
+      "name": "クロヌマ",
+      "group": "联动地区 · ポンコツクエストちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053605": {
+      "name": "ツチダ",
+      "group": "联动地区 · ポンコツクエストちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053701": {
+      "name": "DIVA 初音ミク/スクール",
+      "group": "联动地区 · Project DIVAちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053702": {
+      "name": "DIVA 初音ミク/マジシャン",
+      "group": "联动地区 · Project DIVAちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053703": {
+      "name": "DIVA 初音ミク/リボンガール",
+      "group": "联动地区 · Project DIVAちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053704": {
+      "name": "DIVA 初音ミク/クリスマス",
+      "group": "联动地区 · Project DIVAちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053705": {
+      "name": "DIVA 初音ミク/∞",
+      "group": "联动地区 · Project DIVAちほー2",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053901": {
+      "name": "霧雨魔理沙",
+      "group": "联动地区 · 東方Project×アトレ秋葉原ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053902": {
+      "name": "鈴仙優曇華院イナバ",
+      "group": "联动地区 · 東方Project×アトレ秋葉原ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053903": {
+      "name": "洩矢諏訪子",
+      "group": "联动地区 · 東方Project×アトレ秋葉原ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053904": {
+      "name": "藤原妹紅",
+      "group": "联动地区 · 東方Project×アトレ秋葉原ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    },
+    "053905": {
+      "name": "火焔猫燐",
+      "group": "联动地区 · 東方Project×アトレ秋葉原ちほー",
+      "classification": {
+        "basis": "chara_genre_map.json",
+        "source": "maimai-asset-browser",
+        "version": null,
+        "matchedBy": "exact-character-id"
+      }
+    }
+  },
+  "classificationSource": {
+    "source": "maimai-asset-browser",
+    "field": "chara_genre_map.json",
+    "catalog": "data/regions/jp.json",
+    "note": "仅匹配现有国服伙伴的相同编号；不增加国服可用素材。"
+  }
+}

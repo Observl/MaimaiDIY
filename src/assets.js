@@ -10,7 +10,7 @@ export function loadImage(src, refreshId) {
   src=resolveAssetUrl(src);
   const refresh = refreshId && typeof src === 'string' &&
     (src.startsWith(COS.baseUrl + '/materials/') ||
-      /^regional-display\/(?:cn|jp|charas)\/[\w-]+\.webp$/.test(src));
+      /^regional-display\/(?:cn|jp|charas|companion-sets)\/[\w-]+\.webp$/.test(src));
   const cached = imageCache.get(src);
   if (!refresh && cached?.previous) return cached.previous.request;
   if (cached && (!refresh || cached.refreshId === refreshId)) return cached.request;

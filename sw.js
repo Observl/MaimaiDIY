@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maimai-diy-assets-cos-v3';
+const CACHE_NAME = 'maimai-diy-assets-cos-v6';
 const COS_ORIGIN = 'https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com';
 const MANIFEST_NAMES = ['manifest.json', 'titles.json', 'badges.json', 'recommendations.json'];
 const pendingAssets = new Map();

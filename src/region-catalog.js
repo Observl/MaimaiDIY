@@ -30,17 +30,58 @@ function loadGamerchMetadata() {
 const collaborationNames = /^(?:ブルーアーカイブ(?:\s|$)|小春六花$|夏色花梨$|花隈千冬$)/;
 const scoreCategories = /^(?:実績|プレイ|1クレジット内指定プレイ|クリアランク|FULL |ALL PERFECT|制覇系|段位認定|全国行脚)/;
 const mapping = { backgrounds: 'frames', nameplates: 'plates', avatars: 'icons', charas: 'charas', songs: 'songs' };
+let cnCompanions;
+const companionSeries = id => {
+  const prefix = String(id).padStart(6, '0').slice(0, 4);
+  return `编号系列 ${prefix}xx`;
+};
+function loadCnCompanions() {
+  const read = file => fetch(new URL(`../regional-display/${file}.json`, import.meta.url))
+    .then(response => {
+      if (!response.ok) throw new Error('国服旅行伙伴目录暂不可用');
+      return response.json();
+    });
+  cnCompanions ||= Promise.all([read('charas'), read('chara-names')])
+    .then(([ids, metadata]) => {
+      if (!Array.isArray(ids) || ids.length > 100000 ||
+          !ids.every(id => typeof id === 'string' && /^\d{6}$/.test(id)))
+        throw new Error('国服旅行伙伴目录格式无效');
+      return [...new Set(ids)].map(id => ({
+        id, name: metadata?.entries?.[id]?.name || `旅行伙伴 ${id}`,
+        group: metadata?.entries?.[id]?.group || companionSeries(id),
+        image: `regional-display/charas/${id}.webp`, region: 'cn',
+      }));
+    })
+    .catch(error => { cnCompanions = undefined; throw error; });
+  return cnCompanions;
+}
+let confirmedCompanions;
+function loadConfirmedCompanions() {
+  confirmedCompanions ||= fetch(new URL('../regional-display/confirmed-companion-sets.json', import.meta.url))
+    .then(response => { if (!response.ok) throw new Error('旅行伙伴配色索引加载失败'); return response.json(); })
+    .catch(error => { confirmedCompanions = undefined; throw error; });
+  return confirmedCompanions;
+}
 export function loadRegionCatalog(region) {
   requireIndexRegion(region);
-  if (!requests.has(region)) requests.set(region, loader.loadCatalog(region).then(data => {
+  if (!requests.has(region)) requests.set(region, loader.loadCatalog(region).then(async data => {
+    const charas = await loadRegionCategoryIndex(region, 'charas');
+    data = { ...data, charas: charas.items };
     registerRegionCatalog(data);
     return data;
   }).catch(error => { requests.delete(region); throw error; }));
   return requests.get(region);
 }
 export const loadRegionMetadata = region => loader.loadRegion(region);
-export const loadRegionCategoryIndex = (region, category) =>
-  loader.loadCategory(region, category).then(registerRegionCategory);
+export async function loadRegionCategoryIndex(region, category) {
+  if (category !== 'charas') return loader.loadCategory(region, category).then(registerRegionCategory);
+  const [index, confirmed] = await Promise.all([
+    region === 'cn' ? loadCnCompanions().then(items => ({ region, category, items })) : loader.loadCategory(region, category),
+    loadConfirmedCompanions(),
+  ]);
+  return registerRegionCategory({ ...index, items: index.items.filter(item =>
+    Object.hasOwn(confirmed.characters, String(item.id).padStart(6, '0'))) });
+}
 // Prepare only what a saved design references, plus its currently visible mode.
 // Template import still uses loadRegionCatalog for full membership validation.
 export async function loadRegionDesign(state) {
@@ -61,7 +102,7 @@ export async function regionCategory(region, control) {
   if (region === 'jp' && Object.hasOwn(jpProfileItems, control.category))
     return { id: control.category, label: control.label, items: jpProfileItems[control.category] };
   const key = mapping[control.category];
-  if (!key || (region === 'cn' && key !== 'songs')) return null;
+  if (!key || (region === 'cn' && !['songs', 'charas'].includes(key))) return null;
   const index = await loadRegionCategoryIndex(region, key);
   const byArea = region === 'jp' && ['frames', 'plates'].includes(key);
   const metadata = region === 'jp' && (byArea || key === 'icons')

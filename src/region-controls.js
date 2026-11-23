@@ -1,3 +1,4 @@
+import { companionIdLabel } from './region-profile.js';
 import { SONG_CHART_TYPES, songChartType, songIdentity, groupSongCharts, songSelection } from './song-chart-types.js';
 import { applyRegionBackground } from './region-background.js';
 import { loadRegionMetadata, loadRegionCategoryIndex } from './region-catalog.js';
@@ -112,36 +113,78 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     companions.replaceChildren();
     for (let index = 0; index < 5; index++) {
       const member = state.companions[index];
-      const item = catalog && getRegionCatalogItem(catalog.region, 'charas', member?.id);
+      const item = member && getRegionCatalogItem(state.region, 'charas', member.id);
       const row = document.createElement('article'); row.className = 'control-row';
       const main = document.createElement('div'); main.className = 'control-main';
       const icon = document.createElement('span'); icon.className = 'control-icon';
-      if (item) { const image = new Image(); image.src = item.image; image.alt = ''; icon.append(image); }
+      if (!member && item) icon.classList.add('companion-placeholder');
+      if (item) {
+        const image = new Image();
+        image.src = item.image;
+        image.alt = '';
+        icon.append(image);
+      }
       const description = document.createElement('div');
-      const heading = document.createElement('h3'); heading.className = 'control-label'; heading.textContent = `旅行伙伴 ${index + 1}`;
-      const text = document.createElement('p'); text.className = 'control-file'; text.textContent = item?.name || '未选择';
+      const heading = document.createElement('h3'); heading.className = 'control-label'; heading.textContent = index ? `队员 ${index}` : '队长';
+      const text = document.createElement('p'); text.className = 'control-file';
+      text.textContent = member ? [item?.name, companionIdLabel(member.id)].filter(Boolean).join(' · ') : '未选择';
       description.append(heading, text); main.append(icon, description);
       const actions = document.createElement('div'); actions.className = 'control-actions';
-      const level = document.createElement('input'); level.className = 'companion-level'; level.type = 'number'; level.min = '1'; level.max = '999'; level.value = String(member?.level || 1); level.disabled = !member; level.setAttribute('aria-label', `旅行伙伴 ${index + 1} 等级`);
+      const level = document.createElement('input'); level.className = 'companion-level'; level.type = 'number'; level.min = '1'; level.max = '9999'; level.value = String(member?.level || 1); level.disabled = !member; level.setAttribute('aria-label', `旅行伙伴 ${index + 1} 等级`);
       level.addEventListener('change', () => {
-        if (!state.companions[index]) return;
-        recordHistory(); state.companions[index].level = Math.min(999, Math.max(1, Math.trunc(Number(level.value)) || 1));
-        level.value = String(state.companions[index].level); render();
+        if (!member) return;
+        const value = level.valueAsNumber;
+        const next = Number.isFinite(value) ? Math.min(9999, Math.max(1, Math.trunc(value))) : member.level;
+        level.value = String(next);
+        if (next === member.level) return;
+        recordHistory();
+        member.level = next;
+        render();
       });
+      const awakening = document.createElement('label');
+      awakening.className = 'companion-awakening';
+      const awake = document.createElement('input');
+      awake.type = 'checkbox';
+      awake.checked = Boolean(member?.awakened);
+      awake.disabled = !member;
+      awake.setAttribute('aria-label', `${heading.textContent}超觉醒`);
+      awake.addEventListener('change', () => {
+        if (!member) return;
+        recordHistory();
+        if (awake.checked) member.awakened = true;
+        else delete member.awakened;
+        render();
+      });
+      awakening.append(awake, '超觉醒');
       const pick = document.createElement('button'); pick.className = 'library-button'; pick.type = 'button'; pick.textContent = '素材库'; pick.disabled = catalog?.category !== 'charas' || !catalog.items.length;
-      pick.addEventListener('click', () => picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas', select(selected) {
-        // Fill slots in order, preserving a compact, independently saved party.
-        const slot = Math.min(index, state.companions.length);
-        const existing = state.companions.findIndex(member => member.id === selected.id);
-        if (existing >= 0 && existing !== slot) {
-          if (state.companions[slot]) [state.companions[existing], state.companions[slot]] = [state.companions[slot], state.companions[existing]];
-          return;
-        }
-        state.companions[slot] = { id: selected.id, level: state.companions[slot]?.level || 1 };
-      } }));
+      pick.setAttribute('aria-label', `选择${heading.textContent}素材`);
+      pick.dataset.companionPicker = String(index);
+      pick.disabled ||= index > state.companions.length;
+      pick.addEventListener('click', () => picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas',
+        selectedAssetId: () => state.companions[index]?.id,
+        selectionError(selected) {
+          if (!state.companions[index] && state.companions.some(member => String(member.id) === String(selected.id)))
+            return '这位伙伴已在队伍中，请为此位置选择另一位伙伴。';
+        },
+        select(selected) {
+          const existing = state.companions.findIndex(member => String(member.id) === String(selected.id));
+          if (existing >= 0 && existing !== index) {
+            [state.companions[existing], state.companions[index]] = [state.companions[index], state.companions[existing]];
+          } else if (existing === -1) {
+            state.companions[index] = { id: selected.id, level: state.companions[index]?.level || 1 };
+          }
+        },
+      }, () => companions.querySelector(`[data-companion-picker="${index}"]`)));
       const clear = document.createElement('button'); clear.className = 'library-button'; clear.type = 'button'; clear.textContent = '移除'; clear.disabled = !member;
-      clear.addEventListener('click', () => { recordHistory(); state.companions.splice(index, 1); paintFields(); render(); });
-      actions.append(level, pick, clear); row.append(main, actions); companions.append(row);
+      clear.setAttribute('aria-label', `移除${heading.textContent}`);
+      clear.addEventListener('click', () => {
+        recordHistory();
+        state.companions.splice(index, 1);
+        paintFields();
+        companions.querySelector(`[data-companion-picker="${index}"]`)?.focus({ preventScroll: true });
+        render();
+      });
+      actions.append(level, awakening, pick, clear); row.append(main, actions); companions.append(row);
     }
     const song = catalog && getRegionCatalogItem(catalog.region, 'songs', state.song.id);
     document.querySelector('#song-label').textContent = song ? `${song.name} · ${song.id.endsWith(':dx') ? 'DX' : '标准'}` : '未选择歌曲';
@@ -186,7 +229,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     const ui = state.region === 'jp' ? 'MAGiCAL' : 'CiRCLE';
     status.textContent = `${state.region === 'jp' ? '日服' : '国服'} · ${ui} 网页背景`;
     note.textContent = state.screenMode === 'companions'
-      ? (state.region === 'cn' ? '国服 CN1.55 原版素材包尚未取得，旅行伙伴暂不可选。' : '旅行伙伴可保存到模板。') : '';
+      ? '边框使用已确认的本地素材；9999 级保留五颗普通星，超觉醒独立切换。' : '';
     const category = state.screenMode === 'companions' ? 'charas' : state.screenMode === 'achievement' ? 'songs' : null;
     const readyKey = `${state.region}:${category || 'metadata'}`;
     if (readyRegion !== readyKey) {

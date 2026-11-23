@@ -1,3 +1,4 @@
+export function companionIdLabel(id) { return `ID ${String(id).padStart(6, '0')}`; }
 import {
   REGION_BASE_URL,
   REGION_CATEGORIES,
@@ -108,14 +109,15 @@ export function sanitizeRegionFields(input, catalog) {
       !safeId(member.id) ||
       !Number.isInteger(member.level) ||
       member.level < 1 ||
-      member.level > 999 ||
+      member.level > 9999 ||
+      (member.awakened !== undefined && typeof member.awakened !== 'boolean') ||
       seen.has(String(member.id))
     )
       throw new Error('旅行伙伴编号或等级无效');
     if (indexes?.has('charas') && !indexes.get('charas').has(String(member.id)))
       throw new Error('旅行伙伴不属于所选地区目录');
     seen.add(String(member.id));
-    return { id: member.id, level: member.level };
+    return { id: member.id, level: member.level, ...(member.awakened ? { awakened: true } : {}) };
   });
   const song = input.song ?? { id: '', difficulty: 0, achievement: '101.0000' };
   if (

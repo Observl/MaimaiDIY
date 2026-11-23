@@ -1897,3 +1897,6 @@ html[data-page-zoomed] :is(#circle-background, #magical-background) * {
   #material-controls .control-row { flex-direction: row; align-items: center; }
   #material-controls .control-actions { flex-shrink: 0; }
 }
+
+.companion-awakening { display:flex; align-items:center; gap:6px; min-height:44px; padding-inline:6px; font-size:.875rem; cursor:pointer; }
+.companion-awakening input { accent-color:var(--accent); }

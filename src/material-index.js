@@ -27,6 +27,7 @@ async function readCategory(control, region) {
   });
   if (region === 'cn' && isLxnsCollection(id)) return readCnCollection(control);
   let category = await regionCategory(region, control);
+  if (category && id === 'charas') return category;
   if (category && region === 'jp' && ['titles', 'ranks', 'friend-battles'].includes(id)) return category;
   if (!category && ['ranks', 'friend-battles'].includes(id)) {
     const manifest = await loadBadgeManifest();
