@@ -25,12 +25,6 @@ export function initializePicker({
   const pickerTitle = document.querySelector('#picker-title');
   const pickerMeta = document.querySelector('#picker-meta');
   const pickerGrid = document.querySelector('#picker-grid');
-  const settings = document.querySelector('#picker-companion-settings');
-  function showSettings(control) {
-    settings.replaceChildren(...(control.settings ? [control.settings()] : []));
-    settings.hidden = !control.settings;
-  }
-
   const pickerMessage = document.querySelector('#picker-message');
   const clearFilters = document.querySelector('#picker-clear');
   const clearSearch = document.querySelector('#picker-clear-search');
@@ -235,7 +229,6 @@ export function initializePicker({
           document.querySelector(`[data-control="${control.id}"] .control-file`).textContent = item.name;
         }
         onSelection();
-        showSettings(control);
         const selectedMessage = control.id === 'title' ? '已选择称号' : '已选择：' + item.name;
         showPickerMessage(selectedMessage, 'success');
         control.afterSelect?.();
@@ -337,7 +330,6 @@ export function initializePicker({
     if (!canOpen()) return;
     if (!picker.open) openingFocus = { trigger, previous: document.activeElement };
     cachePickerView();
-    showSettings(control);
     const openedRegion = currentRegion();
     const sourceLabel = picker.querySelector('.eyebrow');
     if (sourceLabel) sourceLabel.textContent = openedRegion === 'jp' ? 'JP ASSETS' : 'CN ASSETS';

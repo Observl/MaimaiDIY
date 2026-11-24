@@ -78,7 +78,10 @@ test('preview companion slots edit settings and exclude their artwork from glitt
   await expect(hotspots).toHaveCount(5);
   for (let index = 0; index < 5; index++) {
     await hotspots.nth(index).click();
-    const settings = page.locator('#picker-companion-settings');
+    const id = (await savedState(page)).companions[index].id;
+    await page.locator('#picker-search').fill(id);
+    await page.locator(`[data-asset-id="${id}"]`).click();
+    const settings = page.locator('.companion-editor');
     await expect(settings).toBeVisible();
     const level = settings.locator('input[type=number]');
     await level.fill(String(100 + index)); await level.press('Tab');
@@ -93,8 +96,16 @@ test('preview companion slots edit settings and exclude their artwork from glitt
   await page.locator('#picker-search').fill('100104');
   await page.locator('[data-asset-id="100104"]').click();
   await expect.poll(async () => (await savedState(page)).companions[1].id).toBe('100104');
-  await expect(page.locator('#picker-companion-settings input[type=number]')).toHaveValue('101');
+  await expect(page.locator('.companion-editor input[type=number]')).toHaveValue('101');
+  await expect(page.locator('.companion-editor [role=status]')).toHaveText('');
+  await expect.poll(() => page.locator('.companion-editor canvas').evaluate(canvas => canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data.some((v,i)=>i%4===3&&v>0))).toBe(true);
+  await page.setViewportSize({width:375,height:812});
+  await expect.poll(() => page.locator('.companion-editor').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
+  await page.screenshot({path:'output/companion-modal-mobile.png'});
+  await page.setViewportSize({width:1440,height:1000});
+  await page.screenshot({path:'output/companion-modal-desktop.png'});
   await page.keyboard.press('Escape');
+  await expect(page.locator('#region-beta')).toHaveCount(0);
   const result = await page.evaluate(async () => {
     const { createCollectibleMasks } = await import('/src/collectible-masks.js');
     const { prepareRegionalDisplay } = await import('/src/regional-display.js');

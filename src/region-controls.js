@@ -1,3 +1,4 @@
+import { prepareRegionalDisplay } from './regional-display.js';
 import { companionIdLabel } from './region-profile.js';
 import { SONG_CHART_TYPES, songChartType, songIdentity, groupSongCharts, songSelection } from './song-chart-types.js';
 import { applyRegionBackground } from './region-background.js';
@@ -15,7 +16,6 @@ const difficultyNames = ['BASIC', 'ADVANCED', 'EXPERT', 'MASTER', 'Re:MASTER'];
 export function initializeRegionControls({ state, recordHistory, render, changeRegion, picker }) {
   const regionSelect = document.querySelector('#region-select');
   const regionToggle = document.querySelector('#region-toggle');
-  const regionBeta = document.querySelector('#region-beta');
   const modeSelect = document.querySelector('#screen-mode');
   const modeOptions = modeSelect.querySelectorAll('input');
   const panel = document.querySelector('#region-content');
@@ -109,6 +109,44 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
   }
   difficulty.addEventListener('change', () => applySongSettings(Number(difficulty.value), achievement.valueAsNumber));
   achievement.addEventListener('change', () => applySongSettings(state.song.difficulty, achievement.valueAsNumber));
+  const companionDialog = document.createElement('dialog');
+  companionDialog.className = 'companion-editor';
+  companionDialog.setAttribute('aria-labelledby', 'companion-editor-title');
+  companionDialog.innerHTML = `<div class="section-head"><h2 id="companion-editor-title">设置旅行伙伴</h2><button type="button" class="library-button" aria-label="关闭旅行伙伴设置">×</button></div><div class="companion-editor-body"><div class="companion-editor-preview"><h3></h3><img alt="所选旅行伙伴"><canvas width="432" height="560" aria-label="旅行伙伴实时渲染预览"></canvas><p role="status"></p></div><div class="companion-editor-fields"></div></div>`;
+  document.body.append(companionDialog);
+  companionDialog.querySelector('button').addEventListener('click', () => companionDialog.close());
+  let editingCompanion = 0;
+  let companionPreviewVersion = 0;
+  async function updateCompanionPreview() {
+    if (!companionDialog.open) return;
+    const version = ++companionPreviewVersion;
+    const member = state.companions[editingCompanion];
+    const item = getRegionCatalogItem(state.region, 'charas', member.id);
+    companionDialog.querySelector('h3').textContent = item.name;
+    companionDialog.querySelector('img').src = item.image;
+    const message = companionDialog.querySelector('[role=status]');
+    message.textContent = '';
+    try {
+      const display = await prepareRegionalDisplay(structuredClone(state));
+      if (version !== companionPreviewVersion || !companionDialog.open) return;
+      const full = document.createElement('canvas'); full.width = 2160; full.height = 904;
+      const context = full.getContext('2d'); context.scale(2, 2); display.draw(context);
+      const [x, y, w, h] = display.bounds[editingCompanion];
+      const canvas = companionDialog.querySelector('canvas');
+      const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const scale = Math.min((canvas.width - 32) / w, (canvas.height - 32) / h);
+      ctx.drawImage(full, x * 2, y * 2, w * 2, h * 2, (canvas.width - w * scale) / 2, (canvas.height - h * scale) / 2, w * scale, h * scale);
+    } catch (error) {
+      if (version === companionPreviewVersion) message.textContent = `预览加载失败：${error.message}`;
+    }
+  }
+  function openCompanionSettings(index) {
+    picker.close();
+    editingCompanion = index;
+    companionDialog.querySelector('.companion-editor-fields').replaceChildren(companionSettings(index));
+    companionDialog.showModal();
+    updateCompanionPreview();
+  }
   function companionSettings(index) {
     const member = state.companions[index];
     const actions = document.createElement('div'); actions.className = 'control-actions companion-settings';
@@ -124,6 +162,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       if (next === member.level) return;
       recordHistory();
       member.level = next;
+      updateCompanionPreview();
       paintFields();
       render();
     });
@@ -139,6 +178,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       recordHistory();
       if (awake.checked) member.awakened = true;
       else delete member.awakened;
+      updateCompanionPreview();
       paintFields();
       render();
     });
@@ -147,7 +187,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     return actions;
   }
   function openCompanionPicker(index, trigger) {
-    return picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas', settings: () => companionSettings(index),
+    return picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas', afterSelect: () => openCompanionSettings(index),
         selectedAssetId: () => state.companions[index]?.id,
         selectionError(selected) {
           if (selected.companionColorKnown === false)
@@ -239,7 +279,6 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     }
     applyRegionBackground(state.region);
     regionToggle.textContent = state.region === 'jp' ? '日服展示板' : '国服展示板';
-    regionBeta.hidden = state.region !== 'jp';
     regionSelect.value = state.region;
     for (const option of modeOptions) option.checked = option.value === state.screenMode;
     panel.hidden = state.screenMode === 'collection';

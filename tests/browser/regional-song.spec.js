@@ -213,16 +213,15 @@ test('regional song module updates difficulty and score from the cover and expor
 });
 
 
-test('song templates round-trip the chart and score and show the Japanese beta notice only in JP', async ({ page, context }) => {
+test('song templates round-trip the chart and score without regional beta notices', async ({ page, context }) => {
   await page.setViewportSize({ width: 963, height: 949 });
   await setupRegionalCatalogs(page, context);
   const beta = page.locator('#region-beta');
-  await expect(beta).toBeHidden();
+  await expect(beta).toHaveCount(0);
   await page.getByRole('button', { name: '切换区服展示板' }).click();
-  await expect(beta).toContainText('Beta 测试中');
-  await expect(beta).toBeVisible();
+  await expect(beta).toHaveCount(0);
   await page.getByRole('button', { name: '切换区服展示板' }).click();
-  await expect(beta).toBeHidden();
+  await expect(beta).toHaveCount(0);
   await page.locator('#screen-mode input[value="achievement"]').check();
   const score = page.locator('#song-achievement');
   await expect(score).toHaveValue('101.0000');
