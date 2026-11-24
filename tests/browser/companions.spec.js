@@ -117,6 +117,16 @@ test('both regional companions use confirmed character frames and match download
     if (region === 'jp') await page.getByRole('button', { name: '切换区服展示板' }).click();
     await expect(page.locator('html')).toHaveAttribute('data-region', region);
     await expect(page.locator('#loading')).toBeHidden();
+    const areas = await page.evaluate(async region => {
+      const { loadRegionCategoryIndex } = await import('/src/region-catalog.js');
+      const { items } = await loadRegionCategoryIndex(region, 'charas');
+      return { numbered: items.some(item => /编号系列/.test(item.group)),
+        first: items.find(item => item.id === '000101')?.group,
+        yukari: items.find(item => item.id === '004201')?.group };
+    }, region);
+    expect(areas.numbered).toBe(false);
+    expect(areas.first).toBe('はじまりのちほー');
+    if (region === 'cn') expect(areas.yukari).toBe('結月ゆかりちほー');
     const leaderLayers = [[45, 371, 45, 26], [44, 405, 120, 36]];
     const memberLayers = [[215, 218, 16, 92], [217, 189, 105, 23], [224, 400, 113, 42]];
     const beforeLeader = await sample(leaderLayers);

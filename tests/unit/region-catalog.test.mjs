@@ -53,3 +53,21 @@ test('JP profile pickers expose the sourced Japanese assets', async () => {
   assert.ok(ranks.items.some(item => item.name === '真二段'));
   assert.equal(battle, null);
 });
+
+
+test('companion areas use exact character records rather than numbered series', async () => {
+  const metadata = JSON.parse(await readFile(new URL('../../regional-display/chara-names.json', import.meta.url), 'utf8'));
+  const ids = JSON.parse(await readFile(new URL('../../regional-display/charas.json', import.meta.url), 'utf8'));
+  const confirmed = JSON.parse(await readFile(new URL('../../regional-display/confirmed-companion-sets.json', import.meta.url), 'utf8'));
+  assert.equal(metadata.entries['000101'].group, 'はじまりのちほー');
+  assert.equal(metadata.entries['000201'].group, '青春ちほー');
+  assert.equal(metadata.entries['004201'].group, '結月ゆかりちほー');
+  for (const entry of Object.values(metadata.entries)) {
+    assert.ok(entry.name && entry.group);
+    assert.equal(entry.classification.matchedBy, 'exact-character-id');
+    assert.equal(entry.classification.basis, 'Chara.xml genre/str');
+    assert.doesNotMatch(entry.group, /编号系列/);
+  }
+  for (const id of ids.filter(id => Object.hasOwn(confirmed.characters, id)))
+    assert.ok(metadata.entries[id]?.group, `Selectable CN companion ${id} needs a verified area`);
+});

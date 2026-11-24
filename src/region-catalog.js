@@ -31,24 +31,27 @@ const collaborationNames = /^(?:ブルーアーカイブ(?:\s|$)|小春六花$|�
 const scoreCategories = /^(?:実績|プレイ|1クレジット内指定プレイ|クリアランク|FULL |ALL PERFECT|制覇系|段位認定|全国行脚)/;
 const mapping = { backgrounds: 'frames', nameplates: 'plates', avatars: 'icons', charas: 'charas', songs: 'songs' };
 let cnCompanions;
-const companionSeries = id => {
-  const prefix = String(id).padStart(6, '0').slice(0, 4);
-  return `编号系列 ${prefix}xx`;
-};
+let companionMetadata;
+function loadCompanionMetadata() {
+  companionMetadata ||= fetch(new URL('../regional-display/chara-names.json', import.meta.url), { cache: 'no-cache' })
+    .then(response => { if (!response.ok) throw new Error('旅行伙伴区域索引加载失败'); return response.json(); })
+    .catch(error => { companionMetadata = undefined; throw error; });
+  return companionMetadata;
+}
 function loadCnCompanions() {
   const read = file => fetch(new URL(`../regional-display/${file}.json`, import.meta.url))
     .then(response => {
       if (!response.ok) throw new Error('国服旅行伙伴目录暂不可用');
       return response.json();
     });
-  cnCompanions ||= Promise.all([read('charas'), read('chara-names')])
+  cnCompanions ||= Promise.all([read('charas'), loadCompanionMetadata()])
     .then(([ids, metadata]) => {
       if (!Array.isArray(ids) || ids.length > 100000 ||
           !ids.every(id => typeof id === 'string' && /^\d{6}$/.test(id)))
         throw new Error('国服旅行伙伴目录格式无效');
       return [...new Set(ids)].map(id => ({
         id, name: metadata?.entries?.[id]?.name || `旅行伙伴 ${id}`,
-        group: metadata?.entries?.[id]?.group || companionSeries(id),
+        group: metadata.entries[id]?.group || '其他',
         image: `regional-display/charas/${id}.webp`, region: 'cn',
       }));
     })
@@ -75,12 +78,19 @@ export function loadRegionCatalog(region) {
 export const loadRegionMetadata = region => loader.loadRegion(region);
 export async function loadRegionCategoryIndex(region, category) {
   if (category !== 'charas') return loader.loadCategory(region, category).then(registerRegionCategory);
-  const [index, confirmed] = await Promise.all([
+  const [index, confirmed, metadata] = await Promise.all([
     region === 'cn' ? loadCnCompanions().then(items => ({ region, category, items })) : loader.loadCategory(region, category),
     loadConfirmedCompanions(),
+    loadCompanionMetadata(),
   ]);
   return registerRegionCategory({ ...index, groups: undefined, items: index.items
-    .map(item => ({ ...item, companionColorKnown: Object.hasOwn(confirmed.characters, String(item.id).padStart(6, '0')) }))
+    .map(item => {
+      const id = String(item.id).padStart(6, '0');
+      const verified = metadata.entries[id];
+      return { ...item, ...(verified || {}),
+        group: verified?.group || (/编号系列/.test(item.group || '') ? '其他' : item.group || '其他'),
+        companionColorKnown: Object.hasOwn(confirmed.characters, id) };
+    })
     .filter(item => region === 'jp' || item.companionColorKnown) });
 }
 // Prepare only what a saved design references, plus its currently visible mode.
