@@ -52,7 +52,7 @@ function loadCnCompanions() {
       return [...new Set(ids)].map(id => ({
         id, name: metadata?.entries?.[id]?.name || `旅行伙伴 ${id}`,
         group: metadata.entries[id]?.group || '其他',
-        image: `regional-display/charas/${id}.webp`, region: 'cn',
+        image: metadata.entries[id]?.image || `regional-display/charas/${id}.webp`, region: 'cn',
       }));
     })
     .catch(error => { cnCompanions = undefined; throw error; });

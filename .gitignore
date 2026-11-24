@@ -21,3 +21,6 @@ playwright_chromiumdev_profile-*/
 
 
 /data/regions/jp-profile/
+
+# Downloaded companion art is uploaded to COS, not committed.
+/regional-display/charas/

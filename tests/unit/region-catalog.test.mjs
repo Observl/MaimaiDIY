@@ -65,9 +65,31 @@ test('companion areas use exact character records rather than numbered series', 
   for (const entry of Object.values(metadata.entries)) {
     assert.ok(entry.name && entry.group);
     assert.equal(entry.classification.matchedBy, 'exact-character-id');
-    assert.equal(entry.classification.basis, 'Chara.xml genre/str');
+    assert.ok(['Chara.xml genre/str', 'chara_genre_map.json'].includes(entry.classification.basis));
     assert.doesNotMatch(entry.group, /编号系列/);
   }
   for (const id of ids.filter(id => Object.hasOwn(confirmed.characters, id)))
     assert.ok(metadata.entries[id]?.group, `Selectable CN companion ${id} needs a verified area`);
+});
+
+
+test('CN companion additions have dated release evidence, images and confirmed palettes', async () => {
+  const metadata = JSON.parse(await readFile(new URL('../../regional-display/chara-names.json', import.meta.url), 'utf8'));
+  const ids = JSON.parse(await readFile(new URL('../../regional-display/charas.json', import.meta.url), 'utf8'));
+  const confirmed = JSON.parse(await readFile(new URL('../../regional-display/confirmed-companion-sets.json', import.meta.url), 'utf8'));
+  const additions = Object.entries(metadata.entries).filter(([, entry]) => entry.cnAvailability);
+  assert.equal(additions.length, 278);
+  for (const [id, entry] of additions) {
+    assert.ok(ids.includes(id));
+    assert.ok(entry.cnAvailability.releaseDate <= entry.cnAvailability.checkedAt);
+    assert.ok(Object.hasOwn(confirmed.characters, id));
+    assert.equal(entry.image, `https://maimai-diy-assets-1517578456.cos.ap-shanghai.myqcloud.com/materials/regions/companion-supplements/20261124/${id}.webp`);
+    assert.match(entry.cnAvailability.sha256, /^[a-f0-9]{64}$/);
+  }
+  for (const id of ['550301', '550302', '550303']) {
+    assert.ok(ids.includes(id));
+    assert.equal(metadata.entries[id].group, '7sRefちほー4');
+    assert.equal(metadata.entries[id].cnAvailability.releaseDate, '2026-10-01');
+  }
+  for (const id of ['004101', '004102', '004103', '004104']) assert.ok(!ids.includes(id));
 });

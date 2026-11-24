@@ -39,6 +39,8 @@ async function setup(page, context, handle) {
       return route.continue();
     }
     if (url.origin !== host) return route.abort();
+    if (url.pathname.startsWith('/materials/regions/companion-supplements/20261124/'))
+      return route.fulfill({ body: png, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' } });
     const response = await handle?.(url.pathname, route);
     if (response === 'handled') return;
     const json = {
@@ -288,4 +290,33 @@ test('a newly confirmed series character can be selected and rendered', async ({
   await page.keyboard.press('Escape');
   await expect(page.locator('#loading')).toBeHidden();
   await expect(page.locator('#regional-display-error')).toHaveText('');
+});
+
+
+test('CN 7sRef 4 is filterable and renders all three COS-backed characters', async ({ page, context }) => {
+  const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
+    schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-24T00:00:00Z', sources: [],
+    availability: { art: 'test' }, ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+  }]));
+  const { files } = buildRegionalIndex({ catalogs });
+  const prefix = new URL(REGION_BASE_URL).pathname;
+  await page.addInitScript(({ key, state }) => localStorage.setItem(key, JSON.stringify({ version: 1, state })),
+    { key: CURRENT_DESIGN_KEY, state: { ...createDefaultState('cn'), region: 'cn', screenMode: 'companions' } });
+  await setup(page, context, path => {
+    const body = path.startsWith(prefix) && files.get(path.slice(prefix.length));
+    if (body) return { body, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' } };
+  });
+  for (const id of ['550301', '550302', '550303']) {
+    await page.getByRole('button', { name: '选择队长素材', exact: true }).click();
+    await page.locator('#picker-filter').selectOption({ label: '7sRefちほー4（3）' });
+    await expect(page.locator('#picker-grid [data-asset-id]')).toHaveCount(3);
+    await expect(item(page, id).locator('img')).toHaveJSProperty('naturalWidth', 1);
+    await expect(item(page, id).locator('img')).toHaveAttribute('src', host + '/materials/regions/companion-supplements/20261124/' + id + '.webp');
+    await item(page, id).click();
+    await expect.poll(async () => (await savedState(page)).companions[0]?.id).toBe(id);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#loading')).toBeHidden();
+    await expect(page.locator('#regional-display-error')).toHaveText('');
+  }
+  await page.screenshot({ path: 'test-results/cn-7sref4.png' });
 });
