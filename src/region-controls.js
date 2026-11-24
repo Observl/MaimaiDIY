@@ -114,10 +114,11 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     for (let index = 0; index < 5; index++) {
       const member = state.companions[index];
       const item = member && getRegionCatalogItem(state.region, 'charas', member.id);
-      const row = document.createElement('article'); row.className = 'control-row';
+      const row = document.createElement('article'); row.className = 'control-row companion-row';
+      row.dataset.empty = String(!member);
       const main = document.createElement('div'); main.className = 'control-main';
       const icon = document.createElement('span'); icon.className = 'control-icon';
-      if (!member && item) icon.classList.add('companion-placeholder');
+      if (!member) { icon.textContent = '+'; icon.setAttribute('aria-hidden', 'true'); }
       if (item) {
         const image = new Image();
         image.src = item.image;
@@ -127,10 +128,14 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       const description = document.createElement('div');
       const heading = document.createElement('h3'); heading.className = 'control-label'; heading.textContent = index ? `队员 ${index}` : '队长';
       const text = document.createElement('p'); text.className = 'control-file';
-      text.textContent = member ? [item?.name, companionIdLabel(member.id)].filter(Boolean).join(' · ') : '未选择';
+      text.textContent = member ? item?.name || companionIdLabel(member.id) : '选择旅行伙伴';
+      text.title = member ? [item?.name, companionIdLabel(member.id)].filter(Boolean).join(' · ') : text.textContent;
       description.append(heading, text); main.append(icon, description);
-      const actions = document.createElement('div'); actions.className = 'control-actions';
+      const actions = document.createElement('div'); actions.className = 'control-actions companion-settings';
       const level = document.createElement('input'); level.className = 'companion-level'; level.type = 'number'; level.min = '1'; level.max = '9999'; level.value = String(member?.level || 1); level.disabled = !member; level.setAttribute('aria-label', `旅行伙伴 ${index + 1} 等级`);
+      const levelField = document.createElement('label'); levelField.className = 'companion-level-field';
+      const levelCaption = document.createElement('span'); levelCaption.textContent = '等级';
+      levelField.append(levelCaption, level);
       level.addEventListener('change', () => {
         if (!member) return;
         const value = level.valueAsNumber;
@@ -156,7 +161,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
         render();
       });
       awakening.append(awake, '超觉醒');
-      const pick = document.createElement('button'); pick.className = 'library-button'; pick.type = 'button'; pick.textContent = '素材库'; pick.disabled = catalog?.category !== 'charas' || !catalog.items.length;
+      const pick = document.createElement('button'); pick.className = 'library-button'; pick.type = 'button'; pick.textContent = member ? '更换素材' : '选择素材'; pick.disabled = catalog?.category !== 'charas' || !catalog.items.length;
       pick.setAttribute('aria-label', `选择${heading.textContent}素材`);
       pick.dataset.companionPicker = String(index);
       pick.disabled ||= index > state.companions.length;
@@ -177,8 +182,9 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
           }
         },
       }, () => companions.querySelector(`[data-companion-picker="${index}"]`)));
-      const clear = document.createElement('button'); clear.className = 'library-button'; clear.type = 'button'; clear.textContent = '移除'; clear.disabled = !member;
+      const clear = document.createElement('button'); clear.className = 'library-button companion-remove'; clear.type = 'button'; clear.textContent = '×'; clear.disabled = !member;
       clear.setAttribute('aria-label', `移除${heading.textContent}`);
+      clear.title = `移除${heading.textContent}`;
       clear.addEventListener('click', () => {
         recordHistory();
         state.companions.splice(index, 1);
@@ -186,7 +192,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
         companions.querySelector(`[data-companion-picker="${index}"]`)?.focus({ preventScroll: true });
         render();
       });
-      actions.append(level, awakening, pick, clear); row.append(main, actions); companions.append(row);
+      actions.append(levelField, awakening, clear); row.append(main, pick, actions); companions.append(row);
     }
     const song = catalog && getRegionCatalogItem(catalog.region, 'songs', state.song.id);
     document.querySelector('#song-label').textContent = song ? `${song.name} · ${song.id.endsWith(':dx') ? 'DX' : '标准'}` : '未选择歌曲';

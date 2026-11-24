@@ -57,6 +57,7 @@ for (const file of [
   'support.html',
   'custom-order.html',
   'styles.css',
+  'components.css',
   'ui-motion.css',
   'ui-motion.js',
   'app.js',

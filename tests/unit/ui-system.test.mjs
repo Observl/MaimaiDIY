@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { transform } from 'esbuild';
 const css = await readFile(new URL('../../styles.css', import.meta.url), 'utf8');
+const components = await readFile(new URL('../../components.css', import.meta.url), 'utf8');
 const motion = await readFile(new URL('../../ui-motion.css', import.meta.url), 'utf8');
-test('both UI stylesheets parse without CSS warnings', async () => {
-  for (const source of [css,motion]) assert.deepEqual((await transform(source,{loader:'css'})).warnings,[]);
+test('editor UI stylesheets parse without CSS warnings', async () => {
+  for (const source of [css,motion,components]) assert.deepEqual((await transform(source,{loader:'css'})).warnings,[]);
 });
 test('shared UI tokens cover field, button, panel and spacing variants', () => {
   for (const name of ['border','secondary','accent-text','focus-ring','radius-compact','radius-control','radius-panel','control-compact','control-regular','field-height','space-2','space-3','space-4','space-6']) assert.match(css,new RegExp('--'+name+':'));

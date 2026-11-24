@@ -103,13 +103,13 @@ test('verified category cache survives hot reload without regional network reque
   await page.locator('#companion-controls .library-button').first().click();
   await page.locator('[data-asset-id="000101"]').click();
   await expect(page.locator('#picker-message')).toContainText('已选择');
-  await expect(page.locator('#companion-controls .control-file').first()).toHaveText('でらっくま · ID 000101');
+  await expect(page.locator('#companion-controls .control-file').first()).toHaveText('でらっくま');
   await page.locator('#picker-close').click();
   await expect.poll(async () => (await page.evaluate(() => JSON.parse(localStorage.getItem('maimai-diy-region-current-design-v1'))))?.state.companions.length).toBe(1);
   const count = log.requests.length;
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loading')).toBeHidden();
-  await expect(page.locator('#companion-controls .control-file').first()).toHaveText('でらっくま · ID 000101');
+  await expect(page.locator('#companion-controls .control-file').first()).toHaveText('でらっくま');
   await expect(page.locator('#companion-controls .library-button').first()).toBeEnabled();
   expect(log.requests.slice(count)).toEqual([]);
   expect((await exported(page)).state.companions).toEqual([{ id: '000101', level: 1 }]);

@@ -361,3 +361,59 @@ test('first visits use supplied regional examples and user edits replace them on
   await expect(page.locator('html')).toHaveAttribute('data-region', 'cn');
   expect((await savedState(page)).playerName).toBe('USER');
 });
+
+
+test('standard companion controls fit narrow phones and preserve level, switch and removal actions', async ({ page, context }) => {
+  const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
+    schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-24T00:00:00Z', sources: [],
+    availability: { art: 'test' }, ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+  }]));
+  catalogs.cn.songs = [{ id: '1820:dx', musicId: 1820, name: 'Amereistr',
+    image: REGION_BASE_URL + 'shared/saltmeta/covers/001820.png',
+    charts: [{ difficulty: 4, level: '14', version: null }] }];
+  const { files } = buildRegionalIndex({ catalogs });
+  const prefix = new URL(REGION_BASE_URL).pathname;
+  await setup(page, context, path => {
+    const body = path.startsWith(prefix) && files.get(path.slice(prefix.length));
+    if (body) return { body, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' } };
+  });
+  for (const width of [320, 375, 768, 1440]) {
+    await page.setViewportSize({ width, height: 1100 });
+    const bounds = await page.locator('#companion-controls').evaluate(root => {
+      const outer = root.getBoundingClientRect();
+      return { outer: outer.width, scroll: root.scrollWidth,
+        outside: [...root.querySelectorAll('button, input, .companion-awakening')].filter(el => {
+          const r = el.getBoundingClientRect();
+          return r.left < outer.left - 1 || r.right > outer.right + 1;
+        }).map(el => el.className) };
+    });
+    expect(bounds.scroll).toBeLessThanOrEqual(Math.ceil(bounds.outer) + 1);
+    expect(bounds.outside).toEqual([]);
+    await page.locator('.controls-card').screenshot({ path: `test-results/components-${width}.png` });
+  }
+  await page.setViewportSize({ width: 375, height: 1100 });
+  const level = page.getByRole('spinbutton', { name: '旅行伙伴 1 等级' });
+  await level.fill('100'); await level.press('Tab');
+  await expect.poll(async () => (await savedState(page)).companions[0].level).toBe(100);
+  await page.getByRole('checkbox', { name: '队长超觉醒' }).uncheck();
+  await expect.poll(async () => Boolean((await savedState(page)).companions[0].awakened)).toBe(false);
+  await page.getByRole('button', { name: '移除队长', exact: true }).click();
+  await expect.poll(async () => (await savedState(page)).companions.length).toBe(4);
+  await expect(page.getByRole('spinbutton', { name: '旅行伙伴 5 等级' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '选择队员 4素材', exact: true })).toBeEnabled();
+  await page.locator('#screen-mode input[value="achievement"]').check();
+  await expect(page.locator('#song-difficulty')).toBeEnabled();
+  for (const width of [320, 375, 1440]) {
+    await page.setViewportSize({ width, height: 1100 });
+    const outside = await page.locator('#song-controls').evaluate(root => {
+      const outer = root.getBoundingClientRect();
+      return [...root.querySelectorAll('input, select, button')].filter(el => {
+        const rect = el.getBoundingClientRect();
+        return rect.left < outer.left - 1 || rect.right > outer.right + 1;
+      }).map(el => el.id);
+    });
+    expect(outside).toEqual([]);
+    await page.locator('#song-controls').screenshot({ path: `test-results/song-components-${width}.png` });
+  }
+
+});
