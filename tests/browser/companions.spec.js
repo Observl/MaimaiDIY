@@ -320,3 +320,44 @@ test('CN 7sRef 4 is filterable and renders all three COS-backed characters', asy
   }
   await page.screenshot({ path: 'test-results/cn-7sref4.png' });
 });
+
+
+test('first visits use supplied regional examples and user edits replace them on reload', async ({ page, context }) => {
+  const catalogs = Object.fromEntries(['cn', 'jp'].map(region => [region, {
+    schemaVersion: 1, region, version: 'test', generatedAt: '2026-11-24T00:00:00Z', sources: [],
+    availability: { art: 'test' }, ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+  }]));
+  for (const region of ['cn', 'jp']) catalogs[region].songs = [{
+    id: '1820:dx', musicId: 1820, name: '示例曲目',
+    image: REGION_BASE_URL + 'shared/saltmeta/covers/001820.png',
+    charts: [{ difficulty: 4, level: '14', version: null }],
+  }];
+  const jpIds = ['400405', '400401', '200401', '550303', '250402'];
+  catalogs.jp.charas = jpIds.map(id => ({ id, name: id,
+    image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_' + id + '.png' }));
+  const { files } = buildRegionalIndex({ catalogs });
+  const prefix = new URL(REGION_BASE_URL).pathname;
+  await setup(page, context, path => {
+    const body = path.startsWith(prefix) && files.get(path.slice(prefix.length));
+    if (body) return { body, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' } };
+    if (path.endsWith('.webp')) return { body: png, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' } };
+  });
+  await expect(page.locator('#regional-display-error')).toHaveText('');
+  expect((await savedState(page)).companions.map(member => member.id)).toEqual(['250401', '400405', '250405', '550301', '200405']);
+  const name = page.locator('[data-control="playerName"] .name-input');
+  await expect(name).toHaveValue('Null.');
+  await name.fill('USER');
+  await name.press('Tab');
+  await expect.poll(async () => (await savedState(page)).playerName).toBe('USER');
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#loading')).toBeHidden();
+  expect((await savedState(page)).playerName).toBe('USER');
+  await page.locator('#region-toggle').click();
+  await expect(page.locator('html')).toHaveAttribute('data-region', 'jp');
+  await expect(page.locator('#loading')).toBeHidden();
+  await expect.poll(async () => (await savedState(page)).companions.map(member => member.id)).toEqual(jpIds);
+  expect((await savedState(page)).playerName).toBe('Null.');
+  await page.locator('#region-toggle').click();
+  await expect(page.locator('html')).toHaveAttribute('data-region', 'cn');
+  expect((await savedState(page)).playerName).toBe('USER');
+});

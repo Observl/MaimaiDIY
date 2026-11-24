@@ -1,9 +1,16 @@
 import { test, expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
+import { createDefaultState } from '../../src/model.js';
+import { CURRENT_DESIGN_KEY } from '../../src/current-design.js';
 
 // COS allows the real site and the user's local port 4173. The isolated test
 // server uses 4174: retain actual response bytes, adapting only its CORS header.
+// Keep the existing collection/pixel regression suite on its legacy saved design.
+// First-visit examples and replacement by user edits are covered in companions.spec.js.
 test.beforeEach(async ({ context }) => {
+  await context.addInitScript(({ key, state }) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({ version: 1, state }));
+  }, { key: CURRENT_DESIGN_KEY, state: createDefaultState() });
   await context.route('https://*.myqcloud.com/**', async (route) => {
     try {
       const response = await route.fetch();
@@ -42,7 +49,7 @@ async function exportState(page) {
   return JSON.parse(await readFile(await (await download).path(), 'utf8'));
 }
 
-test('default rendering, required controls, large preview and PNG export', async ({
+test('saved collection rendering, required controls, large preview and PNG export', async ({
   page,
 }, testInfo) => {
   const errors = [];

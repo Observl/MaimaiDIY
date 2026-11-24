@@ -1,3 +1,4 @@
+import { createInitialDesign } from './src/default-designs.js';
 import { CANVAS, COMPOSITION_ORDER, OUTPUT, COS, DISPLAY_FONT, slots, controls, HISTORY_LIMIT } from './src/config.js';
 import {
   createDefaultState,
@@ -54,7 +55,7 @@ window.addEventListener('pageshow', event => { if (event.persisted) void render(
 const renderCanvas = renderer.renderCanvas;
 const applyRatingBand = () => updateRatingBand(state);
 const loading = document.querySelector('#loading');
-const state = createDefaultState();
+const state = createInitialDesign();
 let regionControls;
 const largePreview = document.querySelector('#large-preview');
 const previewMode = document.querySelector('#preview-mode');
@@ -256,7 +257,7 @@ const { recordHistory, endHistoryTransaction, clearTransaction, refresh: updateH
   createDesignHistory({
     currentRegion: () => state.region,
     snapshot: region => region === state.region
-      ? snapshotState() : readRegionDesign(region) || createDefaultState(region),
+      ? snapshotState() : readRegionDesign(region) || createInitialDesign(region),
     async restore(snapshot) {
       Object.assign(state, JSON.parse(JSON.stringify(snapshot)));
       applyRatingBand();
@@ -498,9 +499,7 @@ async function initialize() {
         console.warn('素材缓存初始化失败', error);
       });
   }
-  resetState();
-  const savedDesign = readCurrentDesign();
-  if (savedDesign) Object.assign(state, savedDesign);
+  Object.assign(state, readCurrentDesign() || createInitialDesign());
   buildControls();
   syncControlsFromState();
   for (const button of previewHotspots.querySelectorAll('[data-preview-control]')) {
@@ -603,7 +602,7 @@ regionControls = initializeRegionControls({
   state, recordHistory, render: () => { templates.refresh(); return render(); }, picker: materialPicker,
   async changeRegion(region) {
     if (region === state.region) return;
-    const nextDesign = readRegionDesign(region) || createDefaultState(region);
+    const nextDesign = readRegionDesign(region) || createInitialDesign(region);
     await loadRegionDesign(nextDesign);
     previewRegionVersion++;
     previewRefreshStatus.textContent = '';
@@ -612,7 +611,7 @@ regionControls = initializeRegionControls({
     materialPicker.close();
     saveCurrentDesign(snapshotState());
     clearTransaction();
-    Object.assign(state, readRegionDesign(region) || createDefaultState(region));
+    Object.assign(state, readRegionDesign(region) || createInitialDesign(region));
     syncControlsFromState();
     void render();
   },

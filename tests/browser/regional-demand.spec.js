@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { REGION_BASE_URL, REGION_CATEGORIES } from '../../src/region-index.js';
+import { createDefaultState } from '../../src/model.js';
+import { CURRENT_DESIGN_KEY } from '../../src/current-design.js';
 import { buildRegionalIndex } from '../../tools/build-region-index.mjs';
 
 // Real browser, deterministic data: this suite measures application requests,
@@ -23,6 +25,12 @@ const visibility = { schemaVersion: 1, snapshotDate: '2026-11-08', sources: [],
   jpIdentified: { frames: [], plates: [], icons: [], charas: ['000101'] } };
 
 async function setup(page, context, intercept) {
+  await page.addInitScript(({ key, state }) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({ version: 1, state }));
+  }, { key: CURRENT_DESIGN_KEY, state: createDefaultState() });
+  await page.addInitScript(({ key, state }) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({ version: 1, state }));
+  }, { key: CURRENT_DESIGN_KEY + ':jp', state: createDefaultState('jp') });
   const requests = [];
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
