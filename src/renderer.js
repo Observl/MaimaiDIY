@@ -88,6 +88,7 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), readFre
   let renderVersion = 0;
   let state;
   let previewOverlay;
+  let companionBounds = [];
   let titleWidth = 0;
   let titleOffset = 0;
   let titleOverflow = false;
@@ -344,6 +345,7 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), readFre
         ctx.drawImage(image, slot.x, slot.y, slot.width, slot.height);
       }
     }
+    companionBounds = display?.bounds || [];
     display?.draw(ctx);
     previewOverlay = display?.preview;
     if (state.visible.titleText) {
@@ -375,5 +377,5 @@ export function createRenderer(canvas, { scale = preferredRenderScale(), readFre
     if (state?.visible.titleText) drawTitleText(titleOffset, context);
     context.restore();
   }
-  return { render, renderCanvas, paintPreview, paintTitleLayer, dispose, get titleOverflow() { return titleOverflow; } };
+  return { get companionBounds() { return companionBounds; }, render, renderCanvas, paintPreview, paintTitleLayer, dispose, get titleOverflow() { return titleOverflow; } };
 }

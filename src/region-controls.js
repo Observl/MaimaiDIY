@@ -109,6 +109,62 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
   }
   difficulty.addEventListener('change', () => applySongSettings(Number(difficulty.value), achievement.valueAsNumber));
   achievement.addEventListener('change', () => applySongSettings(state.song.difficulty, achievement.valueAsNumber));
+  function companionSettings(index) {
+    const member = state.companions[index];
+    const actions = document.createElement('div'); actions.className = 'control-actions companion-settings';
+    const level = document.createElement('input'); level.className = 'companion-level'; level.type = 'number'; level.min = '1'; level.max = '9999'; level.value = String(member?.level || 1); level.disabled = !member; level.setAttribute('aria-label', `旅行伙伴 ${index + 1} 等级`);
+    const levelField = document.createElement('label'); levelField.className = 'companion-level-field';
+    const levelCaption = document.createElement('span'); levelCaption.textContent = '等级';
+    levelField.append(levelCaption, level);
+    level.addEventListener('change', () => {
+      if (!member) return;
+      const value = level.valueAsNumber;
+      const next = Number.isFinite(value) ? Math.min(9999, Math.max(1, Math.trunc(value))) : member.level;
+      level.value = String(next);
+      if (next === member.level) return;
+      recordHistory();
+      member.level = next;
+      paintFields();
+      render();
+    });
+    const awakening = document.createElement('label');
+    awakening.className = 'companion-awakening';
+    const awake = document.createElement('input');
+    awake.type = 'checkbox';
+    awake.checked = Boolean(member?.awakened);
+    awake.disabled = !member;
+    awake.setAttribute('aria-label', `旅行伙伴 ${index + 1} 超觉醒`);
+    awake.addEventListener('change', () => {
+      if (!member) return;
+      recordHistory();
+      if (awake.checked) member.awakened = true;
+      else delete member.awakened;
+      paintFields();
+      render();
+    });
+    awakening.append(awake, '超觉醒');
+    actions.append(levelField, awakening);
+    return actions;
+  }
+  function openCompanionPicker(index, trigger) {
+    return picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas', settings: () => companionSettings(index),
+        selectedAssetId: () => state.companions[index]?.id,
+        selectionError(selected) {
+          if (selected.companionColorKnown === false)
+            return '此角色图片已收录，边框配色尚未核实，暂不能加入展示。';
+          if (!state.companions[index] && state.companions.some(member => String(member.id) === String(selected.id)))
+            return '这位伙伴已在队伍中，请为此位置选择另一位伙伴。';
+        },
+        select(selected) {
+          const existing = state.companions.findIndex(member => String(member.id) === String(selected.id));
+          if (existing >= 0 && existing !== index) {
+            [state.companions[existing], state.companions[index]] = [state.companions[index], state.companions[existing]];
+          } else if (existing === -1) {
+            state.companions[index] = { ...state.companions[index], id: selected.id, level: state.companions[index]?.level || 1 };
+          }
+        },
+      }, trigger || (() => companions.querySelector(`[data-companion-picker="${index}"]`)));
+  }
   function paintFields() {
     companions.replaceChildren();
     for (let index = 0; index < 5; index++) {
@@ -131,57 +187,12 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       text.textContent = member ? item?.name || companionIdLabel(member.id) : '选择旅行伙伴';
       text.title = member ? [item?.name, companionIdLabel(member.id)].filter(Boolean).join(' · ') : text.textContent;
       description.append(heading, text); main.append(icon, description);
-      const actions = document.createElement('div'); actions.className = 'control-actions companion-settings';
-      const level = document.createElement('input'); level.className = 'companion-level'; level.type = 'number'; level.min = '1'; level.max = '9999'; level.value = String(member?.level || 1); level.disabled = !member; level.setAttribute('aria-label', `旅行伙伴 ${index + 1} 等级`);
-      const levelField = document.createElement('label'); levelField.className = 'companion-level-field';
-      const levelCaption = document.createElement('span'); levelCaption.textContent = '等级';
-      levelField.append(levelCaption, level);
-      level.addEventListener('change', () => {
-        if (!member) return;
-        const value = level.valueAsNumber;
-        const next = Number.isFinite(value) ? Math.min(9999, Math.max(1, Math.trunc(value))) : member.level;
-        level.value = String(next);
-        if (next === member.level) return;
-        recordHistory();
-        member.level = next;
-        render();
-      });
-      const awakening = document.createElement('label');
-      awakening.className = 'companion-awakening';
-      const awake = document.createElement('input');
-      awake.type = 'checkbox';
-      awake.checked = Boolean(member?.awakened);
-      awake.disabled = !member;
-      awake.setAttribute('aria-label', `${heading.textContent}超觉醒`);
-      awake.addEventListener('change', () => {
-        if (!member) return;
-        recordHistory();
-        if (awake.checked) member.awakened = true;
-        else delete member.awakened;
-        render();
-      });
-      awakening.append(awake, '超觉醒');
+      const actions = companionSettings(index);
       const pick = document.createElement('button'); pick.className = 'library-button'; pick.type = 'button'; pick.textContent = member ? '更换素材' : '选择素材'; pick.disabled = catalog?.category !== 'charas' || !catalog.items.length;
       pick.setAttribute('aria-label', `选择${heading.textContent}素材`);
       pick.dataset.companionPicker = String(index);
       pick.disabled ||= index > state.companions.length;
-      pick.addEventListener('click', () => picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas',
-        selectedAssetId: () => state.companions[index]?.id,
-        selectionError(selected) {
-          if (selected.companionColorKnown === false)
-            return '此角色图片已收录，边框配色尚未核实，暂不能加入展示。';
-          if (!state.companions[index] && state.companions.some(member => String(member.id) === String(selected.id)))
-            return '这位伙伴已在队伍中，请为此位置选择另一位伙伴。';
-        },
-        select(selected) {
-          const existing = state.companions.findIndex(member => String(member.id) === String(selected.id));
-          if (existing >= 0 && existing !== index) {
-            [state.companions[existing], state.companions[index]] = [state.companions[index], state.companions[existing]];
-          } else if (existing === -1) {
-            state.companions[index] = { id: selected.id, level: state.companions[index]?.level || 1 };
-          }
-        },
-      }, () => companions.querySelector(`[data-companion-picker="${index}"]`)));
+      pick.addEventListener('click', () => openCompanionPicker(index));
       const clear = document.createElement('button'); clear.className = 'library-button companion-remove'; clear.type = 'button'; clear.textContent = '×'; clear.disabled = !member;
       clear.setAttribute('aria-label', `移除${heading.textContent}`);
       clear.title = `移除${heading.textContent}`;
@@ -192,7 +203,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
         companions.querySelector(`[data-companion-picker="${index}"]`)?.focus({ preventScroll: true });
         render();
       });
-      actions.append(levelField, awakening, clear); row.append(main, pick, actions); companions.append(row);
+      actions.append(clear); row.append(main, pick, actions); companions.append(row);
     }
     const song = catalog && getRegionCatalogItem(catalog.region, 'songs', state.song.id);
     document.querySelector('#song-label').textContent = song ? `${song.name} · ${song.id.endsWith(':dx') ? 'DX' : '标准'}` : '未选择歌曲';
@@ -266,5 +277,5 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       : local ? ' 已加载经校验的本地 COS v2 索引。' : ' 已加载 COS v2 分类索引。';
     paintFields();
   }
-  return { sync, openSongPicker, applySongSettings };
+  return { sync, openSongPicker, applySongSettings, openCompanionPicker };
 }

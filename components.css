@@ -120,3 +120,5 @@ input:disabled, select:disabled { background: var(--secondary); color: var(--mut
 @media (max-width: 360px) {
   .region-song-fields { grid-template-columns: minmax(0, 1fr); }
 }
+
+#picker-companion-settings .companion-settings { display: flex; align-items: end; gap: var(--space-3); margin-block: var(--space-3); }

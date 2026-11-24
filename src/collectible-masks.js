@@ -123,6 +123,19 @@ export async function createCollectibleMasks(state,options=MASK_PARAMETERS,{diag
     regionContext.scale(scale,scale);
     display.draw(regionContext);
     regionContext.restore();
+    if (state.screenMode === 'companions') {
+      const badgeContext = badgeCoverage.getContext('2d');
+      badgeContext.globalCompositeOperation = 'destination-out';
+      badgeContext.drawImage(region, 0, 0);
+      badgeContext.globalCompositeOperation = 'source-over';
+      const silhouette = regionContext.getImageData(0, 0, width, height);
+      for (let i = 0; i < silhouette.data.length; i += 4) {
+        silhouette.data[i] = silhouette.data[i + 1] = silhouette.data[i + 2] = 0;
+        if (silhouette.data[i + 3]) silhouette.data[i + 3] = 255;
+      }
+      regionContext.putImageData(silhouette, 0, 0);
+      componentCoverage.getContext('2d').drawImage(region, 0, 0);
+    }
     const artwork = regionContext.getImageData(0,0,width,height).data;
     for(let i=0;i<artwork.length;i+=4) {
       if(!artwork[i+3]) continue;

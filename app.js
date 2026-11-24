@@ -241,6 +241,17 @@ songHotspot.addEventListener('click', () => {
   });
 });
 previewHotspots.append(songHotspot);
+const companionHotspots = Array.from({ length: 5 }, (_, index) => {
+  const button = document.createElement('button');
+  button.type = 'button'; button.className = 'preview-hotspot'; button.hidden = true;
+  button.dataset.companionSlot = String(index);
+  button.style.zIndex = String(COMPOSITION_ORDER.length + index + 1);
+  button.setAttribute('aria-label', `更改旅行伙伴 ${index + 1}`);
+  button.addEventListener('click', () => regionControls.openCompanionPicker(index, button));
+  previewHotspots.append(button);
+  return button;
+});
+
 valueDialog.addEventListener('close', () => {
   if (activePreviewEditor?.control.id === 'song-achievement' && !songHotspot.hidden && !previewHotspots.hidden)
     songHotspot.focus({ preventScroll: true });
@@ -540,7 +551,17 @@ async function render(options) {
         regionalDisplayRetry.hidden = !error;
       },
     });
-    if (rendered) updateControlIcons(Boolean(options?.refreshId));
+    if (rendered) {
+      updateControlIcons(Boolean(options?.refreshId));
+      companionHotspots.forEach((button, index) => {
+        const bounds = renderer.companionBounds[index];
+        button.hidden = state.screenMode !== 'companions' || !bounds || index > state.companions.length;
+        if (bounds) {
+          const [x, y, width, height] = bounds;
+          Object.assign(button.style, { left: x/CANVAS.width*100+'%', top: y/CANVAS.height*100+'%', width: width/CANVAS.width*100+'%', height: height/CANVAS.height*100+'%' });
+        }
+      });
+    }
     return rendered;
   } finally {
     if (version === pendingRender) {

@@ -254,6 +254,11 @@ export async function prepareRegionalDisplay({ region, screenMode, song, compani
     const placeholders = await Promise.all(unusedCompanionPlaceholders(examples, companions).map((item, offset) =>
       prepareMember(loadImage(item.image, refreshId), { id: item.id, level: 1 }, companions.length + offset)));
     return {
+      bounds: display.slots.map((slot, index) => {
+        const [x, y, w, h] = slot.mask ? layout[slot.mask] : slot.portraitBounds;
+        const [fx, fy, fw, fh] = confirmed.regions[region][index].frameBounds;
+        return [Math.min(x, fx), Math.min(y, fy), Math.max(x+w, fx+fw)-Math.min(x, fx), Math.max(y+h, fy+fh)-Math.min(y, fy)];
+      }),
       draw: draw(members),
       preview: draw(placeholders.filter(Boolean)),
     };
