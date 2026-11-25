@@ -3,24 +3,6 @@
   "timezone": "UTC",
   "days": [
     {
-      "day": "2026-10-23",
-      "visits": 0,
-      "generated": 0,
-      "downloads": 0
-    },
-    {
-      "day": "2026-10-24",
-      "visits": 0,
-      "generated": 0,
-      "downloads": 0
-    },
-    {
-      "day": "2026-10-25",
-      "visits": 0,
-      "generated": 0,
-      "downloads": 0
-    },
-    {
       "day": "2026-10-26",
       "visits": 0,
       "generated": 0,
@@ -181,6 +163,24 @@
       "visits": 10,
       "generated": 6,
       "downloads": 6
+    },
+    {
+      "day": "2026-11-22",
+      "visits": 20,
+      "generated": 33,
+      "downloads": 31
+    },
+    {
+      "day": "2026-11-23",
+      "visits": 7,
+      "generated": 0,
+      "downloads": 0
+    },
+    {
+      "day": "2026-11-24",
+      "visits": 17,
+      "generated": 6,
+      "downloads": 3
     }
   ]
 }
