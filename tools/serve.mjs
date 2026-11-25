@@ -4,7 +4,7 @@ import { resolve, extname, relative, sep } from 'node:path';
 import { setupFeedback } from './feedback-http.mjs';
 
 const root = await realpath(resolve(process.argv[2] || 'dist'));
-const port = Number(process.env.PORT || 4173);
+const port = Number(process.env.PORT || 50772);
 const feedback = setupFeedback(port);
 const types = {
   '.html': 'text/html',

@@ -15,7 +15,7 @@
 ## 检查与预览
 
 - `npm ci`：安装开发检查工具。
-- `npm run dev`：在 127.0.0.1:4173 预览。
+- `npm run dev`：在 127.0.0.1:50772 预览。
 - `npm run check`：静态检查、单元测试与发布目录生成。
 - `npm run test:e2e`：运行浏览器回归，使用 4174 端口的 dist；本机使用 Chrome，CI 使用 Playwright Chromium。
 - `npm run build`：生成 dist，仅包含公开运行文件，不包含测试、工具、原始取样或备用背景。背景归档仍保留在 Git 仓库中。
