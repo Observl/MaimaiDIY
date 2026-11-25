@@ -24,3 +24,8 @@ playwright_chromiumdev_profile-*/
 
 # Downloaded companion art is uploaded to COS, not committed.
 /regional-display/charas/
+
+# Local-only working material: screenshots, marketing assets and tool config.
+/screens/
+/xiaohongshu/
+/.claude/
