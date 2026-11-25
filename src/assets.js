@@ -6,25 +6,13 @@ let badgeManifest;
 let manifestRequest;
 const manifestSources = new WeakMap();
 export const manifestSource = manifest => manifestSources.get(manifest);
-export function loadImage(src, refreshId) {
-  src=resolveAssetUrl(src);
-  const refresh = refreshId && typeof src === 'string' &&
-    (src.startsWith(COS.baseUrl + '/materials/') ||
-      /^regional-display\/(?:cn|jp|charas|companion-sets)\/[\w-]+\.webp$/.test(src));
-  const cached = imageCache.get(src);
-  if (!refresh && cached?.previous) return cached.previous.request;
-  if (cached && (!refresh || cached.refreshId === refreshId)) return cached.request;
-  let requestUrl = src;
-  if (refresh) {
-    const url = new URL(src, globalThis.location?.href);
-    url.searchParams.set('preview-refresh', refreshId);
-    requestUrl = url.href;
-  }
-  const request = new Promise((resolve, reject) => {
+
+function requestImage(requestUrl, src) {
+  return new Promise((resolve, reject) => {
     const image = new Image();
     const timer = setTimeout(() => {
       image.src = '';
-      reject(new Error(`素材加载超时：${src}`));
+      reject(Object.assign(new Error(`素材加载超时：${src}`), { timeout: true }));
     }, COS.timeout);
     if (/^https?:\/\//.test(src)) image.crossOrigin = 'anonymous';
     image.onload = () => {
@@ -40,6 +28,46 @@ export function loadImage(src, refreshId) {
       reject(error);
     };
     image.src = requestUrl;
+  });
+}
+
+// Only http(s) responses can be re-requested with a cache-busting parameter.
+function isRetryableSrc(src) {
+  try {
+    return /^https?:$/.test(new URL(src, globalThis.location?.href).protocol);
+  } catch {
+    return false;
+  }
+}
+
+export function bypassCache(src) {
+  const url = new URL(src, globalThis.location?.href);
+  url.searchParams.set('retry', String(Date.now()));
+  return url.href;
+}
+
+export function loadImage(src, refreshId) {
+  src=resolveAssetUrl(src);
+  const refresh = refreshId && typeof src === 'string' &&
+    (src.startsWith(COS.baseUrl + '/materials/') ||
+      /^regional-display\/(?:cn|jp|charas|companion-sets)\/[\w-]+\.webp$/.test(src));
+  const cached = imageCache.get(src);
+  if (!refresh && cached?.previous) return cached.previous.request;
+  if (cached && (!refresh || cached.refreshId === refreshId)) return cached.request;
+  let requestUrl = src;
+  if (refresh) {
+    const url = new URL(src, globalThis.location?.href);
+    url.searchParams.set('preview-refresh', refreshId);
+    requestUrl = url.href;
+  }
+  const request = requestImage(requestUrl, src).catch((error) => {
+    // A stale browser cache entry can keep a valid asset failing after the
+    // server recovers. Retry once with a cache-busting parameter instead of
+    // asking the user for a hard refresh.
+    // A preview refresh already bypasses the cache, so only canonical
+    // requests are retried when a stale cached failure survives.
+    if (refresh || error?.timeout || !isRetryableSrc(src)) throw error;
+    return requestImage(bypassCache(requestUrl), src);
   });
   const entry = { request, refreshId: refresh ? refreshId : undefined,
     previous: cached?.loaded ? cached : cached?.previous, loaded: false };
@@ -65,9 +93,11 @@ export async function fetchJson(url, forceFresh = false, onSource) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), COS.timeout);
     try {
-      const requestUrl = forceFresh
-        ? `${url}${url.includes('?') ? '&' : '?'}refresh=${Date.now()}`
-        : url;
+      // A cached failure survives a plain retry, so later attempts bypass the
+      // browser cache the same way forced refreshes do.
+      let requestUrl = url;
+      if (forceFresh) requestUrl = `${url}${url.includes('?') ? '&' : '?'}refresh=${Date.now()}`;
+      else if (attempt > 0) requestUrl = bypassCache(url);
       const response = await fetch(requestUrl, {
         signal: controller.signal,
         cache: forceFresh ? 'reload' : 'default',

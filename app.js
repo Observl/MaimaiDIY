@@ -7,7 +7,7 @@ import {
   nameCharacterCount,
   applyRatingBand as updateRatingBand,
 } from './src/model.js';
-import { loadImage } from './src/assets.js';
+import { loadImage, bypassCache } from './src/assets.js';
 import { resolveAssetUrl } from './src/asset-paths.js';
 import { createRenderer, failedPreviewAssetLabel } from './src/renderer.js';
 import { TITLE_STATIC_NOTICE } from './src/title-layout.js';
@@ -501,6 +501,50 @@ const imageExporter = initializeImageExport({
   renderCanvas, width: OUTPUT.width, height: OUTPUT.height, isReady: () => loading.hidden && regionalDisplayRetry.hidden && !previewWorkPending,
 });
 
+// A stale cached failure can keep a valid font from loading even after the
+// server allows the request, so a failed first load retries once without the
+// cached copy.
+async function loadDisplayFont() {
+  try {
+    await document.fonts.load(`18px ${DISPLAY_FONT}`);
+    return;
+  } catch (error) {
+    console.warn('字体加载失败，尝试绕过缓存重新加载', error);
+  }
+  const FontFaceCtor = globalThis.FontFace;
+  if (typeof FontFaceCtor !== 'function') return Promise.resolve();
+  try {
+    const fontUrl = new URL('/materials/fonts/SEGA_MARUGOTHICDB-web.ttf?v=2', COS.baseUrl).href;
+    const response = await fetch(bypassCache(fontUrl), { cache: 'reload' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const face = new FontFaceCtor(DISPLAY_FONT.replace(/"/g, ''), await response.arrayBuffer());
+    await face.load();
+    document.fonts.add(face);
+  } catch (error) {
+    console.warn('字体重新加载失败，将使用备用字体', error);
+  }
+}
+
+// Static imagery such as the support QR does not go through loadImage.
+function retryStaticImage(image) {
+  if (!image || image.tagName !== 'IMG' || !image.src) return;
+  if (image.dataset.assetRetried) return;
+  let url;
+  try {
+    url = new URL(image.src);
+  } catch {
+    return;
+  }
+  if (!/^https?:$/.test(url.protocol) || url.searchParams.has('retry')) return;
+  image.dataset.assetRetried = '1';
+  image.src = bypassCache(image.src);
+}
+
+window.addEventListener('error', (event) => retryStaticImage(event.target), true);
+for (const image of document.images) {
+  if (image.complete && !image.naturalWidth) retryStaticImage(image);
+}
+
 async function initialize() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker
@@ -518,9 +562,7 @@ async function initialize() {
     button.hidden = state.visible[control.target] === false;
   }
   loading.hidden = false;
-  await document.fonts
-    .load(`18px ${DISPLAY_FONT}`)
-    .catch((error) => console.warn('字体加载失败', error));
+  await loadDisplayFont();
   await render();
 }
 

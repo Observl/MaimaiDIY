@@ -114,6 +114,32 @@ test('failed image loads are evicted and retried', async () => {
   }
 });
 
+test('a cached image failure is retried once with a cache-busting parameter', async () => {
+  const oldImage = globalThis.Image;
+  const requests = [];
+  globalThis.Image = class {
+    naturalWidth = 128;
+    naturalHeight = 128;
+    set src(value) {
+      requests.push(value);
+      queueMicrotask(() => {
+        if (requests.length === 1) this.onerror(Error('offline'));
+        else this.onload();
+      });
+    }
+  };
+  try {
+    const api = await fresh();
+    const source = COS.baseUrl + '/materials/avatars/UI_Icon_900002.png';
+    await api.loadImage(source);
+    assert.equal(requests.length, 2);
+    assert.equal(requests[0], source);
+    assert.match(requests[1], /^https:\/\/[^?]+\?retry=\d+$/);
+  } finally {
+    globalThis.Image = oldImage;
+  }
+});
+
 test('a preview refresh shares matching image requests and replaces the export cache', async () => {
   const oldImage = globalThis.Image;
   const requests = [];

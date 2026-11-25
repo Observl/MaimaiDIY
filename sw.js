@@ -27,6 +27,7 @@ function cacheKey(url) {
   key.searchParams.delete('refresh');
   key.searchParams.delete('selected');
   key.searchParams.delete('preview-refresh');
+  key.searchParams.delete('retry');
   return key.href;
 }
 
