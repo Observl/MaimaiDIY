@@ -597,7 +597,7 @@ async function render(options) {
       updateControlIcons(Boolean(options?.refreshId));
       companionHotspots.forEach((button, index) => {
         const bounds = renderer.companionBounds[index];
-        button.hidden = state.screenMode !== 'companions' || !bounds || index > state.companions.length;
+        button.hidden = state.screenMode !== 'companions' || !bounds;
         if (bounds) {
           const [x, y, width, height] = bounds;
           Object.assign(button.style, { left: x/CANVAS.width*100+'%', top: y/CANVAS.height*100+'%', width: width/CANVAS.width*100+'%', height: height/CANVAS.height*100+'%' });

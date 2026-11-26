@@ -3,6 +3,16 @@ export function companionLevelFrame(level, leader = false) {
   return color ? `level-${leader ? 'leader' : 'frame'}-${color}` : null;
 }
 
+// Reuse the first member's digit run, anchored to each slot's second digit.
+// The imported last three slots offset their leading glyph by 2px / 1px.
+export function companionLevelTransforms(display, index) {
+  const source = display.slots[index].levelTransforms;
+  const reference = display.slots[index === 0 ? 0 : 1].levelTransforms;
+  const dx = source[1][4] - reference[1][4];
+  const dy = source[1][5] - reference[1][5];
+  return reference.map(([a, b, c, d, x, y]) => [a, b, c, d, x + dx, y + dy]);
+}
+
 const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 
 export function validateConfirmedCompanionSets(data) {

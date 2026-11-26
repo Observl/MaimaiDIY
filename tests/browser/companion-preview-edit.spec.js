@@ -57,6 +57,118 @@ async function setup(page, context, handle) {
   await page.locator('.controls-summary').click();
 }
 
+async function setupCompanionDesign(page, context, { region = 'cn', filled = 5 } = {}) {
+  const ids = ['000101', '000102', '000103', '000104', '000105'];
+  const catalogs = Object.fromEntries(['cn', 'jp'].map(key => [key, {
+    schemaVersion: 1, region: key, version: 'test', generatedAt: '2026-11-08T00:00:00Z', sources: [], availability: { art: 'test' },
+    ...Object.fromEntries(REGION_CATEGORIES.map(category => [category, []])),
+  }]));
+  catalogs.jp.charas = ids.map(id => ({
+    id, name: id, image: REGION_BASE_URL + 'jp/collection/charas/UI_Chara_' + id + '.png',
+  }));
+  const { files } = buildRegionalIndex({ catalogs });
+  const prefix = new URL(REGION_BASE_URL).pathname;
+  await page.route('**/data/regions/visibility-20261108.json', route => route.fulfill({
+    json: { ...visibility, jpIdentified: { ...visibility.jpIdentified, charas: ids } },
+  }));
+  await page.addInitScript(state => localStorage.setItem('maimai-diy-region-current-design-v1', JSON.stringify({ version: 1, state })), {
+    ...createDefaultState(region), screenMode: 'companions', companions: ids.slice(0, filled).map(id => ({ id, level: 9999, awakened: true })),
+  });
+  await setup(page, context, path => {
+    const body = path.startsWith(prefix) && files.get(path.slice(prefix.length));
+    if (body) return { body, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' } };
+    if (path.endsWith('.webp')) return { body: png, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' } };
+  });
+  return ids;
+}
+
+for (const region of ['cn', 'jp']) {
+  test(`${region} all member level digits share the first member's spacing and baseline`, async ({ page, context }) => {
+    await setupCompanionDesign(page, context, { region });
+    const renders = await page.evaluate(async () => {
+      const { prepareRegionalDisplay } = await import('/src/regional-display.js');
+      const state = JSON.parse(localStorage.getItem('maimai-diy-region-current-design-v1')).state;
+      const results = [];
+      for (const level of [1, 10, 100, 1000, 1111, 1234, 9999]) {
+        for (const awakened of [false, true]) {
+          const design = { ...state, companions: state.companions.map(member => ({ ...member, level, awakened })) };
+          const display = await prepareRegionalDisplay(design);
+          const transforms = [];
+          display.draw({ drawImage() {}, save() {}, restore() {}, transform(...matrix) { transforms.push(matrix); } });
+          results.push({ level, awakened, transforms });
+        }
+      }
+      return results;
+    });
+    for (const { level, awakened, transforms } of renders) {
+      const digits = String(level).length;
+      expect(transforms).toHaveLength(digits * 5);
+      const reference = transforms.slice(digits, digits * 2);
+      for (let slot = 2; slot < 5; slot++) {
+        const actual = transforms.slice(slot * digits, (slot + 1) * digits);
+        // The final digit anchors the run; every preceding glyph must translate identically.
+        const dx = actual.at(-1)[4] - reference.at(-1)[4];
+        const dy = actual.at(-1)[5] - reference.at(-1)[5];
+        for (let digit = 0; digit < digits; digit++) {
+          const label = `${region} slot ${slot} level ${level} awakened ${awakened} digit ${digit}`;
+          for (let axis = 0; axis < 4; axis++) expect(actual[digit][axis], label).toBeCloseTo(reference[digit][axis], 6);
+          expect(actual[digit][4] - reference[digit][4], label).toBeCloseTo(dx, 6);
+          expect(actual[digit][5] - reference[digit][5], label).toBeCloseTo(dy, 6);
+        }
+      }
+    }
+  });
+}
+
+test.describe('mobile companion touch targets', () => {
+  test.use({ hasTouch: true });
+  for (const region of ['cn', 'jp']) {
+    test(`${region} all five selected companions can be tapped and replaced on phones`, async ({ page, context }) => {
+      const ids = await setupCompanionDesign(page, context, { region });
+      await page.locator('#preview-mode').click();
+      for (const width of [320, 375, 390, 414]) {
+        await page.setViewportSize({ width, height: 900 });
+        for (let index = 0; index < 5; index++) {
+          await page.locator(`[data-companion-slot="${index}"]`).tap();
+          await expect(page.locator('#picker-title')).toHaveText(`选择旅行伙伴 ${index + 1}`);
+          await page.locator('#picker-search').fill(ids[index]);
+          await page.locator(`[data-asset-id="${ids[index]}"]`).tap();
+          await expect(page.locator('.companion-editor')).toBeVisible();
+          await expect(page.locator('.companion-editor input[type=number]')).toHaveAttribute('aria-label', `旅行伙伴 ${index + 1} 等级`);
+          await page.locator('.companion-editor [aria-label="关闭旅行伙伴设置"]').tap();
+          await expect(page.locator('#loading')).toBeHidden();
+        }
+      }
+    });
+    for (const filled of [0, 2]) {
+      test(`${region} later empty slots remain tappable with ${filled} selected companions`, async ({ page, context }) => {
+        await page.setViewportSize({ width: 375, height: 812 });
+        const ids = await setupCompanionDesign(page, context, { region, filled });
+        await page.locator('#preview-mode').tap();
+        expect(await page.locator('[data-companion-slot]:visible').count()).toBe(5);
+        for (let index = 0; index < 5; index++) await expect(page.locator(`[data-companion-picker="${index}"]`)).toBeEnabled();
+        await page.locator('[data-companion-slot="4"]').tap();
+        await expect(page.locator('#asset-picker')).toBeVisible();
+        await page.locator('#picker-search').fill(ids[4]);
+        await page.locator(`[data-asset-id="${ids[4]}"]`).tap();
+        await expect(page.locator('.companion-editor')).toBeVisible();
+        await expect.poll(async () => (await savedState(page)).companions.map(member => member?.id)).toEqual([...ids.slice(0, filled), ids[4]]);
+        await page.locator('.companion-editor [aria-label="关闭旅行伙伴设置"]').tap();
+        await page.locator('[data-companion-picker="3"]').tap();
+        await expect(page.locator('#asset-picker')).toBeVisible();
+        await page.locator('#picker-search').fill(ids[3]);
+        await page.locator(`[data-asset-id="${ids[3]}"]`).tap();
+        await expect(page.locator('.companion-editor')).toBeVisible();
+        await expect.poll(async () => (await savedState(page)).companions.map(member => member?.id)).toEqual([...ids.slice(0, filled), ids[4], ids[3]]);
+        await page.locator('.companion-editor [aria-label="关闭旅行伙伴设置"]').tap();
+        await expect(page.locator('#loading')).toBeHidden();
+        await expect(page.locator('#regional-display-error')).toHaveText('');
+        expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)).toBe(false);
+      });
+    }
+  }
+});
+
 test('preview companion slots edit settings and exclude their artwork from glitter', async ({ page, context }) => {
   const ids = ['000101','000102','000103','000104','000105'];
   const catalogs = Object.fromEntries(['cn','jp'].map(region => [region, {

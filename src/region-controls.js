@@ -187,6 +187,9 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     return actions;
   }
   function openCompanionPicker(index, trigger) {
+    const triggerIndex = index;
+    // Every visible empty slot opens the picker; append without creating holes.
+    index = Math.min(index, state.companions.length);
     return picker.open({ id: `companion-${index}`, label: `旅行伙伴 ${index + 1}`, category: 'charas', afterSelect: () => openCompanionSettings(index),
         selectedAssetId: () => state.companions[index]?.id,
         selectionError(selected) {
@@ -203,7 +206,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
             state.companions[index] = { ...state.companions[index], id: selected.id, level: state.companions[index]?.level || 1 };
           }
         },
-      }, trigger || (() => companions.querySelector(`[data-companion-picker="${index}"]`)));
+      }, trigger || (() => companions.querySelector(`[data-companion-picker="${triggerIndex}"]`)));
   }
   function paintFields() {
     companions.replaceChildren();
@@ -231,7 +234,6 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       const pick = document.createElement('button'); pick.className = 'library-button'; pick.type = 'button'; pick.textContent = member ? '更换素材' : '选择素材'; pick.disabled = catalog?.category !== 'charas' || !catalog.items.length;
       pick.setAttribute('aria-label', `选择${heading.textContent}素材`);
       pick.dataset.companionPicker = String(index);
-      pick.disabled ||= index > state.companions.length;
       pick.addEventListener('click', () => openCompanionPicker(index));
       const clear = document.createElement('button'); clear.className = 'library-button companion-remove'; clear.type = 'button'; clear.textContent = '×'; clear.disabled = !member;
       clear.setAttribute('aria-label', `移除${heading.textContent}`);

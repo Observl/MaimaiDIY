@@ -1,6 +1,6 @@
 import { loadImage } from './assets.js';
 import { loadRegionCategoryIndex, getRegionCatalogItem } from './region-catalog.js';
-import { companionLevelFrame, companionAwakeningTier, validateCompanionDisplay, validateCompanionPalettes, validateConfirmedCompanionSets, validateRegionalDisplayLayout } from './regional-display-layout.js';
+import { companionLevelFrame, companionLevelTransforms, companionAwakeningTier, validateCompanionDisplay, validateCompanionPalettes, validateConfirmedCompanionSets, validateRegionalDisplayLayout } from './regional-display-layout.js';
 
 import { indexedMaterialCategory } from './material-index.js';
 import { sortedPickerItems } from './picker.js';
@@ -214,6 +214,7 @@ export async function prepareRegionalDisplay({ region, screenMode, song, compani
       const set = confirmed.sets[assignment.setId];
       const profile = confirmed.regions[region][index];
       const source = display.slots[index];
+      const levelTransforms = companionLevelTransforms(display, index);
       const levelFrame = companionLevelFrame(member.level, index === 0);
       const style = member.awakened ? source.superAwakening : source.normal;
       const bounds = name => layout[name];
@@ -227,7 +228,7 @@ export async function prepareRegionalDisplay({ region, screenMode, song, compani
         prepareStars(source, member, bounds, set, profile),
         Promise.all([...String(member.level)].map(async (digit, offset) => {
           const glyph = await art(display.levelDigits[Number(digit)]);
-          const transform = source.levelTransforms[offset];
+          const transform = levelTransforms[offset];
           return ctx => {
             ctx.save();
             ctx.transform(...transform);
