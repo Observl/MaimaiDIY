@@ -1532,7 +1532,7 @@ canvas {
 #custom-order:target { outline: 2px solid currentColor; outline-offset: 4px; }
 
 /* The merch entry spans both the support copy and QR columns. */
-.support-card > .support-merch-link {
+.support-card .support-merch-link {
   grid-column: 1 / -1;
   display: flex;
   width: 100%;
@@ -1541,7 +1541,7 @@ canvas {
   background: linear-gradient(110deg, #ffc0d9, #fff7fa);
   color: #55213c;
 }
-html[data-region="jp"] .support-card > .support-merch-link {
+html[data-region="jp"] .support-card .support-merch-link {
   background: linear-gradient(110deg, #d9f4ab, #fff3b6);
   color: #344119;
 }

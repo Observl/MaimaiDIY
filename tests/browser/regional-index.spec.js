@@ -27,7 +27,7 @@ async function setup(page, options) {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#loading')).toBeHidden();
-  await expect(page.locator('#region-status')).toContainText('COS v2');
+  await expect(page.locator('#region-status')).toBeEmpty();
   return { ...fixtures, legacyRequests, rawRequests, errors };
 }
 

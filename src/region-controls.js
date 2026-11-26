@@ -284,8 +284,7 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
     panel.hidden = state.screenMode === 'collection';
     companions.hidden = state.screenMode !== 'companions'; songs.hidden = state.screenMode !== 'achievement';
     title.textContent = state.screenMode === 'achievement' ? '歌曲达成率' : '旅行伙伴';
-    const ui = state.region === 'jp' ? 'MAGiCAL' : 'CiRCLE';
-    status.textContent = `${state.region === 'jp' ? '日服' : '国服'} · ${ui} 网页背景`;
+    status.textContent = '';
     note.textContent = state.screenMode === 'companions'
       ? '边框使用已确认的本地素材；9999 级保留五颗普通星，超觉醒独立切换。' : '';
     const category = state.screenMode === 'companions' ? 'charas' : state.screenMode === 'achievement' ? 'songs' : null;
@@ -306,14 +305,10 @@ export function initializeRegionControls({ state, recordHistory, render, changeR
       }
     }
     const source = catalog?.sourceStatus?.kind;
-    const local = catalog?.sourceStatus?.local;
     if (source && state.region === 'jp') {
       showAssetStatus('is-online', materialStatus('日服', catalog.generatedAt));
     }
-    if (source) status.textContent += source === 'v1-fallback'
-      ? ' 当前使用兼容索引，COS 新索引暂不可用。'
-      : source === 'v2-cache' ? ' 当前使用已校验的本版本缓存索引。'
-      : local ? ' 已加载经校验的本地 COS v2 索引。' : ' 已加载 COS v2 分类索引。';
+    if (source === 'v1-fallback') status.textContent = '素材索引暂不可用，已切换至兼容版本。';
     paintFields();
   }
   return { sync, openSongPicker, applySongSettings, openCompanionPicker };
