@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { REGION_BASE_URL, REGION_CATEGORIES } from '../../src/region-index.js';
 import { buildRegionalIndex } from '../../tools/build-region-index.mjs';
+import { createDefaultState } from '../../src/model.js';
+import { CURRENT_DESIGN_KEY } from '../../src/current-design.js';
 
 test.use({ serviceWorkers: 'block' });
 const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGP4DwQACfsD/fteaysAAAAASUVORK5CYII=', 'base64');
@@ -21,6 +23,68 @@ async function openEditor(page, context) {
   await expect(page.locator('#loading')).toBeHidden();
   await page.locator('.controls-summary').click();
 }
+for (const region of ['cn', 'jp']) {
+  test(`${region} component thumbnails and actions never overlap across responsive breakpoints`, async ({ page, context }, info) => {
+    await page.addInitScript(({ key, state }) => {
+      localStorage.setItem(key, JSON.stringify({ version: 1, state }));
+    }, { key: CURRENT_DESIGN_KEY, state: createDefaultState(region) });
+    await openEditor(page, context);
+    await expect(page.locator('html')).toHaveAttribute('data-region', region);
+
+    for (const width of [320, 360, 375, 390, 414, 480, 481, 540, 680, 681, 768, 820, 899, 900, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      const rows = await page.locator('#controls .control-row').evaluateAll(elements => {
+        const overlaps = (a, b) => Math.min(a.right, b.right) - Math.max(a.left, b.left) > .5 &&
+          Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > .5;
+        return elements.map(row => {
+          const outer = row.getBoundingClientRect();
+          const identity = row.querySelector('.control-main').getBoundingClientRect();
+          const icon = row.querySelector('.control-icon').getBoundingClientRect();
+          const actions = row.querySelector('.control-actions').getBoundingClientRect();
+          const content = [...row.querySelectorAll('.control-main, .control-icon, .control-actions, button, input, .upload-button, .switch-wrap')]
+            .filter(el => el.getClientRects().length && getComputedStyle(el).position !== 'absolute');
+          return {
+            id: row.dataset.control,
+            identityWidth: identity.width,
+            iconWidth: icon.width,
+            overlapping: overlaps(identity, actions) || overlaps(icon, actions),
+            escaped: content.filter(el => {
+              const r = el.getBoundingClientRect();
+              return r.left < outer.left - .5 || r.right > outer.right + .5 ||
+                r.top < outer.top - .5 || r.bottom > outer.bottom + .5;
+            }).map(el => el.className),
+            targets: [...row.querySelectorAll('button, .upload-button, .switch-wrap')]
+              .filter(el => el.getClientRects().length)
+              .map(el => ({ height: el.getBoundingClientRect().height, width: el.getBoundingClientRect().width })),
+          };
+        });
+      });
+      for (const row of rows) {
+        const description = `${region} ${width}px ${row.id}`;
+        expect(row.overlapping, description).toBe(false);
+        expect(row.identityWidth, description).toBeGreaterThanOrEqual(row.iconWidth);
+        expect(row.escaped, description).toEqual([]);
+        for (const target of row.targets) {
+          expect(target.height, description).toBeGreaterThanOrEqual(44);
+          expect(target.width, description).toBeGreaterThanOrEqual(44);
+        }
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), `${region} ${width}px`).toBe(false);
+    }
+
+    await page.setViewportSize({ width: 375, height: 812 });
+    const nameplate = page.locator('[data-control="nameplate"]');
+    await nameplate.scrollIntoViewIfNeeded();
+    await nameplate.screenshot({ path: info.outputPath(`nameplate-${region}-375.png`) });
+    await nameplate.locator('.library-button').click();
+    await expect(page.locator('#asset-picker')).toBeVisible();
+    await expect(page.locator('#picker-title')).toContainText('姓名框');
+    await page.locator('#picker-close').click();
+    await expect(page.locator('#asset-picker')).toBeHidden();
+    await expect(nameplate.locator('.library-button')).toBeFocused();
+  });
+}
+
 for(const width of [1440,390,320]) {
   test(`shared controls and repeated dialogs at ${width}px`,async({page,context},info)=>{
     await page.setViewportSize({width,height:1000});

@@ -346,9 +346,9 @@ html[data-region='jp'] .editor-page .editor-hero {
   .editor-page .editor-hero .hero-background-controls { justify-content: flex-start; }
 }
 @media (max-width: 899px) {
+  /* Keep identity and full-width actions on separate rows, including nameplates. */
   .editor-page #material-controls .control-row { flex-direction: column; align-items: stretch; }
   .editor-page #material-controls .control-actions { width: 100%; }
-  .editor-page #material-controls [data-control='nameplate'] { flex-direction: row; align-items: center; }
 }
 @media (max-width: 680px) {
   .editor-page .app-shell { width: calc(100% - 24px); padding: 16px 0 32px; }
