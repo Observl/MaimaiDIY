@@ -58,6 +58,7 @@ for (const file of [
   'custom-order.html',
   'styles.css',
   'components.css',
+  'public-images/groupbuy/maimaidiy-acrylic-poster.jpg',
   'ui-motion.css',
   'ui-motion.js',
   'app.js',

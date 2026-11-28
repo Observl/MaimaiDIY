@@ -1,4 +1,90 @@
 /* MaimaiDIY component system: editor presentation, independent of rendering. */
+/* Self-promoted group buy: reuse the editor's type, spacing and button system. */
+.editor-page .app-shell > .groupbuy-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 260px);
+  grid-template-areas: 'content poster';
+  align-items: center;
+  gap: 32px;
+  margin: 0 0 var(--space-6);
+  padding: 32px;
+  line-height: normal;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.groupbuy-visual {
+  grid-area: poster;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-control);
+  background: var(--secondary);
+}
+.groupbuy-visual img { display: block; width: 100%; height: auto; }
+.groupbuy-content {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.groupbuy-copy { grid-area: title; min-width: 0; }
+.groupbuy-copy .support-lead { margin-top: 16px; }
+.editor-page .groupbuy-copy h2 {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -.045em;
+}
+.groupbuy-actions {
+  grid-area: actions;
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.groupbuy-actions .button {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--field-height);
+  padding-inline: var(--space-4);
+  text-decoration: none;
+}
+.editor-page .groupbuy-actions .groupbuy-xhs { background: #c52342; color: #fff; }
+.editor-page .groupbuy-actions .groupbuy-xhs:hover { background: #a91d37; }
+.editor-page .groupbuy-actions .groupbuy-custom {
+  background: var(--header-hint-bg);
+  color: var(--header-hint-ink);
+  border: 1px solid var(--header-hint-border);
+}
+.editor-page .groupbuy-actions .groupbuy-custom:hover {
+  background: var(--header-hint-hover);
+  color: var(--header-hint-ink);
+  box-shadow: inset 0 0 0 1px var(--header-hint-border);
+}
+.groupbuy-card a:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 4px; }
+@media (max-width: 900px) {
+  .editor-page .app-shell > .groupbuy-card { grid-template-columns: minmax(0, 1fr) minmax(0, 240px); gap: 24px; }
+}
+@media (max-width: 600px) {
+  .editor-page .app-shell > .groupbuy-card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'title' 'poster' 'actions';
+    grid-template-rows: auto;
+    gap: var(--space-6);
+    padding: var(--space-6);
+  }
+  .groupbuy-content { display: contents; }
+  .groupbuy-visual { width: min(100%, 280px); justify-self: center; }
+  .groupbuy-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .groupbuy-actions .button { width: 100%; }
+}
+@media (forced-colors: active) {
+  .groupbuy-actions .button { border: 1px solid ButtonText; }
+}
 .button, .library-button, .upload-button, .background-motion {
   min-height: var(--field-height);
   border-radius: var(--radius-compact);
@@ -141,6 +227,10 @@ input:disabled, select:disabled { background: var(--secondary); color: var(--mut
   --muted: #626572;
   --focus-ring: #7868df;
   --font-caption: 13px;
+  --header-hint-bg: #fff0f6;
+  --header-hint-ink: #8d2858;
+  --header-hint-border: #f6c9dc;
+  --header-hint-hover: #ffe0ed;
   line-height: 1.5;
 }
 .editor-page .app-shell {
@@ -157,10 +247,6 @@ input:disabled, select:disabled { background: var(--secondary); color: var(--mut
   backdrop-filter: none;
 }
 .editor-page .editor-hero {
-  --header-hint-bg: #fff0f6;
-  --header-hint-ink: #8d2858;
-  --header-hint-border: #f6c9dc;
-  --header-hint-hover: #ffe0ed;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -207,7 +293,7 @@ input:disabled, select:disabled { background: var(--secondary); color: var(--mut
   justify-content: flex-end;
   gap: 8px;
 }
-html[data-region='jp'] .editor-page .editor-hero {
+html[data-region='jp'] .editor-page {
   --header-hint-bg: #edf7de;
   --header-hint-ink: #3d641e;
   --header-hint-border: #cbdcab;
